@@ -1609,11 +1609,11 @@ static int perl_load_file(void)
       return 0;
 
     debug_print("%s", SvPV(ERRSV,n_a));
-    message = g_strdup_printf("Error processing Perl script file: "
-            "(line numbers may not be valid)\n%s",
+    message = g_strdup_printf(_("Error processing Perl script file: "
+            "(line numbers may not be valid)\n%s"),
             SvPV(ERRSV,n_a));
-    val = alertpanel("Perl Plugin error",message,"Retry","Abort","Edit",
-				ALERTFOCUS_FIRST);
+    val = alertpanel(_("Perl Plugin error"), message, _("Retry"),
+		     _("Abort"), _("Edit"), ALERTFOCUS_FIRST);
     g_free(message);
 
     if(val == G_ALERTOTHER) {
@@ -2389,9 +2389,8 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-  return "This plugin provides a Perl scripting "
-    "interface for mail filters.\nFeedback "
-    "to <berndth@gmx.de> is welcome.";
+  return _("This plugin provides a Perl scripting interface for mail filters.\n"
+    "Feedback to <berndth@gmx.de> is welcome.\n");
 }
 
 const gchar *plugin_type(void)
