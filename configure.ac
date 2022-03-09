@@ -1108,6 +1108,10 @@ AC_ARG_ENABLE(gdata-plugin,
 		[  --disable-gdata-plugin          Do not build gdata plugin],
 		[enable_gdata_plugin=$enableval], [enable_gdata_plugin=auto])
 
+AC_ARG_ENABLE(keyword_warner-plugin,
+		[  --disable-keyword_warner-plugin   Do not build keyword_warner plugin],
+		[enable_keyword_warner_plugin=$enableval], [enable_keyword_warner_plugin=auto])
+
 AC_ARG_ENABLE(libravatar-plugin,
 		[  --disable-libravatar-plugin     Do not build libravatar  plugin],
 		[enable_libravatar_plugin=$enableval], [enable_libravatar_plugin=auto])
@@ -1626,6 +1630,15 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING([whether to build keyword_warner plugin])
+if test x"$enable_keyword_warner_plugin" != xno; then
+	PLUGINS="$PLUGINS keyword_warner"
+	AC_MSG_RESULT(yes)
+else
+	DISABLED_PLUGINS="$DISABLED_PLUGINS keyword_warner"
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([whether to build libravatar plugin])
 if test x"$enable_libravatar_plugin" != xno; then
 	dependencies_missing=""
@@ -2103,6 +2116,7 @@ AM_CONDITIONAL(BUILD_DILLO_PLUGIN,		test x"$enable_dillo_plugin" != xno)
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN,		test x"$enable_fancy_plugin" != xno)
 AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN,		test x"$enable_fetchinfo_plugin" != xno)
 AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
+AM_CONDITIONAL(BUILD_KEYWORD_WARNER_PLUGIN,	test x"$enable_keywordwarner_plugin" != xno)
 AM_CONDITIONAL(BUILD_LIBRAVATAR_PLUGIN,		test x"$enable_libravatar_plugin" != xno)
 AM_CONDITIONAL(BUILD_LITEHTML_VIEWER_PLUGIN,	test x"$enable_litehtml_viewer_plugin" != xno)
 AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN,		test x"$enable_mailmbox_plugin" != xno)
@@ -2161,6 +2175,8 @@ src/plugins/fancy/version.rc
 src/plugins/fetchinfo/Makefile
 src/plugins/fetchinfo/version.rc
 src/plugins/gdata/Makefile
+src/plugins/keyword_warner/Makefile
+src/plugins/keyword_warner/version.rc
 src/plugins/litehtml_viewer/Makefile
 src/plugins/litehtml_viewer/version.rc
 src/plugins/litehtml_viewer/litehtml/Makefile
