@@ -196,39 +196,39 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 	if (addkeeperprefs.block_matching_addrs != NULL
 			&& addkeeperprefs.block_matching_addrs[0] != '\0') {
 		blocked = matcherlist_new_from_lines(addkeeperprefs.block_matching_addrs, FALSE, FALSE);
-		if (blocked == NULL)
+
+		if (blocked) {
+			for (cur = compose->header_list; cur != NULL; cur = cur->next) {
+				gchar *header;
+				gchar *entry;
+				header = gtk_editable_get_chars(GTK_EDITABLE(
+						gtk_bin_get_child(GTK_BIN(
+							(((ComposeHeaderEntry *)cur->data)->combo)))), 0, -1);
+				entry = gtk_editable_get_chars(GTK_EDITABLE(
+						((ComposeHeaderEntry *)cur->data)->entry), 0, -1);
+				g_strstrip(entry);
+				g_strstrip(header);
+				if (*entry != '\0') {
+					if (!g_ascii_strcasecmp(header, to_hdr)
+						&& addkeeperprefs.keep_to_addrs == TRUE) {
+						keep_if_unknown(abf, folder, entry, blocked);
+					}
+					if (!g_ascii_strcasecmp(header, cc_hdr)
+						&& addkeeperprefs.keep_cc_addrs == TRUE) {
+						keep_if_unknown(abf, folder, entry, blocked);
+					}
+					if (!g_ascii_strcasecmp(header, bcc_hdr)
+						&& addkeeperprefs.keep_bcc_addrs == TRUE) {
+						keep_if_unknown(abf, folder, entry, blocked);
+					}
+				}
+				g_free(header);
+				g_free(entry);
+			}
+			matcherlist_free(blocked);
+		} else
 			g_warning("couldn't allocate matcher");
 	}
-	for (cur = compose->header_list; cur != NULL; cur = cur->next) {
-		gchar *header;
-		gchar *entry;
-		header = gtk_editable_get_chars(GTK_EDITABLE(
-				gtk_bin_get_child(GTK_BIN(
-					(((ComposeHeaderEntry *)cur->data)->combo)))), 0, -1);
-		entry = gtk_editable_get_chars(GTK_EDITABLE(
-				((ComposeHeaderEntry *)cur->data)->entry), 0, -1);
-		g_strstrip(entry);
-		g_strstrip(header);
-		if (*entry != '\0') {
-			if (!g_ascii_strcasecmp(header, to_hdr)
-				&& addkeeperprefs.keep_to_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry, blocked);
-			}
-			if (!g_ascii_strcasecmp(header, cc_hdr)
-				&& addkeeperprefs.keep_cc_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry, blocked);
-			}
-			if (!g_ascii_strcasecmp(header, bcc_hdr)
-				&& addkeeperprefs.keep_bcc_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry, blocked);
-			}
-		}
-		g_free(header);
-		g_free(entry);
-	}
-	if (blocked != NULL)	
-		matcherlist_free(blocked);
-
 	return FALSE;	/* continue sending */
 }
 

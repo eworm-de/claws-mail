@@ -109,27 +109,27 @@ AttachWarnerMention *are_attachments_mentioned(Compose *compose)
 	AttachWarnerMention *mention = NULL;
 	MatcherList *matchers = NULL;
 
-	matchers = matcherlist_new_from_lines(attwarnerprefs.match_strings, FALSE, attwarnerprefs.case_sensitive);
+	if (attwarnerprefs.match_strings != NULL
+			&& attwarnerprefs.match_strings[0] != '\0') {
+		matchers = matcherlist_new_from_lines(attwarnerprefs.match_strings, FALSE, attwarnerprefs.case_sensitive);
 
-	if (matchers == NULL) {
-		g_warning("couldn't allocate matcher");
-		return FALSE;
+		if (matchers) {
+			textview = GTK_TEXT_VIEW(compose->text);
+		        textbuffer = gtk_text_view_get_buffer(textview);
+			gtk_text_buffer_get_start_iter(textbuffer, &start);
+			gtk_text_buffer_get_end_iter(textbuffer, &end);
+			text = gtk_text_buffer_get_text(textbuffer, &start, &end, FALSE);
+
+			debug_print("checking text for attachment mentions\n");
+			if (text != NULL) {
+				mention = aw_matcherlist_string_match(matchers, text, compose->account->sig_sep);
+				g_free(text);
+			}	
+			matcherlist_free(matchers);
+			debug_print("done\n");
+		} else
+			g_warning("couldn't allocate matcher");
 	}
-
-	textview = GTK_TEXT_VIEW(compose->text);
-        textbuffer = gtk_text_view_get_buffer(textview);
-	gtk_text_buffer_get_start_iter(textbuffer, &start);
-	gtk_text_buffer_get_end_iter(textbuffer, &end);
-	text = gtk_text_buffer_get_text(textbuffer, &start, &end, FALSE);
-
-	debug_print("checking text for attachment mentions\n");
-	if (text != NULL) {
-		mention = aw_matcherlist_string_match(matchers, text, compose->account->sig_sep);
-		g_free(text);
-	}	
-	if (matchers != NULL)
-		matcherlist_free(matchers);
-	debug_print("done\n");
 	return mention;
 }
 
