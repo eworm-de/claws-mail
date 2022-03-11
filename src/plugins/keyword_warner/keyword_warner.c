@@ -186,9 +186,9 @@ static gboolean kwarn_before_send_hook(gpointer source, gpointer data)
 		bold_text = g_strdup_printf("<span weight=\"bold\">%.20s</span>...",
 				mention->context);
 		message = g_strdup_printf(
-				_("A keyword is mentioned in the mail you're sending. "
-				" Mention appears on line %d, "
-				"which begins with text: %s\n\n%s"),
+				_("A keyword is used in the mail you are sending. "
+				"The keyword appears on line %d, "
+				"which begins with the text: %s\n\n%s"),
 				mention->line,
 				bold_text,
 				compose->sending?_("Send it anyway?"):_("Queue it anyway?"));
@@ -221,7 +221,7 @@ static gboolean kwarn_before_send_hook(gpointer source, gpointer data)
 gint plugin_init(gchar **error)
 {
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
-			VERSION_NUMERIC, "Keyword_Warner", error))
+			VERSION_NUMERIC, "Keyword Warner", error))
 		return -1;
 
 	hook_id = hooks_register_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST,
@@ -258,7 +258,7 @@ gboolean plugin_done(void)
  */
 const gchar *plugin_name(void)
 {
-	return _("Keyword_Warner");
+	return _("Keyword Warner");
 }
 
 /**
@@ -268,7 +268,8 @@ const gchar *plugin_name(void)
  */
 const gchar *plugin_desc(void)
 {
-	return _("Warns user if some reference to keywords is found in the "
+	return _("Shows a warning when sending or queueing a message "
+		 "and a reference to one or more keywords is found in the "
 	         "message text.");
 }
 
@@ -310,7 +311,7 @@ const gchar *plugin_version(void)
 struct PluginFeature *plugin_provides(void)
 {
 	static struct PluginFeature features[] = 
-		{ {PLUGIN_OTHER, N_("Keyword_Warner")},
+		{ {PLUGIN_OTHER, N_("Keyword Warner")},
 		  {PLUGIN_NOTHING, NULL}};
 
 	return features;
