@@ -234,7 +234,7 @@ void keyword_warner_prefs_init(void)
 	gchar *tmp;
 
 	path[0] = _("Plugins");
-	path[1] = _("Keyword_Warner");
+	path[1] = _("Keyword Warner");
 	path[2] = NULL;
 
 	prefs_set_default(param);
