@@ -80,7 +80,7 @@ static void keyword_warner_prefs_create_widget_func(PrefsPage * _page,
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
-	label = gtk_label_new(_("One of the following regular expressions is matched (one per line)"));
+	label = gtk_label_new(_("Warn when one of the following regular expressions is matched (one per line)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_widget_set_margin_start(GTK_WIDGET(label), 2);
 	gtk_widget_set_margin_end(GTK_WIDGET(label), 0);
@@ -108,7 +108,7 @@ static void keyword_warner_prefs_create_widget_func(PrefsPage * _page,
 	gtk_container_set_border_width(GTK_CONTAINER(scrolledwin), 3);
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), page->regexp_text);
-	gtk_widget_set_size_request(page->regexp_text, -1, 100);
+	gtk_widget_set_size_request(scrolledwin, -1, 100);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, FALSE, FALSE, 0);
@@ -152,11 +152,9 @@ static void keyword_warner_prefs_create_widget_func(PrefsPage * _page,
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
-	PACK_FRAME (vbox, frame, _("Warn when"));
-	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 6);
-	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+	gtk_container_add(GTK_CONTAINER(vbox), vbox1);
 
-	PACK_FRAME (vbox, frame, _("Excluding"));
+	PACK_FRAME (vbox, frame, _("Exclude"));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
 	gtk_container_add(GTK_CONTAINER(frame), vbox2);
 
