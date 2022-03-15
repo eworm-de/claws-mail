@@ -463,12 +463,15 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
-	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_OUT);
+	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_NONE);
 	gtk_grid_attach(GTK_GRID(prefswindow->table2), prefswindow->labelframe, 0, 0, 1, 1);
 	gtk_widget_set_hexpand(prefswindow->labelframe, TRUE);
 	gtk_widget_set_halign(prefswindow->labelframe, GTK_ALIGN_FILL);
 
 	prefswindow->pagelabel = gtk_label_new("");
+	gtk_widget_set_margin_top(prefswindow->pagelabel, 4);
+	gtk_widget_set_margin_bottom(prefswindow->pagelabel, 4);
+	gtk_widget_set_margin_start(prefswindow->pagelabel, 4);
 	gtk_widget_show(prefswindow->pagelabel);
 	gtk_label_set_justify(GTK_LABEL(prefswindow->pagelabel), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign(GTK_LABEL(prefswindow->pagelabel), 0.0);
@@ -662,6 +665,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	gint pagenum, i;
 	GtkTreeIter iter;
 	GtkAdjustment *adj;
+	gchar *markup;
 
 #ifndef GENERIC_UMPC
 	if (currently_selected) 
@@ -691,7 +695,9 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 		i++;
 	labeltext = page->path[i];
 
-	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
+	markup = g_markup_printf_escaped("<span weight=\"bold\">\%s</span>", labeltext);
+	gtk_label_set_markup(GTK_LABEL(prefswindow->pagelabel), markup);
+	g_free(markup);
 
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
 					page->widget);
