@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -171,7 +171,7 @@ static GtkWidget *about_create_child_page_info(void)
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
 	format = g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		       "GTK %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: %s %s (%s)"), NULL);
 	g_snprintf(buf, sizeof(buf), format,
@@ -181,7 +181,7 @@ static GtkWidget *about_create_child_page_info(void)
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #elif defined(G_OS_WIN32)
 	format = g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		       "GTK %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: %s"), NULL);
 	g_snprintf(buf, sizeof(buf), format,
@@ -191,7 +191,7 @@ static GtkWidget *about_create_child_page_info(void)
 		   "Win32");
 #else
 	format = g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		       "GTK %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: unknown"), NULL);
 	g_snprintf(buf, sizeof(buf), format,

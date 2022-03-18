@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -54,7 +54,7 @@
 
 /* String used in color button labels.
  * Instead of hardcoding a size which doesn't look the same on different
- * resolutions, use a space;m-space;space label and let GTK+ to compute
+ * resolutions, use a space;m-space;space label and let GTK to compute
  * the appropriate button size for current font.
  * This macro is only used in gtkut_set_button_color(). */
 #define GTKUT_COLOR_BUTTON_LABEL "\x20\xE2\x80\x83\x20"

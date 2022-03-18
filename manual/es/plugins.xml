@@ -143,7 +143,7 @@
         <term>Visor HTML Fancy</term>
         <listitem>
           <para>
-	Permite mostrar mensajes HTML usando la versión basada en GTK+
+	Permite mostrar mensajes HTML usando la versión basada en GTK
 	de la librería WebKit. Por omisión no se carga ningún contenido
 	remoto.
 	  </para><para>

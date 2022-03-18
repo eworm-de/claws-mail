@@ -1,4 +1,4 @@
-/* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+/* Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2007-2012 Holger Berndt <hb@claws-mail.org> 
  * and the Claws Mail team
  *

@@ -3961,33 +3961,33 @@ msgstr ""
 #: src/gtk/about.c:167
 #, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: %s %s (%s)"
 msgstr ""
-"GTK+版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
+"GTK版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
 "本地语言: %s (字符集: %s)\n"
 "操作系统: %s %s (%s)"
 
 #: src/gtk/about.c:176
 #, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: %s"
 msgstr ""
-"GTK+版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
+"GTK版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
 "本地语言: %s (字符集: %s)\n"
 "操作系统: %s"
 
 #: src/gtk/about.c:185
 #, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: unknown"
 msgstr ""
-"GTK+版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
+"GTK版本: %d.%d.%d / GLib版本: %d.%d.%d\n"
 "本地语言: %s (字符集: %s)\n"
 "操作系统: (未知)"
 

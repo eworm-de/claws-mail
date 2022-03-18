@@ -1,15 +1,15 @@
 10th July 2021                                       Claws Mail 4.0.0
 
-		    CLAWS MAIL  RELEASE NOTES
+                    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
 
-Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
+Claws Mail is a GTK based, user-friendly, lightweight, and fast
 email client.
 
 Notes for this release:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are upgrading from the GTK+ 2 version of Claws Mail, you will
+If you are upgrading from the GTK 2 version of Claws Mail, you will
 need to reload any plugins that you want to use.
 
 New in this release:

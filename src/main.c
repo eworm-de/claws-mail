@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -848,19 +848,19 @@ static void main_dump_features_list(gboolean show_debug_only)
 		return;
 
 	if (show_debug_only)
-		debug_print("runtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		debug_print("runtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   gtk_major_version, gtk_minor_version, gtk_micro_version,
 			   glib_major_version, glib_minor_version, glib_micro_version);
 	else
-		g_print("runtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		g_print("runtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   gtk_major_version, gtk_minor_version, gtk_micro_version,
 			   glib_major_version, glib_minor_version, glib_micro_version);
 	if (show_debug_only)
-		debug_print("buildtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		debug_print("buildtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
 			   GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
 	else
-		g_print("buildtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		g_print("buildtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
 			   GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
 	

@@ -4,7 +4,7 @@
  * Copyright (C) 2005-2019 Colin Leroy <colin@colino.net>
  * 	and the Claws Mail Team
  *
- * Sylpheed is a GTK+ based, lightweight, and fast e-mail client
+ * Sylpheed is a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify

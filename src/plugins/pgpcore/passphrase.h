@@ -1,4 +1,4 @@
-/* passphrase.h - GTK+ based passphrase callback
+/* passphrase.h - GTK based passphrase callback
  *      Copyright (C) 2001-2012 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify

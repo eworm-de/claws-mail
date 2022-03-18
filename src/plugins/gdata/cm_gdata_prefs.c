@@ -1,6 +1,6 @@
 /*
  * GData plugin for Claws-Mail
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2011-2018 Holger Berndt and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify

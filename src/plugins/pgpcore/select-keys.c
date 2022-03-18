@@ -1,4 +1,4 @@
-/* select-keys.c - GTK+ based key selection
+/* select-keys.c - GTK based key selection
  * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify        

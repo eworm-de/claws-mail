@@ -1,6 +1,6 @@
 /*
  * Notification plugin for Claws-Mail
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2005-2021 the Claws Mail team and Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify

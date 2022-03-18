@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2016 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -40,7 +40,7 @@
 static OPENFILENAME o;
 static BROWSEINFO b;
 
-/* Since running the native dialogs in the same thread stops GTK+
+/* Since running the native dialogs in the same thread stops GTK
  * loop from redrawing other windows on the background, we need
  * to run the dialogs in a separate thread. */
 

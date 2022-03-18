@@ -1,7 +1,7 @@
 Installation
 ============
 
-This program requires GTK+ 3.20 or higher to be compiled.
+This program requires GTK 3.20 or higher to be compiled.
 
 Build it
 ========
@@ -58,7 +58,7 @@ GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
 GnuTLS (>= 0.4.2)
     for SSL support
     https://gnutls.org/
-GTK+ WebKit (>= 2.0)
+GTK WebKit (>= 2.0)
     for Fancy plugin support
     https://trac.webkit.org/wiki/WebKitGTK/
 Gs tool

@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2002-2019 by the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -226,7 +226,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 
 	crash_report = g_strdup_printf(
 		"Claws Mail version %s\n"
-		"GTK+ version %d.%d.%d / GLib %d.%d.%d\n"
+		"GTK version %d.%d.%d / GLib %d.%d.%d\n"
 		"Locale: %s (charset: %s)\n"
 		"Features:%s\n"
 		"Operating system: %s\n"
@@ -533,7 +533,7 @@ static void crash_handler(int sig)
 		char *args[5];
 	
 		/*
-		 * probably also some other parameters (like GTK+ ones).
+		 * probably also some other parameters (like GTK ones).
 		 * also we pass the full startup dir and the real command
 		 * line typed in (argv0)
 		 */

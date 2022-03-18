@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -884,7 +884,7 @@ GtkWidget *gtkut_get_focused_child(GtkContainer *parent)
 }
 
 /*!
- *\brief	Create a Browse (file) button based on GTK+ stock
+ *\brief	Create a Browse (file) button based on GTK stock
  */
 GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 {
@@ -898,7 +898,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 }
 
 /*!
- *\brief	Create a Browse (directory) button based on GTK+ stock
+ *\brief	Create a Browse (directory) button based on GTK stock
  */
 GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 {

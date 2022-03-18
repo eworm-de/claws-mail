@@ -1070,7 +1070,7 @@ msgstr "Tämä moduuli ei ole GPL v3 tai myöhempi -yhteensopivasti lisensoitu."
 
 #: src/common/plugin.c:491
 msgid "This module is for Claws Mail GTK1."
-msgstr "Tämä moduuli on Claws Mailin GTK+1-versiolle."
+msgstr "Tämä moduuli on Claws Mailin GTK1-versiolle."
 
 #: src/common/plugin.c:769
 #, c-format
