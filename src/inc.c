@@ -24,7 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
-#include <glib/gi18n.h>NULL,
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <unistd.h>
