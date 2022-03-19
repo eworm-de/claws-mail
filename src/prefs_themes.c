@@ -42,6 +42,7 @@
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
 #include "gtk/filesel.h"
+#include "gtk/manage_window.h"
 
 #include "stock_pixmap.h"
 #include "mainwindow.h"
@@ -141,6 +142,9 @@ StockPixmap prefs_themes_icons[PREVIEW_ICONS] = {
 
 static void prefs_themes_btn_remove_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_btn_install_clicked_cb	(GtkWidget *widget, gpointer data);
+static void prefs_themes_btn_viewall_clicked_cb	(GtkWidget *widget, gpointer data);
+static void prefs_themes_viewall_close_btn_clicked	(GtkWidget *widget, gpointer data);
+static gboolean prefs_themes_viewall_key_pressed	(GtkWidget *keywidget, GdkEventKey *event, GtkWidget **widget);
 static void prefs_themes_menu_item_activated_cb	(GtkWidget *widget, gpointer data);
 #ifdef HAVE_SVG
 static gdouble prefs_themes_compute_ppi(GdkScreen *screen);
@@ -640,6 +644,96 @@ end_inst:
 	g_free(themename);
 }
 
+static gboolean prefs_themes_viewall_key_pressed(GtkWidget *keywidget, GdkEventKey *event, GtkWidget **widget)
+{
+	if (event && event->keyval == GDK_KEY_Escape) {
+		prefs_themes_viewall_close_btn_clicked(NULL, widget);
+	}
+
+	return FALSE;
+}
+
+static void prefs_themes_viewall_close_btn_clicked(GtkWidget *widget, gpointer data)
+{
+	GtkWidget **window = (GtkWidget **) data;
+
+	cm_return_if_fail(window != NULL);
+	cm_return_if_fail(*window != NULL);
+
+	gtk_widget_destroy(*window);
+	*window = NULL;
+}
+
+#define ICONS_PER_ROW 19
+
+static void prefs_themes_btn_viewall_clicked_cb(GtkWidget *widget, gpointer data)
+{
+	static GtkWidget *viewall_win = NULL;
+
+	ThemesData *tdata = prefs_themes_data;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *icons[N_STOCK_PIXMAPS];
+	GdkPixbuf *pixbufs[N_STOCK_PIXMAPS];
+	GtkWidget *separator;
+	GtkWidget *confirm_area;
+	GtkWidget *close_btn;
+	gchar *save_prefs_path;
+	gint i;
+
+	viewall_win = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_themes_view_all");
+	gtk_container_set_border_width(GTK_CONTAINER(viewall_win), 5);
+	gtk_window_set_title(GTK_WINDOW(viewall_win), _("View all theme icons"));
+	gtk_window_set_position(GTK_WINDOW(viewall_win), GTK_WIN_POS_CENTER);
+
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(viewall_win), vbox);
+
+	save_prefs_path = prefs_common.pixmap_theme_path;
+	prefs_common.pixmap_theme_path = tdata->displayed;
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_widget_show(hbox);
+	for (i = 0; i < N_STOCK_PIXMAPS; ++i) {
+		icons[i] = gtk_image_new();
+		gtk_widget_show (icons[i]);
+		stock_pixbuf_gdk(i, &(pixbufs[i]));
+		gtk_image_set_from_pixbuf(GTK_IMAGE(icons[i]), pixbufs[i]);
+		gtk_box_pack_start(GTK_BOX(hbox), icons[i], TRUE, TRUE, 5);
+		if ((i + 1) % ICONS_PER_ROW == 0) {
+			gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 5);
+			if (i + 1 < N_STOCK_PIXMAPS) {
+				hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+				gtk_widget_show(hbox);
+			}
+		}
+	}
+	prefs_common.pixmap_theme_path = save_prefs_path;
+
+	separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_show(separator);
+	gtk_box_pack_start(GTK_BOX(vbox), separator, FALSE, FALSE, 0);
+
+	gtkut_stock_button_set_create(&confirm_area,
+		&close_btn, "window-close", _("_Close"),
+		NULL, NULL, NULL, NULL, NULL, NULL);
+	gtk_box_pack_start(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 5);
+	gtk_widget_show(confirm_area);
+	gtk_widget_grab_default(close_btn);
+	gtk_widget_grab_focus(close_btn);
+
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
+		G_CALLBACK(prefs_themes_viewall_close_btn_clicked),
+		&viewall_win);
+	g_signal_connect(G_OBJECT(viewall_win), "key_press_event",
+		G_CALLBACK(prefs_themes_viewall_key_pressed),
+		&viewall_win);
+
+	manage_window_set_transient(GTK_WINDOW(viewall_win));
+	gtk_window_set_modal(GTK_WINDOW(viewall_win), TRUE);
+	gtk_widget_show(viewall_win);
+}
+
 static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data)
 {
 	ThemesData *tdata = prefs_themes_data;
@@ -939,6 +1033,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkWidget *icon_5;
 	GtkWidget *icon_6;
 	GtkWidget *icon_7;
+	GtkWidget *btn_viewall;
 	GtkWidget *frame_buttons;
 	GtkWidget *hbuttonbox1;
 	GtkWidget *btn_remove;
@@ -1107,6 +1202,10 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	gtk_widget_set_can_default (btn_remove, TRUE);
 
+	btn_viewall = gtkut_stock_button("view-fullscreen", _("View all"));
+	gtk_widget_show (btn_viewall);
+	gtk_box_pack_start (GTK_BOX (hbuttonbox1), btn_viewall, FALSE, FALSE, 5);
+
 #ifdef HAVE_SVG
 	PACK_FRAME(vbox1, frame_scaling, _("SVG rendering"));
 
@@ -1171,6 +1270,9 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 			 NULL);
 	g_signal_connect(G_OBJECT(btn_install), "clicked",
 			 G_CALLBACK(prefs_themes_btn_install_clicked_cb),
+			 NULL);
+	g_signal_connect(G_OBJECT(btn_viewall), "clicked",
+			 G_CALLBACK(prefs_themes_btn_viewall_clicked_cb),
 			 NULL);
 
 	prefs_themes->window = GTK_WIDGET(window);
