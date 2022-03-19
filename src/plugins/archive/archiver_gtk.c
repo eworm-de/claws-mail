@@ -935,7 +935,6 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 	GtkWidget *dialog;
 	gchar* file;
 	gint newpos = 0;
-	const gchar* homedir;
 	struct ArchivePage* page = (struct ArchivePage *) data;
 
 	dialog = gtk_file_chooser_dialog_new(
@@ -945,15 +944,13 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 			_("_Cancel"), GTK_RESPONSE_CANCEL,
 			_("_Apply"), GTK_RESPONSE_APPLY,
 			NULL);
-	homedir = g_getenv("HOME");
-	if (!homedir)
-		homedir = g_get_home_dir();
 
 	if (archiver_prefs.save_folder)
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), 
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
 						    archiver_prefs.save_folder);
 	else
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), homedir);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
+						    get_home_dir());
 	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_APPLY) {
 		file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		if (file) {

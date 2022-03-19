@@ -124,7 +124,7 @@ static void folder_permission_cb(GtkWidget *widget, gpointer data) {
 			".claws-mail/mimetmp",
 			".claws-mail/tmp",
 			NULL};
-	const gchar* home = g_get_home_dir();
+	const gchar* home = get_home_dir();
 	int i;
 
 	check_permission((gchar *) home);
