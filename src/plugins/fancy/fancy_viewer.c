@@ -29,6 +29,7 @@
 #include <fancy_prefs.h>
 #include <alertpanel.h>
 #include <file-utils.h>
+#include <utils.h>
 
 #include <printing.h>
 #include <webkit/webkithittestresult.h>
@@ -703,7 +704,7 @@ static void download_file_cb(GtkWidget *widget, FancyViewer *viewer)
 #endif
 	const gchar *link = viewer->cur_link;
 	gchar *filename = g_utf8_strchr(link, -1, g_utf8_get_char("/"));
-	filename = g_strconcat(g_get_home_dir(), filename, NULL);
+	filename = g_strconcat(get_home_dir(), filename, NULL);
 	gchar *fname = filesel_select_file_save(_("Save as"), filename);
 	if (!fname) {
 		g_free(filename);
