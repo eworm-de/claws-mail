@@ -1202,7 +1202,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	gtk_widget_set_can_default (btn_remove, TRUE);
 
-	btn_viewall = gtkut_stock_button("view-fullscreen", _("View all"));
+	btn_viewall = gtk_button_new_with_label(_("View all"));
 	gtk_widget_show (btn_viewall);
 	gtk_box_pack_start (GTK_BOX (hbuttonbox1), btn_viewall, FALSE, FALSE, 5);
 
