@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
- * Copyright(C) 1999-2021 the Claws Mail Team
+ * Copyright(C) 1999-2022 the Claws Mail Team
  * This file Copyright (C) 2009-2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  *
@@ -284,8 +284,10 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 	else {
 		const gchar *charset = NULL;
 		gchar *contents = NULL;
-        gdouble zoom_level;
-        zoom_level = (double) fancy_prefs.zoom_level / 100;
+		GBytes *content_bytes;
+		gdouble zoom_level;
+		zoom_level = (double) fancy_prefs.zoom_level / 100;
+
 		if (messageview && messageview->forced_charset)
 			charset = ((MimeViewer *)viewer)->mimeview->messageview->forced_charset;
 		else
@@ -294,7 +296,7 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 			charset = conv_get_locale_charset_str();
 		debug_print("using %s charset\n", charset);
 		g_object_set(viewer->settings, "default-charset", charset, NULL);
-		
+
 		if (use_defaults) {
 			debug_print("zoom_level: %f\n", zoom_level);
 
@@ -304,10 +306,14 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 		}
 
 		contents = file_read_to_str_no_recode(viewer->filename);
-		webkit_web_view_load_html(viewer->view,
-					    contents,
-					    NULL);
+		content_bytes = g_bytes_new(contents, strlen(contents));
+		webkit_web_view_load_bytes(viewer->view,
+					   content_bytes,
+					   "text/html",
+					   charset,
+					   NULL);
 		g_free(contents);
+		g_bytes_unref(content_bytes);
 	}
 	return FALSE;
 }
