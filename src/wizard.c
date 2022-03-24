@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -848,7 +848,7 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 
 	/* create the titlebar */
 	hbox = gtk_hbox_new (FALSE, 12);
-	image = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_ICON);
+	image = priv_pixmap_widget(PRIV_PIXMAP_CLAWS_MAIL_ICON);
 	gtk_box_pack_start (GTK_BOX(hbox), image, FALSE, FALSE, 0);
      	title_string = g_strconcat ("<span size=\"xx-large\" weight=\"ultrabold\">", title ? title : "", "</span>", NULL);
 	w = gtk_label_new (title_string);
@@ -1821,7 +1821,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	page = create_page(wizard, _("Welcome to Claws Mail"));
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
-	widget = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	widget = priv_pixmap_widget(PRIV_PIXMAP_CLAWS_MAIL_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	
@@ -1903,7 +1903,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	page = create_page(wizard, _("Configuration finished"));
 	
 	wizard->pages = g_slist_append(wizard->pages, page);
-	widget = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	widget = priv_pixmap_widget(PRIV_PIXMAP_CLAWS_MAIL_LOGO);
 
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
 	

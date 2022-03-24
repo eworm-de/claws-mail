@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,15 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+
+typedef enum
+{
+	PRIV_PIXMAP_CLAWS_MAIL_ICON,
+	PRIV_PIXMAP_CLAWS_MAIL_ICON_64,
+	PRIV_PIXMAP_CLAWS_MAIL_LOGO,
+	PRIV_PIXMAP_EMPTY,              /* last entry */
+	N_PRIV_PIXMAPS
+} PrivPixmap;
 
 typedef enum
 {
@@ -163,15 +172,12 @@ typedef enum
 	STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED,
 	STOCK_PIXMAP_PRIVACY_EMBLEM_WARN,
 	STOCK_PIXMAP_MIME_MESSAGE,
-	STOCK_PIXMAP_CLAWS_MAIL_ICON,
-	STOCK_PIXMAP_CLAWS_MAIL_ICON_64,
 	STOCK_PIXMAP_READ,
 	STOCK_PIXMAP_DELETE,
 	STOCK_PIXMAP_DELETE_DUP,
 	STOCK_PIXMAP_CANCEL,
 	STOCK_PIXMAP_TRASH,
 	STOCK_PIXMAP_MAIL_COMPOSE_LOGO,
-	STOCK_PIXMAP_CLAWS_MAIL_LOGO,
 	STOCK_PIXMAP_DIR_NOSELECT_CLOSE, 
 	STOCK_PIXMAP_DIR_NOSELECT_CLOSE_MARK, 
 	STOCK_PIXMAP_DIR_NOSELECT_OPEN, 
@@ -234,6 +240,10 @@ typedef enum {
 	OVERLAY_BOTTOM_CENTER,
 	OVERLAY_BOTTOM_RIGHT
 } OverlayPosition;
+
+GtkWidget *priv_pixmap_widget	(PrivPixmap	  icon);
+PrivPixmap priv_pixmap_get_icon    (gchar *file);
+gint priv_pixbuf_gdk		(PrivPixmap icon, GdkPixbuf **pixbuf);
 
 GtkWidget *stock_pixmap_widget	(StockPixmap	  icon);
 gint stock_pixbuf_gdk		(StockPixmap icon, GdkPixbuf **pixbuf);

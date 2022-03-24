@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -830,7 +830,7 @@ static void about_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	image = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	image = priv_pixmap_widget(PRIV_PIXMAP_CLAWS_MAIL_LOGO);
 	gtk_table_attach (GTK_TABLE (table), image, 0, 1, 0, 1,
 			(GtkAttachOptions) (GTK_EXPAND),
 			(GtkAttachOptions) (0), 0, 0);
