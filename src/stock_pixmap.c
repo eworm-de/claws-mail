@@ -264,6 +264,10 @@ typedef struct _OverlayData OverlayData;
 
 struct _OverlayData
 {
+	gboolean is_pixmap;
+	cairo_surface_t *base_pixmap;
+	cairo_surface_t *overlay_pixmap;
+
 	GdkPixbuf *base_pixbuf;
 	GdkPixbuf *overlay_pixbuf;
 

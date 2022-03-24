@@ -28,7 +28,7 @@ GdkPixbuf* notification_pixbuf_get(NotificationPixbuf wanted)
   if(!notification_pixbuf[wanted]) {
     switch(wanted) {
     case NOTIFICATION_CM_LOGO_64x64:
-			stock_pixbuf_gdk(STOCK_PIXMAP_CLAWS_MAIL_ICON_64, &(notification_pixbuf[wanted]));
+			priv_pixbuf_gdk(PRIV_PIXMAP_CLAWS_MAIL_ICON_64, &(notification_pixbuf[wanted]));
       g_object_ref(notification_pixbuf[wanted]);
       break;
     case NOTIFICATION_TRAYICON_NEWMAIL:
