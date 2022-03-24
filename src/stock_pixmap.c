@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -236,6 +236,18 @@
 #include "pixmaps/mark_read.xpm"
 #include "pixmaps/mark_unread.xpm"
 
+typedef struct _PrivPixmapData	PrivPixmapData;
+
+struct _PrivPixmapData
+{
+	gchar **data;
+	cairo_surface_t *pixmap;
+	cairo_pattern_t *mask;
+	gchar *file;
+	gchar *icon_path;
+	GdkPixbuf *pixbuf;
+};
+
 typedef struct _StockPixmapData	StockPixmapData;
 
 struct _StockPixmapData
@@ -266,6 +278,18 @@ struct _OverlayData
 };
 
 static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
+
+static PrivPixmapData privpixmaps[] =
+{
+    {claws_mail_icon_xpm              , NULL, NULL, "claws_mail_icon", NULL, NULL},
+    {claws_mail_icon_64_xpm           , NULL, NULL, "claws_mail_icon_64", NULL, NULL},
+#ifndef GENERIC_UMPC
+    {claws_mail_logo_xpm              , NULL, NULL, "claws_mail_logo", NULL, NULL},
+#else
+    {claws_mail_logo_small_xpm        , NULL, NULL, "claws_mail_logo_small", NULL, NULL},
+#endif
+    {empty_xpm                        , NULL, NULL, "empty", NULL, NULL}
+};
 
 static StockPixmapData pixmaps[] =
 {
@@ -408,19 +432,12 @@ static StockPixmapData pixmaps[] =
     {privacy_emblem_failed_xpm        , NULL, NULL, "privacy_emblem_failed", NULL, NULL},
     {privacy_emblem_warn_xpm          , NULL, NULL, "privacy_emblem_warn", NULL, NULL},
     {mime_message_xpm                 , NULL, NULL, "mime_message", NULL, NULL},
-    {claws_mail_icon_xpm              , NULL, NULL, "claws_mail_icon", NULL, NULL},
-    {claws_mail_icon_64_xpm           , NULL, NULL, "claws_mail_icon_64", NULL, NULL},
     {read_xpm                         , NULL, NULL, "read", NULL, NULL},
     {delete_btn_xpm                   , NULL, NULL, "delete_btn", NULL, NULL},
     {delete_dup_btn_xpm               , NULL, NULL, "delete_dup_btn", NULL, NULL},
     {cancel_xpm                       , NULL, NULL, "cancel", NULL, NULL},
     {trash_btn_xpm                    , NULL, NULL, "trash_btn", NULL, NULL},
     {claws_mail_compose_logo_xpm      , NULL, NULL, "claws_mail_compose_logo", NULL, NULL},
-#ifndef GENERIC_UMPC
-    {claws_mail_logo_xpm              , NULL, NULL, "claws_mail_logo", NULL, NULL},
-#else
-    {claws_mail_logo_small_xpm        , NULL, NULL, "claws_mail_logo_small", NULL, NULL},
-#endif
     {dir_noselect_close_xpm           , NULL, NULL, "dir_noselect_close", NULL, NULL},
     {dir_noselect_close_mark_xpm      , NULL, NULL, "dir_noselect_close_mark", NULL, NULL},
     {dir_noselect_open_xpm            , NULL, NULL, "dir_noselect_open", NULL, NULL},
@@ -487,6 +504,18 @@ const char **stock_pixmap_theme_extensions(void)
 }
 
 /* return newly constructed GtkPixmap from GdkPixmap */
+GtkWidget *priv_pixmap_widget(PrivPixmap icon)
+{
+	GdkPixbuf *pixbuf;
+
+	cm_return_val_if_fail(icon < N_PRIV_PIXMAPS, NULL);
+
+	if (priv_pixbuf_gdk(icon, &pixbuf) != -1)
+		return gtk_image_new_from_pixbuf(pixbuf);
+
+	return NULL;
+}
+
 GtkWidget *stock_pixmap_widget(StockPixmap icon)
 {
 	GdkPixbuf *pixbuf;
@@ -676,6 +705,30 @@ GdkPixbuf *pixbuf_from_svg_like_icon(char *filename, GError **error, StockPixmap
 /*!
  *\brief
  */
+gint priv_pixbuf_gdk(PrivPixmap icon, GdkPixbuf **pixbuf)
+{
+	PrivPixmapData *pix_d;
+
+	if (pixbuf)
+		*pixbuf = NULL;
+
+	cm_return_val_if_fail(icon < N_PRIV_PIXMAPS, -1);
+
+	pix_d = &privpixmaps[icon];
+
+	if (!pix_d->pixbuf)
+		pix_d->pixbuf = gdk_pixbuf_new_from_xpm_data((const gchar **) pix_d->data);
+
+	cm_return_val_if_fail(pix_d->pixbuf != NULL, -1);
+
+	if (pixbuf)
+		*pixbuf = pix_d->pixbuf;
+
+	/* pixbuf should have one ref outstanding */
+
+	return 0;
+}
+
 gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 {
 	StockPixmapData *pix_d;
@@ -876,6 +929,17 @@ gchar *stock_pixmap_get_name (StockPixmap icon)
 
 	return pixmaps[icon].file;
 
+}
+
+PrivPixmap priv_pixmap_get_icon (gchar *file)
+{
+	gint i;
+
+	for (i = 0; i < N_PRIV_PIXMAPS; i++) {
+		if (strcmp (pixmaps[i].file, file) == 0)
+			return i;
+	}
+	return -1;
 }
 
 StockPixmap stock_pixmap_get_icon (gchar *file)

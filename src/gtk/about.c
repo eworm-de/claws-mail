@@ -830,7 +830,7 @@ static void about_create(void)
 	gtk_grid_set_column_spacing(GTK_GRID(grid1), 8);
 	gtk_container_add(GTK_CONTAINER(window), grid1);
 
-	image = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	image = priv_pixmap_widget(PRIV_PIXMAP_CLAWS_MAIL_LOGO);
 	gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(image, GTK_ALIGN_CENTER);
 	gtk_grid_attach(GTK_GRID(grid1), image, 0, row, 1, 1);
