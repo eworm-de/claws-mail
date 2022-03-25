@@ -949,10 +949,14 @@ static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
 		mw = mainwindow_get_mainwindow();
 		if (mw != NULL && mw->menubar != NULL) {
 			cairo_t *cr;
-			GdkColor color = gtk_widget_get_style(mw->menubar)->base[GTK_STATE_SELECTED];
+			GdkRGBA color;
 
-			cr = gdk_cairo_create(drawable);
-			gdk_cairo_set_source_color(cr, &color);
+			GtkStyleContext *context = gtk_widget_get_style_context (mw->menubar);
+			gtk_style_context_lookup_color (context, "selected_bg_color", &color);
+			cairo_region_t * creg = cairo_region_create();
+			GdkDrawingContext * dctx  = gdk_window_begin_draw_frame (drawable, creg);
+			cr = gdk_drawing_context_get_cairo_context (dctx);
+			gdk_cairo_set_source_rgba (cr, &color);
 			cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 			cairo_set_line_width(cr, 1.);
 			cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
@@ -960,7 +964,8 @@ static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
 			cairo_rectangle(cr, data->border_x-2, data->border_y-2,
 			    data->base_width+3, data->base_height+3);
 			cairo_stroke(cr);
-			cairo_destroy(cr);
+			gdk_window_end_draw_frame (drawable, dctx);
+			cairo_region_destroy (creg);
 		}
 	}
 
