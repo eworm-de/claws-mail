@@ -911,7 +911,7 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 	GtkListStore *store;
 
 	if (modified && alertpanel(_("Entry not saved"),
-				 _("ThNULL, e entry was not saved. Close anyway?"),
+				 _("The entry was not saved. Close anyway?"),
 				 "window-close", _("_Close"), NULL, _("_Continue editing"),
 				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
