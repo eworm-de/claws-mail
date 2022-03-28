@@ -164,6 +164,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Keyword Warner</term>
+	<listitem>
+	  <para>
+	Shows a warning when sending or queueing a message and a reference
+	to one or more keywords is found in the message text.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>Libravatar</term>
 	<listitem>
 	  <para>

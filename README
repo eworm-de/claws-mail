@@ -146,6 +146,10 @@ All plugin preferences can be found under
     Tab-address completion on compose window, using the GData library.
     Gdata library is available from https://live.gnome.org/libgdata/.
 
+  o Keyword Warner
+    Shows a warning when sending or queueing a message and a reference
+    to one or more keywords is found in the message text.
+
   o Libravatar
     Displays sender avatars from https://www.libravatar.org/, from own
     sender's domain if enabled or even an automatically generated one.
