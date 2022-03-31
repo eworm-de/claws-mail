@@ -167,6 +167,15 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+	<term>Keyword Warner</term>
+	<listitem>
+	  <para>
+	Vous avertit de la présence de mots-clefs prédéfinis dans le corps d'un message,
+    lors de son envoi ou de sa mise en file d'attente pour un envoi ultérieur.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
         <term>Libravatar</term>
         <listitem>
           <para>
