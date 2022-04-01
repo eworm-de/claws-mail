@@ -859,6 +859,33 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><literal>qs_active_color</literal></term>
+        <term><literal>qs_active_bgcolor</literal></term>
+        <term><literal>qs_error_color</literal></term>
+        <term><literal>qs_error_bgcolor</literal></term>
+        <listitem>
+          <para>
+	        Couleurs de texte et de fond utilisées dans la zone de saisie de la
+            recherche rapide, quand celle-ci est active ou qu'il y a une erreur
+            de syntaxe.
+            Les couleurs par défaut sont, respectivement: '#000000' (noir),
+            '#f5f6be' (jaune clair), '#000000' (noir), and '#ff7070' (rouge clair).
+	      </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <literal>qs_press_timeout</literal>
+        </term>
+        <listitem>
+          <para>
+	        Délai d'attente du mode dynamique de la recherche rapide (en ms): délai possible
+            entre 2 frappes au clavier dans la zone de saisie avant que la recherche rapide
+            ne soit automaquement lancée. Par défaut: 500 ms.
+	      </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>
           <literal>respect_flowed_format</literal>
         </term>
