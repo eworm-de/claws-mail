@@ -1154,7 +1154,6 @@
     	  </para>
         </listitem>
       </varlistentry>
-    </variablelist>
       <varlistentry>
         <term>
           <literal>zero_replacement_char</literal>
