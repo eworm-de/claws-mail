@@ -1321,7 +1321,7 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	   alertpanel(_("Entry was modified"),
 			_("Opening the filter action dialog will clear current modifications "
 			"of the command-line."),
-			GTK_STOCK_CANCEL, _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+			GTK_STOCK_CLOSE, GTK_STOCK_OPEN, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT) {
 		return;
 	}
 	tokens = g_strsplit_set(action_str, "{}", 5);
