@@ -833,6 +833,18 @@
       </varlistentry>
       <varlistentry>
         <term>
+          <literal>next_on_delete</literal>
+        </term>
+        <listitem>
+          <para>
+			'0' or '1'. Indique lequel des messages précédent ou suivant sera sélectionné après
+            la suppression, la mise en corbeille ou le déplacement du message courant.
+            Par défaut: '0', sélectionne le message précédent.
+	  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
           <literal>outgoing_fallback_to_ascii</literal>
         </term>
         <listitem>
@@ -900,13 +912,18 @@
       </varlistentry>
       <varlistentry>
         <term>
-          <literal>show_compose_margin</literal>
+          <literal>rewrite_first_from</literal>
         </term>
         <listitem>
           <para>
-	        '0' or '1'. Ajoute des marges lors de l'édition de message
-	        La valeur par défaut est '0', option désactivée.
-    	  </para>
+			'0' or '1'. Cette option permet de contourner une limitation de certains serveurs
+            excessivement laxistes. Quand cette option est active et que le Content-Transfer-Encoding
+            est 8bit ou 7bit, dans le corps d'un message commençant par 'From ', le 'From ' deviendra
+            '=46rom ' et le Content-Transfer-Encoding sera changé en Quoted-Printable. Quand cette option
+            est inactive, aucune modification n'est faite mais il est alors possible qu'un MTA transforme
+            un 'From ' en '>From '. Consultez la RFC 4155 pour plus de détails. La valeur par défaut est
+            '1', option active.
+		  </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -918,6 +935,17 @@
 			Les fichiers temporaires nécessaires afin d'ouvrir les pièces jointes
 			sont enregistrés avec la permission d'écriture activée.
 		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <literal>show_compose_margin</literal>
+        </term>
+        <listitem>
+          <para>
+	        '0' or '1'. Ajoute des marges lors de l'édition de message
+	        La valeur par défaut est '0', option désactivée.
+    	  </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -967,6 +995,16 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><literal>tags_color</literal></term>
+        <term><literal>tags_bgcolor</literal></term>
+        <listitem>
+          <para>
+            Couleurs de texte et de fond utilisées pour l'affichage des labels. Les valeurs
+            par défaut sont, respectivement: '#000000' (noir) et '#f5f6be' (jaune clair).
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>
           <literal>textview_cursor_visible</literal>
         </term>
@@ -1001,13 +1039,24 @@
       </varlistentry>
       <varlistentry>
         <term>
+          <literal>type_any_header</literal>
+        </term>
+        <listitem>
+          <para>
+			'0' ou '1'. Quand la valeur est '1', permet de saisir n'importe quelle valeur dans
+            les zones de saisie des en-têtes d'une fenêtre de composition de message. Par défaut: '0',
+            seules les valeurs d'en-têtes disponibles dans la liste déroulante sont possibles.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
           <literal>two_line_vertical</literal>
         </term>
         <listitem>
           <para>
 			Chaque message occupe deux lignes (au lieu d'un message
-			par ligne)
-			quand le mode trois-colonnes est utilisé.
+			par ligne) quand le mode trois-colonnes est utilisé.
 		  </para>
         </listitem>
       </varlistentry>
@@ -1092,6 +1141,20 @@
           </para>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term>
+          <literal>warn_sending_many_recipients_num</literal>
+        </term>
+        <listitem>
+          <para>
+	        Demander confirmation à l'utilisateur, lorsque l'envoi d'un message
+            se fait à un nombre de destinataires supérieur à la valeur définie.
+            Une valeur de '0' désactive cette demande de confirmation: l'envoi sera
+            fait quelque soit le nombre de destinataires.
+    	  </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
       <varlistentry>
         <term>
           <literal>zero_replacement_char</literal>
