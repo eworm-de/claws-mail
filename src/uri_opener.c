@@ -304,11 +304,9 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 			    phishing_attempt = TRUE;
 		}
 		if (phishing_attempt) {
-			GdkColor color;
 			gchar buf[8];
 
 			g_snprintf(buf, sizeof buf, "#%6.6lx", prefs_common.color[COL_LOG_ERROR]);
-			gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_ERROR], &color);
 			label = g_markup_printf_escaped("<span color=\"%s\"><b>%s</b></span>\n%s",
 						buf, visible, uri->uri);
 		} else
