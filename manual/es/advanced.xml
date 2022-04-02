@@ -859,6 +859,18 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>qs_press_timeout</literal></term>
+	<listitem>
+	  <para>
+    Tiempo de espera (en ms) para la búsqueda preliminar al teclear en
+    la búsqueda rápida : cuando está escribiendo en la entrada de la
+    búsqueda rápida en modo «mientras teclea», es el intervalo entre dos
+    pulsaciones de tecla a partir del cual se realiza la búsqueda. El
+    valor predeterminado son 500.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>respect_flowed_format</literal></term>
 	<listitem>
 	  <para>
