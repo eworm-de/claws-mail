@@ -17650,7 +17650,7 @@ msgid "Synchronise offline folders as soon as possible"
 msgstr "Synchronizuj katalogi niesieciowe tak szybko jak to możliwe"
 
 #: src/prefs_other.c:604
-msgid "Master passphrase"
+msgid "Primary passphrase"
 msgstr "Główne hasło"
 
 #: src/prefs_other.c:607
