@@ -2168,7 +2168,7 @@ static void prefs_matcher_ok(void)
 
 				if (!matcher_str || strcmp(matcher_str, str) != 0) {
 	                        	val = alertpanel(_("Entry not saved"),
-       		                        	 _("The entry was not saved.\nClose anyway?"),
+       		                        	 _("The entry was not saved. Close anyway?"),
                		                	 GTK_STOCK_CLOSE,
 						 _("_Continue editing"),
 						 NULL,

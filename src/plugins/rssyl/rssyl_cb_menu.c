@@ -187,7 +187,7 @@ void rssyl_remove_folder_cb(GtkAction *action,
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
-		(_("All folders and messages under '%s' will be permanently deleted. "
+		(_("All folders and messages under '%s' will be permanently deleted.\n"
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
