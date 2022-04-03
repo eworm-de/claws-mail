@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.17.8.89\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2022-03-27 09:43+0100\n"
+"POT-Creation-Date: 2022-04-04 00:23+0200\n"
 "PO-Revision-Date: 2022-04-01 13:43+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
@@ -745,7 +745,7 @@ msgstr ""
 "dossier parent."
 
 #: src/addressbook.c:2966 src/imap_gtk.c:368 src/mh_gtk.c:206
-#: src/plugins/mailmbox/plugin_gtk.c:332 src/plugins/rssyl/rssyl_cb_menu.c:193
+#: src/plugins/mailmbox/plugin_gtk.c:333 src/plugins/rssyl/rssyl_cb_menu.c:193
 msgid "Delete folder"
 msgstr "Suppression de dossier"
 
@@ -3799,7 +3799,7 @@ msgstr "Hériter des options et règles de traitement du dossier parent"
 
 #: src/foldersel.c:585 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
 #: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:302
-#: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:430
+#: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:431
 #: src/plugins/rssyl/rssyl_cb_menu.c:239
 #: src/plugins/vcalendar/vcal_folder.c:2103
 #, c-format
@@ -3808,7 +3808,7 @@ msgstr "'%c' n'est pas un caractère valide dans le nom d'un dossier."
 
 #: src/foldersel.c:600 src/imap_gtk.c:224 src/imap_gtk.c:282 src/mh_gtk.c:167
 #: src/mh_gtk.c:272 src/news_gtk.c:309 src/plugins/mailmbox/plugin_gtk.c:269
-#: src/plugins/mailmbox/plugin_gtk.c:442 src/plugins/rssyl/rssyl_cb_menu.c:251
+#: src/plugins/mailmbox/plugin_gtk.c:443 src/plugins/rssyl/rssyl_cb_menu.c:251
 #: src/plugins/vcalendar/vcal_folder.c:2110
 #, c-format
 msgid "The folder '%s' already exists."
@@ -6242,20 +6242,20 @@ msgstr ""
 "mais sans messages, veuillez ajouter '/' à la fin du nom)"
 
 #: src/imap_gtk.c:259 src/mh_gtk.c:252 src/news_gtk.c:293
-#: src/plugins/mailmbox/plugin_gtk.c:419 src/plugins/rssyl/rssyl_cb_menu.c:233
+#: src/plugins/mailmbox/plugin_gtk.c:420 src/plugins/rssyl/rssyl_cb_menu.c:233
 #: src/plugins/vcalendar/vcal_folder.c:2095
 #, c-format
 msgid "Input new name for '%s':"
 msgstr "Saisir le nouveau nom pour '%s' :"
 
-#: src/imap_gtk.c:261 src/mh_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:420
+#: src/imap_gtk.c:261 src/mh_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:421
 #: src/plugins/rssyl/rssyl_cb_menu.c:234
 #: src/plugins/vcalendar/vcal_folder.c:2096
 msgid "Rename folder"
 msgstr "Changement de nom de dossier"
 
 #: src/imap_gtk.c:290 src/mh_gtk.c:280 src/news_gtk.c:315
-#: src/plugins/mailmbox/plugin_gtk.c:450 src/plugins/rssyl/rssyl_cb_menu.c:257
+#: src/plugins/mailmbox/plugin_gtk.c:451 src/plugins/rssyl/rssyl_cb_menu.c:257
 #: src/plugins/vcalendar/vcal_folder.c:2116
 msgid ""
 "The folder could not be renamed.\n"
@@ -6264,21 +6264,22 @@ msgstr ""
 "Le dossier ne peut pas être renommé car\n"
 "le nouveau nom proposé n'est pas autorisé."
 
-#: src/imap_gtk.c:317 src/mh_gtk.c:307 src/plugins/mailmbox/plugin_gtk.c:372
+#: src/imap_gtk.c:317 src/mh_gtk.c:307 src/plugins/mailmbox/plugin_gtk.c:373
 #, c-format
 msgid "Select folder to move folder '%s' to"
 msgstr "Sélection du dossier où déplacer le dossier '%s'"
 
-#: src/imap_gtk.c:337 src/mh_gtk.c:327 src/plugins/mailmbox/plugin_gtk.c:392
+#: src/imap_gtk.c:337 src/mh_gtk.c:327 src/plugins/mailmbox/plugin_gtk.c:393
 #, c-format
 msgid "Select folder to copy folder '%s' to"
 msgstr "Sélection du dossier où copier le dossier '%s'"
 
-#: src/imap_gtk.c:365 src/mh_gtk.c:203 src/plugins/rssyl/rssyl_cb_menu.c:190
-#, c-format
+#: src/imap_gtk.c:365 src/mh_gtk.c:203 src/plugins/mailmbox/plugin_gtk.c:330
+#: src/plugins/rssyl/rssyl_cb_menu.c:190
+#, fuzzy, c-format
 msgid ""
-"All folders and messages under '%s' will be permanently deleted. Recovery "
-"will not be possible.\n"
+"All folders and messages under '%s' will be permanently deleted.\n"
+"Recovery will not be possible.\n"
 "\n"
 "Do you really want to delete?"
 msgstr ""
@@ -6287,7 +6288,7 @@ msgstr ""
 "\n"
 "Voulez-vous vraiment les supprimer ?"
 
-#: src/imap_gtk.c:384 src/news_gtk.c:268 src/plugins/mailmbox/plugin_gtk.c:347
+#: src/imap_gtk.c:384 src/news_gtk.c:268 src/plugins/mailmbox/plugin_gtk.c:348
 #: src/plugins/rssyl/rssyl_cb_menu.c:209
 #: src/plugins/vcalendar/vcal_folder.c:2049
 #, c-format
@@ -11322,16 +11323,6 @@ msgstr ""
 "Saisir le chemin vers la boîte aux lettres.\n"
 "(Si elle existe déjà, elle sera automatiquement analysée.)"
 
-#: src/plugins/mailmbox/plugin_gtk.c:330
-#, c-format
-msgid ""
-"All folders and messages under '%s' will be deleted.\n"
-"Do you really want to delete?"
-msgstr ""
-"Attention, tous les dossiers et messages sous '%s' vont être supprimés "
-"définitivement.\n"
-"Voulez-vous vraiment les supprimer ?"
-
 #: src/plugins/managesieve/managesieve.c:438
 msgid "No Sieve auth method available\n"
 msgstr "Aucune méthode d'authentification Sieve disponible\n"
@@ -15767,16 +15758,16 @@ msgid "Entry not saved"
 msgstr "Règle non ajoutée"
 
 #: src/prefs_actions.c:921 src/prefs_actions.c:952 src/prefs_filtering.c:1509
-#: src/prefs_filtering.c:1531 src/prefs_template.c:573 src/prefs_template.c:598
+#: src/prefs_filtering.c:1531 src/prefs_matcher.c:2171 src/prefs_template.c:573
+#: src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr ""
 "La saisie n'a pas encore été enregistrée. Voulez-vous quand même fermer ?"
 
 #: src/prefs_actions.c:922 src/prefs_actions.c:927 src/prefs_actions.c:953
-#: src/prefs_actions.c:1324 src/prefs_filtering.c:1486
-#: src/prefs_filtering.c:1510 src/prefs_filtering.c:1532
-#: src/prefs_matcher.c:2173 src/prefs_template.c:574 src/prefs_template.c:599
-#: src/prefs_template.c:604
+#: src/prefs_filtering.c:1486 src/prefs_filtering.c:1510
+#: src/prefs_filtering.c:1532 src/prefs_matcher.c:2173 src/prefs_template.c:574
+#: src/prefs_template.c:599 src/prefs_template.c:604
 msgid "_Continue editing"
 msgstr "_Poursuivre l'édition"
 
@@ -15995,7 +15986,8 @@ msgstr ""
 "grand que"
 
 #: src/prefs_compose_writing.c:208
-msgid "KiB into message body "
+#, fuzzy
+msgid "KiB into message body"
 msgstr "Ko dans le corps de message"
 
 #: src/prefs_compose_writing.c:214
@@ -17261,13 +17253,6 @@ msgstr "est"
 #: src/prefs_matcher.c:2101
 msgid "Program returns"
 msgstr "Retourne"
-
-#: src/prefs_matcher.c:2171
-msgid ""
-"The entry was not saved.\n"
-"Close anyway?"
-msgstr ""
-"La saisie n'a pas encore été enregistrée. Voulez-vous quand même fermer ?"
 
 #: src/prefs_matcher.c:2239
 msgid "Match Type: 'Test'"
@@ -20668,3 +20653,17 @@ msgstr ""
 "\n"
 "Vous pouvez maintenant cliquer sur « Enregistrer » pour\n"
 "débuter et apprécier.."
+
+#~ msgid ""
+#~ "All folders and messages under '%s' will be deleted.\n"
+#~ "Do you really want to delete?"
+#~ msgstr ""
+#~ "Attention, tous les dossiers et messages sous '%s' vont être supprimés "
+#~ "définitivement.\n"
+#~ "Voulez-vous vraiment les supprimer ?"
+
+#~ msgid ""
+#~ "The entry was not saved.\n"
+#~ "Close anyway?"
+#~ msgstr ""
+#~ "La saisie n'a pas encore été enregistrée. Voulez-vous quand même fermer ?"
