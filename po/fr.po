@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.17.8.89\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2022-04-04 00:23+0200\n"
-"PO-Revision-Date: 2022-04-01 13:43+0100\n"
+"POT-Creation-Date: 2022-04-04 00:16+0200\n"
+"PO-Revision-Date: 2022-04-04 00:19+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -6276,7 +6276,7 @@ msgstr "Sélection du dossier où copier le dossier '%s'"
 
 #: src/imap_gtk.c:365 src/mh_gtk.c:203 src/plugins/mailmbox/plugin_gtk.c:330
 #: src/plugins/rssyl/rssyl_cb_menu.c:190
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "All folders and messages under '%s' will be permanently deleted.\n"
 "Recovery will not be possible.\n"
@@ -6284,7 +6284,8 @@ msgid ""
 "Do you really want to delete?"
 msgstr ""
 "Attention, tous les dossiers et messages sous '%s' vont être supprimés "
-"définitivement. Leur restauration sera impossible.\n"
+"définitivement.\n"
+"Leur restauration sera impossible.\n"
 "\n"
 "Voulez-vous vraiment les supprimer ?"
 
@@ -15986,7 +15987,6 @@ msgstr ""
 "grand que"
 
 #: src/prefs_compose_writing.c:208
-#, fuzzy
 msgid "KiB into message body"
 msgstr "Ko dans le corps de message"
 
