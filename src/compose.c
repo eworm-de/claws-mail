@@ -9845,15 +9845,24 @@ static gboolean compose_get_ext_editor_cmd_valid()
 static gboolean compose_ext_editor_kill(Compose *compose)
 {
 	GPid pid = compose->exteditor_pid;
+	gchar *pidmsg = NULL;
 
 	if (pid > 0) {
 		AlertValue val;
 		gchar *msg;
 
+		pidmsg = g_strdup_printf
+#if GLIB_CHECK_VERSION(2, 50, 0)
+			 (_("process id: %" G_PID_FORMAT),
+#else
+			 (_("process id: %d"),
+#endif
+			 pid);
+            
 		msg = g_strdup_printf
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
-			   "process id: %" G_PID_FORMAT), pid);
+			   "%s"), pidmsg);
 		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_NO,
 				      GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
 				      FALSE, NULL, ALERT_WARNING);
@@ -9870,8 +9879,8 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			waitpid(compose->exteditor_pid, NULL, 0);
 #endif /* G_OS_WIN32 */
 
-			g_warning("terminated process id: %" G_PID_FORMAT ", "
-				  "temporary file: %s", pid, compose->exteditor_file);
+			g_warning("terminated %s, temporary file: %s",
+				pidmsg, compose->exteditor_file);
 			g_spawn_close_pid(compose->exteditor_pid);
 
 			compose_set_ext_editor_sensitive(compose, TRUE);
@@ -9880,10 +9889,14 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			compose->exteditor_file    = NULL;
 			compose->exteditor_pid     = INVALID_PID;
 			compose->exteditor_tag     = -1;
-		} else
+		} else {
+			g_free(pidmsg);
 			return FALSE;
+        }
 	}
 
+	if (pidmsg)
+		g_free(pidmsg);
 	return TRUE;
 }
 
