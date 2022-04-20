@@ -449,8 +449,11 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
-
+#if GLIB_CHECK_VERSION(2,70,0)
 		if (g_pattern_spec_match_string(pspec, ginfo->name)) {
+#else
+		if (g_pattern_match_string(pspec, ginfo->name)) {
+#endif
 			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
 						(GCompareFunc)g_ascii_strcasecmp)

@@ -9745,7 +9745,11 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	GtkTextIter start, end;
 	gchar *chars;
 
+#if GLIB_CHECK_VERSION(2,70,0)
 	if (!g_spawn_check_wait_status(exit_status, &error)) {
+#else
+	if (!g_spawn_check_exit_status(exit_status, &error)) {
+#endif
 		alertpanel_error(
 			_("External editor stopped with an error: %s"),
 			error ? error->message : _("Unknown error"));
