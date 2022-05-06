@@ -90,7 +90,7 @@ void uri_opener_open(MessageView *msgview, GSList *uris)
 	cm_return_if_fail(msgview);
 	cm_return_if_fail(msgview->mimeview);
 	cm_return_if_fail(msgview->mimeview->textview);
-	cm_return_if_fail(msgview);
+
 	if (!opener.window)
 		uri_opener_create();
 
@@ -342,7 +342,7 @@ static void uri_opener_load_uris(void)
 	GtkTreeModel *model;
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
-	
+
 	uri_opener_list_view_clear_uris(opener.urilist);
 	for (; cur; cur = cur->next) {
 		ClickableText *uri = (ClickableText *)cur->data;
