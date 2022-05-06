@@ -112,7 +112,6 @@
 	o weird logic with the 'Edit filter action' dialog
 	o resource leaks; memory corruption
 
->>>>>>> gtk3
 * 4.0.0 / 3.18.0
 ----------------
 
