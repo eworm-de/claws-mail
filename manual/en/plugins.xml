@@ -136,7 +136,7 @@
 	<term>Fancy</term>
 	<listitem>
 	  <para>
-	Enables the rendering of HTML messages using the GTK+ port of the
+	Enables the rendering of HTML messages using the GTK port of the
 	WebKit library. By default, no remote content is loaded.
 	  </para><para>
 	Plugin preferences can be found in 

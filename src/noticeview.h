@@ -1,5 +1,5 @@
 /* 
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2002-2012 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,9 @@
 
 struct _NoticeView 
 {
-	GtkWidget	*vbox;
+	GtkWidget	*vgrid;
 	GtkWidget	*hsep;
-	GtkWidget	*hbox;
+	GtkWidget	*hgrid;
 	GtkWidget	*icon;
 	GtkWidget	*text;
 	GtkWidget	*button;

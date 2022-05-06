@@ -150,14 +150,20 @@ static void          gtk_shruler_map           (GtkWidget      *widget);
 static void          gtk_shruler_unmap         (GtkWidget      *widget);
 static void          gtk_shruler_size_allocate (GtkWidget      *widget,
                                               GtkAllocation  *allocation);
+static void gtk_shruler_get_preferred_height (GtkWidget *widget,
+                                 gint      *minimal_height,
+                                 gint      *natural_height);
+static void gtk_shruler_get_preferred_width (GtkWidget *widget,
+                                 gint      *minimal_width,
+                                 gint      *natural_width);
 static void          gtk_shruler_size_request  (GtkWidget      *widget,
                                               GtkRequisition *requisition);
 static void          gtk_shruler_style_set     (GtkWidget      *widget,
                                               GtkStyle       *prev_style);
 static gboolean      gtk_shruler_motion_notify (GtkWidget      *widget,
                                               GdkEventMotion *event);
-static gboolean      gtk_shruler_expose        (GtkWidget      *widget,
-                                              GdkEventExpose *event);
+static gboolean      gtk_shruler_expose        (GtkWidget *widget,
+                                              cairo_t *cr);
 
 static void          gtk_shruler_draw_ticks    (GtkSHRuler      *ruler);
 static void          gtk_shruler_make_pixmap   (GtkSHRuler      *ruler);
@@ -165,12 +171,8 @@ static void          gtk_shruler_make_pixmap   (GtkSHRuler      *ruler);
 static PangoLayout * gtk_shruler_get_layout    (GtkWidget      *widget,
                                               const gchar    *text);
 
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-G_DEFINE_TYPE (GtkSHRuler, gtk_shruler, GTK_TYPE_WIDGET)
-#else
 G_DEFINE_TYPE_WITH_CODE (GtkSHRuler, gtk_shruler, GTK_TYPE_WIDGET,
 		G_ADD_PRIVATE(GtkSHRuler))
-#endif
 
 #define parent_class gtk_shruler_parent_class
 
@@ -190,14 +192,11 @@ gtk_shruler_class_init (GtkSHRulerClass *klass)
   widget_class->map                 = gtk_shruler_map;
   widget_class->unmap               = gtk_shruler_unmap;
   widget_class->size_allocate       = gtk_shruler_size_allocate;
-  widget_class->size_request        = gtk_shruler_size_request;
+  widget_class->get_preferred_width = gtk_shruler_get_preferred_width;
+  widget_class->get_preferred_height = gtk_shruler_get_preferred_height;
   widget_class->style_set           = gtk_shruler_style_set;
   widget_class->motion_notify_event = gtk_shruler_motion_notify;
-  widget_class->expose_event        = gtk_shruler_expose;
-
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-  g_type_class_add_private (object_class, sizeof (GtkSHRulerPrivate));
-#endif
+  widget_class->draw                = gtk_shruler_expose;
 
   g_object_class_install_property (object_class,
                                    PROP_ORIENTATION,
@@ -274,7 +273,7 @@ gtk_shruler_init (GtkSHRuler *ruler)
   gtk_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
 
   priv->orientation   = GTK_ORIENTATION_HORIZONTAL;
-  priv->unit          = GTK_PIXELS;
+  priv->unit          = 0;
   priv->lower         = 0;
   priv->upper         = 0;
   priv->position      = 0;
@@ -617,7 +616,7 @@ gtk_shruler_realize (GtkWidget *widget)
 
   priv->input_window = gdk_window_new (gtk_widget_get_window (widget),
                                        &attributes, attributes_mask);
-  gdk_window_set_user_data (priv->input_window, ruler);
+  gtk_widget_register_window (widget, priv->input_window);
 
   gtk_shruler_make_pixmap (ruler);
 }
@@ -642,6 +641,7 @@ gtk_shruler_unrealize (GtkWidget *widget)
 
   if (priv->input_window)
     {
+      gtk_widget_unregister_window (widget, priv->input_window);
       gdk_window_destroy (priv->input_window);
       priv->input_window = NULL;
     }
@@ -688,6 +688,30 @@ gtk_shruler_size_allocate (GtkWidget     *widget,
 
       gtk_shruler_make_pixmap (ruler);
     }
+}
+
+static void
+gtk_shruler_get_preferred_width (GtkWidget *widget,
+                                 gint      *minimal_width,
+                                 gint      *natural_width)
+{
+  GtkRequisition requisition;
+
+  gtk_shruler_size_request (widget, &requisition);
+
+  *minimal_width = *natural_width = requisition.width;
+}
+
+static void
+gtk_shruler_get_preferred_height (GtkWidget *widget,
+                                  gint      *minimal_height,
+                                  gint      *natural_height)
+{
+  GtkRequisition requisition;
+
+  gtk_shruler_size_request (widget, &requisition);
+
+  *minimal_height = *natural_height = requisition.height;
 }
 
 static void
@@ -750,29 +774,21 @@ gtk_shruler_motion_notify (GtkWidget      *widget,
 }
 
 static gboolean
-gtk_shruler_expose (GtkWidget      *widget,
-                   GdkEventExpose *event)
+gtk_shruler_expose (GtkWidget *widget,
+                    cairo_t   *cr)
 {
   if (gtk_widget_is_drawable (widget))
     {
       GtkSHRuler        *ruler = GTK_SHRULER (widget);
       GtkSHRulerPrivate *priv  = GTK_SHRULER_GET_PRIVATE (ruler);
       GtkAllocation     allocation;
-      cairo_t          *cr;
 
       gtk_shruler_draw_ticks (ruler);
 
-      cr = gdk_cairo_create (gtk_widget_get_window (widget));
-      gdk_cairo_region (cr, event->region);
-      cairo_clip (cr);
-
       gtk_widget_get_allocation (widget, &allocation);
-      cairo_translate (cr, allocation.x, allocation.y);
 
       cairo_set_source_surface (cr, priv->backing_store, 0, 0);
       cairo_paint (cr);
-
-      cairo_destroy (cr);
     }
 
   return FALSE;

@@ -1,10 +1,11 @@
 /*
  * acpi_notifier -- for Claws Mail
  *
- * Copyright (C) 2005 Colin Leroy <colin@colino.net>
+ * Copyright (C) 2005-2019 Colin Leroy <colin@colino.net>
+ * 	and the Claws Mail Team
  *
- * Sylpheed is a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto and the Claws Mail Team
+ * Sylpheed is a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +46,8 @@
 #include "alertpanel.h"
 #include "utils.h"
 #include "folder_item_prefs.h"
-#include "gtkcmoptionmenu.h"
+#include "gtk/gtkutils.h"
+#include "gtk/combobox.h"
 #include "file-utils.h"
 
 #define PREFS_BLOCK_NAME "AcpiNotifier"
@@ -218,20 +220,10 @@ static void show_error (struct AcpiNotifierPage *page, const gchar *filepath)
 	}
 }
 
-static void type_activated(GtkMenuItem *menuitem, gpointer data)
+static void type_changed(GtkComboBox *combobox, gpointer data)
 {
-	GtkWidget *menu, *item;
+	gint selected = gtk_combo_box_get_active(combobox);
 	struct AcpiNotifierPage *page = (struct AcpiNotifierPage *)data;
-	gint selected;
-
-	if (page->file_entry == NULL)
-		return;
-		
-	menu = gtk_cmoption_menu_get_menu(
-		GTK_CMOPTION_MENU(page->default_implementations_optmenu));
-	item = gtk_menu_get_active(GTK_MENU(menu));
-	selected = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(item), MENU_VAL_ID));
 
 	if (selected != 0) {
 		gtk_widget_hide(page->hbox_acpi_file);
@@ -251,6 +243,7 @@ static void type_activated(GtkMenuItem *menuitem, gpointer data)
 		gtk_widget_show_all(page->hbox_acpi_values);
 	}
 }
+
 static void file_entry_changed (GtkWidget *entry, gpointer data)
 {
 	struct AcpiNotifierPage *page = (struct AcpiNotifierPage *)data;
@@ -287,20 +280,20 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *new_mail_blink_btn;
 	GtkWidget *new_mail_on_btn;
 	GtkWidget *default_implementations_optmenu;
-	GtkWidget *default_implementations_menu;
+	GtkListStore *menu;
 	GtkWidget *on_value_entry;
 	GtkWidget *off_value_entry;
 	GtkWidget *file_entry;
-	GtkWidget *menuitem;
 	GtkWidget *warning_label;
 	GtkWidget *warning_box;
 	GtkWidget *image;
 	GtkWidget *blink_on_err_chkbtn;
+	GtkTreeIter iter; /* iter for the COMBOBOX_ADD macro */
 
 	int i;
 	int found = 0;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 	
 	no_mail_label = gtk_label_new(_(" : no new or unread mail"));
@@ -331,20 +324,19 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_size_request(on_value_entry, 40, -1);
 	gtk_widget_set_size_request(off_value_entry, 40, -1);
 
-	default_implementations_optmenu = gtk_cmoption_menu_new ();
-	default_implementations_menu = gtk_menu_new();
-        gtk_cmoption_menu_set_menu (
-			GTK_CMOPTION_MENU(default_implementations_optmenu), 
-			default_implementations_menu);
+	/* Create the ACPI type menu */
+	default_implementations_optmenu = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(default_implementations_optmenu)));
+	g_signal_connect(G_OBJECT(default_implementations_optmenu), "changed",
+			G_CALLBACK(type_changed), page);
+
+	/* Populate it with known implementations */
 	for (i = 0; known_implementations[i].name != NULL; i++) {
-		MENUITEM_ADD (default_implementations_menu, 
-				menuitem, known_implementations[i].name, i);
-                g_signal_connect(G_OBJECT(menuitem), "activate",
-                                 G_CALLBACK(type_activated),
-                                 page);
+		COMBOBOX_ADD(menu, known_implementations[i].name, i);
 	}
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), start_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), no_mail_off_btn, FALSE, FALSE, 0);
@@ -353,7 +345,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(hbox), no_mail_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -368,7 +360,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -383,7 +375,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("ACPI type: "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -392,7 +384,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 
-	hbox_acpi_file = gtk_hbox_new(FALSE, 6);
+	hbox_acpi_file = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("ACPI file: "));
 	gtk_box_pack_start(GTK_BOX(hbox_acpi_file), 
 			start_label, FALSE, FALSE, 0);
@@ -403,7 +395,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
         g_signal_connect(G_OBJECT(file_entry), "changed",
                          G_CALLBACK(file_entry_changed), page);
 
-	hbox_acpi_values = gtk_hbox_new(FALSE, 6);
+	hbox_acpi_values = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("values - On: "));
 	gtk_box_pack_start(GTK_BOX(hbox_acpi_values), 
 			start_label, FALSE, FALSE, 0);
@@ -417,9 +409,9 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox_acpi_values, FALSE, FALSE, 0);
 
-	warning_box = gtk_hbox_new(FALSE, 6);
+	warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	
-	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+	image = gtk_button_new_from_icon_name("dialog-warning",
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
 	gtk_box_pack_start(GTK_BOX(warning_box), image, FALSE, FALSE, 0);
 	warning_label = gtk_label_new(
@@ -487,9 +479,8 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 		for (i = 0; known_implementations[i].name != NULL; i++) {
 			if (!strcmp(acpiprefs.file_path, 
 				    known_implementations[i].file_path)) {
-				gtk_cmoption_menu_set_history(
-					GTK_CMOPTION_MENU(
-					default_implementations_optmenu), i);
+				gtk_combo_box_set_active(
+						GTK_COMBO_BOX(default_implementations_optmenu), i);
 				found = i;
 			}
 		}
@@ -497,9 +488,8 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	if (found == 0) {
 		for (i = 0; known_implementations[i].name != NULL; i++) {
 			if (check_impl(known_implementations[i].file_path)) {
-				gtk_cmoption_menu_set_history(
-					GTK_CMOPTION_MENU(
-					default_implementations_optmenu), i);
+				gtk_combo_box_set_active(
+						GTK_COMBO_BOX(default_implementations_optmenu), i);
 				found = i;
 			}
 		}
@@ -538,8 +528,8 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 		if (!check_impl(known_implementations[found].file_path))
 			show_error(page, known_implementations[found].file_path);
 	} else {
-		gtk_cmoption_menu_set_history(
-			GTK_CMOPTION_MENU(default_implementations_optmenu), 0);
+		gtk_combo_box_set_active(
+				GTK_COMBO_BOX(default_implementations_optmenu), 0);
 		gtk_widget_show_all(hbox_acpi_file);
 		gtk_widget_show_all(hbox_acpi_values);
 		if (acpiprefs.file_path != NULL)
@@ -565,8 +555,6 @@ static void acpi_prefs_save_func(PrefsPage * _page)
 	struct AcpiNotifierPage *page = (struct AcpiNotifierPage *) _page;
 	PrefFile *pfile;
 	gchar *rcpath;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	gint selected = 0;
 
 	g_free(acpiprefs.file_path);
@@ -612,11 +600,7 @@ static void acpi_prefs_save_func(PrefsPage * _page)
 	acpiprefs.blink_on_err = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->blink_on_err_chkbtn));
 
-	menu = gtk_cmoption_menu_get_menu(
-		GTK_CMOPTION_MENU(page->default_implementations_optmenu));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	selected = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	selected = gtk_combo_box_get_active(GTK_COMBO_BOX(page->default_implementations_optmenu));
 
 	if (selected != 0) {
 		g_free(acpiprefs.file_path);
@@ -870,7 +854,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 
 const gchar *plugin_licence(void)

@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2016-2021 the Claws Mail team and Andrej Kacian
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -113,7 +112,6 @@ void primary_passphrase_change_dialog()
 	GtkWidget *icon, *table, *label;
 	GtkWidget *msg_title;
 	GtkWidget *entry_old, *entry_new1, *entry_new2;
-	GtkWidget *confirm_area;
 	GtkWidget *ok_button, *cancel_button;
 	struct _ctx *ctx;
 
@@ -127,22 +125,23 @@ void primary_passphrase_change_dialog()
 
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_box_set_spacing(GTK_BOX(vbox), 14);
-	hbox = gtk_hbox_new(FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+	icon = gtk_image_new_from_icon_name("dialog-password",
 			GTK_ICON_SIZE_DIALOG);
-	gtk_misc_set_alignment(GTK_MISC(icon), 0.5, 0.0);
+	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon, GTK_ALIGN_START);
 	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
 
-	vbox = gtk_vbox_new(FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
 
 	msg_title = gtk_label_new(_("Changing primary passphrase"));
-	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_title), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_title, FALSE, FALSE, 0);
@@ -159,68 +158,60 @@ void primary_passphrase_change_dialog()
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(msg_title, font_desc);
+		gtk_widget_override_font(msg_title, font_desc);
 
 	label = gtk_label_new(
         _("If a primary passphrase is currently active, it\n"
         "needs to be entered.")
 	);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 
 	/* Old passphrase */
 	label = gtk_label_new(_("Old passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_old = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_old), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_old, 1, 2, 0, 1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_old, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_old, TRUE);
+	gtk_widget_set_halign(entry_old, GTK_ALIGN_FILL);
 
 	/* Separator */
-	gtk_table_attach(GTK_TABLE(table),
-			gtk_hseparator_new(), 0, 2, 1, 2,
-			GTK_FILL | GTK_EXPAND, 0, 0, 5);
+	gtk_grid_attach(GTK_GRID(table), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 1, 1, 1);
 
 	/* New passphrase */
 	label = gtk_label_new(_("New passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	entry_new1 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new1), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 2, 3,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_new1, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(entry_new1, TRUE);
+	gtk_widget_set_halign(entry_new1, GTK_ALIGN_FILL);
 
 	/* New passphrase again */
 	label = gtk_label_new(_("Confirm passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
 
 	entry_new2 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new2), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new2, 1, 2, 3, 4,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_new2, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(entry_new2, TRUE);
+	gtk_widget_set_halign(entry_new2, GTK_ALIGN_FILL);
 
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
-	/* Dialog buttons */
-	gtkut_stock_button_set_create(&confirm_area,
-			&cancel_button, GTK_STOCK_CANCEL,
-			&ok_button, GTK_STOCK_OK,
-			NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
-
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(ok_button);
 
 	/* If no primary passphrase is set, disable the "old passphrase" entry */

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,14 +47,19 @@ GtkWidget *statusbar_create(void)
 	GtkWidget *hbox;
 
 	statusbar = gtk_statusbar_new();
+	
+	gtk_widget_set_margin_top(GTK_WIDGET(statusbar), 0);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(statusbar), 0);
 	statusbar_list = g_list_append(statusbar_list, statusbar);
-	gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(statusbar), 
-					  FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
+	gtk_widget_set_margin_top(GTK_WIDGET(child), 0);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(child), 0);
+	gtk_widget_set_margin_start(GTK_WIDGET(child), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(child), 0);
 	parent = gtk_widget_get_parent(child);
 	gtk_container_remove(GTK_CONTAINER(parent), g_object_ref(child));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_add(GTK_CONTAINER(parent), hbox);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), child, TRUE, TRUE, 0);
@@ -77,7 +82,6 @@ void statusbar_puts(GtkStatusbar *statusbar, const gchar *str)
 	cid = gtk_statusbar_get_context_id(statusbar, "Standard Output");
 	gtk_statusbar_pop(statusbar, cid);
 	gtk_statusbar_push(statusbar, cid, buf);
-	gtkut_widget_draw_now(GTK_WIDGET(statusbar));
 
 	g_free(buf);
 }
@@ -171,6 +175,7 @@ void statusbar_progress_all (gint done, gint total, gint step)
 		const gchar *format = "%d / %d";
 #endif
 		g_snprintf(buf, sizeof(buf), format, done, total);
+		gtk_progress_bar_set_show_text(progressbar, TRUE);
 		gtk_progress_bar_set_text(progressbar, buf);
 		gtk_progress_bar_set_fraction(progressbar,
 			 (gfloat)done / (gfloat)total);

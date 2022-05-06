@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +27,6 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include "gtk/gtksctree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -297,11 +295,11 @@ static void summary_search_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox1 = gtk_vbox_new (FALSE, 0);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (window), vbox1);
 
-	bool_hbox = gtk_hbox_new(FALSE, 4);
+	bool_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(bool_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), bool_hbox, FALSE, FALSE, 0);
 
@@ -316,16 +314,16 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(bool_optmenu), "changed",
 			 G_CALLBACK(optmenu_changed), NULL);
 
-	clear_btn = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show(clear_btn);
 	gtk_box_pack_end(GTK_BOX(bool_hbox), clear_btn, FALSE, FALSE, 0);
 
-	table1 = gtk_table_new (5, 3, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 4);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	from_entry = gtk_combo_box_text_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(from_entry), -1);
@@ -333,8 +331,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(from_entry),
 				prefs_common.summary_search_from_history);
 	gtk_widget_show (from_entry);
-	gtk_table_attach (GTK_TABLE (table1), from_entry, 1, 3, 0, 1,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), from_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(from_entry, TRUE);
+	gtk_widget_set_halign(from_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((from_entry)))),
@@ -348,8 +348,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(to_entry),
 				prefs_common.summary_search_to_history);
 	gtk_widget_show (to_entry);
-	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), to_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(to_entry, TRUE);
+	gtk_widget_set_halign(to_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(to_entry), "changed",
 			 G_CALLBACK(to_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((to_entry)))),
@@ -363,8 +365,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(subject_entry),
 				prefs_common.summary_search_subject_history);
 	gtk_widget_show (subject_entry);
-	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), subject_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(subject_entry, TRUE);
+	gtk_widget_set_halign(subject_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			 G_CALLBACK(subject_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((subject_entry)))),
@@ -378,8 +382,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(body_entry),
 				prefs_common.summary_search_body_history);
 	gtk_widget_show (body_entry);
-	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), body_entry, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(body_entry, TRUE);
+	gtk_widget_set_halign(body_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(body_entry), "changed",
 			 G_CALLBACK(body_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
@@ -393,8 +399,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(adv_condition_entry),
 				prefs_common.summary_search_adv_condition_history);
 	gtk_widget_show (adv_condition_entry);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_entry, 1, 2, 4, 5,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_entry, 1, 4, 1, 1);
+	gtk_widget_set_hexpand(adv_condition_entry, TRUE);
+	gtk_widget_set_halign(adv_condition_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(adv_condition_entry), "changed",
 			 G_CALLBACK(adv_condition_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((adv_condition_entry)))),
@@ -404,8 +412,8 @@ static void summary_search_create(void)
 
 	adv_condition_btn = gtk_button_new_with_label(" ... ");
 	gtk_widget_show (adv_condition_btn);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_btn, 2, 3, 4, 5,
-			  GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_btn, 2, 4, 1, 1);
+
 	g_signal_connect(G_OBJECT (adv_condition_btn), "clicked",
 			 G_CALLBACK(adv_condition_btn_clicked), search_window.window);
 
@@ -414,40 +422,35 @@ static void summary_search_create(void)
 
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);
-	gtk_table_attach (GTK_TABLE (table1), from_label, 0, 1, 0, 1,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (from_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (from_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (from_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), from_label, 0, 0, 1, 1);
 
 	to_label = gtk_label_new (_("To:"));
 	gtk_widget_show (to_label);
-	gtk_table_attach (GTK_TABLE (table1), to_label, 0, 1, 1, 2,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (to_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (to_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (to_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), to_label, 0, 1, 1, 1);
 
 	subject_label = gtk_label_new (_("Subject:"));
 	gtk_widget_show (subject_label);
-	gtk_table_attach (GTK_TABLE (table1), subject_label, 0, 1, 2, 3,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (subject_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (subject_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (subject_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), subject_label, 0, 2, 1, 1);
 
 	body_label = gtk_label_new (_("Body:"));
 	gtk_widget_show (body_label);
-	gtk_table_attach (GTK_TABLE (table1), body_label, 0, 1, 3, 4,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (body_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (body_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (body_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), body_label, 0, 3, 1, 1);
 
 	adv_condition_label = gtk_label_new (_("Condition:"));
 	gtk_widget_show (adv_condition_label);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_label, 0, 1, 4, 5,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (adv_condition_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (adv_condition_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (adv_condition_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_label, 0, 4, 1, 1);
 
-	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
+	checkbtn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (checkbtn_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), checkbtn_hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (checkbtn_hbox), 8);
@@ -466,7 +469,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(adv_search_checkbtn), "changed",
 			 G_CALLBACK(case_changed), NULL);
 
-	confirm_area = gtk_hbutton_box_new();
+	confirm_area = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show (confirm_area);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(confirm_area),
 				  GTK_BUTTONBOX_END);
@@ -479,23 +482,23 @@ static void summary_search_create(void)
 	gtk_box_pack_start(GTK_BOX(confirm_area), all_btn, TRUE, TRUE, 0);
 	gtk_widget_show(all_btn);
 
-	prev_btn = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+	prev_btn = gtkut_stock_button("go-previous", _("_Previous"));
 	gtk_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
-	next_btn = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+	next_btn = gtkut_stock_button("go-next", _("_Next"));
 	gtk_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtkut_stock_button("window-close", _("_Close"));
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
 
 	/* stop button hidden */
-	stop_btn = gtk_button_new_from_stock(GTK_STOCK_STOP);
+	stop_btn = gtk_button_new_with_mnemonic("_Stop");
 	gtk_widget_set_can_default(stop_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), stop_btn, TRUE, TRUE, 0);
 
@@ -682,7 +685,8 @@ static gboolean summary_search_prereduce_msg_list()
 	FolderItem *item = summaryview->folder_item;
 	static GdkCursor *watch_cursor = NULL;
 	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
+		watch_cursor = gdk_cursor_new_for_display(
+				gtk_widget_get_display(summaryview->scrolledwin), GDK_WATCH);
 
 	if (search_window.matcher_is_outdated && !summary_search_prepare_matcher())
 		return FALSE;
@@ -778,7 +782,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			if (all_searched) {
 				alertpanel_full(_("Search failed"),
 						_("Search string not found."),
-				 		GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST,
+				 		"window-close", _("_Close"), NULL, NULL,
+						NULL, NULL, ALERTFOCUS_FIRST,
 						FALSE, NULL, ALERT_WARNING);
 				break;
 			}
@@ -789,7 +794,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				str = _("End of list reached; continue from beginning?");
 
 			val = alertpanel(_("Search finished"), str,
-					 GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+					 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
 					 ALERTFOCUS_SECOND);
 			if (G_ALERTALTERNATE == val) {
 				if (backward) {

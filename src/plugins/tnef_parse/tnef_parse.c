@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net>
  * and the Claws Mail Team
  *
@@ -128,7 +128,7 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 	if (claws_fwrite(data, 1, size, fp) < size) {
 		FILE_OP_ERROR(tmpfilename, "claws_fwrite");
 		claws_fclose(fp);
-		if (claws_unlink(tmpfilename) < 0)
+                if (claws_unlink(tmpfilename) < 0)
                         FILE_OP_ERROR(tmpfilename, "claws_unlink");
 		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
@@ -451,7 +451,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 
 const gchar *plugin_licence(void)

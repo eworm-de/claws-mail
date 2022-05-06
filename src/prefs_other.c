@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2019 Colin Leroy and The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2022 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *spinbtn_iotimeout;
 	GtkWidget *checkbtn_gtk_enable_accels;
-	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
@@ -113,11 +112,11 @@ static void prefs_keybind_select(void)
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient (GTK_WINDOW (window));
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_add (GTK_CONTAINER (window), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
@@ -132,7 +131,7 @@ static void prefs_keybind_select(void)
 			       NULL);
 	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
@@ -143,12 +142,12 @@ static void prefs_keybind_select(void)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtkut_widget_set_small_font_size (label);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create (&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				       &ok_btn, GTK_STOCK_OK,
-				       NULL, NULL);
+	gtkut_stock_button_set_create (&confirm_area, &cancel_btn,NULL,  _("_Cancel"),
+				       &ok_btn, NULL, _("_OK"),
+				       NULL, NULL, NULL);
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_focus (ok_btn);
 
@@ -457,7 +456,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
 	GtkWidget *checkbtn_gtk_enable_accels;
-	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *button_keybind;
 
 	GtkWidget *label_iotimeout;
@@ -486,7 +484,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gchar *shred_binary = NULL;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -502,7 +500,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_confonexit,
 			   _("Confirm on exit"));
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_exit), hbox1, FALSE, FALSE, 0);
 
@@ -517,20 +515,10 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_enable_accels,
 			_("Enable keyboard shortcuts"));
 
-	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_can_change_accels,
-			_("Enable customisable keyboard shortcuts"));
-
-	CLAWS_SET_TIP(checkbtn_gtk_can_change_accels,
-			_("If checked, you can change the keyboard shortcuts of "
-				"most of the menu items by focusing on the menu "
-				"item and pressing a key combination.\n"
-				"Uncheck this option if you want to lock all "
-				"existing keyboard shortcuts."));
-
 	button_keybind = gtk_button_new_with_label(
 				_(" Choose preset keyboard shortcuts... "));
 	gtk_widget_show (button_keybind);
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_keys), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
@@ -541,12 +529,13 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox_metadata = gtkut_get_options_frame(vbox1, &frame_metadata, _("Metadata handling"));
 	metadata_label = gtk_label_new(_("Safer mode asks the OS to write metadata to disk directly;\n"
 					 "it avoids data loss after crashes but can take some time."));
-	gtk_misc_set_alignment(GTK_MISC(metadata_label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(metadata_label), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(metadata_label), 0.0);
 	gtk_box_pack_start (GTK_BOX (vbox_metadata), metadata_label, FALSE, FALSE, 0);
 	flush_metadata_safer_radiobtn = gtk_radio_button_new_with_label(NULL, _("Safer"));
 	flush_metadata_faster_radiobtn = gtk_radio_button_new_with_label_from_widget(
 					   GTK_RADIO_BUTTON(flush_metadata_safer_radiobtn), _("Faster"));
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_metadata), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), flush_metadata_safer_radiobtn, FALSE, FALSE, 0);
@@ -559,7 +548,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_widget_show_all(frame_metadata);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -579,7 +568,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 8);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -625,7 +614,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	button_change_passphrase = gtk_button_new_with_label(
 			_("Change primary passphrase"));
 	gtk_widget_show (button_change_passphrase);
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_passphrase), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_change_passphrase,
@@ -635,7 +624,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
 			  G_CALLBACK (prefs_change_primary_passphrase), NULL);
 #endif
-	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, checkbtn_gtk_can_change_accels);
 	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, button_keybind);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
@@ -650,8 +638,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.warn_queued_on_exit);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_enable_accels),
 		prefs_common.gtk_enable_accels);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_can_change_accels),
-		prefs_common.gtk_can_change_accels);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
@@ -680,7 +666,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->checkbtn_transhdr = checkbtn_transhdr;
 	prefs_other->checkbtn_gtk_enable_accels = checkbtn_gtk_enable_accels;
-	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
 	prefs_other->checkbtn_real_time_sync = checkbtn_real_time_sync;
@@ -695,8 +680,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
+	GtkSettings *settings = gtk_settings_get_default();
 	gboolean gtk_enable_accels;
-	gboolean gtk_can_change_accels;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_addaddrbyclick));
@@ -764,37 +749,21 @@ static void prefs_other_save(PrefsPage *_page)
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase));
 #endif
 
-	gtk_can_change_accels = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_can_change_accels));
-
-	if (prefs_common.gtk_can_change_accels != gtk_can_change_accels) {
-
-		prefs_common.gtk_can_change_accels = gtk_can_change_accels;
-
-		gtk_settings_set_long_property(gtk_settings_get_default(),
-				"gtk-can-change-accels",
-				(glong)prefs_common.gtk_can_change_accels,
-				"XProperty");
-	}
 	gtk_enable_accels = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_enable_accels));
 
 	if (prefs_common.gtk_enable_accels != gtk_enable_accels) {
 		prefs_common.gtk_enable_accels = gtk_enable_accels;
 
-		gtk_settings_set_long_property(gtk_settings_get_default(),
-				"gtk-enable-accels",
-				(glong)prefs_common.gtk_enable_accels,
-				"XProperty");
-		
-		gtk_settings_set_long_property(gtk_settings_get_default(),
-				"gtk-enable-mnemonics",
-				(glong)prefs_common.gtk_enable_accels,
-				"XProperty");
+		g_object_set(G_OBJECT(settings), "gtk-enable-accels",
+			     (glong)prefs_common.gtk_enable_accels,
+			     NULL);
+		g_object_set(G_OBJECT(settings), "gtk-enable-mnemonics",
+			     (glong)prefs_common.gtk_enable_accels,
+			     NULL);
 	}
 	
-	if (prefs_common.gtk_enable_accels != gtk_enable_accels ||
-	    prefs_common.gtk_can_change_accels != gtk_can_change_accels) {		
+	if (prefs_common.gtk_enable_accels != gtk_enable_accels) {		
 		/* gtk_can_change_accels value changed : we have (only if changed)
 		 * to apply the gtk property to all widgets : */
 		gtk_rc_reparse_all_for_settings(gtk_settings_get_default(), TRUE);
@@ -810,6 +779,7 @@ OtherPage *prefs_other;
 void prefs_other_init(void)
 {
 	OtherPage *page;
+	GtkSettings *settings = gtk_settings_get_default();
 	static gchar *path[3];
 
 	path[0] = _("Other");
@@ -825,18 +795,12 @@ void prefs_other_init(void)
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_other = page;
 
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-can-change-accels",
-			(glong)prefs_common.gtk_can_change_accels,
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-enable-accels",
+	g_object_set(G_OBJECT(settings), "gtk-enable-accels",
 			(glong)prefs_common.gtk_enable_accels,
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-enable-mnemonics",
+			NULL);
+	g_object_set(G_OBJECT(settings), "gtk-enable-mnemonics",
 			(glong)prefs_common.gtk_enable_accels,
-			"XProperty");
+			NULL);
 }
 
 void prefs_other_done(void)

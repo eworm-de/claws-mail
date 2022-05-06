@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -472,8 +472,6 @@ static PrefParam param[] = {
 	{"toolbar_style", "1", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 #endif
-	{"toolbar_detachable", "FALSE", &prefs_common.toolbar_detachable, P_BOOL,
-	 NULL, NULL, NULL},
 	{"show_col_headers", "TRUE", &prefs_common.show_col_headers, P_BOOL,
 	 NULL, NULL, NULL},
 #ifndef GENERIC_UMPC
@@ -1025,8 +1023,6 @@ static PrefParam param[] = {
 	{"filtering_debug_log_length", "500", &prefs_common.filtering_debug_loglength, P_INT,
 	 NULL, NULL, NULL},
 
-	{"gtk_can_change_accels", "FALSE", &prefs_common.gtk_can_change_accels, P_BOOL,
-	 NULL, NULL, NULL},
 	{"gtk_enable_accels", "TRUE", &prefs_common.gtk_enable_accels, P_BOOL,
 	 NULL, NULL, NULL},
 
@@ -1739,7 +1735,7 @@ const gchar *prefs_common_get_ext_editor_cmd(void)
 	
 	g_free(tmp);
 	return "xdg-open %s";
-#endif 
+#endif /* 0 */
 }
 
 gboolean prefs_common_get_use_shred(void)

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2018 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,8 +147,8 @@ static void addrgather_size_allocate(
 {
 	cm_return_if_fail( allocation != NULL );
 	
-	prefs_common.addrgather_width	= allocation->width;
-	prefs_common.addrgather_height	= allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addrgather_width, &prefs_common.addrgather_height);
 }
 
 #define FMT_BUFSIZE 32
@@ -330,7 +330,6 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkAdjustment *adjFolder;
 #endif
 	GtkWidget *checkRecurse;
-	gint top;
 	gint i;
 #ifdef USE_ALT_ADDRBOOK
 	GError* error = NULL;
@@ -338,7 +337,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 #endif
 
 	/* Container */
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(addrgather_dlg.notebook), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 
@@ -350,27 +349,24 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 							     pageNum), label);
 
 	/* Upper area - Field list */
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table), HSPACING_NARROW);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Current folder:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelFolder = gtk_label_new("");
-	gtk_table_attach( GTK_TABLE(table), labelFolder, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(labelFolder), 0, 0.5 );
+	gtk_grid_attach(GTK_GRID(table), labelFolder, 1, 0, 1, 1);
+	gtk_label_set_xalign(GTK_LABEL(labelFolder), 0.0);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("Address book name:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 #ifndef USE_ALT_ADDRBOOK
 	entryBook = gtk_entry_new();
@@ -389,36 +385,39 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
             gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), "");
         gtk_combo_box_set_active(GTK_COMBO_BOX(entryBook), 0);
 #endif
-	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), entryBook, 1, 1, 2, 1);
+	gtk_widget_set_hexpand(entryBook, TRUE);
+	gtk_widget_set_halign(entryBook, GTK_ALIGN_FILL);
+
 
 #ifndef USE_ALT_ADDRBOOK
 	/* Third row */
-	top = 2;
 	label = gtk_label_new(_("Address book folder size:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	CLAWS_SET_TIP(label,
 			_("Maximum amount of entries per folder within the newly created address book"));
 
-	hboxs = gtk_hbox_new(FALSE, 8);
+	hboxs = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	adjFolder = GTK_ADJUSTMENT(gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 0));
 	spinbtnFolder = gtk_spin_button_new(GTK_ADJUSTMENT(adjFolder), 1, 0);
 	gtk_box_pack_start(GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtnFolder), TRUE);
-	gtk_table_attach(GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hboxs, 1, 2, 1, 1);
+
 	CLAWS_SET_TIP(spinbtnFolder,
 			_("Maximum amount of entries per folder within the newly created address book"));
 #endif
 	/* Fourth row */
-	top = 3;
 	frameHeader = gtk_frame_new(_("Process these mail header fields"));
 	gtk_widget_show(frameHeader);
-	gtk_table_attach(GTK_TABLE(table), frameHeader, 0, 2, top, (top + 4), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), frameHeader, 0, 3, 1, 1);
+	gtk_widget_set_hexpand(frameHeader, TRUE);
+	gtk_widget_set_halign(frameHeader, GTK_ALIGN_FILL);
 	gtk_frame_set_label_align(GTK_FRAME(frameHeader), 0.01, 0.5);
 
 	/* Check boxes */
-	vboxf = gtk_vbox_new(FALSE, 0);
+	vboxf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vboxf);
 	gtk_container_add(GTK_CONTAINER(frameHeader), vboxf);
 	gtk_container_set_border_width(GTK_CONTAINER(vboxf), 8);
@@ -430,10 +429,8 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	}
 
 	/* Recurse folders */
-	top += 4;
 	checkRecurse = gtk_check_button_new_with_label( _("Include subfolders" ) );
-	gtk_table_attach( GTK_TABLE(table), checkRecurse, 0, 2, top, (top + 1),
-			GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), checkRecurse, 0, 4, 1, 1);
 
 	addrgather_dlg.labelFolder   = labelFolder;
 	addrgather_dlg.entryBook     = entryBook;
@@ -458,7 +455,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkTreeSelection *sel;
 	GtkTreeModel *model;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( addrgather_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), 8 );
 
@@ -475,6 +472,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_vexpand(GTK_WIDGET(scrollwin), TRUE);
 
 	/* Treeview */
 	model = GTK_TREE_MODEL(gtk_list_store_new(N_ADDRGATHER_COLS,
@@ -536,7 +534,7 @@ static void addrgather_dlg_create(void)
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addrgather_size_allocate), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	/* Notebook */
@@ -547,15 +545,15 @@ static void addrgather_dlg_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, 0);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, 0);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &btnCancel, GTK_STOCK_CANCEL,
-				      &btnOk, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &btnCancel, NULL, _("_Cancel"),
+				      &btnOk, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
 	/* Signal handlers */

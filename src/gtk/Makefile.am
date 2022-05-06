@@ -20,7 +20,6 @@ endif
 libclawsgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
-	colorsel.c \
 	combobox.c \
 	description_window.c \
 	$(arch_sources) \
@@ -28,7 +27,6 @@ libclawsgtk_la_SOURCES = \
 	gtkaspell.c \
 	gtkcmctree.c \
 	gtkcmclist.c \
-	gtkcmoptionmenu.c \
 	gtksctree.c \
 	gtkunit.c \
 	gtkshruler.c \
@@ -52,7 +50,6 @@ clawsgtkinclude_HEADERS = \
 	about.h \
 	authors.h \
 	colorlabel.h \
-	colorsel.h \
 	combobox.h \
 	description_window.h \
 	filesel.h \
@@ -76,7 +73,6 @@ clawsgtkinclude_HEADERS = \
 	claws-marshal.h \
 	gtkcmctree.h \
 	gtkcmclist.h \
-	gtkcmoptionmenu.h \
 	gtksctree.h \
 	gtkshruler.h
 

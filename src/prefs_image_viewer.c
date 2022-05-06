@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2020 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -66,39 +66,38 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *inline_img;
 	GtkWidget *print_imgs;
 
-	table = gtk_table_new(4, 1, FALSE);
+	table = gtk_grid_new();
+	gtk_grid_set_column_homogeneous(GTK_GRID(table), FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	autoload_img = gtk_check_button_new_with_label(_("Automatically display attached images"));
 	gtk_widget_show(autoload_img);
-	gtk_table_attach(GTK_TABLE(table), autoload_img, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), autoload_img, 0, 0, 1, 1);
 
 	resize_img = gtk_check_button_new_with_label(_("Resize attached images by default"));
 	gtk_widget_show(resize_img);
 	CLAWS_SET_TIP(resize_img,
 			     _("Clicking image toggles scaling"));
-	gtk_table_attach(GTK_TABLE(table), resize_img, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), resize_img, 0, 1, 1, 1);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING);
-	hbox = gtk_hbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_widget_show(hbox);
 
 	fit_img_label = gtk_label_new (_("Fit image"));
+	gtk_widget_set_halign(fit_img_label, GTK_ALIGN_END);
 	gtk_widget_show(fit_img_label);
 	CLAWS_SET_TIP(fit_img_label,
 			     _("Right-clicking image toggles fitting height/width"));
 	gtk_box_pack_start(GTK_BOX(hbox), fit_img_label, FALSE, FALSE, 0);
 
 	fit_img_height_radiobtn = gtk_radio_button_new_with_label(NULL, _("Height"));
+	gtk_widget_set_halign(fit_img_height_radiobtn, GTK_ALIGN_START);
 	gtk_widget_show(fit_img_height_radiobtn);
 	gtk_box_pack_start(GTK_BOX(hbox), fit_img_height_radiobtn, FALSE, FALSE, 0);
 
@@ -106,21 +105,15 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 					   GTK_RADIO_BUTTON(fit_img_height_radiobtn), _("Width"));
 	gtk_widget_show(fit_img_width_radiobtn);
 	gtk_box_pack_start(GTK_BOX(hbox), fit_img_width_radiobtn, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), vbox, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), vbox, 0, 2, 1, 1);
 
 	inline_img = gtk_check_button_new_with_label(_("Display images inline"));
 	gtk_widget_show(inline_img);
-	gtk_table_attach(GTK_TABLE(table), inline_img, 0, 1, 3, 4,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), inline_img, 0, 3, 1, 1);
 	
 	print_imgs = gtk_check_button_new_with_label(_("Print images"));
 	gtk_widget_show(print_imgs);
-	gtk_table_attach(GTK_TABLE(table), print_imgs, 0, 1, 4, 5,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), print_imgs, 0, 4, 1, 1);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(resize_img), prefs_common.resize_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(autoload_img), prefs_common.display_img);

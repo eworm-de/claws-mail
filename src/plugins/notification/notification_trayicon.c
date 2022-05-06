@@ -1,5 +1,5 @@
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2007 Holger Berndt and the Claws Mail Team.
+ * Copyright (C) 2005-2022 Holger Berndt and the Claws Mail Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -474,8 +474,7 @@ static void notification_trayicon_on_popup_menu(GtkStatusIcon *status_icon,
 
   updating_menu = FALSE;
 
-  gtk_menu_popup(GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
-		 button, activate_time);
+  gtk_menu_popup_at_pointer(GTK_MENU(traymenu_popup), NULL);
 }
 
 static gboolean notification_trayicon_on_size_changed(GtkStatusIcon *icon,
@@ -548,8 +547,8 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
   if(prefs_common_get_prefs()->confirm_on_exit) {
     if(alertpanel(_("Exit"), _("Exit Claws Mail?"),
-		  GTK_STOCK_CANCEL, GTK_STOCK_OK,
-		  NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE) {
+		  NULL, _("_Cancel"), NULL, _("_OK"),
+		  NULL, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE) {
       return;
     }
     manage_window_focus_in(mainwin->window, NULL, NULL);

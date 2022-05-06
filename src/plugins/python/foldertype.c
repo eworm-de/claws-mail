@@ -40,7 +40,7 @@ typedef struct {
 static void Folder_dealloc(clawsmail_FolderObject* self)
 {
   Py_XDECREF(self->properties);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *kwds)
@@ -83,7 +83,7 @@ static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *k
 
 static PyObject* Folder_str(clawsmail_FolderObject *self)
 {
-  return PyString_FromFormat("Folder: %s", self->folderitem->name);
+  return PyUnicode_FromFormat("Folder: %s", self->folderitem->name);
 }
 
 static PyObject* Folder_get_identifier(clawsmail_FolderObject *self, PyObject *args)
@@ -128,14 +128,14 @@ static PyObject* Folder_get_messages(clawsmail_FolderObject *self, PyObject *arg
 static PyObject* get_name(clawsmail_FolderObject *self, void *closure)
 {
   if(self->folderitem && self->folderitem->name)
-    return PyString_FromString(self->folderitem->name);
+    return PyUnicode_FromString(self->folderitem->name);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_mailbox_name(clawsmail_FolderObject *self, void *closure)
 {
   if(self->folderitem && self->folderitem->folder && self->folderitem->folder->name)
-    return PyString_FromString(self->folderitem->folder->name);
+    return PyUnicode_FromString(self->folderitem->folder->name);
   Py_RETURN_NONE;
 }
 
@@ -154,7 +154,7 @@ static PyObject* get_identifier(clawsmail_FolderObject *self, void *closure)
     id = folder_item_get_identifier(self->folderitem);
     if(id) {
       PyObject *retval;
-      retval = PyString_FromString(id);
+      retval = PyUnicode_FromString(id);
       g_free(id);
       return retval;
     }
@@ -169,7 +169,7 @@ static PyObject* get_path(clawsmail_FolderObject *self, void *closure)
     path = folder_item_get_path(self->folderitem);
     if(path) {
       PyObject *retval;
-      retval = PyString_FromString(path);
+      retval = PyUnicode_FromString(path);
       g_free(path);
       return retval;
     }
@@ -187,70 +187,70 @@ static PyObject* get_properties(clawsmail_FolderObject *self, void *closure)
 static PyObject* get_num_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->total_msgs);
+    return PyLong_FromLong(self->folderitem->total_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_new_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->new_msgs);
+    return PyLong_FromLong(self->folderitem->new_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_unread_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->unread_msgs);
+    return PyLong_FromLong(self->folderitem->unread_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_marked_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->marked_msgs);
+    return PyLong_FromLong(self->folderitem->marked_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_locked_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->locked_msgs);
+    return PyLong_FromLong(self->folderitem->locked_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_unread_marked_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->unreadmarked_msgs);
+    return PyLong_FromLong(self->folderitem->unreadmarked_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_ignored_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->ignored_msgs);
+    return PyLong_FromLong(self->folderitem->ignored_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_watched_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->watched_msgs);
+    return PyLong_FromLong(self->folderitem->watched_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_replied_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->replied_msgs);
+    return PyLong_FromLong(self->folderitem->replied_msgs);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_num_forwarded_messages(clawsmail_FolderObject *self, void *closure)
 {
   if(self && self->folderitem)
-    return PyInt_FromLong(self->folderitem->forwarded_msgs);
+    return PyLong_FromLong(self->folderitem->forwarded_msgs);
   Py_RETURN_NONE;
 }
 
@@ -324,8 +324,7 @@ static PyGetSetDef Folder_getset[] = {
 
 
 static PyTypeObject clawsmail_FolderType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /* ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.Folder",        /* tp_name*/
     sizeof(clawsmail_FolderObject), /* tp_basicsize*/
     0,                         /* tp_itemsize*/

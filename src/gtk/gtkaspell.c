@@ -1,7 +1,7 @@
 /* gtkaspell - a spell-checking addon for GtkText
  * Copyright (c) 2000 Evan Martin (original code for ispell).
  * Copyright (c) 2002 Melvin Hadasht.
- * Copyright (C) 2001-2013 the Claws Mail Team
+ * Copyright (C) 2001-2021 the Claws Mail Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -179,12 +179,12 @@ static gboolean 	get_word_from_pos		(GtkAspell *gtkaspell,
 							 gint *pstart, 
 							 gint *pend);
 static void 		allocate_color			(GtkAspell *gtkaspell,
-							 gint rgbvalue);
+							 GdkRGBA rgbvalue);
 static void 		change_color			(GtkAspell *gtkaspell, 
 			 				 gint start, 
 							 gint end, 
 							 gchar *newtext,
-							 GdkColor *color);
+							 gboolean colorize);
 static gint 		compare_dict			(Dictionary *a, 
 							 Dictionary *b);
 static void 		dictionary_delete		(Dictionary *dict);
@@ -319,7 +319,7 @@ void gtkaspell_checkers_reset_error(void)
 GtkAspell *gtkaspell_new(const gchar *dictionary, 
 			 const gchar *alt_dictionary, 
 			 const gchar *encoding, /* unused */
-			 gint  misspelled_color,
+			 GdkRGBA misspelled_color,
 			 gboolean check_while_typing,
 			 gboolean recheck_when_changing_dict,
 			 gboolean use_alternate,
@@ -968,10 +968,10 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 		gtkaspell->end_pos    = end;
 		gtkaspell_free_suggestions_list(gtkaspell);
 
-		change_color(gtkaspell, start, end, (gchar *)buf, &(gtkaspell->highlight));
+		change_color(gtkaspell, start, end, (gchar *)buf, TRUE);
 		return TRUE;
 	} else {
-		change_color(gtkaspell, start, end, (gchar *)buf, NULL);
+		change_color(gtkaspell, start, end, (gchar *)buf, FALSE);
 		return FALSE;
 	}
 }
@@ -1051,10 +1051,7 @@ gboolean gtkaspell_check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 		for (cur = list; cur; cur = cur->next)
 			gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 		g_slist_free(list);
-		gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-				gtkaspell->ctx.set_menu_pos,
-				gtkaspell->ctx.data,
-				0, GDK_CURRENT_TIME);
+		gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 		g_signal_connect(G_OBJECT(menu), "deactivate",
 					 G_CALLBACK(destroy_menu),
 					 gtkaspell);
@@ -1384,10 +1381,7 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 			for (cur = list; cur; cur = cur->next)
 				gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 			g_slist_free(list);
-			gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-				       gtkaspell->ctx.set_menu_pos,
-				       gtkaspell->ctx.data, 0,
-				       GDK_CURRENT_TIME);
+			gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 			g_signal_connect(G_OBJECT(menu), "deactivate",
 					 G_CALLBACK(destroy_menu),
 					 gtkaspell);
@@ -1428,11 +1422,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *entry;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
-	GtkWidget *confirm_area;
 	GtkWidget *icon;
 	GtkWidget *parent_window;
 	GtkWidget *content_area;
-	GtkWidget *action_area;
 	gchar *utf8buf, *thelabel, *format;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
@@ -1446,7 +1438,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	dialog = gtk_dialog_new();
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-	action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
@@ -1457,7 +1448,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 				 G_OBJECT(dialog));
 
 	gtk_box_set_spacing (GTK_BOX (content_area), 14);
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
@@ -1469,17 +1460,18 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	thelabel = g_strdup_printf(format, utf8buf);
 	g_free(format);
 	
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
-        				GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
+	icon = gtk_image_new_from_icon_name("dialog-question",
+					GTK_ICON_SIZE_DIALOG);
+	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
 	
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 	
 	label = gtk_label_new(thelabel);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -1496,7 +1488,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(label, font_desc);
+		gtk_widget_override_font(label, font_desc);
 	g_free(thelabel);
 	
 	entry = gtk_entry_new();
@@ -1511,19 +1503,15 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	label = gtk_label_new(_("Holding down Control key while pressing "
 				"Enter\nwill learn from mistake.\n"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK,
-				      NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(action_area), confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
-
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					     GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					     GTK_RESPONSE_NONE);
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			 G_CALLBACK(replace_with_supplied_word_cb), 
 			 gtkaspell);
@@ -1875,7 +1863,6 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 	g_free(utf8buf);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
-	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(caption);
 
 	item = gtk_menu_item_new();
@@ -2014,14 +2001,13 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	dictname = g_strdup_printf(_("Dictionary: %s"),
 				   gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(dictname);
-	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(dictname);
 	submenu = make_dictionary_list_submenu(gtkaspell);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
 
-	item = gtk_menu_item_new();
+	item = gtk_separator_menu_item_new();
         gtk_widget_show(item);
         list = g_slist_append(list, item);
 		
@@ -2049,7 +2035,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	gtk_widget_show(both_dicts_item);
 	list = g_slist_append(list, both_dicts_item);
 	
-	item = gtk_menu_item_new();
+	item = gtk_separator_menu_item_new();
         gtk_widget_show(item);
         list = g_slist_append(list, item);
 	
@@ -2077,13 +2063,10 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 {
 	GtkAspell 	*gtkaspell = (GtkAspell *) data;
 	gint 		 xx = 0, yy = 0;
-	gint 		 sx,     sy;
-	gint 		 wx,     wy;
 	GtkTextView 	*text = GTK_TEXT_VIEW(gtkaspell->gtktext);
 	GtkTextBuffer	*textbuf;
 	GtkTextIter	 iter;
 	GdkRectangle	 rect;
-	GtkRequisition 	 r;
 
 	textbuf = gtk_text_view_get_buffer(gtkaspell->gtktext);
 	gtk_text_buffer_get_iter_at_mark(textbuf, &iter,
@@ -2096,22 +2079,7 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->gtktext)),
 			&xx, &yy);
 
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
-
-	gtk_widget_get_child_requisition(GTK_WIDGET(menu), &r);
-
-	wx =  r.width;
-	wy =  r.height;
-
-	*x = rect.x + xx + 8;
-
-	*y = rect.y + rect.height + yy;
-
-	if (*x + wx > sx)
-		*x = sx - wx;
-	if (*y + wy > sy)
-		*y = *y - wy - 10;
+	gtk_widget_get_preferred_size(GTK_WIDGET(menu), NULL, NULL);
 }
 
 /* change the current dictionary of gtkaspell
@@ -2262,33 +2230,26 @@ static void set_point_continue(GtkAspell *gtkaspell)
 		gtkaspell->continue_check((gpointer *) gtkaspell->ctx.data);
 }
 
-static void allocate_color(GtkAspell *gtkaspell, gint rgbvalue)
+static void allocate_color(GtkAspell *gtkaspell, GdkRGBA rgba)
 {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(gtkaspell->gtktext);
-	GdkColor *color = &(gtkaspell->highlight);
+	static const gchar *col = NULL;
 
-	/* Shameless copy from Sylpheed's gtkutils.c */
-	color->pixel = 0L;
-	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0)
-			* 65535.0);
-	color->green = (int) (((gdouble)((rgbvalue & 0x00ff00) >>  8) / 255.0)
-			* 65535.0);
-	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0)
-			* 65535.0);
+	gtkaspell->highlight = rgba;
+	col = gtkut_gdk_rgba_to_string(&rgba);
 
-	if (rgbvalue != 0)
-		gtk_text_buffer_create_tag(buffer, "misspelled",
-				   "foreground-gdk", color, NULL);
-	else
+	if (strcmp(col,"#000000") == 0)
 		gtk_text_buffer_create_tag(buffer, "misspelled",
 				   "underline", PANGO_UNDERLINE_ERROR, NULL);
-
+	else
+		gtk_text_buffer_create_tag(buffer, "misspelled",
+			   "foreground-rgba", &(gtkaspell->highlight), NULL);
 }
 
 static void change_color(GtkAspell * gtkaspell, 
 			 gint start, gint end,
 			 gchar *newtext,
-                         GdkColor *color) 
+			 gboolean colorize)
 {
 	GtkTextView *gtktext;
 	GtkTextBuffer *buffer;
@@ -2302,7 +2263,7 @@ static void change_color(GtkAspell * gtkaspell,
 	buffer = gtk_text_view_get_buffer(gtktext);
 	gtk_text_buffer_get_iter_at_offset(buffer, &startiter, start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &enditer, end);
-	if (color)
+	if (colorize)
 		gtk_text_buffer_apply_tag_by_name(buffer, "misspelled",
 						  &startiter, &enditer);
 	else {

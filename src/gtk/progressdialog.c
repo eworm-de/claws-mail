@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,16 +69,14 @@ ProgressDialog *progress_dialog_create(void)
 	progress = g_new0(ProgressDialog, 1);
 
 	dialog = gtk_dialog_new();
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 8);
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 	gtk_widget_realize(dialog);
 
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 0);
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 	gtk_box_set_spacing(GTK_BOX(vbox), 8);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox,
 			   FALSE, FALSE, 8);
 	gtk_widget_show(hbox);
@@ -94,7 +92,7 @@ ProgressDialog *progress_dialog_create(void)
 					   _("_View log"),
 					   GTK_RESPONSE_NONE);
 	cancel_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
-					   GTK_STOCK_CANCEL,
+					   _("_Cancel"),
 					   GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(cancel_btn);
 	gtk_widget_grab_focus(cancel_btn);

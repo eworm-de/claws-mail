@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -144,7 +144,7 @@
 #define CTREE_INDENT			18
 #define FOLDER_SPACING			4
 #define MAX_ENTRY_LENGTH		8191
-#define COLOR_DIM			35000
+#define COLOR_DIM			((gdouble)35000 / 65535)
 #define UI_REFRESH_INTERVAL		50000	/* usec */
 #define FOLDER_UPDATE_INTERVAL		1500	/* msec */
 #define PROGRESS_UPDATE_INTERVAL	200	/* msec */

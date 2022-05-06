@@ -28,7 +28,7 @@
 
 # TODO: fallback to X-OriginalArrivalTime: ?
 
-VERSION="0.1.3"
+VERSION="0.1.4"
 
 
 version()
@@ -49,6 +49,8 @@ usage()
 	echo "  -r --rfc      force re-writing of Date: header when it's not RFC-compliant"
 	echo "  -s --strict   use RFC-strict matching patterns for dates"
 	echo "  --            end of switches (in case a filename starts with a -)"
+    echo "this script requires coreutils (cat, cut, head, tr), dos2unix, grep and set"
+    echo "in PATH to work"
 	exit $1
 }
 
@@ -112,9 +114,24 @@ fi
 test $# -lt 1 && \
 	usage 1
 
-TMP="/tmp/${0##*/}.$$.tmp"
-HEADERS="/tmp/${0##*/}.$$.headers.tmp"
-BODY="/tmp/${0##*/}.$$.body.tmp"
+for PROG in dos2unix grep sed
+do
+    type "$PROG" >/dev/null 2>&1 || \
+        { echo "error: $PROG not found in PATH"; exit 1; }
+done
+
+TMPDIR="/tmp"
+TMP="$TMPDIR/${0##*/}.$$.tmp"
+echo > "$TMP" >/dev/null 2>&1
+if [ $? -eq 0 ]
+then
+    rm -f "$TMP" >/dev/null 2>&1
+else
+    TMPDIR="$HOME"
+    TMP="$TMPDIR/${0##*/}.$$.tmp"
+fi
+HEADERS="$TMPDIR/${0##*/}.$$.headers.tmp"
+BODY="$TMPDIR/${0##*/}.$$.body.tmp"
 
 DATE_REGEXP='( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [+-]?[0-9]+'
 DATE_REGEXP_STRICT='(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [+-]?[0-9]+'

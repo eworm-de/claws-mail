@@ -88,41 +88,20 @@ void gtkut_widget_set_small_font_size(GtkWidget *widget)
 		font_desc = pango_font_description_from_string(NORMAL_FONT);
 		size = pango_font_description_get_size(font_desc);
 		pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
-		gtk_widget_modify_font(widget, font_desc);
+		gtk_widget_override_font(widget, font_desc);
 		pango_font_description_free(font_desc);
 	} else {
 		font_desc = pango_font_description_from_string(SMALL_FONT);
-		gtk_widget_modify_font(widget, font_desc);
+		gtk_widget_override_font(widget, font_desc);
 		pango_font_description_free(font_desc);
 	}
-}
-
-void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
-{
-	cm_return_if_fail(color != NULL);
-
-	color->pixel = 0L;
-	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0) * 65535.0);
-	color->green = (int) (((gdouble)((rgbvalue & 0x00ff00) >>  8) / 255.0) * 65535.0);
-	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0) * 65535.0);
-}
-
-#define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
-#define RGB_FROM_GDK_COLOR(c) \
-	((CL(c->red)   << (gulong) 16) | \
-	 (CL(c->green) << (gulong)  8) | \
-	 (CL(c->blue)))
-
-gint gtkut_convert_gdk_color_to_int(GdkColor *color)
-{
-	return RGB_FROM_GDK_COLOR(color);
 }
 
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	cm_return_if_fail(bbox != NULL);
 
-	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
+	*help_btn = gtkut_stock_button("help-browser", "Help");
 
 	gtk_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
@@ -135,45 +114,51 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 
 void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
 		GtkWidget **help_button,
-		GtkWidget **button1, const gchar *label1,
-		GtkWidget **button2, const gchar *label2,
-		GtkWidget **button3, const gchar *label3)
+		GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+		GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+		GtkWidget **button3, const gchar *stock_icon3, const gchar *label3)
 {
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	gtkut_stock_button_set_create(bbox, button1, label1,
-			button2, label2, button3, label3);
+	gtkut_stock_button_set_create(bbox, button1, stock_icon1, label1,
+			button2, stock_icon2, label2, button3, stock_icon3, label3);
 
 	gtkut_stock_button_add_help(*bbox, help_button);
 }
 
 void gtkut_stock_button_set_create(GtkWidget **bbox,
-				   GtkWidget **button1, const gchar *label1,
-				   GtkWidget **button2, const gchar *label2,
-				   GtkWidget **button3, const gchar *label3)
+				   GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+				   GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+				   GtkWidget **button3, const gchar *stock_icon3, const gchar *label3)
 {
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	*bbox = gtk_hbutton_box_new();
+	*bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
-	*button1 = gtk_button_new_from_stock(label1);
+	*button1 = gtk_button_new_with_mnemonic(label1);
+	gtk_button_set_image(GTK_BUTTON(*button1),
+		gtk_image_new_from_icon_name(stock_icon1, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
 	if (button2) {
-		*button2 = gtk_button_new_from_stock(label2);
+		*button2 = gtk_button_new_with_mnemonic(label2);
+		gtk_button_set_image(GTK_BUTTON(*button2),
+			gtk_image_new_from_icon_name(stock_icon2, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
 
 	if (button3) {
-		*button3 = gtk_button_new_from_stock(label3);
+		*button3 = gtk_button_new_with_mnemonic(label3);
+		gtk_button_set_image(GTK_BUTTON(*button3),
+			gtk_image_new_from_icon_name(stock_icon3, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
@@ -188,13 +173,13 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	*bbox = gtk_hbutton_box_new();
+	*bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
 	*button1 = gtk_button_new_with_mnemonic(text1);
 	gtk_button_set_image(GTK_BUTTON(*button1),
-		gtk_image_new_from_stock(label1, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name(label1, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
@@ -202,7 +187,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	if (button2) {
 		*button2 = gtk_button_new_with_mnemonic(text2);
 		gtk_button_set_image(GTK_BUTTON(*button2),
-			gtk_image_new_from_stock(label2, GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name(label2, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
@@ -211,7 +196,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	if (button3) {
 		*button3 = gtk_button_new_with_mnemonic(text3);
 		gtk_button_set_image(GTK_BUTTON(*button3),
-			gtk_image_new_from_stock(label3, GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name(label3, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
@@ -389,11 +374,6 @@ void gtkut_clist_set_focus_row(GtkCMCList *clist, gint row)
 {
 	clist->focus_row = row;
 	GTKUT_CTREE_REFRESH(clist);
-}
-
-void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
-{
-	gtk_container_remove(container, widget);
 }
 
 static gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf,
@@ -618,14 +598,18 @@ void gtkut_window_popup(GtkWidget *window)
 {
 	GdkWindow *gdkwin;
 	gint x, y, sx, sy, new_x, new_y;
+	GdkRectangle workarea = {0};
 
 	gdkwin = gtk_widget_get_window(window);
 
 	cm_return_if_fail(window != NULL);
 	cm_return_if_fail(gdkwin != NULL);
 
-	sx = MAX(1, gdk_screen_width());
-	sy = MAX(1, gdk_screen_height());
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
+				 &workarea);
+
+	sx = MAX(1, workarea.width);
+	sy = MAX(1, workarea.height);
 
 	gdk_window_get_origin(gdkwin, &x, &y);
 	new_x = x % sx; if (new_x < 0) new_x = 0;
@@ -642,14 +626,18 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	GdkWindow *gdkwin;
 	gint x, y;
 	gint sx, sy;
+	GdkRectangle workarea = {0};
 
 	gdkwin = gtk_widget_get_window(widget);
 
 	cm_return_if_fail(widget != NULL);
 	cm_return_if_fail(gdkwin != NULL);
 
-	sx = MAX(1, gdk_screen_width());
-	sy = MAX(1, gdk_screen_height());
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
+				 &workarea);
+
+	sx = MAX(1, workarea.width);
+	sy = MAX(1, workarea.height);
 
 	/* gdk_window_get_root_origin ever return *rootwindow*'s position */
 	gdk_window_get_root_origin(gdkwin, &x, &y);
@@ -658,12 +646,6 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	y %= sy; if (y < 0) y = 0;
 	*px = x;
 	*py = y;
-}
-
-void gtkut_widget_draw_now(GtkWidget *widget)
-{
-	if (widget && gtk_widget_get_visible(widget) && gtk_widget_is_drawable(widget))
-		gdk_window_process_updates(gtk_widget_get_window(widget), FALSE);
 }
 
 static void gtkut_clist_bindings_add(GtkWidget *clist)
@@ -779,17 +761,16 @@ GtkWidget *label_window_create(const gchar *str)
 
 	label = gtk_label_new(str);
 	
-	vbox = gtk_vbox_new(FALSE, 6);
-	hbox = gtk_hbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, FALSE, 0);
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), wait_progress, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 	gtk_widget_show_all(vbox);
 
 	gtk_widget_show_now(window);
@@ -851,20 +832,6 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 	return optmenu;
 }
 
-void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
-{
-	GtkStyle *newstyle;
-	GdkColor gdk_color;
-
-	gtkut_convert_int_to_gdk_color(rgbvalue, &gdk_color);
-	newstyle = gtk_style_copy(gtk_widget_get_default_style());
-	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
-	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
-	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
-	gtk_widget_set_style(widget, newstyle);
-	g_object_unref(newstyle);
-}
-  
 /*!
  *\brief	Tries to find a focused child using a lame strategy
  */
@@ -917,7 +884,7 @@ GtkWidget *gtkut_get_focused_child(GtkContainer *parent)
 }
 
 /*!
- *\brief	Create a Browse (file) button based on GTK+ stock
+ *\brief	Create a Browse (file) button based on GTK stock
  */
 GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 {
@@ -925,13 +892,13 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
 
 /*!
- *\brief	Create a Browse (directory) button based on GTK+ stock
+ *\brief	Create a Browse (directory) button based on GTK stock
  */
 GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 {
@@ -939,7 +906,7 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
@@ -950,10 +917,25 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("view-refresh", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
+
+GtkWidget *gtkut_stock_button(const gchar *stock_image, const gchar *label)
+{
+	GtkWidget *button;
+	
+	cm_return_val_if_fail(stock_image != NULL, NULL);
+
+	button = gtk_button_new_from_icon_name(stock_image, GTK_ICON_SIZE_BUTTON);
+	if (label != NULL)
+		gtk_button_set_label(GTK_BUTTON(button), _(label));
+	gtk_button_set_use_underline(GTK_BUTTON(button), TRUE);
+	gtk_button_set_always_show_image(GTK_BUTTON(button), TRUE);
+	
+	return button;
+};
 
 /**
  * merge some part of code into one function : it creates a frame and add
@@ -974,7 +956,7 @@ GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **pframe,
 	gtk_box_pack_start(GTK_BOX(box), frame, FALSE, TRUE, 0);
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
 
-	vbox = gtk_vbox_new (FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER (frame), vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
@@ -1167,118 +1149,6 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	return image;
 }
 
-static GdkCursor *hand_cursor = NULL;
-
-static void link_btn_enter(GtkButton *button, gpointer data)
-{
-	GdkWindow *gdkwin;
-	GtkWidget *window = (GtkWidget *)data;
-
-	gdkwin = gtk_widget_get_window(window);
-
-	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
-	if (window && gdkwin)
-		gdk_window_set_cursor(gdkwin, hand_cursor);
-
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-	
-}
-
-static void link_btn_leave(GtkButton *button, gpointer data)
-{
-	GdkWindow *gdkwin;
-	GtkWidget *window = (GtkWidget *)data;
-
-	gdkwin = gtk_widget_get_window(window);
-
-	if (window && gdkwin)
-		gdk_window_set_cursor(gdkwin, NULL);
-
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-}
-
-static void link_btn_pressed(GtkButton *button, gpointer data)
-{
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-}
-
-static void link_btn_released(GtkButton *button, gpointer data)
-{
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-}
-
-static void link_btn_clicked(GtkButton *button, gpointer data)
-{
-	gchar *url = (gchar *)data;
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-	open_uri(url, prefs_common_get_uri_cmd());
-}
-
-static void link_btn_unrealize(GtkButton *button, gpointer data)
-{
-	gchar *url = (gchar *)data;
-	g_signal_handlers_disconnect_by_func(G_OBJECT(button), 
-			 G_CALLBACK(link_btn_clicked), url);
-	g_free(url);
-}
-
-GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *label)
-{
-	GtkWidget *btn;
-	GtkWidget *btn_label;
-	GdkColormap *cmap;
-	gboolean success[2];
-	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
-	gchar *local_url = NULL;
-	if (!url)
-		return NULL;
-
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color[1]);
-
-	btn = gtk_button_new_with_label(label?label:url);
-	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
-	btn_label = gtk_bin_get_child(GTK_BIN((btn)));
-	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(window));
-	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
-	if (success[0] == TRUE && success[1] == TRUE) {
-		GtkStyle *style;
-		gtk_widget_ensure_style(btn_label);
-		style = gtk_style_copy
-			(gtk_widget_get_style(btn_label));
-		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
-		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
-		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
-		gtk_widget_set_style(btn_label, style);
-		g_object_unref(style);
-	} else
-		g_warning("color allocation failed");
-
-	g_signal_connect(G_OBJECT(btn), "enter",
-			 G_CALLBACK(link_btn_enter), window);
-	g_signal_connect(G_OBJECT(btn), "leave",
-			 G_CALLBACK(link_btn_leave), window);
-	g_signal_connect(G_OBJECT(btn), "pressed",
-			 G_CALLBACK(link_btn_pressed), window);
-	g_signal_connect(G_OBJECT(btn), "released",
-			 G_CALLBACK(link_btn_released), window);
-			 
-	local_url = g_strdup(url);
-	g_signal_connect(G_OBJECT(btn), "clicked",
-			 G_CALLBACK(link_btn_clicked), local_url);
-	g_signal_connect(G_OBJECT(btn), "unrealize",
-			 G_CALLBACK(link_btn_unrealize), local_url);
-	return btn;
-}
-
 static gboolean _combobox_separator_func(GtkTreeModel *model,
 		GtkTreeIter *iter, gpointer data)
 {
@@ -1314,7 +1184,7 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 
 	if( eventbox != NULL )
 		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
-	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
+	gtk_widget_set_focus_on_click(GTK_WIDGET(combobox), focus_on_click);
 
 	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox),
 			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);
@@ -1547,6 +1417,7 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 {
 	GtkWidget *window = gtk_window_new(type);
 	gtk_window_set_role(GTK_WINDOW(window), class);
+	gtk_widget_set_name(GTK_WIDGET(window), class);
 	return window;
 }
 
@@ -1994,6 +1865,19 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 }
 #endif
 
+gboolean gtkut_pointer_is_grabbed(GtkWidget *widget)
+{
+	GdkDisplay *display;
+	GdkDevice *pointerdev;
+
+	cm_return_val_if_fail(widget != NULL, FALSE);
+
+	display = gtk_widget_get_display(widget);
+	pointerdev = gdk_seat_get_pointer(gdk_display_get_default_seat(display));
+
+	return gdk_display_device_is_grabbed(display, pointerdev);
+}
+
 gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 		gint column, GtkTreeModel **_model, GtkTreeSelection **_selection,
 		GtkTreeIter *_iter)
@@ -2134,3 +2018,16 @@ void gtk_calendar_select_today(GtkCalendar *calendar)
 	gtk_calendar_select_day(calendar, lt->tm_mday);
 	gtk_calendar_select_month(calendar, lt->tm_mon, lt->tm_year + 1900);
 }
+
+
+#define RGBA_ELEMENT_TO_BYTE(x) (int)((gdouble)x * 255)
+gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba)
+{
+	gchar *str = g_strdup_printf("#%02x%02x%02x",
+			RGBA_ELEMENT_TO_BYTE(rgba->red),
+			RGBA_ELEMENT_TO_BYTE(rgba->green),
+			RGBA_ELEMENT_TO_BYTE(rgba->blue));
+
+	return str;
+}
+#undef RGBA_ELEMENT_TO_BYTE

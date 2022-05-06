@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright(C) 2019 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -71,6 +71,8 @@ class lh_widget : public container_linux
 		void set_partinfo(MimeInfo *partinfo);
 		GdkPixbuf *get_local_image(const litehtml::tstring url) const;
 
+		void set_cairo_context(cairo_t *cr);
+
 		litehtml::document::ptr m_html;
 		litehtml::tstring m_clicked_url;
 		litehtml::tstring m_base_url;
@@ -86,6 +88,7 @@ class lh_widget : public container_linux
 		litehtml::element::ptr m_over_element;
 		gboolean m_showing_url;
 		MimeInfo *m_partinfo;
+		cairo_t *m_cairo_context;
 
 		litehtml::tchar_t *m_font_name;
 		int m_font_size;

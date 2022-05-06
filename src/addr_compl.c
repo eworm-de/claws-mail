@@ -1,7 +1,7 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  *
- * Copyright (C) 2000-2012 by Alfons Hoogervorst & The Claws Mail Team.
+ * Copyright (C) 2000-2021 the Claws Mail team and Alfons Hoogervorst
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -866,6 +866,11 @@ static CompletionWindow *addrcompl_create_window( void ) {
  * \param cw Window to destroy.
  */
 static void addrcompl_destroy_window( CompletionWindow *cw ) {
+	GdkDisplay *display;
+	GdkSeat    *seat;
+	
+	display = gdk_display_get_default();
+	seat = gdk_display_get_default_seat(display);
 	/* Stop all searches currently in progress */
 #ifndef USE_ALT_ADDRBOOK
 	addrindex_stop_search( _queryID_ );
@@ -893,7 +898,7 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 	}
 	
 	/* Re-enable keyboard, required at least for Gtk3/Win32 */
-	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
+	gdk_seat_ungrab(seat);
 }
 
 /**
@@ -956,29 +961,27 @@ static void completion_window_advance_selection(GtkTreeView *list_view, gboolean
  * \param cw Completion window.
  */
 static void addrcompl_resize_window( CompletionWindow *cw ) {
+	GdkDisplay *display;
 	GtkRequisition r;
 	GdkGrabStatus status;
-	gint x, y, width, height, depth;
+	gint x, y, width;
 
-	/* Get current geometry of window */
-	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height, &depth );
-
+	gdk_window_get_position(gtk_widget_get_window(cw->window), &x, &y);
+	width = gdk_window_get_width(gtk_widget_get_window(cw->window));
+	
 	gtk_widget_queue_resize_no_redraw(cw->list_view);
-	gtk_widget_size_request( cw->list_view, &r );
-
-	/* Adjust window height to available screen space */
-	if( y + r.height > gdk_screen_height())
-		r.height = gdk_screen_height() - y;
+	gtk_widget_get_preferred_size(cw->list_view, &r, NULL);
 
 	gtk_widget_set_size_request(cw->window, width, r.height);
 
-	gdk_pointer_grab(gtk_widget_get_window(cw->window), TRUE,
-			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
-			 GDK_BUTTON_RELEASE_MASK,
-			 NULL, NULL, GDK_CURRENT_TIME);
-	status = gdk_keyboard_grab(gtk_widget_get_window(cw->window), FALSE, GDK_CURRENT_TIME);
+	display = gdk_display_get_default();
+	status = gdk_seat_grab(gdk_display_get_default_seat(display),
+			       gtk_widget_get_window(cw->window),
+			       GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
+			       GDK_BUTTON_RELEASE_MASK,
+			       TRUE, NULL, NULL, NULL, NULL);
 	if (status != GDK_GRAB_SUCCESS)
-		g_warning("gdk_keyboard_grab failed with status %d", status);
+		g_warning("gdk_seat_grab failed with status %d", status);
 	gtk_grab_add(cw->window);
 
 }
@@ -1044,14 +1047,6 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 		/* Select first row for now */
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
-#ifndef GENERIC_UMPC
-	else if (cw->listCount == 2) {
-		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
-			/* Move off first row */
-			gtk_tree_selection_select_iter(selection, &iter);
-		}
-	}
-#endif
 }
 
 void addrcompl_reflect_prefs_pixmap_theme(void) {
@@ -1081,6 +1076,7 @@ static gboolean addrcompl_idle( gpointer data ) {
 	pthread_mutex_lock( & _completionMutex_ );
 	if( _displayQueue_ ) {
 		node = _displayQueue_;
+		node = g_list_next(node); /* skip search term */
 		while( node ) {
 			address = node->data;
 			/* g_print( "address ::: %s :::\n", address ); */
@@ -1456,13 +1452,14 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
  */
 static void address_completion_create_completion_window( GtkEntry *entry_ )
 {
-	gint x, y, height, width, depth;
+	gint x, y;
+	GdkRectangle rect;
 	GtkWidget *scroll, *list_view;
 	GdkGrabStatus status;
+	GdkDisplay *display;
 	GtkRequisition r;
 	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
-	GdkWindow *gdkwin;
 
 	/* Create new window and list */
 	window = gtk_window_new(GTK_WINDOW_POPUP);
@@ -1485,18 +1482,23 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_container_add(GTK_CONTAINER(scroll), list_view);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll),
 		GTK_SHADOW_OUT);
-	/* Use entry widget to create initial window */
-	gdkwin = gtk_widget_get_window(entry),
-	gdk_window_get_geometry(gdkwin, &x, &y, &width, &height, &depth);
-	gdk_window_get_origin (gdkwin, &x, &y);
-	y += height;
-	gtk_window_move(GTK_WINDOW(window), x, y);
+
+	/* Use entry widget to position initial window */
+	gtk_widget_get_allocation(entry, &rect);
+
+	/* rect.x and rect.y are relative to parent of our GtkEntry,
+	 * we need to convert them to absolute coordinates */
+	gdk_window_get_root_coords(
+			gtk_widget_get_window(gtk_widget_get_parent(entry)),
+			rect.x, rect.y, &x, &y);
+
+	/* Move the window to just below the GtkEntry */
+	gtk_window_move(GTK_WINDOW(window), x, y + rect.height);
 
 	/* Resize window to fit initial (empty) address list */
-	gtk_widget_size_request( list_view, &r );
-	gtk_widget_set_size_request( window, width, r.height );
-	gtk_widget_show_all( window );
-	gtk_widget_size_request( list_view, &r );
+	gtk_widget_get_preferred_size(list_view, &r, NULL);
+	gtk_widget_set_size_request(window, rect.width, r.height);
+	gtk_widget_show_all(window);
 
 	/* Setup handlers */
 	g_signal_connect(G_OBJECT(list_view), "button_press_event",
@@ -1515,13 +1517,14 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 			 "key-press-event",
 			 G_CALLBACK(completion_window_key_press),
 			 _compWindow_ );
-	gdk_pointer_grab(gtk_widget_get_window(window), TRUE,
-			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
-			 GDK_BUTTON_RELEASE_MASK,
-			 NULL, NULL, GDK_CURRENT_TIME);
-	status = gdk_keyboard_grab(gtk_widget_get_window(window), FALSE, GDK_CURRENT_TIME);
+	display = gdk_display_get_default();
+	status = gdk_seat_grab(gdk_display_get_default_seat(display),
+			       gtk_widget_get_window(window),
+			       GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
+			       GDK_BUTTON_RELEASE_MASK,
+			       TRUE, NULL, NULL, NULL, NULL);
 	if (status != GDK_GRAB_SUCCESS)
-		g_warning("gdk_keyboard_grab failed with status %d", status);
+		g_warning("gdk_seat_grab failed with status %d", status);
 	gtk_grab_add( window );
 }
 
@@ -1780,11 +1783,11 @@ static void addr_compl_create_list_view_columns(GtkWidget *list_view)
 	column = gtk_tree_view_column_new_with_attributes
 		("", renderer,
 	         "pixbuf", ADDR_COMPL_ICON, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
 		("", renderer, "text", ADDR_COMPL_ADDRESS, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 }
 
 static gboolean list_view_button_press(GtkWidget *widget, GdkEventButton *event,

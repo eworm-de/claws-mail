@@ -1,5 +1,5 @@
-/* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 Holger Berndt <hb@claws-mail.org>,
+/* Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2007-2019 Holger Berndt <hb@claws-mail.org>,
  * Colin Leroy <colin@colino.net>, and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -405,7 +405,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	GtkToolItem *separator;
 	static GdkGeometry geometry;
 	GtkWidget *dialog = NULL;
-	GtkWidget *statusbar = gtk_hbox_new(2, FALSE);
+	GtkWidget *statusbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 
 	debug_print("Creating internal print preview\n");
 
@@ -426,12 +426,13 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(dialog),
+				    prefs_common.print_previewwin_width,
 				    prefs_common.print_previewwin_height);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
 
 	/* vbox */
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
   
 	/* toolbar */
@@ -461,7 +462,8 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 }
 
 #define TOOLBAR_ITEM(item,text,tooltip,cb,cbdata) {								\
-	item = GTK_WIDGET(gtk_tool_button_new_from_stock(text));					\
+	item = GTK_WIDGET(gtk_tool_button_new (NULL, NULL));					\
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), text);			\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
@@ -470,36 +472,36 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 			tooltip);									\
 }
 
-	TOOLBAR_ITEM(preview_data->first, GTK_STOCK_GOTO_FIRST,
+	TOOLBAR_ITEM(preview_data->first, "go-first",
 		     _("First page"), cb_preview_go_first, preview_data);
-	TOOLBAR_ITEM(preview_data->previous, GTK_STOCK_GO_BACK,
+	TOOLBAR_ITEM(preview_data->previous, "go-previous",
 		     _("Previous page"), cb_preview_go_previous, preview_data);
 
 	page = gtk_label_new("");
 	preview_data->page_nr_label = page;
 
-	TOOLBAR_ITEM(preview_data->next, GTK_STOCK_GO_FORWARD,
+	TOOLBAR_ITEM(preview_data->next, "go-next",
 		     _("Next page"), cb_preview_go_next, preview_data);
-	TOOLBAR_ITEM(preview_data->last, GTK_STOCK_GOTO_LAST,
+	TOOLBAR_ITEM(preview_data->last, "go-last",
 		     _("Last page"), cb_preview_go_last, preview_data);
 
 	separator = gtk_separator_tool_item_new();
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
 
-	TOOLBAR_ITEM(preview_data->zoom_100, GTK_STOCK_ZOOM_100,
+	TOOLBAR_ITEM(preview_data->zoom_100, "zoom-original",
 		     _("Zoom 100%"), cb_preview_zoom_100, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_fit, GTK_STOCK_ZOOM_FIT,
+	TOOLBAR_ITEM(preview_data->zoom_fit, "zoom-fit-best",
 		     _("Zoom fit"), cb_preview_zoom_fit, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_in, GTK_STOCK_ZOOM_IN,
+	TOOLBAR_ITEM(preview_data->zoom_in, "zoom-in",
 		     _("Zoom in"), cb_preview_zoom_in, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_out, GTK_STOCK_ZOOM_OUT,
+	TOOLBAR_ITEM(preview_data->zoom_out, "zoom-out",
 		     _("Zoom out"), cb_preview_zoom_out, preview_data);
 
 	separator = gtk_separator_tool_item_new();
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
 
 	/* tooltip has to be NULL else it triggers an expose_event */
-	TOOLBAR_ITEM(preview_data->close, GTK_STOCK_CLOSE, NULL,
+	TOOLBAR_ITEM(preview_data->close, "window-close", _("Close"),
 		     cb_preview_btn_close, preview_data);
 
 	gtk_widget_show(statusbar);
@@ -513,8 +515,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
 	da = gtk_drawing_area_new();
 	gtk_widget_set_double_buffered(da, FALSE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw),
-					      da);
+	gtk_container_add(GTK_CONTAINER(sw), da);
 	gtk_widget_realize(da);
 	preview_data->scrolled_window = sw;
 	preview_data->area = da;
@@ -577,8 +578,8 @@ static void cb_preview_size_allocate(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.print_previewwin_width = allocation->width;
-	prefs_common.print_previewwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.print_previewwin_width, &prefs_common.print_previewwin_height);
 }
 
 static void cb_preview_ready(GtkPrintOperationPreview *preview,
@@ -1333,7 +1334,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data,
 			g_slist_free(tags);
 		}
 
-		if (gtk_text_iter_begins_tag(&iter, NULL)) {
+		if (gtk_text_iter_starts_tag(&iter, NULL)) {
 			tags = gtk_text_iter_get_toggled_tags(&iter, TRUE);
 			/* Sometimes, an iter has several weights. Use only the first in this case */
 			gboolean weight_set_for_this_iter;

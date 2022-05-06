@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include "gtkcmoptionmenu.h"
 
 #define MENU_VAL_ID "Claws::Menu::ValueID"
 #define MENU_VAL_DATA "Claws::Menu::ValueDATA"
@@ -93,15 +92,6 @@ void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, const gchar *menu, gb
 void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboolean active);
 gchar *cm_menu_item_get_shortcut(GtkUIManager *gui_manager, gchar *menu);
 GtkWidget *cm_menu_item_new_label_from_url(gchar *label);
-
-gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
-				 GCompareFunc func);
-
-void menu_button_position	(GtkMenu		*menu,
-				 gint			*x,
-				 gint			*y,
-				 gboolean		*push_in,
-				 gpointer		 user_data);
 
 void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive);
 

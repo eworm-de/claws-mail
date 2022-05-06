@@ -8208,7 +8208,7 @@ msgid ""
 "  Message has been deleted or moved to another folder"
 msgstr ""
 "\n"
-"  Il messaggio è stato eliminato o spostato  in un'altra cartella"
+"  Il messaggio è stato eliminato o spostato in un'altra cartella"
 
 #: src/messageview.c:3009 src/messageview.c:3015 src/summaryview.c:4295
 #: src/summaryview.c:7054

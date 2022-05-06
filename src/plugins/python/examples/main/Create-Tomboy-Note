@@ -1,10 +1,13 @@
 # -*- Mode: python -*-
 
 import dbus
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
 
 def add_note(msg):
-    
+
     def get_reminder(desc):
         get_reminder.reminder = None
 
@@ -20,70 +23,78 @@ def add_note(msg):
             if cb.get_active():
                 get_reminder.reminder += "".join([" at ", "%02d" % hours.get_value_as_int(), ":", "%02d" % minutes.get_value_as_int()])
             ww.destroy()
-        
+
         def day_selected(cal, exp):
             ymd = list(cal.get_date())
             ymd[1] += 1
             exp.set_label("/".join(str(vv) for vv in ymd))
-        
+
         def custom(button, ww, entry):
             get_reminder.reminder = entry.get_text()
             ww.destroy()
-        
+
 
         # Check if the user wants a reminder in a dialog box
-        win = gtk.Window()
+        win = Gtk.Window()
         win.set_title("Reminder")
-        win.connect("destroy", gtk.main_quit)
-        win.set_position(gtk.WIN_POS_CENTER)
-        table = gtk.Table(2,7)
+        win.connect("destroy", Gtk.main_quit)
+        win.set_position(Gtk.WindowPosition.CENTER)
+        table = Gtk.Table(n_rows=2, n_columns=7)
         win.add(table)
-        table.attach(gtk.Label(desc), 0, 2, 0, 1)
+        table.attach(Gtk.Label(label=desc), 0, 2, 0, 1)
         # no reminder
-        button = gtk.Button("No reminder")
+        button = Gtk.Button(label="No reminder")
         button.connect("clicked", no_reminder, win)
-        table.attach(button, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=0, ypadding=4)
-        table.attach(gtk.HSeparator(), 0, 2, 2, 3)
+        table.attach(button, 0, 1, 1, 2,
+            xoptions=Gtk.AttachOptions.FILL, yoptions=0, ypadding=4)
+        table.attach(Gtk.HSeparator(), 0, 2, 2, 3)
         # date / time reminder
-        button = gtk.Button("Date/Time")
-        table.attach(button, 0, 1, 3, 4, xoptions=gtk.FILL, yoptions=gtk.EXPAND | gtk.FILL, ypadding=4)
-        hbox = gtk.HBox()
+        button = Gtk.Button(label="Date/Time")
+        table.attach(button, 0, 1, 3, 4,
+            xoptions=Gtk.AttachOptions.FILL,
+            yoptions=Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, ypadding=4)
+        hbox = Gtk.HBox()
         table.attach(hbox, 1, 2, 3, 4)
-        cal = gtk.Calendar()
-        exp = gtk.Expander()
+        cal = Gtk.Calendar()
+        exp = Gtk.Expander()
         day_selected(cal, exp)
         cal.connect("day-selected", day_selected, exp)
         exp.add(cal)
-        hbox.pack_start(exp)
-        cb = gtk.CheckButton("at")
-        hbox.pack_start(cb, False, False)
-        hours = gtk.SpinButton(gtk.Adjustment(12.0, 0.0, 24.0, 1.0, 5.0, 0.0))
+        hbox.pack_start(exp, False, False, 5)
+        cb = Gtk.CheckButton(label="at")
+        hbox.pack_start(cb, False, False, 5)
+        hours = Gtk.SpinButton.new(Gtk.Adjustment(
+            value=12.0, lower=0.0, upper=24.0, step_increment=1.0,
+            page_increment=5.0, page_size=0.0), 1.0, 0)
         hours.set_numeric(True)
         hours.set_wrap(True)
-        hbox.pack_start(hours, False, False)
-        hbox.pack_start(gtk.Label(":"), False, False)
-        minutes = gtk.SpinButton(gtk.Adjustment(0.0, 0.0, 59.0, 1.0, 5.0, 0.0))
+        hbox.pack_start(hours, False, False, 5)
+        hbox.pack_start(Gtk.Label(label=":"), False, False, 5)
+        minutes = Gtk.SpinButton.new(Gtk.Adjustment(
+            value=0.0, lower=0.0, upper=59.0, step_increment=1.0,
+            page_increment=5.0, page_size=0.0), 1.0, 0)
         minutes.set_numeric(True)
         minutes.set_wrap(True)
-        hbox.pack_start(minutes, False, False)
+        hbox.pack_start(minutes, False, False, 5)
         button.connect("clicked", date_time_cb, win, cal, cb, hours, minutes)
         # custom
-        button = gtk.Button("custom")
-        table.attach(button, 0, 1, 4, 5, xoptions=gtk.FILL, yoptions=0, ypadding=4)
-        entry = gtk.Entry()
+        button = Gtk.Button(label="custom")
+        table.attach(button, 0, 1, 4, 5,
+            xoptions=Gtk.AttachOptions.FILL, yoptions=0, ypadding=4)
+        entry = Gtk.Entry()
         button.connect("clicked", custom, win, entry)
         table.attach(entry, 1, 2, 4, 5)
-        
+
         # "Show note" toggle option
-        table.attach(gtk.HSeparator(), 0, 2, 5, 6)
-        cb = gtk.CheckButton("Show note")
+        table.attach(Gtk.HSeparator(), 0, 2, 5, 6)
+        cb = Gtk.CheckButton(label="Show note")
         table.attach(cb, 0, 2, 6, 7)
 
         win.show_all()
         win.present()
-        gtk.main()
+        Gtk.main()
         return (get_reminder.reminder, cb.get_active())
-    
+
     title = msg.Subject
     # set up contents: opening tag
     content = ["<note-content>"]
@@ -98,13 +109,14 @@ def add_note(msg):
         content.extend(["!", reminder, "\n"])
     # link back to email
     msgid = msg.MessageID
-    if msgid[0] != "<":
-        msgid = "<" + msgid
-    if msgid[-1] != ">":
-        msgid += ">" 
-    msgid = msgid.replace("<", "&lt;").replace(">", "&gt;")
-    link = '<link:cm-mail uri="%s/%s">%s</link:cm-mail>' % (clawsmail.get_folderview_selected_folder().get_identifier(), msgid, msg.Subject)
-    content.append(link)
+    if msgid:
+        if msgid[0] != "<":
+            msgid = "<" + msgid
+        if msgid[-1] != ">":
+            msgid += ">"
+        msgid = msgid.replace("<", "&lt;").replace(">", "&gt;")
+        link = '<link:cm-mail uri="%s/%s">%s</link:cm-mail>' % (clawsmail.get_folderview_selected_folder().get_identifier(), msgid, msg.Subject)
+        content.append(link)
     #closing tag
     content.append("</note-content>")
 
@@ -122,9 +134,4 @@ def add_note(msg):
 # iterate over all notes
 for msg in clawsmail.get_summaryview_selected_message_list():
     add_note(msg)
-    
-
-
-
-
 

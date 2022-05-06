@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -706,8 +706,8 @@ static void addressbook_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.addressbookwin_width = allocation->width;
-	prefs_common.addressbookwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addressbookwin_width, &prefs_common.addressbookwin_height);
 }
 
 static gint sort_column_number = 0;
@@ -757,13 +757,13 @@ static void addressbook_sort_list(GtkCMCList *clist, const gint col,
 	gtk_cmclist_sort(clist);
 	
 	for(pos = 0 ; pos < N_LIST_COLS ; pos++) {
-		hbox = gtk_hbox_new(FALSE, 4);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 		label = gtk_label_new(gettext(list_titles[pos]));
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		
 		if(pos == col) {
-			arrow = gtk_arrow_new(sort_type == GTK_SORT_ASCENDING ?
-				GTK_ARROW_DOWN : GTK_ARROW_UP, GTK_SHADOW_IN);
+			arrow = gtk_image_new_from_icon_name(sort_type == GTK_SORT_ASCENDING ?
+				"pan-down-symbolic" : "pan-up-symbolic", GTK_ICON_SIZE_MENU);
 			gtk_box_pack_end(GTK_BOX(hbox), arrow, FALSE, FALSE, 0);
 		}
 		
@@ -920,7 +920,7 @@ static void addressbook_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	/* Menu bar */
@@ -989,7 +989,7 @@ static void addressbook_create(void)
 
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, BORDER_WIDTH);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, BORDER_WIDTH);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 
@@ -997,7 +997,6 @@ static void addressbook_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ctree_swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(ctree_swin, COL_FOLDER_WIDTH + 20, -1);
 
 	/* Address index */
 	ctree = gtk_sctree_new_with_titles(N_INDEX_COLS, 0, index_titles);
@@ -1042,7 +1041,7 @@ static void addressbook_create(void)
 	g_signal_connect(G_OBJECT(ctree), "focus_out_event",
 		G_CALLBACK(addressbook_address_index_focus_evt_out), NULL);
 
-	clist_vbox = gtk_vbox_new(FALSE, 4);
+	clist_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 
 	clist_swin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
@@ -1098,7 +1097,7 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_start_drag), NULL);
 	g_signal_connect(G_OBJECT(clist), "drag_data_get",
 			 G_CALLBACK(addressbook_drag_data_get), NULL);	
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Search"));
@@ -1116,15 +1115,15 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_entry_activated), NULL);
 
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
-		editaddress_vbox = gtk_vbox_new(FALSE, 4);
-		vpaned = gtk_vpaned_new();
+		editaddress_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), clist_vbox, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), editaddress_vbox, TRUE, FALSE);
 	} else {
 		vpaned = NULL;
 		editaddress_vbox = NULL;
 	}
-	hpaned = gtk_hpaned_new();
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox2), hpaned, TRUE, TRUE, 0);
 	gtk_paned_pack1(GTK_PANED(hpaned), ctree_swin, FALSE, FALSE);
 	if (prefs_common.addressbook_use_editaddress_dialog)
@@ -1133,13 +1132,13 @@ static void addressbook_create(void)
 		gtk_paned_pack2(GTK_PANED(hpaned), vpaned, TRUE, FALSE);
 
 	/* Status bar */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	hbbox = gtk_hbutton_box_new();
+	hbbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(hbbox), 2);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 4);
@@ -1147,18 +1146,18 @@ static void addressbook_create(void)
 
 	gtkut_stock_button_add_help(hbbox, &help_btn);
 
-	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	edit_btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_set_can_default(edit_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), edit_btn, TRUE, TRUE, 0);
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtk_button_new_with_mnemonic("_Delete");
 	gtk_widget_set_can_default(del_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), del_btn, TRUE, TRUE, 0);
-	reg_btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
+	reg_btn = gtk_button_new_with_mnemonic("_New");
 	gtk_widget_set_can_default(reg_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), reg_btn, TRUE, TRUE, 0);
 
 
-	lup_btn = gtk_button_new_from_stock(GTK_STOCK_FIND);
+	lup_btn = gtkut_stock_button("edit-find", _("_Find"));
 	gtk_widget_set_can_default(lup_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), lup_btn, TRUE, TRUE, 0);
 
@@ -1188,7 +1187,7 @@ static void addressbook_create(void)
 	gtk_widget_set_can_default(bcc_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtkut_stock_button("window-close", "_Close");
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), close_btn, TRUE, TRUE, 0);
 
@@ -1312,7 +1311,7 @@ static void addressbook_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.addressbookwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.addressbookwin_width,
 				    prefs_common.addressbookwin_height);
 #ifdef G_OS_WIN32
 	gtk_window_move(GTK_WINDOW(window), 48, 48);
@@ -1430,7 +1429,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	if( iface->readOnly ) {
 		alertpanel( _("Delete address(es)"),
 			_("This address data is read-only and cannot be deleted."),
-			GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST);
+			"window-close", _("_Close"), NULL, NULL, NULL, NULL, ALERTFOCUS_FIRST);
 		return;
 	}
 
@@ -1476,14 +1475,16 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aval = alertpanel( _("Delete group"),
 					_("Really delete the group(s)?\n"
 					  "The addresses it contains will not be lost."),
-					GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
+					NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+					ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
-					GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
+					NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+					ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
@@ -2477,8 +2478,7 @@ static gboolean addressbook_list_button_pressed(GtkWidget *widget,
 	addressbook_list_menu_setup();
 
 	if( event->button == 3 ) {
-		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
-		       event->button, event->time );
+		gtk_menu_popup_at_pointer(GTK_MENU(addrbook.list_popup), NULL);
 	} else if (event->button == 1) {
 		if (event->type == GDK_2BUTTON_PRESS) {
 			if (prefs_common.add_address_by_click &&
@@ -2672,8 +2672,7 @@ just_set_sens:
 			addrbook.target_compose != NULL);
 
 	if( event->button == 3 )
-		gtk_menu_popup(GTK_MENU(addrbook.tree_popup), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(addrbook.tree_popup), NULL);
 
 	return FALSE;
 }
@@ -2952,7 +2951,8 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 				"results and addresses in '%s'?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
+				NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+				ALERTFOCUS_SECOND );
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
@@ -2964,7 +2964,8 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
-				GTK_STOCK_CANCEL, _("Delete _folder only"), _("Delete folder and _addresses"), ALERTFOCUS_SECOND);
+				NULL, _("_Cancel"), "edit-delete", _("Delete _folder only"),
+				"edit-delete", _("Delete folder and _addresses"), ALERTFOCUS_SECOND);
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ONLY;
@@ -2977,15 +2978,15 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	else if( obj->type == ADDR_ITEM_GROUP ) {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will not be lost."), obj->name);
-		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
-				GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND);
+		aval = alertpanel(_("Delete"), message, NULL, _("_Cancel"),
+				"edit-delete", _("D_elete"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_FOLDER_ONLY;
 	} else {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will be lost."), obj->name);
-		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
-				GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND);
+		aval = alertpanel(_("Delete"), message, NULL, _("_Cancel"),
+				"edit-delete", _("D_elete"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}
@@ -3253,7 +3254,8 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-						GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+						"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+						ALERTFOCUS_FIRST );
 					server->retVal = LDAPRC_SUCCESS;
 					return;
 				}
@@ -3304,7 +3306,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 			if (server->retVal != LDAPRC_SUCCESS) {
 				alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-					GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+					"window-close", _("_Close"), NULL, NULL, NULL, NULL, ALERTFOCUS_FIRST );
 				return;
 			}
 		}
@@ -4170,17 +4172,16 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 			}
 		}
 	}
-	if( errFlag ) {
+	if (errFlag) {
 		debug_print( "Error\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_ERROR);
-	}
-	else if( msg ) {
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
+	} else if (msg) {
 		debug_print( "Warning\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	}
 
 	return retVal;
@@ -4295,8 +4296,8 @@ void addressbook_read_file( void ) {
 		addrindex_print_index( addrIndex, stdout );
 		alertpanel_full(_("Addressbook Error"),
 				_("Could not read address index"),
-				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_ERROR);
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
 	}
 	debug_print( "done.\n" );
 }
@@ -5692,8 +5693,9 @@ static void addressbook_start_drag(GtkWidget *widget, gint button,
 	if (addressbook_target_list == NULL)
 		addressbook_target_list = gtk_target_list_new(
 				addressbook_drag_types, 1);
-	context = gtk_drag_begin(widget, addressbook_target_list,
-				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
+	context = gtk_drag_begin_with_coordinates(widget, addressbook_target_list,
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event,
+				 -1, -1);
 	gtk_drag_set_icon_default(context);
 }
 
@@ -5774,11 +5776,9 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 
 		if (y > height - 24 && height + vpos < total_height) {
 			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
-			gtk_adjustment_changed(pos);
 		}
 		if (y < 24 && y > 0) {
 			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
-			gtk_adjustment_changed(pos);
 		}
 		node = gtk_cmctree_node_nth(GTK_CMCTREE(widget), row);
 

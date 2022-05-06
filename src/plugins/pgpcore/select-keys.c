@@ -1,5 +1,5 @@
-/* select-keys.c - GTK+ based key selection
- * Copyright (C) 2001-2016 Werner Koch (dd9jn) and the Claws Mail team
+/* select-keys.c - GTK based key selection
+ * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify        
  * it under the terms of the GNU General Public License as published by
@@ -418,15 +418,15 @@ create_dialog (struct select_keys_s *sk)
                       G_CALLBACK (key_pressed_cb), sk);
     MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-    vbox = gtk_vbox_new (FALSE, 8);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
-    hbox  = gtk_hbox_new(FALSE, 4);
+    hbox  = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     label = gtk_label_new ( "" );
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-    hbox = gtk_hbox_new (FALSE, 8);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
 
@@ -488,18 +488,18 @@ create_dialog (struct select_keys_s *sk)
 
     gtk_container_add (GTK_CONTAINER (scrolledwin), view);
 
-    hbox = gtk_hbox_new (FALSE, 8);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
     /* TRANSLATORS: check that the accelerators in _Select, _Other and
      * Do_n't encrypt are different than the one in the stock Cancel
      * button */
     gtkut_stock_button_set_create (&bbox, 
-                                   &select_btn, _("_Select"),
-		   		   &other_btn, _("_Other"),
-		    		   &dont_encrypt_btn, _("Do_n't encrypt"));
+                                   &select_btn, NULL, _("_Select"),
+		   		   &other_btn, NULL, _("_Other"),
+		    		   &dont_encrypt_btn, NULL, _("Do_n't encrypt"));
     
-    cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+    cancel_btn = gtk_button_new_with_mnemonic("_Cancel");
     gtk_widget_set_can_default(cancel_btn, TRUE);
     gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
     gtk_widget_show(cancel_btn);
@@ -515,7 +515,7 @@ create_dialog (struct select_keys_s *sk)
     g_signal_connect (G_OBJECT (other_btn), "clicked",
                       G_CALLBACK (other_btn_cb), sk);
 
-    vbox2 = gtk_vbox_new (FALSE, 4);
+    vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
     sk->window = window;
@@ -709,7 +709,7 @@ use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
 	       "Do you trust this key enough to use it anyway?"), 
 	       key->subkeys->keyid, key->uids->name, key->uids->email);
     aval = alertpanel(title, buf,
-	     GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
+		      NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST);
     g_free(buf);
     g_free(title);
     if (aval == G_ALERTALTERNATE)

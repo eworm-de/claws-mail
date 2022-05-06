@@ -41,20 +41,20 @@ static int Mailbox_init(clawsmail_MailboxObject *self, PyObject *args, PyObject 
 static void Mailbox_dealloc(clawsmail_MailboxObject* self)
 {
   self->folder = NULL;
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject* Mailbox_str(clawsmail_MailboxObject *self)
 {
   if(self->folder && self->folder->name)
-    return PyString_FromFormat("Mailbox: %s", self->folder->name);
+    return PyUnicode_FromFormat("Mailbox: %s", self->folder->name);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_name(clawsmail_MailboxObject *self, void *closure)
 {
   if(self->folder && self->folder->name)
-    return PyString_FromString(self->folder->name);
+    return PyUnicode_FromString(self->folder->name);
   Py_RETURN_NONE;
 }
 
@@ -66,8 +66,7 @@ static PyGetSetDef Mailbox_getset[] = {
 };
 
 static PyTypeObject clawsmail_MailboxType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /* ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.Mailbox",       /* tp_name*/
     sizeof(clawsmail_MailboxObject), /* tp_basicsize*/
     0,                         /* tp_itemsize*/

@@ -1,5 +1,5 @@
-/* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014 Charles Lehner and the Claws Mail team
+/* Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2014-2019 Charles Lehner and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,20 +228,20 @@ static void addrmerge_prompt( struct AddrMergePage *page )
 			_("Merge addresses"),
 			GTK_WINDOW(mainwin->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_CANCEL,
+			_("_Cancel"),
 			GTK_RESPONSE_CANCEL,
-			"_Merge",
+			_("_Merge"),
 			GTK_RESPONSE_ACCEPT,
 			NULL);
 
 	g_signal_connect ( dialog, "response",
 			G_CALLBACK(addrmerge_dialog_cb), page);
 
-	mvbox = gtk_vbox_new(FALSE, 4);
+	mvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(
 			gtk_dialog_get_content_area(GTK_DIALOG(dialog))), mvbox);
 	gtk_container_set_border_width(GTK_CONTAINER(mvbox), 8);
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
 	gtk_box_pack_start(GTK_BOX(mvbox),
 			hbox, FALSE, FALSE, 0);
@@ -253,7 +253,8 @@ static void addrmerge_prompt( struct AddrMergePage *page )
 			g_list_length(page->addressSelect->listSelect));
 	label = gtk_label_new( label_msg );
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label),0);
+	gtk_label_set_yalign(GTK_LABEL(label),0.5);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	g_free(label_msg);
 
@@ -394,9 +395,10 @@ void addrmerge_merge(
 
 	/* Test for read only */
 	if( ds->interface->readOnly ) {
-		alertpanel( _("Merge addresses"),
-			_("This address data is read-only and cannot be deleted."),
-			GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+		alertpanel(_("Merge addresses"),
+			   _("This address data is read-only and cannot be deleted."),
+			   "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+			   ALERTFOCUS_FIRST );
 		return;
 	}
 

@@ -7,13 +7,13 @@ def deal_with_folder(folder):
         action_group = clawsmail.get_mainwindow_action_group();
         select_all_action = action_group.get_action("Edit/SelectAll")
         mark_read_action = action_group.get_action("Message/Mark/MarkRead")
-        
+
         # Select given folder
         clawsmail.folderview_select_folder(folder)
-        
+
         # Search for messages with age greater than 28 days
         clawsmail.quicksearch_search("ag 28", clawsmail.QUICK_SEARCH_EXTENDED)
-        
+
         # Mark all messages in the search result as read
         select_all_action.activate()
         mark_read_action.activate()
@@ -28,12 +28,12 @@ if root is not None:
     # Get a tree of subfolders. The argument could also be a string of a mailbox name,
     # or left out for a list of mailbox trees.
     tree = clawsmail.get_folder_tree(root)
-    
+
     # Call above function for all folders.
     tree.traverse(deal_with_folder)
-    
+
     # Clear the quicksearch widget again
     clawsmail.quicksearch_clear()
-    
+
     # Change back to original folder
     clawsmail.folderview_select(root)

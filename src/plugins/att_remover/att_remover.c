@@ -1,10 +1,11 @@
 /*
  * att_remover -- for Claws Mail
  *
- * Copyright (C) 2005 Colin Leroy <colin@colino.net>
+ * Copyright (C) 2005-2022 Colin Leroy <colin@colino.net>
+ * 	 and the Claws Mail Team
  *
- * Sylpheed is a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail is a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,8 +102,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	AttRemoverData.win_width = allocation->width;
-	AttRemoverData.win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+			&AttRemoverData.win_width, &AttRemoverData.win_height);
 }
 
 static gint save_new_message(MsgInfo *oldmsg, MsgInfo *newmsg, MimeInfo *info,
@@ -345,7 +346,7 @@ static void remove_attachments_dialog(AttRemover *attremover)
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	model = GTK_TREE_MODEL(gtk_list_store_new(N_ATT_REMOVER_COLUMNS,
@@ -383,9 +384,9 @@ static void remove_attachments_dialog(AttRemover *attremover)
 	gtk_container_set_border_width(GTK_CONTAINER(scrollwin), 4);
 	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0); 
 
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), HSPACING_NARROW);
 	gtk_widget_grab_default(ok_btn);
@@ -402,7 +403,7 @@ static void remove_attachments_dialog(AttRemover *attremover)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, attremover->win_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), attremover->win_width,
 					attremover->win_height);
 
 	attremover->window = window;
@@ -425,8 +426,8 @@ static void remove_attachments(GSList *msglist)
                   _("Do you really want to remove all attachments from "
                   "the selected messages?\n\n"
 		  "The deleted data will be unrecoverable."), 
-		  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND,
-                  FALSE, NULL, ALERT_QUESTION) != G_ALERTALTERNATE)
+		  NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
+		  ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION) != G_ALERTALTERNATE)
 		return;
 
 	main_window_cursor_wait(summaryview->mainwin);
@@ -598,7 +599,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 
 const gchar *plugin_licence(void)

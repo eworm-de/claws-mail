@@ -1,5 +1,5 @@
 /* 
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright(C) 1999-2014 the Claws Mail Team
  * == Fancy Plugin ==
  * This file Copyright (C) 2009 -2014 Salvatore De Paolis
@@ -21,12 +21,12 @@
 #define FANCY_PREFS_H
 
 #include <glib.h>
-#include <webkit/webkitwebsettings.h>
+#include <webkit2/webkit2.h>
 typedef struct _FancyPrefs FancyPrefs;
 
 struct _FancyPrefs
 	{
-	WebKitWebSettings *web_settings;
+	WebKitSettings *web_settings;
 
 	gboolean enable_images;
 	gboolean enable_remote_content;

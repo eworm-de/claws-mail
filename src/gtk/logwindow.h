@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,14 +33,14 @@ struct _LogWindow
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
-	GdkColor msg_color;
-	GdkColor warn_color;
-	GdkColor error_color;
-	GdkColor in_color;
-	GdkColor out_color;
-	GdkColor status_ok_color;
-	GdkColor status_nok_color;
-	GdkColor status_skip_color;
+	GdkRGBA *msg_color;
+	GdkRGBA *warn_color;
+	GdkRGBA *error_color;
+	GdkRGBA *in_color;
+	GdkRGBA *out_color;
+	GdkRGBA *status_ok_color;
+	GdkRGBA *status_nok_color;
+	GdkRGBA *status_skip_color;
 
 	gboolean clip;
 	guint	 clip_length;

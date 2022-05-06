@@ -39,7 +39,7 @@ notification_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS)  \
 	$(libnotify_LIBS) \
 	$(unity_LIBS) \
-	$(libcanberra_gtk_LIBS) \
+	$(libcanberra_gtk3_LIBS) \
 	$(hotkey_lib_path)
 
 notification_la_CPPFLAGS = \
@@ -50,7 +50,7 @@ notification_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(libnotify_CFLAGS) \
 	$(unity_CFLAGS) \
-	$(libcanberra_gtk_CFLAGS) \
+	$(libcanberra_gtk3_CFLAGS) \
 	-Wall
 
 notification_la_SOURCES = \

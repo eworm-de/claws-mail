@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,8 +291,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				  "Do you want to continue connecting to this "
 				  "server? The communication would not be "
 				  "secure."),
-				  GTK_STOCK_CANCEL, _("Con_tinue connecting"), NULL,
-					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE) {
+				  NULL, _("_Cancel"), NULL, _("Con_tinue connecting"),
+				  NULL, NULL, ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE) {
 				session_destroy(session);
 				return -1;
 			}
@@ -601,8 +601,8 @@ static void send_progress_dialog_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.sendwin_width = allocation->width;
-	prefs_common.sendwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.sendwin_width, &prefs_common.sendwin_height);
 }
 
 static SendProgressDialog *send_progress_dialog_create(void)

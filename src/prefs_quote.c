@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -96,7 +96,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox2;
 	GtkWidget *notebook;
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 
 	notebook = gtk_notebook_new();
@@ -104,7 +104,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 	/* new message */
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 	
@@ -119,7 +119,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply */
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 	
@@ -134,7 +134,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward */
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 	

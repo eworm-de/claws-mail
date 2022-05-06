@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2015 the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2019 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,11 +130,11 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *frame_passphrase;
 	GtkWidget *gpg_path, *gpg_path_btn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -156,7 +156,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 
 	SET_TOGGLE_SENSITIVITY_REVERSE(checkbtn_use_gpg_agent, checkbtn_store_passphrase);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -182,7 +182,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	label_expire2 = gtk_label_new(_("minutes"));
 	gtk_widget_show(label_expire2);
 	gtk_box_pack_start(GTK_BOX(hbox1), label_expire2, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_expire2), 0.0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_expire2), 0.0);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, label_expire1);
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, spinbtn_store_passphrase);
@@ -191,14 +191,14 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
 			_("Grab input while entering a passphrase"));
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_warning,
 			_("Display warning on start-up if GnuPG doesn't work"));
 
-	hbox2 = gtk_hbox_new(FALSE, 6);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	label_gpg_path = gtk_label_new(_("Path to GnuPG executable"));
 	gtk_box_pack_start(GTK_BOX(hbox2), label_gpg_path, FALSE, FALSE, 0);
 	gpg_path = gtk_entry_new();
@@ -351,13 +351,13 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	GtkWidget *new_key_btn;
 	GtkWidget *new_key_box;
 
-	vbox = gtk_vbox_new(FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
 	vbox2 = gtkut_get_options_frame(vbox, &frame1, _("Sign key"));
 
-	hbox = gtk_hbox_new (FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
@@ -368,7 +368,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(key_default);
 	gtk_box_pack_start(GTK_BOX(hbox), key_default, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
@@ -379,7 +379,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(key_by_from);
 	gtk_box_pack_start(GTK_BOX(hbox), key_by_from, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
@@ -390,7 +390,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(key_custom);
 	gtk_box_pack_start(GTK_BOX(hbox), key_custom, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 0);
@@ -426,15 +426,15 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 		break;
 	}
 
-	hbox = gtk_hbox_new (FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	new_key_box = gtk_hbox_new(FALSE, 6);
+	new_key_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show(new_key_box);
 	gtk_box_pack_start(GTK_BOX(hbox), new_key_box, FALSE, FALSE, 0);
 
-	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+	image = gtk_button_new_from_icon_name("dialog-warning",
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
 
 	gtk_box_pack_start(GTK_BOX(new_key_box), image, FALSE, FALSE, 0);

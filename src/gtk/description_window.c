@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -98,11 +97,9 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
-	table = gtk_table_new(sz, dwindow->columns, FALSE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin), table);
+	table = gtk_grid_new();
+	gtk_container_add(GTK_CONTAINER(scrolledwin), table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
-
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	line = 0;
 	for(i = 0; dwindow->symbol_table[i] != NULL; i = i + dwindow->columns) {
@@ -122,24 +119,19 @@ static void description_create(DescriptionWindow * dwindow)
 				gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 				gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 				gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-				gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
-				gtk_table_attach(GTK_TABLE(table), label,
-						 col, colend, line, line+1,
-						 (GtkAttachOptions) (GTK_FILL),
-						 (GtkAttachOptions) (0), 0, 2);
+				gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+				gtk_label_set_yalign(GTK_LABEL(label), 0.0);
+				gtk_grid_attach(GTK_GRID(table), label, col, line, 1, 1);
 
-				gtk_widget_size_request(label, &req);
+				gtk_widget_get_preferred_size(label, &req, NULL);
 				if(req.width > max_width[j])
 					max_width[j] = req.width;
 			}
 		} else {
 			GtkWidget *separator;
 			
-			separator = gtk_hseparator_new();
-			gtk_table_attach(GTK_TABLE(table), separator,
-					 0, dwindow->columns, line, line+1,
-					 (GtkAttachOptions) (GTK_FILL),
-					 (GtkAttachOptions) (0), 0, 4);
+			separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+			gtk_grid_attach(GTK_GRID(table), separator, 0, line, 1, 1);
 		}
 		line++;
 	}
@@ -150,13 +142,13 @@ static void description_create(DescriptionWindow * dwindow)
 	g_free(max_width);
 	width += 100;
 	
-	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &close_btn, "window-close", _("_Close"),
+				      NULL, NULL, NULL, NULL, NULL, NULL);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER(dwindow->window), vbox);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(gettext(dwindow->description));

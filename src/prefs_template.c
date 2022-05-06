@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2020 The Claws Mail team
+ * Copyright (C) 2001-2022 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "config.h"
@@ -148,8 +147,8 @@ static void prefs_template_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.templateswin_width = allocation->width;
-	prefs_common.templateswin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.templateswin_width, &prefs_common.templateswin_height);
 }
 
 static void prefs_template_window_create(void)
@@ -196,7 +195,7 @@ static void prefs_template_window_create(void)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
@@ -205,28 +204,27 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(scrolled_window);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(vbox), scrolled_window);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 
 	/* vpaned to separate template settings from templates list */
-	vpaned = gtk_vpaned_new();
+	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 	gtk_widget_show(vpaned);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      vpaned);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), vpaned);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT(
 			gtk_bin_get_child(GTK_BIN(scrolled_window))), GTK_SHADOW_NONE);
 
 	/* vbox to handle template name and content */
-	vbox1 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox1);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_paned_pack1(GTK_PANED(vpaned), vbox1, FALSE, FALSE);
 
-	table = gtk_table_new(5, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
-	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
+	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
 
 	for (i=0; widgets_table[i].label; i++) {
 
@@ -236,16 +234,14 @@ static void prefs_template_window_create(void)
 			prefs_common_translated_header_name(widgets_table[i].label) :
 			_(widgets_table[i].label));
 		gtk_widget_show(label);
-		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
-				(GtkAttachOptions) (GTK_FILL),
-				(GtkAttachOptions) 0, 0, 0);
-		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
-
+		gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+		gtk_grid_attach(GTK_GRID(table), label, 0, i, 1, 1);
+	
 		*(widgets_table[i].entry) = gtk_entry_new();
 		gtk_widget_show(*(widgets_table[i].entry));
-		gtk_table_attach(GTK_TABLE(table), *(widgets_table[i].entry), 1, 2, i, (i + 1),
-				(GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
-				(GtkAttachOptions) 0, 0, 0);
+		gtk_grid_attach(GTK_GRID(table), *(widgets_table[i].entry), 1, i, 1, 1);
+		gtk_widget_set_hexpand(*(widgets_table[i].entry), TRUE);
+		gtk_widget_set_halign(*(widgets_table[i].entry), GTK_ALIGN_FILL);
 		CLAWS_SET_TIP(*(widgets_table[i].entry),
 				_(widgets_table[i].tooltips));
 	}
@@ -267,40 +263,40 @@ static void prefs_template_window_create(void)
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text_value, font_desc);
+			gtk_widget_override_font(text_value, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}
 	gtk_widget_show(text_value);
 #ifndef GENERIC_UMPC
-	gtk_widget_set_size_request(text_value, -1, 120);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll2), 120);
 #else
-	gtk_widget_set_size_request(text_value, -1, 60);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll2), 60);
 #endif
 	gtk_container_add(GTK_CONTAINER(scroll2), text_value);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text_value), TRUE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text_value), GTK_WRAP_WORD);
 
 	/* vbox for buttons and templates list */
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox2);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
 	gtk_paned_pack2(GTK_PANED(vpaned), vbox2, TRUE, FALSE);
 
 	/* register | substitute | delete */
-	hbox2 = gtk_hbox_new(FALSE, 4);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
 
-	arrow1 = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow1 = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(arrow1);
 	gtk_box_pack_start(GTK_BOX(hbox2), arrow1, FALSE, FALSE, 0);
 
-	hbox3 = gtk_hbox_new(TRUE, 4);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), hbox3, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
@@ -308,7 +304,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new template above to the list"));
 
-	subst_btn = gtkut_get_replace_btn(_("_Replace"));
+	subst_btn = gtkut_stock_button("edit-redo", _("_Replace"));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
@@ -317,9 +313,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected template in list with the template above"));
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -327,9 +321,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected template from the list"));
 
-	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
-	gtk_button_set_image(GTK_BUTTON(clear_btn),
-			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (hbox3), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -337,7 +329,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-	desc_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	desc_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",
@@ -346,7 +338,7 @@ static void prefs_template_window_create(void)
 			_("Show information on configuring templates"));
 
 	/* templates list */
-	hbox4 = gtk_hbox_new(FALSE, 8);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox4);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox4, TRUE, TRUE, 0);
 
@@ -357,11 +349,11 @@ static void prefs_template_window_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 				       
-	vbox3 = gtk_vbox_new(FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox4), vbox3, FALSE, FALSE, 0);
 
-	top_btn = gtk_button_new_from_stock(GTK_STOCK_GOTO_TOP);
+	top_btn = gtkut_stock_button("go-top", _("_Top"));
 	gtk_widget_show(top_btn);
 	gtk_box_pack_start(GTK_BOX(vbox3), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(top_btn), "clicked",
@@ -371,7 +363,7 @@ static void prefs_template_window_create(void)
 
 	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start (GTK_BOX(vbox3), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
@@ -379,7 +371,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected template up"));
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start(GTK_BOX (vbox3), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
@@ -389,7 +381,7 @@ static void prefs_template_window_create(void)
 
 	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
-	bottom_btn = gtk_button_new_from_stock(GTK_STOCK_GOTO_BOTTOM);
+	bottom_btn = gtkut_stock_button("go-bottom", _("_Bottom"));
 	gtk_widget_show(bottom_btn);
 	gtk_box_pack_start(GTK_BOX(vbox3), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(bottom_btn), "clicked",
@@ -404,9 +396,9 @@ static void prefs_template_window_create(void)
 
 	/* help | cancel | ok */
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, GTK_STOCK_CANCEL,
-			&ok_btn, GTK_STOCK_OK,
-			NULL, NULL);
+			&cancel_btn, NULL, _("_Cancel"),
+			&ok_btn, NULL, _("_OK"),
+			NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -435,7 +427,8 @@ static void prefs_template_window_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.templateswin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.templateswin_width,
 				    prefs_common.templateswin_height);
 
 	templates.window = window;
@@ -571,8 +564,8 @@ static void prefs_template_ok_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
 
@@ -596,13 +589,13 @@ static void prefs_template_cancel_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Templates list not saved"),
 				 _("The templates list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 
@@ -903,8 +896,8 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete template"),
 		       _("Do you really want to delete this template?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
@@ -916,8 +909,8 @@ static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
 	if (alertpanel(_("Delete all templates"),
 			  _("Do you really want to delete all the templates?"),
-			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-				ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+			  NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+			  ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 	   return;
 
 	prefs_template_clear_list();
@@ -1174,9 +1167,7 @@ static gint prefs_template_list_btn_pressed(GtkWidget *widget, GdkEventButton *e
 			   non_empty = gtk_tree_model_iter_next(model, &iter);
 			cm_menu_set_sensitive("PrefsTemplatePopup/DeleteAll", non_empty);
 
-		   gtk_menu_popup(GTK_MENU(prefs_template_popup_menu), 
-					  NULL, NULL, NULL, NULL, 
-					  event->button, event->time);
+		   gtk_menu_popup_at_pointer(GTK_MENU(prefs_template_popup_menu), NULL);
 	   }
    }
    return FALSE;

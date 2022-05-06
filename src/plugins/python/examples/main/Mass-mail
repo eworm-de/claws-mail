@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Send the same mail to a list of people, one at a time.
-# As this is normal Python code, the message contents and 
-# the addresses could also come from an external source 
+# As this is normal Python code, the message contents and
+# the addresses could also come from an external source
 # (such as a file, or a database).
 addresses = ["mail1@example.tld", "mail2@example.tld", "mail3@example.tld"]
 
@@ -13,17 +13,17 @@ for address in addresses:
     # in which case the same rules as on a menu click one "New message"
     # are applied.
     cw = clawsmail.ComposeWindow("berndth@gmx.de")
-    
+
     # Add a recipient. There are also add_Cc and add_Bcc functions.
     cw.add_To(address)
-    
+
     # Set the subject of the message
     cw.set_subject("Mass mail")
-    
+
     # For the message body, access to the GtkTextView is granted in ComposeWindow.text.
     buffer = cw.text.get_buffer()
     buffer.set_text("This is an automatic message")
-    
+
     # Access to the GtkUIManager is also provided, look for "send later" action
     action = None
     for action_group in cw.ui_manager.get_action_groups():

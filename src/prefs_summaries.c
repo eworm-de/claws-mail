@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2018 Colin Leroy and The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2022 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_window_set_type_hint(GTK_WINDOW(datefmt_win), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_set_size_request(datefmt_win, 440, 280);
 
-	vbox1 = gtk_vbox_new(FALSE, 10);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(datefmt_win), vbox1);
 
@@ -243,24 +243,24 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			 G_CALLBACK(date_format_select_row),
 			 datefmt_win);
 	
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	label1 = gtk_label_new(_("Date format"));
 	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
-			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label1, 0, 0, 1, 1);
 
 	datefmt_entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(datefmt_entry), 256);
 	gtk_widget_show(datefmt_entry);
-	gtk_table_attach(GTK_TABLE(table), datefmt_entry, 1, 2, 0, 1,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), datefmt_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(datefmt_entry, TRUE);
+	gtk_widget_set_halign(datefmt_entry, GTK_ALIGN_FILL);
 
 	/* we need the "sample" entry box; add it as data so callbacks can
 	 * get the entry box */
@@ -269,20 +269,20 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 
 	label2 = gtk_label_new(_("Example"));
 	gtk_widget_show(label2);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
-			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label2), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label2, 0, 1, 1, 1);
 
 	label3 = gtk_label_new("");
 	gtk_widget_show(label3);
-	gtk_table_attach(GTK_TABLE(table), label3, 1, 2, 1, 2,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label3, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label3, TRUE);
+	gtk_widget_set_halign(label3, GTK_ALIGN_FILL);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"), NULL, NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_show(confirm_area);
@@ -371,27 +371,27 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Folder list")));
 	
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
 
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX (vbox1), hbox0, FALSE, FALSE, 0);
 
@@ -418,7 +418,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox1, checkbtn_run_processingrules_mark_all_read,
 		 _("Run processing rules before marking all messages in a folder as read or unread"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -440,20 +440,20 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Message list")));
 
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 	
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
@@ -463,7 +463,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_SPACER(hbox0, hbox1, 4);
 	PACK_CHECK_BUTTON(hbox0, checkbtn_summary_col_lock, _("Lock column headers"));
 
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -481,7 +481,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	COMBOBOX_ADD (menu, _("Name and Address"), SHOW_BOTH);
 
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_summaryfromshow, FALSE, FALSE, 0);
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
 
@@ -493,7 +493,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
 
-	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	button_datefmt = gtkut_stock_button("dialog-information", _("_Information"));
 
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
@@ -506,7 +506,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(button_datefmt,
 			     _("Date format help"));
 
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
@@ -539,7 +539,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
 			_("when selected, after"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
 
 	spinbtn_mark_as_read_delay_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 60, 1, 10, 0));
@@ -562,7 +562,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show_all(vbox3);
 
 	/* Next Unread Message Dialog */
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -607,11 +607,11 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox1, checkbtn_show_tooltips,
 		 _("Show tooltips"));
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
@@ -619,7 +619,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_new_folders, _("New folders"));
 
-	hbox1 = gtk_hbox_new(FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 

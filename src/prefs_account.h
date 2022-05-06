@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -137,11 +137,11 @@ struct _PrefsAccount
 	GSList *customhdr_list;
 
         /* OAuth2 */
-	gint oauth2_provider;
-	gint oauth2_date;
-	gchar *oauth2_authcode;
-	gchar *oauth2_client_id;
-	gchar *oauth2_client_secret;
+        gint oauth2_provider;
+        gint oauth2_date;
+        gchar *oauth2_authcode;
+        gchar *oauth2_client_id;
+        gchar *oauth2_client_secret;
 
 	/* Compose */
 	SigType sig_type;

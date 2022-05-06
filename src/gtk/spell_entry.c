@@ -43,9 +43,10 @@
 #include "gtkutils.h"
 
 static void claws_spell_entry_init		(ClawsSpellEntry *entry);
-static void claws_spell_entry_destroy		(GtkObject *object);
+static void claws_spell_entry_finalize		(GObject *object);
+static void claws_spell_entry_destroy		(GtkWidget *object);
 static gint claws_spell_entry_expose		(GtkWidget *widget,
-						 GdkEventExpose *event);
+						 cairo_t *cr);
 static gint claws_spell_entry_button_press	(GtkWidget *widget,
 						 GdkEventButton *event);
 static gboolean claws_spell_entry_popup_menu	(GtkWidget *widget,
@@ -59,7 +60,7 @@ static void claws_spell_entry_preedit_changed		(GtkEntry *entry,
 						 gchar *preedit,
 						 gpointer data);
 
-typedef struct
+typedef struct _ClawsSpellEntryPriv
 {
 	PangoAttrList        *attr_list;
 	gint                  mark_character;
@@ -69,52 +70,36 @@ typedef struct
 	gint                  preedit_length;
 } ClawsSpellEntryPrivate;
 
-#define CLAWS_SPELL_ENTRY_GET_PRIVATE(entry) \
-	G_TYPE_INSTANCE_GET_PRIVATE (entry, CLAWS_TYPE_SPELL_ENTRY, \
-			ClawsSpellEntryPrivate)
-
 static GtkEntryClass *parent_class = NULL;
 
-#if !GLIB_CHECK_VERSION(2,58, 0)
-G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
-#else
+
 G_DEFINE_TYPE_WITH_CODE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY,
-		G_ADD_PRIVATE(ClawsSpellEntry))
-#endif
+			G_ADD_PRIVATE(ClawsSpellEntry))
 
 
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 {
-#if !GLIB_CHECK_VERSION(2,58, 0)
 	GObjectClass	*g_object_class;
-#endif
-	GtkObjectClass	*gtk_object_class;
 	GtkWidgetClass	*widget_class;
 	
 	parent_class = g_type_class_peek_parent(klass);
 	
-	gtk_object_class = GTK_OBJECT_CLASS(klass);
-	gtk_object_class->destroy = claws_spell_entry_destroy;
+	g_object_class = G_OBJECT_CLASS(klass);
+	g_object_class->finalize = claws_spell_entry_finalize;
 	
 	widget_class = GTK_WIDGET_CLASS(klass);
 	widget_class->button_press_event = claws_spell_entry_button_press;
-	widget_class->expose_event = claws_spell_entry_expose;
-
-#if !GLIB_CHECK_VERSION(2,58, 0)
-	g_object_class = G_OBJECT_CLASS(klass);
-	g_type_class_add_private(g_object_class,
-			sizeof(ClawsSpellEntryPrivate));
-#endif
+	widget_class->draw = claws_spell_entry_expose;
+	widget_class->destroy = claws_spell_entry_destroy;
 }
 
 static void claws_spell_entry_init(ClawsSpellEntry *entry)
 {
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
-
 	entry->gtkaspell = NULL;
 	
-	priv->attr_list = pango_attr_list_new();
-	priv->preedit_length = 0;
+	entry->priv = g_new0(ClawsSpellEntryPriv, 1);
+	entry->priv->attr_list = pango_attr_list_new();
+	entry->priv->preedit_length = 0;
                                         
 	g_signal_connect(G_OBJECT(entry), "popup-menu",
 			G_CALLBACK(claws_spell_entry_popup_menu), entry);
@@ -126,9 +111,26 @@ static void claws_spell_entry_init(ClawsSpellEntry *entry)
 			G_CALLBACK(claws_spell_entry_preedit_changed), NULL);
 }
 
-static void claws_spell_entry_destroy(GtkObject *object)
+static void claws_spell_entry_finalize(GObject *object)
 {
-	GTK_OBJECT_CLASS(parent_class)->destroy(object);
+	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(object);
+
+	if (entry->priv->attr_list)
+		pango_attr_list_unref(entry->priv->attr_list);
+	if (entry->priv->words)
+		g_strfreev(entry->priv->words);
+
+	g_free(entry->priv->word_starts);
+	g_free(entry->priv->word_ends);
+	g_free(entry->priv);
+	entry->priv = NULL;
+	
+	G_OBJECT_CLASS(parent_class)->finalize(object);
+}
+
+static void claws_spell_entry_destroy(GtkWidget *object)
+{
+	GTK_WIDGET_CLASS(parent_class)->destroy(object);
 }
 
 GtkWidget *claws_spell_entry_new(void)
@@ -154,7 +156,6 @@ static gint claws_spell_entry_find_position (ClawsSpellEntry *_entry, gint x)
 	gint scroll_offset;
 	gboolean trailing;
 	GtkEntry *entry = GTK_ENTRY(_entry);
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 
 	g_object_get(entry, "scroll-offset", &scroll_offset, NULL);
 	x = x + scroll_offset;
@@ -167,9 +168,9 @@ static gint claws_spell_entry_find_position (ClawsSpellEntry *_entry, gint x)
 	line = pango_layout_get_lines(layout)->data;
 	pango_layout_line_x_to_index(line, x * PANGO_SCALE, &index, &trailing);
 
-	if (index >= cursor_index && priv->preedit_length) {
-		if (index >= cursor_index + priv->preedit_length) {
-			index -= priv->preedit_length;
+	if (index >= cursor_index && _entry->priv->preedit_length) {
+		if (index >= cursor_index + _entry->priv->preedit_length) {
+			index -= _entry->priv->preedit_length;
 		} else {
 			index = cursor_index;
 			trailing = FALSE;
@@ -187,22 +188,21 @@ static void get_word_extents_from_position(ClawsSpellEntry *entry, gint *start,
 {
 	const gchar *text;
 	gint i, bytes_pos;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 
 	*start = -1;
 	*end = -1;
 
-	if (priv->words == NULL)
+	if (entry->priv->words == NULL)
 		return;
 
 	text = gtk_entry_get_text(GTK_ENTRY(entry));
 	bytes_pos = (gint) (g_utf8_offset_to_pointer(text, position) - text);
 
-	for (i = 0; priv->words[i]; i++) {
-		if (bytes_pos >= priv->word_starts[i] &&
-		    bytes_pos <= priv->word_ends[i]) {
-			*start = priv->word_starts[i];
-			*end   = priv->word_ends[i];
+	for (i = 0; entry->priv->words[i]; i++) {
+		if (bytes_pos >= entry->priv->word_starts[i] &&
+		    bytes_pos <= entry->priv->word_ends[i]) {
+			*start = entry->priv->word_starts[i];
+			*end   = entry->priv->word_ends[i];
 			return;
 		}
 	}
@@ -227,7 +227,6 @@ static void replace_word(ClawsSpellEntry *entry, const gchar *newword)
 {
 	gint cursor, start_pos, end_pos;
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 
 	start_pos = entry->gtkaspell->start_pos;
 	end_pos = entry->gtkaspell->end_pos;
@@ -236,9 +235,9 @@ static void replace_word(ClawsSpellEntry *entry, const gchar *newword)
 	/* is the cursor at the end? If so, restore it there */
 	if (g_utf8_strlen(text, -1) == cursor)
 		cursor = -1;
-	else if(cursor < priv->mark_character ||
-		cursor > priv->mark_character)
-			cursor = priv->mark_character;
+	else if(cursor < entry->priv->mark_character ||
+		cursor > entry->priv->mark_character)
+			cursor = entry->priv->mark_character;
 
 	gtk_editable_delete_text(GTK_EDITABLE(entry), start_pos, end_pos);
 	gtk_editable_insert_text(GTK_EDITABLE(entry), newword, strlen(newword),
@@ -338,40 +337,22 @@ static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gi
 
 static void insert_misspelled_marker(ClawsSpellEntry *entry, guint start, guint end)
 {
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
-	guint16 red   = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
-					0xff0000) >> 16) / 255.0) * 65535.0);
-	guint16 green = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
-					0x00ff00) >> 8) / 255.0) * 65535.0);
-	guint16 blue  = (guint16) (((gdouble) (prefs_common.color[COL_MISSPELLED] &
-					0x0000ff) / 255.0) * 65535.0);
-	PangoAttribute *fcolor, *ucolor, *unline;
+	GdkRGBA *rgba = &prefs_common.color[COL_MISSPELLED];
+	guint16 red   = (guint16)(rgba->red * 65535);
+	guint16 green = (guint16)(rgba->green * 65535);
+	guint16 blue  = (guint16)(rgba->blue * 65535);
+	PangoAttribute *fcolor;
 	
-	if(prefs_common.color[COL_MISSPELLED] != 0) {
-		fcolor = pango_attr_foreground_new(red, green, blue);
-		fcolor->start_index = start;
-		fcolor->end_index = end;
+	fcolor = pango_attr_foreground_new(red, green, blue);
+	fcolor->start_index = start;
+	fcolor->end_index = end;
 		
-		pango_attr_list_insert(priv->attr_list, fcolor);
-	} else {
-		ucolor = pango_attr_underline_color_new (65535, 0, 0);
-		unline = pango_attr_underline_new (PANGO_UNDERLINE_ERROR);
-
-		ucolor->start_index = start;
-		unline->start_index = start;
-
-		ucolor->end_index = end;
-		unline->end_index = end;
-
-		pango_attr_list_insert (priv->attr_list, ucolor);
-		pango_attr_list_insert (priv->attr_list, unline);
-	}
+	pango_attr_list_insert(entry->priv->attr_list, fcolor);
 }
 
 static gboolean check_word(ClawsSpellEntry *entry, int start, int end)
 {
 	GtkAspell *gtkaspell = entry->gtkaspell;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	PangoAttrIterator *it;
 	gint s, e;
 	gboolean misspelled;
@@ -380,7 +361,7 @@ static gboolean check_word(ClawsSpellEntry *entry, int start, int end)
 
 	/* Check to see if we've got any attributes at this position.
 	 * If so, free them, since we'll readd it if the word is misspelled */
-	it = pango_attr_list_get_iterator(priv->attr_list);
+	it = pango_attr_list_get_iterator(entry->priv->attr_list);
 	if (it == NULL)
 		return FALSE;
 	do {
@@ -415,29 +396,28 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	GtkAllocation allocation;
 	GdkRectangle rect;
 	PangoLayout *layout;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	int length, i;
 
 	cm_return_if_fail(CLAWS_IS_SPELL_ENTRY(entry));
 	cm_return_if_fail(entry->gtkaspell != NULL);
 
-	if (priv->words == NULL)
+	if (entry->priv->words == NULL)
 		return;
 
 	/* Remove all existing pango attributes.  These will get readded as we check */
-	pango_attr_list_unref(priv->attr_list);
-	priv->attr_list = pango_attr_list_new();
+	pango_attr_list_unref(entry->priv->attr_list);
+	entry->priv->attr_list = pango_attr_list_new();
 
 	/* Loop through words */
-	for (i = 0; priv->words[i]; i++) {
-		length = strlen(priv->words[i]);
+	for (i = 0; entry->priv->words[i]; i++) {
+		length = strlen(entry->priv->words[i]);
 		if (length == 0)
 			continue;
-		check_word(entry, priv->word_starts[i], priv->word_ends[i]);
+		check_word(entry, entry->priv->word_starts[i], entry->priv->word_ends[i]);
 	}
 
 	layout = gtk_entry_get_layout(GTK_ENTRY(entry));
-	pango_layout_set_attributes(layout, priv->attr_list);
+	pango_layout_set_attributes(layout, entry->priv->attr_list);
 
 	if (gtk_widget_get_realized(GTK_WIDGET(entry))) {
 		rect.x = 0; rect.y = 0;
@@ -449,38 +429,34 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	}
 }
 
-static gint claws_spell_entry_expose(GtkWidget *widget, GdkEventExpose *event)
+static gint claws_spell_entry_expose(GtkWidget *widget, cairo_t *cr)
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(widget);
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	GtkEntry *gtk_entry = GTK_ENTRY(widget);
 	PangoLayout *layout;
 
 	if (entry->gtkaspell != NULL) {
 		layout = gtk_entry_get_layout(gtk_entry);
-		pango_layout_set_attributes(layout, priv->attr_list);
+		pango_layout_set_attributes(layout, entry->priv->attr_list);
 	}
 
-	return GTK_WIDGET_CLASS(parent_class)->expose_event (widget, event);
+	return GTK_WIDGET_CLASS(parent_class)->draw (widget, cr);
 }
 
 static gint claws_spell_entry_button_press(GtkWidget *widget, GdkEventButton *event)
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(widget);
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	gint pos;
 
 	pos = claws_spell_entry_find_position(entry, event->x);
-	priv->mark_character = pos;
+	entry->priv->mark_character = pos;
 
 	return GTK_WIDGET_CLASS(parent_class)->button_press_event (widget, event);
 }
 
 static gboolean claws_spell_entry_popup_menu(GtkWidget *widget, ClawsSpellEntry *entry)
 {
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
-
-	priv->mark_character = gtk_editable_get_position (GTK_EDITABLE (entry));
+	entry->priv->mark_character = gtk_editable_get_position (GTK_EDITABLE (entry));
 	return FALSE;
 }
 
@@ -492,14 +468,13 @@ static void set_position(gpointer data, gint pos)
 static gboolean find_misspelled_cb(gpointer data, gboolean forward)
 {
 	ClawsSpellEntry *entry = (ClawsSpellEntry *)data;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	GtkAspell *gtkaspell = entry->gtkaspell;
 	gboolean misspelled = FALSE;
 	gint cursor, minpos, maxpos, i, words_len = 0;
 	gint start, end;
 	gchar *text;
 	
-	if (priv->words == NULL)
+	if (entry->priv->words == NULL)
 		return FALSE;
 
 	gtkaspell->orig_pos = gtk_editable_get_position(GTK_EDITABLE(entry));
@@ -515,22 +490,22 @@ static gboolean find_misspelled_cb(gpointer data, gboolean forward)
 	}
 	g_free(text);
 
-	while(priv->words[words_len])
+	while(entry->priv->words[words_len])
 		words_len++;
 
 	if (forward) {
 		for(i=0; i < words_len; i++)
-			if (priv->word_ends[i] > minpos &&
+			if (entry->priv->word_ends[i] > minpos &&
 			    (misspelled = check_word(entry,
-			    		priv->word_starts[i],
-					priv->word_ends[i])))
+			    		entry->priv->word_starts[i],
+					entry->priv->word_ends[i])))
 				break;
 	} else {
 		for(i=words_len-1; i >= 0; i--)
-			if (priv->word_starts[i] < maxpos &&
+			if (entry->priv->word_starts[i] < maxpos &&
 			    (misspelled = check_word(entry,
-			    		priv->word_starts[i],
-					priv->word_ends[i])))
+			    		entry->priv->word_starts[i],
+					entry->priv->word_ends[i])))
 				break;
 	}
 	
@@ -540,10 +515,9 @@ static gboolean find_misspelled_cb(gpointer data, gboolean forward)
 static gboolean check_word_cb(gpointer data)
 {
 	ClawsSpellEntry *entry = (ClawsSpellEntry *)data;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	gint start, end;
 	
-	get_word_extents_from_position(entry, &start, &end, priv->mark_character);
+	get_word_extents_from_position(entry, &start, &end, entry->priv->mark_character);
 	return check_word(entry, start, end);
 }
 
@@ -559,11 +533,10 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	GtkAspell *gtkaspell = entry->gtkaspell;
 	gint pango_offset, win_x, win_y, scr_x, scr_y, text_index, entry_x;
 	gchar *text;
-	GtkRequisition subject_rq;
 	PangoLayout *layout = gtk_entry_get_layout(GTK_ENTRY(entry));
 	PangoLayoutLine *line = pango_layout_get_lines(layout)->data;
 
-	gtk_widget_get_child_requisition(GTK_WIDGET(entry), &subject_rq);
+	gtk_widget_get_preferred_size(GTK_WIDGET(entry), NULL, NULL);
 	
 	/* screen -> compose window coords */
 	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->parent_window)),
@@ -580,9 +553,6 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	pango_offset = gtk_entry_text_index_to_layout_index(GTK_ENTRY(entry),
 					text_index);
 	pango_layout_line_index_to_x(line, pango_offset, TRUE, &entry_x);
-
-	*x = scr_x + win_x + PANGO_PIXELS(entry_x) + 8;
-	*y = scr_y + win_y + subject_rq.height;
 }
 
 void claws_spell_entry_context_set(ClawsSpellEntry *entry)
@@ -602,14 +572,13 @@ static void claws_spell_entry_populate_popup(ClawsSpellEntry *entry, GtkMenu *me
 						gpointer data)
 {
 	GtkAspell *gtkaspell = entry->gtkaspell;
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 	gint start, end;
 	gchar *word, *text;
 	
 	if (gtkaspell == NULL)
         	return;
 	
-        get_word_extents_from_position(entry, &start, &end, priv->mark_character);
+        get_word_extents_from_position(entry, &start, &end, entry->priv->mark_character);
 
         if ((word = get_word(entry, start, end)) != NULL) {
 		strncpy(gtkaspell->theword, word, GTKASPELLWORDSIZE - 1);
@@ -630,18 +599,17 @@ static void claws_spell_entry_populate_popup(ClawsSpellEntry *entry, GtkMenu *me
 static void claws_spell_entry_changed(GtkEditable *editable, gpointer data)
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(editable);
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 
 	if (entry->gtkaspell == NULL)
 		return;
 
-	if (priv->words) {
-		g_strfreev(priv->words);
-		g_free(priv->word_starts);
-		g_free(priv->word_ends);
+	if (entry->priv->words) {
+		g_strfreev(entry->priv->words);
+		g_free(entry->priv->word_starts);
+		g_free(entry->priv->word_ends);
 	}
-	entry_strsplit_utf8(GTK_ENTRY(entry), &priv->words, 
-			&priv->word_starts, &priv->word_ends);
+	entry_strsplit_utf8(GTK_ENTRY(entry), &entry->priv->words, 
+			&entry->priv->word_starts, &entry->priv->word_ends);
 	if(entry->gtkaspell->check_while_typing == TRUE)
         	claws_spell_entry_recheck_all(entry);
 }
@@ -651,9 +619,8 @@ static void claws_spell_entry_preedit_changed		(GtkEntry *_entry,
 						 gpointer data)
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(_entry);
-	ClawsSpellEntryPrivate *priv = CLAWS_SPELL_ENTRY_GET_PRIVATE(entry);
 
-	priv->preedit_length = preedit != NULL ? strlen(preedit) : 0;
+	entry->priv->preedit_length = preedit != NULL ? strlen(preedit) : 0;
 }
 
 static void continue_check(gpointer *data)

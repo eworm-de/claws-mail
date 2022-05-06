@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -141,7 +140,6 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	/* GtkWidget *file_btn; */
 	GtkWidget *statusbar;
 	GtkWidget *hsbox;
-	gint top;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editbook");
 	gtk_widget_set_size_request(window, 450, -1);
@@ -156,56 +154,53 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_book_key_pressed),
 			 cancelled);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 0 );
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	name_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), name_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(name_entry, TRUE);
+	gtk_widget_set_halign(name_entry, GTK_ALIGN_FILL);
 
 	check_btn = gtk_button_new_with_label( _(" Check File "));
-	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), check_btn, 2, 0, 1, 1);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("File"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	file_label = gtk_label_new( "" );
-	gtk_misc_set_alignment(GTK_MISC(file_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), file_label, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
-
-	/* file_btn = gtk_button_new_with_label( _(" ... ")); */
-	/* gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0); */
+	gtk_label_set_xalign(GTK_LABEL(file_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), file_label, 1, 1, 1, 1);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 	gtk_widget_grab_default(ok_btn);
 
-	hsep = gtk_hseparator_new();
+	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(name_entry), "focus_in_event",

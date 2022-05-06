@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -80,7 +80,7 @@ struct _FolderItemPrefs {
 	SignOrEncryptType always_sign;
 	SignOrEncryptType always_encrypt;
 	gboolean save_copy_to_folder;
-	gulong color;
+	GdkRGBA color;
 
 	gboolean compose_with_format;
 	gchar *compose_override_from_format;

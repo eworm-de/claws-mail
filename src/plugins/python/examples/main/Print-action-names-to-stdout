@@ -1,5 +1,0 @@
-# -*- coding: utf-8 -*-
-
-action_group = clawsmail.get_mainwindow_action_group()
-for action in action_group.list_actions():
-    print action.get_name()

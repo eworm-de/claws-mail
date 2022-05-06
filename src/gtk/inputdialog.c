@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -288,7 +287,6 @@ static void input_dialog_create(gboolean is_password)
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *cancel_button;
-	GtkWidget *confirm_area;
 
 	dialog = gtk_dialog_new();
 
@@ -304,28 +302,30 @@ static void input_dialog_create(gboolean is_password)
 
 	vbox = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	gtk_box_set_spacing (GTK_BOX (vbox), 14);
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,
 			    FALSE, FALSE, 0);
 
 	/* for title label */
-	icon_q = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+	icon_q = gtk_image_new_from_icon_name("dialog-question",
         			GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon_q), 0.5, 0.0);
+	gtk_widget_set_halign(icon_q, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon_q, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_q, FALSE, FALSE, 0);
-	icon_p = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+	icon_p = gtk_image_new_from_icon_name("dialog-password",
         			GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon_p), 0.5, 0.0);
+	gtk_widget_set_halign(icon_p, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon_p, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_p, FALSE, FALSE, 0);
 	
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 16);
 	gtk_widget_show (vbox);
 	
 	msg_title = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_title), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_title, FALSE, FALSE, 0);
@@ -342,10 +342,10 @@ static void input_dialog_create(gboolean is_password)
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(msg_title, font_desc);
+		gtk_widget_override_font(msg_title, font_desc);
 	
 	msg_label = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(msg_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_label, FALSE, FALSE, 0);
 	gtk_widget_show(msg_label);
@@ -363,14 +363,10 @@ static void input_dialog_create(gboolean is_password)
 	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
 	gtk_box_pack_start(GTK_BOX(vbox), remember_checkbtn, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK,
-				      NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			 confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 
 	gtk_widget_show_all(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	

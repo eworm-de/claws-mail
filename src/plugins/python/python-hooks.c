@@ -28,7 +28,6 @@
 #ifdef ENABLE_PYTHON
 #include <Python.h>
 #include <pygobject.h>
-#include <pygtk/pygtk.h>
 #endif // ENABLE_PYTHON
 
 #include <glib.h>
@@ -82,7 +81,7 @@ capture_stdin(PyObject *self, PyObject *args)
 {
     /* Return an empty string.
      * This is what read() returns when hitting EOF. */
-    return PyString_FromString("");
+    return PyUnicode_FromString("");
 }
 
 static PyObject *
@@ -123,6 +122,27 @@ is_blacklisted(void)
 }
 #endif // ENABLE_PYTHON
 
+static struct PyModuleDef moduledef = {
+    PyModuleDef_HEAD_INIT,
+    "parasite",
+    NULL,
+    -1,
+    parasite_python_methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+PyMODINIT_FUNC
+parasite_python_module_init(void)
+{
+#ifdef ENABLE_PYTHON
+    return PyModule_Create(&moduledef);
+#endif // ENABLE_PYTHON
+    return NULL;
+}
+
 int
 parasite_python_init(char **error)
 {
@@ -154,7 +174,6 @@ parasite_python_init(char **error)
 
     sigaction(SIGINT, &old_sigint, NULL);
 
-    Py_InitModule("parasite", parasite_python_methods);
     if(PyRun_SimpleString(
         "import parasite\n"
         "import sys\n"
@@ -185,41 +204,11 @@ parasite_python_init(char **error)
       return 0;
     }
 
-    if (!pygobject_init(-1, -1, -1)) {
-        dlclose(python_dlhandle);
-        python_dlhandle = NULL;
-        return 0;
-    }
+    pygtk = PyImport_ImportModule("gi");
 
-    pygtk = PyImport_ImportModule("gtk");
-
-    if (pygtk != NULL)
+    if (pygtk == NULL)
     {
-        PyObject *module_dict = PyModule_GetDict(pygtk);
-        PyObject *cobject = PyDict_GetItemString(module_dict, "_PyGtk_API");
-
-        /*
-         * This seems to be NULL when we're running a PyGTK program.
-         * We really need to find out why.
-         */
-        if (cobject != NULL)
-        {
-            if (PyCObject_Check(cobject)) {
-                _PyGtk_API = (struct _PyGtk_FunctionStruct*)
-                PyCObject_AsVoidPtr(cobject);
-            }
-#if PY_VERSION_HEX >= 0x02070000
-            else if (PyCapsule_IsValid(cobject, "gtk._gtk._PyGtk_API")) {
-                _PyGtk_API = (struct _PyGtk_FunctionStruct*)PyCapsule_GetPointer(cobject, "gtk._gtk._PyGtk_API");
-            }
-#endif
-            else {
-              *error = g_strdup("Parasite: Could not find _PyGtk_API object");
-                return 0;
-            }
-        }
-    } else {
-        *error = g_strdup("Parasite: Could not import gtk");
+        *error = g_strdup("Parasite: Could not import gi");
         dlclose(python_dlhandle);
         python_dlhandle = NULL;
         return 0;
@@ -294,7 +283,7 @@ parasite_python_run(const char *command,
     if (obj != NULL && obj != Py_None) {
        PyObject *repr = PyObject_Repr(obj);
        if (repr != NULL) {
-           char *string = PyString_AsString(repr);
+           char *string = PyBytes_AsString(repr);
 
            if (stdout_logger != NULL) {
                stdout_logger(string, user_data);

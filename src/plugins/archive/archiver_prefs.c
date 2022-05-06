@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -201,15 +201,15 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 	GtkWidget *rename_chkbtn;
         GtkWidget *unlink_chkbtn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 4);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-  	hbox1 = gtk_hbox_new (FALSE, 8);
+  	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -236,7 +236,7 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 
 	PACK_FRAME (vbox1, frame, _("Default compression"));
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox1);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
@@ -361,7 +361,7 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 
 	PACK_FRAME (vbox1, frame, _("Default format"));
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox1);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
@@ -407,7 +407,7 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 
 	PACK_FRAME (vbox1, frame, _("Default miscellaneous options"));
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox1);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);

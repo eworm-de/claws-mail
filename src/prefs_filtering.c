@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -235,8 +234,8 @@ static void prefs_filtering_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.filteringwin_width = allocation->width;
-	prefs_common.filteringwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.filteringwin_width, &prefs_common.filteringwin_height);
 }
 
 /* prefs_filtering_close() - just to have one common exit point */
@@ -344,14 +343,14 @@ static void prefs_filtering_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new (FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, GTK_STOCK_CANCEL,
-			&ok_btn, GTK_STOCK_OK,
-			NULL, NULL);
+			&cancel_btn, NULL, _("_Cancel"),
+			&ok_btn, NULL, _("_OK"),
+			NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -371,103 +370,89 @@ static void prefs_filtering_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_cancel), NULL);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table = gtk_table_new(4, 3, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 	gtk_box_pack_start (GTK_BOX (vbox1), table, TRUE, TRUE, 0);
 
 	name_label = gtk_label_new (_("Name"));
 	gtk_widget_show (name_label);
-	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_xalign (GTK_LABEL (name_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), name_label, 0, 0, 1, 1);
 
 	name_entry = gtk_entry_new ();
 	gtk_widget_show (name_entry);
-  	gtk_table_attach (GTK_TABLE (table), name_entry, 1, 2, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), name_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(name_entry, TRUE);
+	gtk_widget_set_halign(name_entry, GTK_ALIGN_FILL);
 
 	account_label = gtk_label_new (_("Account"));
 	gtk_widget_show (account_label);
-	gtk_misc_set_alignment (GTK_MISC (account_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), account_label, 0, 1, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_xalign (GTK_LABEL (account_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), account_label, 0, 1, 1, 1);
 
 	account_opt_menu = prefs_filtering_account_option_menu(&filtering);
 	gtk_widget_show (account_opt_menu);
-  	gtk_table_attach (GTK_TABLE (table), account_opt_menu, 1, 2, 1, 2,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), account_opt_menu, 1, 1, 1, 1);
 	combobox_select_by_data(GTK_COMBO_BOX(filtering.account_combobox), 0);
 
 	cond_label = gtk_label_new (_("Condition"));
 	gtk_widget_show (cond_label);
-	gtk_misc_set_alignment (GTK_MISC (cond_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_xalign (GTK_LABEL (cond_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), cond_label, 0, 2, 1, 1);
 
 	cond_entry = gtk_entry_new ();
 	gtk_widget_show (cond_entry);
-  	gtk_table_attach (GTK_TABLE (table), cond_entry, 1, 2, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), cond_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(cond_entry, TRUE);
+	gtk_widget_set_halign(cond_entry, GTK_ALIGN_FILL);
 
 	cond_btn =  gtk_button_new_with_mnemonic (_(" Def_ine... "));
 	gtk_widget_show (cond_btn);
-  	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 2);
+	gtk_grid_attach(GTK_GRID(table), cond_btn, 2, 2, 1, 1);
 	g_signal_connect(G_OBJECT (cond_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_condition_define),
 			 NULL);
 
 	action_label = gtk_label_new (_("Action"));
 	gtk_widget_show (action_label);
-	gtk_misc_set_alignment (GTK_MISC (action_label), 1, 0.5);
-  	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 3, 4,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_xalign (GTK_LABEL (action_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), action_label, 0, 3, 1, 1);
 
 	action_entry = gtk_entry_new ();
 	gtk_widget_show (action_entry);
-  	gtk_table_attach (GTK_TABLE (table), action_entry, 1, 2, 3, 4,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), action_entry, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(action_entry, TRUE);
+	gtk_widget_set_halign(action_entry, GTK_ALIGN_FILL);
 
 	action_btn =  gtk_button_new_with_mnemonic (_(" De_fine... "));
 	gtk_widget_show (action_btn);
-  	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 3, 4,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 2, 2);
+	gtk_grid_attach(GTK_GRID(table), action_btn, 2, 3, 1, 1);
 	g_signal_connect(G_OBJECT (action_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_define),
 			 NULL);
 			 
 	/* register / substitute / delete */
-	reg_hbox = gtk_hbox_new (FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (reg_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), reg_hbox, FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show (arrow);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new (TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
@@ -475,7 +460,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new rule above to the list"));
 
-	subst_btn = gtkut_get_replace_btn (_("_Replace"));
+	subst_btn = gtkut_stock_button("edit-redo", _("_Replace"));
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (subst_btn), "clicked",
@@ -484,18 +469,14 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected rule in list with the rule above"));
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected rule from the list"));
 
-	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
-	gtk_button_set_image(GTK_BUTTON(clear_btn),
-			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -503,7 +484,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-	cond_hbox = gtk_hbox_new (FALSE, 8);
+	cond_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (cond_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), cond_hbox, TRUE, TRUE, 0);
 
@@ -522,11 +503,11 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (cond_list_view);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_list_view);
 
-	btn_vbox = gtk_vbox_new (FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	top_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_TOP);
+	top_btn = gtkut_stock_button("go-top", _("_Top"));
 	gtk_widget_show (top_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (top_btn), "clicked",
@@ -537,7 +518,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page u_p"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
-			gtk_image_new_from_stock(GTK_STOCK_GO_UP,GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-up",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
@@ -546,7 +527,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule one page up"));
 #endif
 
-	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (up_btn), "clicked",
@@ -554,7 +535,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected rule up"));
 
-	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
@@ -565,7 +546,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page dow_n"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
-			gtk_image_new_from_stock(GTK_STOCK_GO_DOWN,GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",
@@ -574,7 +555,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule one page down"));
 #endif
 
-	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
+	bottom_btn = gtkut_stock_button("go-bottom", _("_Bottom"));
 	gtk_widget_show (bottom_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (bottom_btn), "clicked",
@@ -589,7 +570,7 @@ static void prefs_filtering_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.filteringwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.filteringwin_width,
 				    prefs_common.filteringwin_height);
 
 	gtk_widget_show_all(window);
@@ -1212,7 +1193,8 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1231,7 +1213,8 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view)));
@@ -1483,8 +1466,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	if (check_changed_list) {
 		if (modified && alertpanel(_("Filtering rules not saved"),
 					 _("The list of filtering rules have been modified. Close anyway?"),
-					 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
-					 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+					 "window-close", _("_Close"), NULL, _("_Continue editing"),
+					 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 			if (prop != NULL)
 				filteringprop_free(prop);
 			return TRUE;
@@ -1507,7 +1490,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1529,7 +1513,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);
@@ -1777,9 +1762,7 @@ static gint prefs_filtering_list_btn_pressed(GtkWidget *widget, GdkEventButton *
 				non_empty = gtk_tree_model_iter_next(model, &iter);
 			cm_menu_set_sensitive("PrefsFilteringPopup/DeleteAll", non_empty);
 
-			gtk_menu_popup(GTK_MENU(prefs_filtering_popup_menu), 
-			    	   NULL, NULL, NULL, NULL, 
-			    	   event->button, event->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(prefs_filtering_popup_menu), NULL);
 		}
 	}
 	return FALSE;

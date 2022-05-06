@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2004-2012 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -69,11 +69,11 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_autoindent;
 	GtkWidget *hbox1;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -82,7 +82,7 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
   	PACK_CHECK_BUTTON (vbox2, checkbtn_wrappastes, _("Wrap pasted text"));
   	PACK_CHECK_BUTTON (vbox2, checkbtn_autoindent, _("Auto indent"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 

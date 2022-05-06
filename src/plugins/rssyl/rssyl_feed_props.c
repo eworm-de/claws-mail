@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2001-2021 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
@@ -243,10 +243,9 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	RFeedProp *feedprop;
 	GtkWidget *vbox, *frame, *label, *hbox,
 		*inner_vbox, *auth_hbox, *auth_user_label, *auth_pass_label,
-		*bbox, *cancel_button, *cancel_align,
-		*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
-		*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
-	GtkObject *adj;
+		*bbox, *cancel_button, *ok_button, *trim_button,
+		*silent_update_label;
+	GtkAdjustment *adj;
 	gint refresh;
 
 	g_return_if_fail(ritem != NULL);
@@ -362,16 +361,16 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			ritem->ssl_verify_peer);
 
 	/* === Now pack all the widgets */
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(feedprop->window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(feedprop->window), 10);
 
-	inner_vbox = gtk_vbox_new(FALSE, 7);
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->url, FALSE, FALSE, 0);
 	gtk_entry_set_activates_default(GTK_ENTRY(feedprop->url), TRUE);
 
 	/* Auth combo + user (label + entry) + pass (label + entry) */
-	auth_hbox = gtk_hbox_new(FALSE, 7);
+	auth_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
 	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_type, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(feedprop->auth_type), "changed",
 			G_CALLBACK(rssyl_feedprop_auth_type_changed_cb),
@@ -394,17 +393,17 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
-	inner_vbox = gtk_vbox_new(FALSE, 7);
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
 	/* Fetch comments - checkbutton */
 	g_signal_connect(G_OBJECT(feedprop->fetch_comments), "toggled",
 			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
 			(gpointer)feedprop);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->fetch_comments, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 7);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
 	/* Fetch comments max age - label */
 	label = gtk_label_new(_("Fetch comments on posts aged less than"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	/* Fetch comments max age - spinbutton */
 	gtk_widget_set_sensitive(feedprop->fetch_comments_max_age,
@@ -414,7 +413,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	label = gtk_label_new(g_strconcat(_("days"), "<small>    ",
 				_("Set to -1 to fetch all comments"), "</small>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
@@ -422,8 +421,8 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
-	inner_vbox = gtk_vbox_new(FALSE, 7);
-	hbox = gtk_hbox_new(FALSE, 7);
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
 	/* Write heading - checkbox */
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->write_heading, FALSE, FALSE, 0);
 	/* Keep old items - checkbutton */
@@ -434,7 +433,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			G_CALLBACK(rssyl_props_trim_cb), ritem);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 7);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
 	/* Silent update - label */
 	silent_update_label = gtk_label_new(_("If an item changes"));
 	gtk_box_pack_start(GTK_BOX(hbox), silent_update_label, FALSE, FALSE, 0);
@@ -445,14 +444,14 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
-	inner_vbox = gtk_vbox_new(FALSE, 7);
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
 	/* Use default refresh interval - checkbutton */
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->default_refresh_interval, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(feedprop->default_refresh_interval), "toggled",
 			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
 			(gpointer)feedprop);
 
-	hbox = gtk_hbox_new(FALSE, 7);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
 	/* Refresh interval - label */
 	label = gtk_label_new(_("Refresh interval"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -473,49 +472,21 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
 	/* Buttonbox */
-	bbox = gtk_hbutton_box_new();
+	bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_set_border_width(GTK_CONTAINER(bbox), 5);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(bbox), 5);
 	gtk_box_pack_end(GTK_BOX(vbox), bbox, FALSE, FALSE, 0);
 
-	/* Cancel button */
-	cancel_button = gtk_button_new();
+	cancel_button = gtk_button_new_with_mnemonic(_("_Cancel"));
 	gtk_container_add(GTK_CONTAINER(bbox), cancel_button);
-
-	cancel_align = gtk_alignment_new(0.5, 0.5, 0, 0);
-	gtk_container_add(GTK_CONTAINER(cancel_button), cancel_align);
-
-	cancel_hbox = gtk_hbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(cancel_align), cancel_hbox);
-
-	cancel_image = gtk_image_new_from_stock(GTK_STOCK_CANCEL,
-			GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start(GTK_BOX(cancel_hbox), cancel_image, FALSE, FALSE, 0);
-
-	cancel_label = gtk_label_new_with_mnemonic(_("_Cancel"));
-	gtk_box_pack_end(GTK_BOX(cancel_hbox), cancel_label, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(cancel_button), "clicked",
 			G_CALLBACK(rssyl_props_cancel_cb), ritem);
 
-	/* OK button */
-	ok_button = gtk_button_new();
+	ok_button = gtk_button_new_with_mnemonic(_("_OK"));
 	gtk_container_add(GTK_CONTAINER(bbox), ok_button);
 	gtk_widget_set_can_default(ok_button, TRUE);
-
-	ok_align = gtk_alignment_new(0.5, 0.5, 0, 0);
-	gtk_container_add(GTK_CONTAINER(ok_button), ok_align);
-
-	ok_hbox = gtk_hbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(ok_align), ok_hbox);
-
-	ok_image = gtk_image_new_from_stock(GTK_STOCK_OK,
-			GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start(GTK_BOX(ok_hbox), ok_image, FALSE, FALSE, 0);
-
-	ok_label = gtk_label_new_with_mnemonic(_("_OK"));
-	gtk_box_pack_end(GTK_BOX(ok_hbox), ok_label, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			G_CALLBACK(rssyl_props_ok_cb), ritem);

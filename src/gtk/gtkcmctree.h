@@ -374,10 +374,10 @@ GtkStyle * gtk_cmctree_node_get_cell_style         (GtkCMCTree     *ctree,
 						  gint          column);
 void gtk_cmctree_node_set_foreground               (GtkCMCTree       *ctree,
 						  GtkCMCTreeNode   *node,
-						  const GdkColor *color);
+						  const GdkRGBA *color);
 void gtk_cmctree_node_set_background               (GtkCMCTree       *ctree,
 						  GtkCMCTreeNode   *node,
-						  const GdkColor *color);
+						  const GdkRGBA *color);
 void gtk_cmctree_node_set_row_data                 (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gpointer      data);

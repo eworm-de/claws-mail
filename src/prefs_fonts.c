@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2019 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -69,20 +68,18 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox;
 	gint      row = 0;
 
-	table = gtk_table_new(10, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* normal font label */
 	tmplabel = gtk_label_new (_("Folder and Message Lists"));
 	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
+	gtk_grid_attach(GTK_GRID(table), tmplabel, 0, row, 1, 1);
 
 	/* normal font button */
 	entry_folderview_normalfont = gtk_font_button_new_with_font (prefs_common.normalfont);
@@ -90,19 +87,17 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      "use-font", TRUE, 
 			      NULL);
 	gtk_widget_show (entry_folderview_normalfont);
-	gtk_table_attach (GTK_TABLE (table), entry_folderview_normalfont, 1, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_folderview_normalfont, 1, row, 1, 1);
+	gtk_widget_set_hexpand(entry_folderview_normalfont, TRUE);
+	gtk_widget_set_halign(entry_folderview_normalfont, GTK_ALIGN_FILL);
 	row++;
 
 	/* message font label */
 	tmplabel = gtk_label_new (_("Message"));
 	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
+	gtk_grid_attach(GTK_GRID(table), tmplabel, 0, row, 1, 1);
 
 	/* message font button */
 	entry_messageviewfont = gtk_font_button_new_with_font (prefs_common.textfont);
@@ -110,24 +105,20 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      "use-font", TRUE, 
 			      NULL);
 	gtk_widget_show (entry_messageviewfont);
-	gtk_table_attach (GTK_TABLE (table), entry_messageviewfont, 1, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_messageviewfont, 1, row, 1, 1);
+	gtk_widget_set_hexpand(entry_messageviewfont, TRUE);
+	gtk_widget_set_halign(entry_messageviewfont, GTK_ALIGN_FILL);
 	row++;
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_widget_show(vbox);
-	gtk_table_attach (GTK_TABLE (table), vbox, 0, 4, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), vbox, 0, row, 1, 1);
 	row++;
 	
 	/* derive from normal font check button */
 	derive_from_normalfont_checkbutton = gtk_check_button_new_with_label(_("Derive small and bold fonts from Folder and Message Lists font"));
 	gtk_widget_show(derive_from_normalfont_checkbutton);
-	gtk_table_attach (GTK_TABLE (table), derive_from_normalfont_checkbutton, 0, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), derive_from_normalfont_checkbutton, 0, row, 2, 1);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(derive_from_normalfont_checkbutton),
 		 prefs_common.derive_from_normal_font);
 	row++;
@@ -135,11 +126,9 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* small font label */
 	tmplabel = gtk_label_new (_("Small"));
 	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), tmplabel, 0, row, 1, 1);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, tmplabel);
 
 	/* small font button */
@@ -148,20 +137,18 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      "use-font", TRUE, 
 			      NULL);
 	gtk_widget_show (entry_folderview_smallfont);
-	gtk_table_attach (GTK_TABLE (table), entry_folderview_smallfont, 1, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_folderview_smallfont, 1, row, 1, 1);
+	gtk_widget_set_hexpand(entry_folderview_smallfont, TRUE);
+	gtk_widget_set_halign(entry_folderview_smallfont, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, entry_folderview_smallfont);
 	row++;
 
 	/* bold font label */
 	tmplabel = gtk_label_new (_("Bold"));
 	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
+	gtk_grid_attach(GTK_GRID(table), tmplabel, 0, row, 1, 1);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, tmplabel);
 
 	/* bold font button */
@@ -170,18 +157,16 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      "use-font", TRUE, 
 			      NULL);
 	gtk_widget_show (entry_folderview_boldfont);
-	gtk_table_attach (GTK_TABLE (table), entry_folderview_boldfont, 1, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_folderview_boldfont, 1, row, 1, 1);
+	gtk_widget_set_hexpand(entry_folderview_boldfont, TRUE);
+	gtk_widget_set_halign(entry_folderview_boldfont, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, entry_folderview_boldfont);
 	row++;
 
 	/* print check button */
 	print_checkbutton = gtk_check_button_new_with_label(_("Use different font for printing"));
 	gtk_widget_show(print_checkbutton);
-	gtk_table_attach (GTK_TABLE (table), print_checkbutton, 0, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), print_checkbutton, 0, row, 2, 1);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(print_checkbutton),
 		 prefs_common.use_different_print_font);
 	row++;
@@ -189,11 +174,9 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* print font label */
 	tmplabel = gtk_label_new (_("Message Printing"));
 	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, row, row+1,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
+	gtk_grid_attach(GTK_GRID(table), tmplabel, 0, row, 1, 1);
 	SET_TOGGLE_SENSITIVITY (print_checkbutton, tmplabel);
 
 	/* print font button */
@@ -202,9 +185,9 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      "use-font", TRUE, 
 			      NULL);
 	gtk_widget_show (entry_messageprintfont);
-	gtk_table_attach (GTK_TABLE (table), entry_messageprintfont, 1, 2, row, row+1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_messageprintfont, 1, row, 1, 1);
+	gtk_widget_set_hexpand(entry_messageprintfont, TRUE);
+	gtk_widget_set_halign(entry_messageprintfont, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY (print_checkbutton, entry_messageprintfont);
 	row++;
 
@@ -225,27 +208,27 @@ static void prefs_fonts_save(PrefsPage *_page)
 	FontsPage *fonts = (FontsPage *) _page;
 
 	g_free(prefs_common.boldfont);
-	prefs_common.boldfont = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_boldfont)));
+	prefs_common.boldfont = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_boldfont)));
 
 	g_free(prefs_common.normalfont);
-	prefs_common.normalfont = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_normalfont)));
+	prefs_common.normalfont = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_normalfont)));
 		
 	g_free(prefs_common.smallfont);		
-	prefs_common.smallfont  = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_smallfont)));
+	prefs_common.smallfont  = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_smallfont)));
 
 	g_free(prefs_common.textfont);		
-	prefs_common.textfont   = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_messageviewfont)));
+	prefs_common.textfont   = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_messageviewfont)));
 
 	prefs_common.derive_from_normal_font = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(fonts->derive_from_normalfont_checkbutton));
 
 	g_free(prefs_common.printfont);		
-	prefs_common.printfont   = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_messageprintfont)));
+	prefs_common.printfont   = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_messageprintfont)));
 	prefs_common.use_different_print_font = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(fonts->print_checkbutton));
 

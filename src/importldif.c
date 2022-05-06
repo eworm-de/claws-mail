@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,7 +435,9 @@ static void imp_ldif_next( GtkWidget *widget ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-					     GTK_STOCK_CLOSE);
+					     _("_Close"));
+			gtk_button_set_image(GTK_BUTTON(impldif_dlg.btnCancel),
+				gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
 			imp_ldif_finish_show();
 		}
 	}
@@ -516,9 +518,8 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entryFile;
 	GtkWidget *entryName;
 	GtkWidget *btnFile;
-	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -530,44 +531,41 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( impldif_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Address Book"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entryName = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryName, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entryName, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entryName, TRUE);
+	gtk_widget_set_halign(entryName, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entryName, _( 
 		"Specify the name for the address book that will " \
 		"be created from the LDIF file data." ));
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("File Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entryFile = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryFile, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entryFile, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entryFile, TRUE);
+	gtk_widget_set_halign(entryFile, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entryFile,
 		_( "The full file specification of the LDIF file to import." ));
 
 	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
-	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
-		GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), btnFile, 2, 1, 1, 1);
 
 	CLAWS_SET_TIP(btnFile,
 		_( "Select the LDIF file to import." ));
@@ -661,13 +659,12 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkSelect;
 	GtkWidget *btnModify;
 	GtkWidget *eventBox;
-	gint top;
 	GtkListStore *store;
 	GtkCellRenderer *rdr;
 	GtkTreeViewColumn *col;
 	GtkTreeSelection *sel;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), 4 );
 
@@ -679,7 +676,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		label );
 
 	/* Upper area - Field list */
-	vboxt = gtk_vbox_new( FALSE, 4 );
+	vboxt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_container_add( GTK_CONTAINER( vbox ), vboxt );
 
 	scrollwin = gtk_scrolled_window_new( NULL, NULL );
@@ -726,29 +723,27 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(scrollwin), view_fields );
 
 	/* Lower area - Edit area */
-	vboxb = gtk_vbox_new( FALSE, 4 );
+	vboxb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_box_pack_end(GTK_BOX(vbox), vboxb, FALSE, FALSE, 2);
 
 	/* Data entry area */
-	table = gtk_table_new( 3, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vboxb), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("LDIF Field"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entryField = gtk_label_new( "" );
-	gtk_misc_set_alignment(GTK_MISC(entryField), 0.01, 0.5);
-	gtk_table_attach(GTK_TABLE(table), entryField, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(entryField), 0.0);
+	gtk_grid_attach(GTK_GRID(table), entryField, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entryField, TRUE);
+	gtk_widget_set_halign(entryField, GTK_ALIGN_FILL);
 
 	/* Second row */
-	++top;
 	label = gtk_label_new(_("Attribute"));
 	/*
 	 * Use an event box to attach some help in the form of a tooltip.
@@ -756,9 +751,8 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	 */
 	eventBox = gtk_event_box_new();
 	gtk_container_add( GTK_CONTAINER(eventBox), label );
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), eventBox, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), eventBox, 0, 1, 1, 1);
 
 	CLAWS_SET_TIP(eventBox, _(
 		"Choose the LDIF field that will be renamed or selected " \
@@ -772,25 +766,22 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		"select the field for import."));
 
 	entryAttrib = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryAttrib, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entryAttrib, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entryAttrib, TRUE);
+	gtk_widget_set_halign(entryAttrib, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entryAttrib,
 		_( "The LDIF field can be renamed to the User Attribute name." ));
 
 	/* Next row */
-	++top;
-
 	checkSelect = gtk_check_button_new_with_label( _( "Select for Import" ) );
-	gtk_table_attach(GTK_TABLE(table), checkSelect, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkSelect, 1, 2, 1, 1);
 
 	CLAWS_SET_TIP(checkSelect,
 		_( "Select the LDIF field for import into the address book." ));
 
 	btnModify = gtk_button_new_with_label( _(" Modify "));
-	gtk_table_attach(GTK_TABLE(table), btnModify, 2, 3, top, (top + 1),
-		GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), btnModify, 2, 2, 1, 1);
 
 	CLAWS_SET_TIP(btnModify,
 		_( "This button will update the list above with the data supplied." ));
@@ -826,9 +817,8 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelBook;
 	GtkWidget *labelFile;
 	GtkWidget *labelRecs;
-	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -839,41 +829,38 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( impldif_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Address Book:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	labelBook = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelBook, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "File Name:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	labelFile = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelFile), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelFile), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelFile, 1, 1, 1, 1);
 
 	/* Third row */
-	top++;
 	label = gtk_label_new( _("Records Imported:") );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	labelRecs = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), labelRecs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelRecs), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelRecs), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelRecs, 1, 2, 1, 1);
 
 	impldif_dlg.labelBook    = labelBook;
 	impldif_dlg.labelFile    = labelFile;
@@ -909,11 +896,11 @@ static void imp_ldif_dialog_create() {
 			 G_CALLBACK(imp_ldif_key_pressed),
 			 NULL );
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	vnbox = gtk_vbox_new(FALSE, 4);
+	vnbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
 	gtk_widget_show(vnbox);
 	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
@@ -926,20 +913,18 @@ static void imp_ldif_dialog_create() {
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox,
-				      &btnCancel, GTK_STOCK_CANCEL, 
-				      &btnPrev, GTK_STOCK_GO_BACK,
-				      &btnNext, GTK_STOCK_GO_FORWARD);
+					&btnPrev, "go-previous", _("_Previous"),
+					&btnNext, "go-next", _("_Next"),
+					&btnCancel, NULL, _("_Cancel"));
 
 	btnProceed = gtk_button_new_with_mnemonic(_("Proceed"));
-	gtk_button_set_image(GTK_BUTTON(btnProceed),
-			gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_set_can_default(btnProceed, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), btnProceed, TRUE, TRUE, 0);
 	gtk_widget_hide(btnProceed);
@@ -1003,7 +988,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 
 	gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-			     GTK_STOCK_CANCEL);
+			     _("_Cancel"));
 	gtk_widget_hide(impldif_dlg.btnProceed);
 	gtk_widget_show(impldif_dlg.btnNext);
 

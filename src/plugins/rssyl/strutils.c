@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - a strreplace function (something like sed's s/foo/bar/g)

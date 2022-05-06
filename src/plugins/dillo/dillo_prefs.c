@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -163,7 +162,7 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	GtkWidget *whitelist_ab_select_btn;
 	GtkWidget *hbox_whitelist, *spacer;
 
-        vbox = gtk_vbox_new(FALSE, 3);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
         gtk_widget_show(vbox);
         
@@ -175,20 +174,19 @@ static void create_dillo_prefs_page(PrefsPage *page,
         gtk_widget_show(local_checkbox);
 	CLAWS_SET_TIP(local_checkbox,
 			     _("Equivalent to Dillo's '--local' option"));
-        
+
 	label = gtk_label_new(_("You can still load remote links "
 			      "by reloading the page"));
-        gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtkut_widget_set_small_font_size (label);
-        gtk_widget_show(label);
+	gtk_widget_show(label);
 
-	
-	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	hbox_whitelist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox_whitelist, FALSE, FALSE, 0);
 	
-	spacer = gtk_hbox_new(FALSE, 0);
+	spacer = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(spacer, 12, -1);
 	gtk_widget_show(spacer);
 	gtk_box_pack_start(GTK_BOX(hbox_whitelist), spacer, FALSE, FALSE, 0);

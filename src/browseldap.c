@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -209,7 +208,6 @@ static void browse_create( void ) {
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 	GtkWidget *content_area;
-	gint top;
 	GtkWidget *view;
 	GtkListStore *store;
 	GtkTreeSelection *sel;
@@ -227,39 +225,41 @@ static void browse_create( void ) {
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(browse_key_pressed), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Server Name:"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	label_server = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), label_server, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_server), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_server), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(label_server, TRUE);
+	gtk_widget_set_halign(label_server, GTK_ALIGN_FILL);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new(_("Distinguished Name (dn):"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	label_addr = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_addr), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_addr), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label_addr, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label_addr, TRUE);
+	gtk_widget_set_halign(label_addr, GTK_ALIGN_FILL);
 
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
 
@@ -298,8 +298,8 @@ static void browse_create( void ) {
 	gtk_container_add( GTK_CONTAINER(tree_win), view );
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &close_btn, "window-close", _("_Close"),
+				      NULL, NULL, NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 

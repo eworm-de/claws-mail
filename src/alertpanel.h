@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022  the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,11 @@ typedef enum
 #define ALERTPANEL_OPENED_HOOKLIST "alertpanel_opened_hooklist"
 
 AlertValue alertpanel_full(const gchar *title, const gchar *message,
+			   const gchar *stock_icon1,
 			   const gchar *button1_label,
+			   const gchar *stock_icon2,
 			   const gchar *button2_label,
+			   const gchar *stock_icon3,
 			   const gchar *button3_label,
 				 AlertFocus   focus,
 			   gboolean     can_disable,
@@ -62,19 +65,25 @@ AlertValue alertpanel_full(const gchar *title, const gchar *message,
 
 AlertValue alertpanel	(const gchar	*title,
 			 const gchar	*message,
+		         const gchar	*stock_icon1,
 			 const gchar	*button1_label,
+		         const gchar	*stock_icon2,
 			 const gchar	*button2_label,
+		         const gchar	*stock_icon3,
 			 const gchar	*button3_label,
 			 AlertFocus    focus);
 
-AlertValue alertpanel_with_widget	(const gchar *title,
-				  	 const gchar *message,
-				  	 const gchar *button1_label,
-				  	 const gchar *button2_label,
-				  	 const gchar *button3_label,
-					 AlertFocus   focus,
-					 gboolean     can_disable,
-					 GtkWidget   *widget);
+AlertValue alertpanel_with_widget(const gchar *title,
+				  const gchar *message,
+				  const gchar *stock_icon1,
+				  const gchar *button1_label,
+				  const gchar *stock_icon2,
+				  const gchar *button2_label,
+				  const gchar *stock_icon3,
+				  const gchar *button3_label,
+				  AlertFocus   focus,
+				  gboolean     can_disable,
+				  GtkWidget   *widget);
 
 void alertpanel_notice	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);

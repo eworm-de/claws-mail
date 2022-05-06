@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - Dialog which appears when manually subscribing a new feed.
@@ -47,8 +47,8 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	win = gtk_dialog_new_with_buttons(_("Subscribe new feed?"),
 			GTK_WINDOW(mainwindow_get_mainwindow()->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_REJECT,
+			_("_OK"), GTK_RESPONSE_ACCEPT,
 			NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(win), GTK_RESPONSE_ACCEPT);
 
@@ -63,7 +63,8 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 
 	titlelabel = gtk_label_new(g_strconcat("<b>",_("Feed folder:"),"</b>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(titlelabel), TRUE);
-	gtk_misc_set_padding(GTK_MISC(titlelabel), 5, 0);
+	gtk_widget_set_margin_start(GTK_WIDGET(titlelabel), 5);
+	gtk_widget_set_margin_end(GTK_WIDGET(titlelabel), 0);
 	gtk_frame_set_label_widget(GTK_FRAME(titleframe), titlelabel);
 
 	title = gtk_entry_new();

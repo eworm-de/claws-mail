@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2013 The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2007-2022 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -232,8 +231,8 @@ static void tags_popup_delete (GtkAction *action, gpointer data)
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	TAGS_WINDOW_LOCK();
@@ -268,8 +267,8 @@ static void tags_popup_delete_all (GtkAction *action, gpointer data)
 	
 	if (alertpanel(_("Delete all tags"),
 		       _("Do you really want to delete all tags?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	TAGS_WINDOW_LOCK();
@@ -331,9 +330,7 @@ static gint tags_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		cm_menu_set_sensitive("EditTags/Delete", non_empty);
 		cm_menu_set_sensitive("EditTags/DeleteAll", non_empty);
 
-		gtk_menu_popup(GTK_MENU(tags_popup_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(tags_popup_menu), NULL);
 
 		return FALSE;
 	}
@@ -536,8 +533,8 @@ static void tags_window_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.tagswin_width = allocation->width;
-	prefs_common.tagswin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.tagswin_width, &prefs_common.tagswin_height);
 }
 
 static void tags_window_create(void) 
@@ -569,11 +566,11 @@ static void tags_window_create(void)
 			 G_CALLBACK(tags_window_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
-	hbox1 = gtk_hbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
 	new_tag_label = gtk_label_new(_("New tag:"));
-	gtk_misc_set_alignment(GTK_MISC(new_tag_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(new_tag_label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_label, FALSE, FALSE, 0);
 
 	new_tag_entry = gtk_entry_new();
@@ -581,17 +578,17 @@ static void tags_window_create(void)
 	g_signal_connect(G_OBJECT(new_tag_entry), "key_press_event",
 			 G_CALLBACK(tags_window_add_key_pressed), NULL);
 
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(add_btn,
 			_("Add the new tag"));
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected tag"));
 
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtkut_stock_button("window-close", _("_Close"));
 	gtk_box_pack_end(GTK_BOX(hbox1), close_btn, FALSE, FALSE, 0);
 
 	gtk_widget_show(new_tag_label);
@@ -610,8 +607,7 @@ static void tags_window_create(void)
 	
 	label = gtk_label_new(_("Choose the tag(s) for the message(s).\n"
 				"Changes are immediately applied."));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -636,7 +632,7 @@ static void tags_window_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.tagswin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.tagswin_width,
 				    prefs_common.tagswin_height);
 
 	tagswindow.window = window;
@@ -649,8 +645,9 @@ static void tags_window_create(void)
 	tagswindow.add_entry = new_tag_entry;
 	tagswindow.del_btn = del_btn;
 	tagswindow.has_tag_col = FALSE;
-	tagswindow.watch_cursor = gdk_cursor_new(GDK_WATCH);
-
+	tagswindow.watch_cursor = gdk_cursor_new_for_display(
+			gtk_widget_get_display(window), GDK_WATCH);
+	
 	g_signal_connect(G_OBJECT(new_tag_entry), "changed", 
 			 G_CALLBACK(new_tag_set_add_sensitivity), NULL);
 	new_tag_set_add_sensitivity();

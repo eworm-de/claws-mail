@@ -1,5 +1,5 @@
 /* 
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2002-2012 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -58,12 +58,22 @@ static gboolean noticeview_enter_notify(GtkWidget *widget,
 
 static GdkCursor *hand_cursor = NULL;
 
+static void set_hand_cursor(GdkWindow *window)
+{
+	cm_return_if_fail(window != NULL);
+
+	if (!hand_cursor) {
+		hand_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(window), GDK_HAND2);
+	}
+}
+
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
 	NoticeView *noticeview;
-	GtkWidget  *vbox;
+	GtkWidget  *vgrid;
 	GtkWidget  *hsep;
-	GtkWidget  *hbox;
+	GtkWidget  *hgrid;
 	GtkWidget  *icon;
 	GtkWidget  *text;
 	GtkWidget  *widget;
@@ -73,19 +83,24 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
 
-	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
-
 	noticeview->window = mainwin->window;
+
+	vgrid = gtk_grid_new();
+	gtk_widget_set_name(GTK_WIDGET(vgrid), "noticeview");
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(vgrid),
+			GTK_ORIENTATION_VERTICAL);
+	gtk_grid_set_row_spacing(GTK_GRID(vgrid), 4);
+	gtk_widget_show(vgrid);
+	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	g_object_set(hsep, "margin", 1, NULL);
+	gtk_container_add(GTK_CONTAINER(vgrid), hsep);
 	
-	vbox = gtk_vbox_new(FALSE, 4);
-	gtk_widget_show(vbox);
-	hsep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, TRUE, 1);
-	
-	hbox = gtk_hbox_new(FALSE, 4);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 1);
+	hgrid = gtk_grid_new();
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(hgrid),
+			GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_show(hgrid);
+	g_object_set(hgrid, "margin", 1, NULL);
+	gtk_container_add(GTK_CONTAINER(vgrid), hgrid);
 
 	evtbox = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(evtbox), FALSE);
@@ -105,27 +120,28 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 			 G_CALLBACK(noticeview_enter_notify), noticeview);
 	
 	gtk_container_add(GTK_CONTAINER(evtbox), icon);
-	gtk_box_pack_start(GTK_BOX(hbox), evtbox, FALSE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), evtbox);
 	
 	text = gtk_label_new("");
 	gtk_widget_show(text);
-	gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), text);
 
 	widget = gtk_button_new_with_label("");
 	g_signal_connect(G_OBJECT(widget), "clicked", 
 			 G_CALLBACK(noticeview_button_pressed),
 			 (gpointer) noticeview);
-	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
+	g_object_set(widget, "margin", 4, NULL);
+	gtk_container_add(GTK_CONTAINER(hgrid), widget);
 	
 	widget2 = gtk_button_new_with_label("");
 	g_signal_connect(G_OBJECT(widget2), "clicked", 
 			 G_CALLBACK(noticeview_2ndbutton_pressed),
 			 (gpointer) noticeview);
-	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), widget2);
 	
-	noticeview->vbox   = vbox;
+	noticeview->vgrid   = vgrid;
 	noticeview->hsep   = hsep;
-	noticeview->hbox   = hbox;
+	noticeview->hgrid   = hgrid;
 	noticeview->icon   = icon;
 	noticeview->text   = text;
 	noticeview->button = widget;
@@ -213,8 +229,12 @@ static gboolean noticeview_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
 				       NoticeView *noticeview)
 {
-	if (noticeview->icon_clickable)
-		gdk_window_set_cursor(gtk_widget_get_window(noticeview->evtbox), hand_cursor);
+	GdkWindow *window = gtk_widget_get_window(noticeview->evtbox);
+
+	if (noticeview->icon_clickable) {
+		set_hand_cursor(window);
+		gdk_window_set_cursor(window, hand_cursor);
+	}
 	return FALSE;
 }
 
@@ -230,8 +250,12 @@ static gboolean noticeview_enter_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      NoticeView *noticeview)
 {
-	if (noticeview->icon_clickable)
-		gdk_window_set_cursor(gtk_widget_get_window(noticeview->evtbox), hand_cursor);
+	GdkWindow *window = gtk_widget_get_window(noticeview->evtbox);
+
+	if (noticeview->icon_clickable) {
+		set_hand_cursor(window);
+		gdk_window_set_cursor(window, hand_cursor);
+	}
 	return FALSE;
 }
 

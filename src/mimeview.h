@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -47,10 +47,11 @@ struct _MimeView
 	GtkWidget *mime_notebook;
 	GtkWidget *ctree_mainbox;
 	GtkWidget *icon_scroll;
-	GtkWidget *icon_vbox;
+	GtkWidget *icon_grid;
 	GtkWidget *icon_mainbox;
 	GtkWidget *mime_toggle;
 	GtkWidget *scrollbutton;
+	GtkWidget *arrow;
 	MimeViewType type;
 	gboolean ctree_mode;
 

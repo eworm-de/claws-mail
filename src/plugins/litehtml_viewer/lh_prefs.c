@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright(C) 2019 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -104,9 +104,9 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *enable_remote_content;
 	GtkWidget *image_cache_size;
 	GtkWidget *default_font;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
@@ -116,7 +116,8 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	label = gtk_label_new(_("Loading remote resources can lead to some privacy issues.\n"
 				"When remote content loading is disabled, nothing will be requested\n"
 				"from the network."));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label),0);
+	gtk_label_set_yalign(GTK_LABEL(label),0);
 
 	enable_remote_content = gtk_check_button_new_with_label(_("Enable loading of remote content"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_remote_content),
@@ -127,7 +128,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_widget_show_all(vbox_remote);
 
 	/* Image cache size */
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Size of image cache in megabytes"));
@@ -143,7 +144,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_widget_show_all(hbox);
 
 	/* Font */
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Default font"));
@@ -176,8 +177,8 @@ static void save_lh_prefs_page(PrefsPage *page)
 			GTK_SPIN_BUTTON(prefs_page->image_cache_size));
 
 	g_free(lh_prefs.default_font);
-	lh_prefs.default_font = g_strdup(gtk_font_button_get_font_name(
-			GTK_FONT_BUTTON(prefs_page->default_font)));
+	lh_prefs.default_font = g_strdup(gtk_font_chooser_get_font(
+			GTK_FONT_CHOOSER(prefs_page->default_font)));
 
 	save_prefs();
 }

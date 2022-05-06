@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2013 The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2007-2022 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -159,8 +158,9 @@ static void custom_attr_window_create_list_view_columns(GtkWidget *list_view)
 static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboolean warn)
 {
 	if (!warn || alertpanel(_("Delete all attribute names"),
-		       _("Do you really want to delete all attribute names?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+				_("Do you really want to delete all attribute names?"),
+				NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+				ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(list_view)));
 		gtk_list_store_clear(list_store);
@@ -185,7 +185,8 @@ static void custom_attr_popup_delete (void *obj, void *data)
 
 	if (alertpanel(_("Delete attribute name"),
 		       _("Do you really want to delete this attribute name?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       NULL,  _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 		dirty = TRUE;
 	}
@@ -195,7 +196,7 @@ static void custom_attr_popup_factory_defaults (void *obj, void *data)
 {
 	if (alertpanel(_("Reset to default"),
 		       _("Do you really want to replace all attribute names\nwith the default set?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GList *tmp = custom_attr_default_list();
 		custom_attr_window_load_list(tmp);
 		if (tmp) {
@@ -243,9 +244,7 @@ static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *even
 		cm_menu_set_sensitive("CustomAttrPopup/Delete", non_empty);
 		cm_menu_set_sensitive("CustomAttrPopup/DeleteAll", non_empty);
 
-		gtk_menu_popup(GTK_MENU(custom_attr_popup_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_widget(GTK_MENU(custom_attr_popup_menu), widget, 3, 3, NULL);
 
 		return FALSE;
 	}
@@ -478,11 +477,11 @@ static void custom_attr_window_create(void)
 			 G_CALLBACK(custom_attr_window_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
-	hbox1 = gtk_hbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	
 	new_attr_label = gtk_label_new(_("New attribute name:"));
-	gtk_misc_set_alignment(GTK_MISC(new_attr_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(new_attr_label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox1), new_attr_label, FALSE, FALSE, 0);
 	
 	new_attr_entry = gtk_entry_new();
@@ -490,15 +489,15 @@ static void custom_attr_window_create(void)
 	g_signal_connect(G_OBJECT(new_attr_entry), "key_press_event",
 			 G_CALLBACK(custom_attr_window_add_key_pressed), NULL);
 	
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
 	
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	
-	gtkut_stock_button_set_create(&hbox2, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbox2, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 
 	gtk_widget_show(new_attr_label);
 	gtk_widget_show(new_attr_entry);
@@ -522,7 +521,7 @@ static void custom_attr_window_create(void)
 				"affect attributes already set for contacts."));
 	gtk_widget_set_size_request(GTK_WIDGET(label), 380, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);

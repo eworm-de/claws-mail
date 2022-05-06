@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2015 the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2022 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -9,7 +9,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; withouNULL, t even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
@@ -327,8 +327,8 @@ static void filter_delete(GtkWidget *widget, SieveManagerPage *page)
 	g_snprintf(buf, sizeof(buf),
 		   _("Do you really want to delete the filter '%s'?"), filter_name);
 	if (alertpanel_full(_("Delete filter"), buf,
-				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING) != G_ALERTALTERNATE)
+				NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 
 	cmd_data = g_new(CommandDataName, 1);
@@ -548,8 +548,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	sieve_config.manager_win_width = allocation->width;
-	sieve_config.manager_win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&sieve_config.manager_win_width, &sieve_config.manager_win_height);
 }
 
 static void got_session_error(SieveSession *session, const gchar *msg,
@@ -678,15 +678,15 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, sieve_config.manager_win_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), sieve_config.manager_win_width,
 			sieve_config.manager_win_height);
 	gtk_window_set_type_hint(GTK_WINDOW(window),
 			GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new (FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	/* Accounts list */
@@ -725,7 +725,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Filters list */
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
 
@@ -742,40 +742,40 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Buttons */
 
-	vbox_allbuttons = gtk_vbox_new (FALSE, 8);
+	vbox_allbuttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox_allbuttons, FALSE, FALSE, 0);
 
 	/* buttons that depend on there being a connection */
-	vbox_buttons = gtk_vbox_new (FALSE, 8);
+	vbox_buttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_set_sensitive(vbox_buttons, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox_allbuttons), vbox_buttons, FALSE, FALSE, 0);
 
 	/* new */
-	btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
+	btn = gtk_button_new_with_mnemonic("_New");
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			  G_CALLBACK (filter_add), page);
 
 	/* edit */
-	btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_edit), page);
 
 	/* delete */
-	btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_delete), page);
 
 	/* rename */
-	btn = gtk_button_new_with_label(_("Rename"));
+	btn = gtk_button_new_with_mnemonic(_("_Rename"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_rename), page);
 
 	/* refresh */
-	btn = gtk_button_new_from_stock(GTK_STOCK_REFRESH);
+	btn = gtkut_stock_button("view-refresh", "_Refresh");
 	gtk_box_pack_end (GTK_BOX (vbox_allbuttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (account_changed), page);
@@ -783,8 +783,8 @@ static SieveManagerPage *sieve_manager_page_new()
 	/* bottom area stuff */
 
 	gtkut_stock_button_set_create(&hbox,
-			&btn, GTK_STOCK_CLOSE,
-			NULL, NULL, NULL, NULL);
+			&btn, "window-close", _("_Close"),
+			NULL, NULL, NULL, NULL, NULL, NULL);
 
 	/* close */
 	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -264,8 +264,8 @@ static void pluginwindow_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.pluginswin_width = allocation->width;
-	prefs_common.pluginswin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.pluginswin_width, &prefs_common.pluginswin_height);
 }
 
 
@@ -302,20 +302,21 @@ void pluginwindow_create()
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient(GTK_WINDOW(window));
 
-	vbox1 = gtk_vbox_new(FALSE, 4);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 	gtk_box_set_homogeneous(GTK_BOX(vbox1), FALSE);
 	gtk_widget_realize(window);
 
-	hbox2 = gtk_hbox_new(FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
-	vbox3 = gtk_vbox_new(FALSE, 4);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox3, FALSE, FALSE, 0);
 
@@ -334,13 +335,13 @@ void pluginwindow_create()
 	gtk_widget_grab_focus(GTK_WIDGET(plugin_list_view));
 
 	gtkut_stock_button_set_create(&hbuttonbox1,
-				&load_btn, _("_Load..."),
-				&unload_btn, _("_Unload"),
-				NULL, NULL);
+				&load_btn, NULL, _("_Load..."),
+				&unload_btn, NULL, _("_Unload"),
+				NULL, NULL, NULL);
 	gtk_widget_show(hbuttonbox1);
 	gtk_box_pack_start(GTK_BOX(vbox3), hbuttonbox1, FALSE, FALSE, 0);
 	
-	vbox2 = gtk_vbox_new(FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox2);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox2, TRUE, TRUE, 0);
 
@@ -352,8 +353,9 @@ void pluginwindow_create()
 	label13 = gtk_label_new(_("Description"));
 	gtk_widget_show(label13);
 	gtk_container_add(GTK_CONTAINER(frame2), label13);
-	gtk_misc_set_alignment(GTK_MISC(label13), 0, 0.5);
-	gtk_misc_set_padding(GTK_MISC(label13), 2, 2);
+	gtk_label_set_xalign(GTK_LABEL(label13), 0.0);
+	gtk_widget_set_margin_start(GTK_WIDGET(label13), 2);
+	gtk_widget_set_margin_end(GTK_WIDGET(label13), 2);
 
 	scrolledwindow3 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow3);
@@ -368,7 +370,7 @@ void pluginwindow_create()
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
-	hbox_info = gtk_hbox_new(FALSE, 5);
+	hbox_info = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show(hbox_info);
 	
 	desc_lbl = gtk_label_new("");
@@ -378,7 +380,7 @@ void pluginwindow_create()
 	gtk_label_set_markup(GTK_LABEL(desc_lbl), markup);
 	g_free(markup);
 	g_free(span);
-	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(desc_lbl), 0.0);
 	gtk_widget_show(desc_lbl);
 	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);
 
@@ -386,8 +388,8 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_info, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create_with_help(&hbuttonbox2, &help_btn,
-			&close_btn, GTK_STOCK_CLOSE,
-			NULL, NULL, NULL, NULL);
+			&close_btn, "window-close", _("_Close"),
+			NULL, NULL, NULL, NULL, NULL, NULL);
 
 	gtk_box_set_spacing(GTK_BOX(hbuttonbox2), 6);
 	gtk_widget_show(hbuttonbox2);
@@ -419,14 +421,6 @@ void pluginwindow_create()
 	CLAWS_SET_TIP(unload_btn,
 			_("Unload the selected plugin"));
 
-	pluginwindow->window = window;
-	pluginwindow->plugin_list_view = plugin_list_view;
-	pluginwindow->plugin_desc = plugin_desc;
-	pluginwindow->unload_btn = unload_btn;
-	pluginwindow->selected_plugin = NULL;
-
-	set_plugin_list(pluginwindow);
-
 	inc_lock();
 
 	if (!geometry.min_height) {
@@ -440,6 +434,15 @@ void pluginwindow_create()
 				    prefs_common.pluginswin_height);
 
 	gtk_widget_show(window);
+
+	pluginwindow->window = window;
+	pluginwindow->plugin_list_view = plugin_list_view;
+	pluginwindow->plugin_desc = plugin_desc;
+	pluginwindow->unload_btn = unload_btn;
+	pluginwindow->selected_plugin = NULL;
+
+	set_plugin_list(pluginwindow);
+
 }
 
 static GtkListStore* pluginwindow_create_data_store(void)

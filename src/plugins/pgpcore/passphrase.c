@@ -1,5 +1,5 @@
-/* passphrase.c - GTK+ based passphrase callback
- * Copyright (C) 2001-2016 Werner Koch (dd9jn) and the Claws Mail team
+/* passphrase.c - GTK based passphrase callback
+ * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,17 +95,17 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     MANAGE_WINDOW_SIGNALS_CONNECT(window);
     manage_window_set_transient(GTK_WINDOW(window));
 
-    vbox = gtk_vbox_new(FALSE, 8);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
     if (uid_hint || pass_hint) {
         GtkWidget *label, *icon;
         label = create_description (uid_hint, prev_bad, new_key);
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+	icon = gtk_image_new_from_icon_name("dialog-password",
         			GTK_ICON_SIZE_DIALOG); 
 
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
         gtk_box_pack_start (GTK_BOX(hbox), icon, FALSE, FALSE, 0);
@@ -119,9 +119,9 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     gtk_widget_grab_focus(pass_entry);
 
     gtkut_stock_button_set_create(&confirm_box, 
-				  &cancel_button, GTK_STOCK_CANCEL,
-		    		  &ok_button, GTK_STOCK_OK,
-				  NULL, NULL);
+				  &cancel_button, NULL, _("_Cancel"),
+		    		  &ok_button, NULL, _("_OK"),
+				  NULL, NULL, NULL);
 
     gtk_box_pack_end(GTK_BOX(vbox), confirm_box, FALSE, FALSE, 0);
     gtk_widget_grab_default(ok_button);
@@ -144,7 +144,6 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
         /* make sure that window is viewable */
         gtk_widget_show_now(window);
 	gdkwin = gtk_widget_get_window(window);
-	gdk_window_process_updates(gdkwin, TRUE);
 	gdk_flush();
 	while(gtk_events_pending()) {
 		gtk_main_iteration();

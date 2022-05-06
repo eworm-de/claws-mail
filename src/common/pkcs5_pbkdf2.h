@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2016 The Claws Mail Team
  *
  * pkcs5_pbkdf2.h - Password-Based Key Derivation Function 2

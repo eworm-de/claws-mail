@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +32,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include "gtkcmoptionmenu.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_filtering_action.h"
@@ -280,8 +278,8 @@ void prefs_filtering_action_open(GSList *action_list,
 		prefs_filtering_action_create();
 	} else {
 		/* update color label menu */
-		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
-				colorlabel_create_color_menu());
+		colorlabel_refill_combobox_colormenu(
+				GTK_COMBO_BOX(filtering_action.color_optmenu));
 	}
 
 	manage_window_set_transient(GTK_WINDOW(filtering_action.window));
@@ -303,8 +301,8 @@ static void prefs_filtering_action_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.filteringactionwin_width = allocation->width;
-	prefs_common.filteringactionwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.filteringactionwin_width, &prefs_common.filteringactionwin_height);
 }
 
 #define LABELS_WIDTH		80
@@ -314,7 +312,7 @@ static void prefs_filtering_action_check_widget_width(GtkWidget *widget)
 {
 	GtkRequisition req;
 	
-	gtk_widget_size_request(widget, &req);
+	gtk_widget_get_preferred_size(widget, &req, NULL);
 	if(req.width > SECOND_ROW_WIDTH)
 		gtk_widget_set_size_request(widget, SECOND_ROW_WIDTH, -1);
 }
@@ -387,13 +385,13 @@ static void prefs_filtering_action_create(void)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+				      &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
@@ -411,7 +409,7 @@ static void prefs_filtering_action_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_cancel), NULL);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 2);
 
@@ -420,10 +418,11 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), frame, FALSE, FALSE, 0);	
 	gtk_widget_set_size_request(frame, -1, 110);
 	
-	table = gtk_table_new(3, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), 2);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), HSPACING_NARROW);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), VSPACING_NARROW);
+
         gtk_container_add(GTK_CONTAINER(frame), table);
         
         /* first row labels */
@@ -431,27 +430,29 @@ static void prefs_filtering_action_create(void)
 	label1 = gtk_label_new (_("Action"));
 	gtk_widget_set_size_request(label1, LABELS_WIDTH, -1);
 	gtk_size_group_add_widget(size_group, label1);
-	gtk_misc_set_alignment (GTK_MISC (label1), 1, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label1), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label1, 0, 0, 1, 1);
 
 	label2 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label2);
-	gtk_misc_set_alignment (GTK_MISC (label2), 1, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label2), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label2, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(label2, TRUE);
+	gtk_widget_set_halign(label2, GTK_ALIGN_FILL);
 
 	label3 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label3);
-	gtk_misc_set_alignment (GTK_MISC (label3), 1, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 2, 3, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label3), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label3, 0, 2, 1, 1);
+	gtk_widget_set_hexpand(label3, TRUE);
+	gtk_widget_set_halign(label3, GTK_ALIGN_FILL);
 
 	/* action combo */
 	
-	hbox1 = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 			
 	model = prefs_filtering_action_create_model();
 	action_combo = gtk_combo_box_new_with_model(model);
@@ -475,9 +476,10 @@ static void prefs_filtering_action_create(void)
 
 	/* accounts */
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 1, 2, 
-			 GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	account_combo = gtk_combo_box_text_new ();
 	gtk_size_group_add_widget(size_action, account_combo);
@@ -505,9 +507,10 @@ static void prefs_filtering_action_create(void)
 
 	/* destination */
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 2, 3, 
-			GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	dest_entry = gtk_entry_new ();
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
@@ -515,10 +518,8 @@ static void prefs_filtering_action_create(void)
 	score_entry = gtk_spin_button_new_with_range(-1000, 1000, 1);
 	gtk_box_pack_start(GTK_BOX(hbox1), score_entry, FALSE, FALSE, 0);
 	
-	color_optmenu = gtk_cmoption_menu_new();
+	color_optmenu = colorlabel_create_combobox_colormenu();
 	gtk_size_group_add_widget(size_action, color_optmenu);
-	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
-				 colorlabel_create_color_menu());
 	prefs_filtering_action_check_widget_width(color_optmenu);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, FALSE, FALSE, 0);
 
@@ -539,9 +540,10 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), tags_combo,
 			    FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 2, 3, 2, 3, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 2, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	dest_btn = gtk_button_new_with_label (_("Select..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
@@ -557,7 +559,7 @@ static void prefs_filtering_action_create(void)
 			  NULL);
 #endif
 
-	exec_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	exec_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_exec_info),
@@ -565,17 +567,17 @@ static void prefs_filtering_action_create(void)
 
 	/* register / substitute / delete */
 
-	reg_hbox = gtk_hbox_new(FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_register_cb), NULL);
@@ -586,14 +588,12 @@ static void prefs_filtering_action_create(void)
 			 G_CALLBACK(prefs_filtering_action_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("list-remove", _("_Remove"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_delete_cb), NULL);
 
-	action_hbox = gtk_hbox_new(FALSE, 8);
+	action_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox1), action_hbox, TRUE, TRUE, 0);
 
 	action_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -609,15 +609,15 @@ static void prefs_filtering_action_create(void)
 	action_list_view = prefs_filtering_action_list_view_create();
 	gtk_container_add(GTK_CONTAINER(action_scrolledwin), action_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(action_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_up), NULL);
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_down), NULL);
@@ -629,7 +629,7 @@ static void prefs_filtering_action_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.filteringactionwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.filteringactionwin_width,
 				    prefs_common.filteringactionwin_height);
 
 	g_object_unref(G_OBJECT(size_group));
@@ -922,8 +922,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		}
 		break;
 	case ACTION_COLOR:
-		labelcolor = colorlabel_get_color_menu_active_item(
-			gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(filtering_action.color_optmenu)));
+		labelcolor = colorlabel_get_combobox_colormenu_active(
+				GTK_COMBO_BOX(filtering_action.color_optmenu));
 		destination = NULL;	
 		break;
         case ACTION_CHANGE_SCORE:
@@ -1296,8 +1296,8 @@ static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboole
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), 0);
 		else if(GTK_IS_ENTRY(widget))
 			gtk_entry_set_text(GTK_ENTRY(widget), "");
-		else if(GTK_IS_CMOPTION_MENU(widget))
-			gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(widget), 0);
+		else if(GTK_IS_COMBO_BOX(widget))
+			gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 		
 		gtk_widget_set_sensitive(widget, TRUE);
 		gtk_widget_show(widget);
@@ -1494,7 +1494,6 @@ static gboolean prefs_filtering_actions_selected
 	gint list_id;
 	GtkTreeIter iter;
 	gboolean is_valid;
-	GtkWidget *menu;
 
 	if (currently_selected)
 		return TRUE;
@@ -1597,11 +1596,9 @@ static gboolean prefs_filtering_actions_selected
 	case MATCHACTION_COLOR:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),
 				     ACTION_COLOR);
-		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(filtering_action.color_optmenu),
-					    action->labelcolor + 1);
-		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(
-						filtering_action.color_optmenu));
-		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
+		colorlabel_set_combobox_colormenu_active(
+				GTK_COMBO_BOX(filtering_action.color_optmenu),
+				action->labelcolor);
 		break;
 	case MATCHACTION_CHANGE_SCORE:
 		combobox_select_by_data(GTK_COMBO_BOX(filtering_action.action_combo),

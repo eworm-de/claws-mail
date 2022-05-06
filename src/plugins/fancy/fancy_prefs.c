@@ -1,20 +1,20 @@
 /*
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2015 the Claws Mail Team
  * == Fancy Plugin ==
- * This file Copyright (C) 2009-2015 Salvatore De Paolis
- * <iwkse@claws-mail.org> and the Claws Mail Team
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 Salvatore De Paolis and the Claws Mail Team
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write tothe Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program; see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -201,11 +201,11 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *stylesheet_browse_button;
 	GtkWidget *stylesheet_edit_button;
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
-	GtkWidget *block = gtk_hbox_new(FALSE, 5);
+	GtkWidget *block = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
 	vbox_proxy = gtkut_get_options_frame(vbox, &frame_proxy, _("Proxy"));
 #ifdef HAVE_LIBSOUP_GNOME
@@ -241,7 +241,8 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 					"from the network. Rendering of images, scripts, plugin objects or\n"
 					"Java applets can still be enabled for content that is attached\n"
 					"in the email."));
-	gtk_misc_set_alignment(GTK_MISC(remote_label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(remote_label), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(remote_label), 0.0);
 	enable_remote_content = gtk_check_button_new_with_label(_("Enable loading of remote content"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_remote_content),
 				     fancy_prefs.enable_remote_content);
@@ -273,7 +274,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox), enable_plugins, FALSE, FALSE, 0);
 	gtk_widget_show(enable_plugins);
 
-	GtkWidget *hbox_ext = gtk_hbox_new(FALSE, 8);
+	GtkWidget *hbox_ext = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	GtkWidget *open_external_label = gtk_label_new(_("When clicking on a link, by default"));
 	GtkWidget *optmenu_open_external = gtkut_sc_combobox_create(NULL, FALSE);
 	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -292,7 +293,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_open_external),
 			fancy_prefs.open_external);
 	
-	GtkWidget *hbox_css = gtk_hbox_new(FALSE, 8);
+	GtkWidget *hbox_css = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_css);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_css, FALSE, FALSE, 0);
 
@@ -312,7 +313,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	g_signal_connect(G_OBJECT(stylesheet_browse_button), "clicked",
 			 G_CALLBACK(fancy_prefs_stylesheet_browse_cb), stylesheet);
 
-	stylesheet_edit_button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	stylesheet_edit_button = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (stylesheet_edit_button);
 	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(stylesheet_edit_button), "clicked",

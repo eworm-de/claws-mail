@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -852,10 +852,7 @@ FILE *str_open_as_stream(const gchar *str)
 
 	cm_return_val_if_fail(str != NULL, NULL);
 
-	len = strlen(str);
-
 	fp = my_tmpfile();
-
 	if (!fp) {
 		FILE_OP_ERROR("str_open_as_stream", "my_tmpfile");
 		return NULL;

@@ -599,11 +599,15 @@ draw_row (GtkCMCList     *clist,
   static GdkColor greybg={0, 0, 0, 0};
   static gboolean color_change = TRUE;
   cairo_t *cr;
-  cairo_t *cr_hw;
-  cairo_surface_t *image_surface;
   GdkColor *fgcolor, *bgcolor;
 
   cm_return_if_fail (clist != NULL);
+
+  if (clist->draw_now) {
+      gtk_widget_queue_draw(GTK_WIDGET (clist));
+      return;
+  }
+
   widget = GTK_WIDGET (clist);
 
   /* if the function is passed the pointer to the row instead of null,
@@ -669,12 +673,7 @@ draw_row (GtkCMCList     *clist,
   }
   state = clist_row->state;
 
-  cr_hw = gdk_cairo_create(clist->clist_window);
-  image_surface = cairo_surface_create_similar_image(cairo_get_target(cr_hw),
-                                                     CAIRO_FORMAT_RGB24,
-                                                     gdk_window_get_width(clist->clist_window),
-                                                     gdk_window_get_height(clist->clist_window));
-  cr = cairo_create(image_surface);
+  cr = gdk_cairo_create(clist->clist_window);
   
   if (clist_row->fg_set && state != GTK_STATE_SELECTED)
 	fgcolor = &clist_row->foreground;
@@ -944,33 +943,29 @@ draw_row (GtkCMCList     *clist,
 	    cairo_stroke(cr);
 	}
      }
-
-    cairo_set_operator(cr_hw, CAIRO_OPERATOR_SOURCE);
-    cairo_set_source_surface(cr_hw, image_surface, 0, 0);
-    cairo_rectangle(cr_hw,
-                    row_rectangle.x,
-                    row_rectangle.y - CELL_SPACING,
-                    row_rectangle.width,
-                    row_rectangle.height + CELL_SPACING * 2);
-    cairo_fill(cr_hw);
-
     cairo_destroy(cr);
-    cairo_surface_destroy(image_surface);
-    cairo_destroy(cr_hw);
 }
 
 static void
 gtk_cmctree_class_init (GtkCMCTreeClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+#if !GTK_CHECK_VERSION(3, 0, 0)
   GtkObjectClass *object_class;
+#else /* for simplicity */
+  GtkWidgetClass *object_class;
+#endif
   GtkWidgetClass *widget_class;
   GtkCMCListClass *clist_class;
   GtkBindingSet *binding_set;
 
   gobject_class->constructor = gtk_cmctree_constructor;
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
   object_class = (GtkObjectClass *) klass;
+#else /* for simplicity */
+  object_class = (GtkWidgetClass *) klass;
+#endif
   widget_class = (GtkWidgetClass *) klass;
   container_class = (GtkContainerClass *) klass;
   clist_class = (GtkCMCListClass *) klass;
@@ -1309,6 +1304,7 @@ ctree_attach_styles (GtkCMCTree     *ctree,
     GTK_CMCTREE_ROW (node)->row.style =
       gtk_style_attach (GTK_CMCTREE_ROW (node)->row.style, clist->clist_window);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
   if (GTK_CMCTREE_ROW (node)->row.fg_set || GTK_CMCTREE_ROW (node)->row.bg_set)
     {
       GdkColormap *colormap;
@@ -1319,6 +1315,7 @@ ctree_attach_styles (GtkCMCTree     *ctree,
       if (GTK_CMCTREE_ROW (node)->row.bg_set)
 	gdk_colormap_alloc_color (colormap, &(GTK_CMCTREE_ROW (node)->row.background), TRUE, TRUE);
     }
+#endif
 
   for (i = 0; i < clist->columns; i++)
     if  (GTK_CMCTREE_ROW (node)->row.cell[i].style)
@@ -1889,7 +1886,7 @@ change_focus_row_expansion (GtkCMCTree          *ctree,
 
   clist = GTK_CMCLIST (ctree);
 
-  if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (ctree))) && 
+  if (gtkut_pointer_is_grabbed (GTK_WIDGET (ctree)) && 
       gtk_widget_has_grab (GTK_WIDGET(ctree)))
     return;
   
@@ -4119,7 +4116,7 @@ gtk_cmctree_node_set_shift (GtkCMCTree     *ctree,
 static void
 remove_grab (GtkCMCList *clist)
 {
-  if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) && 
+  if (gtkut_pointer_is_grabbed (GTK_WIDGET (clist)) && 
       gtk_widget_has_grab (GTK_WIDGET(clist)))
     {
       gtk_grab_remove (GTK_WIDGET (clist));
@@ -4441,18 +4438,18 @@ gtk_cmctree_node_get_row_style (GtkCMCTree     *ctree,
 void
 gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
 			       GtkCMCTreeNode   *node,
-			       const GdkColor *color)
+			       const GdkRGBA *color)
 {
   cm_return_if_fail (GTK_IS_CMCTREE (ctree));
   cm_return_if_fail (node != NULL);
 
   if (color)
     {
-      GTK_CMCTREE_ROW (node)->row.foreground = *color;
+      GdkColor gdk_color;
+
+      GTKUT_GDKRGBA_TO_GDKCOLOR((*color), gdk_color);
+      GTK_CMCTREE_ROW (node)->row.foreground = gdk_color;
       GTK_CMCTREE_ROW (node)->row.fg_set = TRUE;
-      if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
-			 &GTK_CMCTREE_ROW (node)->row.foreground, TRUE, TRUE);
     }
   else
     GTK_CMCTREE_ROW (node)->row.fg_set = FALSE;
@@ -4463,18 +4460,18 @@ gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
 void
 gtk_cmctree_node_set_background (GtkCMCTree       *ctree,
 			       GtkCMCTreeNode   *node,
-			       const GdkColor *color)
+			       const GdkRGBA *color)
 {
   cm_return_if_fail (GTK_IS_CMCTREE (ctree));
   cm_return_if_fail (node != NULL);
 
   if (color)
     {
-      GTK_CMCTREE_ROW (node)->row.background = *color;
+      GdkColor gdk_color;
+
+      GTKUT_GDKRGBA_TO_GDKCOLOR((*color), gdk_color);
+      GTK_CMCTREE_ROW (node)->row.background = gdk_color;
       GTK_CMCTREE_ROW (node)->row.bg_set = TRUE;
-      if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
-			 &GTK_CMCTREE_ROW (node)->row.background, TRUE, TRUE);
     }
   else
     GTK_CMCTREE_ROW (node)->row.bg_set = FALSE;

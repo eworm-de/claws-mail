@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net>
  * and the Claws Mail Team
  *
@@ -123,7 +123,7 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 	GtkWidget *tmp;
 	int i = 0;
 	
-        vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
  	gtk_widget_show(vbox);
        
@@ -150,18 +150,16 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_page->enabled_chkbtn[i]),
 			spamreport_prefs.enabled[i]);
 
-		table = gtk_table_new(3, 2, FALSE);
+		table = gtk_grid_new();
 		gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-		gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-		gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+		gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+		gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 	
 		gtk_container_add(GTK_CONTAINER(prefs_page->frame[i]), table);
 		gtk_widget_show(prefs_page->frame[i]);
 		gtk_widget_show(table);
 
-		gtk_table_attach(GTK_TABLE(table), prefs_page->enabled_chkbtn[i], 0, 2, 0, 1,
-				GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL, 
-				0, 0);
+		gtk_grid_attach(GTK_GRID(table), prefs_page->enabled_chkbtn[i], 0, 0, 1, 1);
 		gtk_widget_show(prefs_page->enabled_chkbtn[i]);
 
 		switch(spam_interfaces[i].type) {
@@ -171,24 +169,21 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 		default:
 			tmp = gtk_label_new(_("Username:"));
 		}
-		gtk_table_attach(GTK_TABLE(table), tmp, 0, 1, 1, 2,
-				0, 0, 
-				0, 0);
-		gtk_table_attach(GTK_TABLE(table), prefs_page->user_entry[i], 1, 2, 1, 2,
-				GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL, 
-				0, 0);
+		gtk_grid_attach(GTK_GRID(table), tmp, 0, 1, 1, 1);
+		gtk_grid_attach(GTK_GRID(table), prefs_page->user_entry[i], 1, 1, 1, 1);
+		gtk_widget_set_hexpand(prefs_page->user_entry[i], TRUE);
+		gtk_widget_set_halign(prefs_page->user_entry[i], GTK_ALIGN_FILL);
 		if (spam_interfaces[i].type != INTF_HTTP_GET) {
 			gtk_widget_show(tmp);
 			gtk_widget_show(prefs_page->user_entry[i]);
 		}
 
 		tmp = gtk_label_new(_("Password:"));
-		gtk_table_attach(GTK_TABLE(table), tmp, 0, 1, 2, 3,
-				0, 0, 
-				0, 0);
-		gtk_table_attach(GTK_TABLE(table), prefs_page->pass_entry[i], 1, 2, 2, 3,
-				GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL, 
-				0, 0);
+		gtk_grid_attach(GTK_GRID(table), tmp, 0, 2, 1, 1);
+		gtk_grid_attach(GTK_GRID(table), prefs_page->pass_entry[i], 1, 2, 1, 1);
+		gtk_widget_set_hexpand(prefs_page->pass_entry[i], TRUE);
+		gtk_widget_set_halign(prefs_page->pass_entry[i], GTK_ALIGN_FILL);
+		
 		if (spam_interfaces[i].type != INTF_MAIL && spam_interfaces[i].type != INTF_HTTP_GET) {
 			gtk_widget_show(tmp);
 			gtk_widget_show(prefs_page->pass_entry[i]);

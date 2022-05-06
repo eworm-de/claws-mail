@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -254,7 +253,7 @@ static gint prefswindow_tree_sort_by_weight(GtkTreeModel *model,
 
 static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 {
-	GtkWidget *scrolledwin, *tmp;
+	GtkWidget *scrolledwin;
 
 	if (!page->page_open) {
 		scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -263,15 +262,10 @@ static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		
 		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin),
-					page->widget);
+		gtk_container_add(GTK_CONTAINER(scrolledwin), page->widget);
 
 		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), scrolledwin);
-		tmp = gtk_bin_get_child(GTK_BIN(scrolledwin));
 
-		gtk_widget_realize(tmp);
-		gtk_widget_realize(page->widget);
-		
 		page->widget	= scrolledwin;
 		page->page_open	= TRUE;
 	}
@@ -405,10 +399,11 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 PrefsCloseCallbackFunc close_cb)
 {
 	PrefsWindow *prefswindow;
-	gint x = gdk_screen_width();
-	gint y = gdk_screen_height();
+	gint x;
+	gint y;
 	static GdkGeometry geometry;
 	GtkAdjustment *adj;
+	GdkRectangle workarea = {0};
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -433,10 +428,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			GTK_WINDOW(mainwindow_get_mainwindow()->window));
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
-	prefswindow->vbox = gtk_vbox_new(FALSE, 6);
+	prefswindow->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(prefswindow->vbox);
 	
-	prefswindow->paned = gtk_hpaned_new();
+	prefswindow->paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show(prefswindow->paned);
 
 	gtk_container_add(GTK_CONTAINER(prefswindow->window), prefswindow->vbox);
@@ -457,25 +452,30 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_container_add(GTK_CONTAINER(prefswindow->scrolledwindow1), 
 			  prefswindow->tree_view);
 
-	prefswindow->vbox2 = gtk_vbox_new(FALSE, 2);
+	prefswindow->vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_widget_show(prefswindow->vbox2);
 
 	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->vbox2);
 
-	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
+	prefswindow->table2 = gtk_grid_new();
 	gtk_widget_show(prefswindow->table2);
-	gtk_container_add(GTK_CONTAINER(prefswindow->vbox2), prefswindow->table2);
+	gtk_box_pack_start(GTK_BOX(prefswindow->vbox2), prefswindow->table2, TRUE, TRUE, 0);
 
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
-	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_OUT);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->labelframe,
-			0, 1, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 1, 1);
+	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_NONE);
+	gtk_grid_attach(GTK_GRID(prefswindow->table2), prefswindow->labelframe, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(prefswindow->labelframe, TRUE);
+	gtk_widget_set_halign(prefswindow->labelframe, GTK_ALIGN_FILL);
 
 	prefswindow->pagelabel = gtk_label_new("");
+	gtk_widget_set_margin_top(prefswindow->pagelabel, 4);
+	gtk_widget_set_margin_bottom(prefswindow->pagelabel, 4);
+	gtk_widget_set_margin_start(prefswindow->pagelabel, 4);
 	gtk_widget_show(prefswindow->pagelabel);
 	gtk_label_set_justify(GTK_LABEL(prefswindow->pagelabel), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(prefswindow->pagelabel), 0, 0.0);
+	gtk_label_set_xalign(GTK_LABEL(prefswindow->pagelabel), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(prefswindow->pagelabel), 0.0);
 	gtk_container_add(GTK_CONTAINER(prefswindow->labelframe), prefswindow->pagelabel);
 
 	prefswindow->notebook = gtk_notebook_new();
@@ -484,8 +484,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->notebook,
-			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 4);
+	gtk_grid_attach(GTK_GRID(prefswindow->table2), prefswindow->notebook, 0, 1, 1, 1);
+	gtk_widget_set_vexpand(prefswindow->notebook, TRUE);
+	gtk_widget_set_hexpand(prefswindow->notebook, TRUE);
+	gtk_widget_set_halign(prefswindow->notebook, GTK_ALIGN_FILL);
 
 	prefswindow->empty_page = gtk_label_new("");
 	gtk_widget_show(prefswindow->empty_page);
@@ -501,14 +503,14 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 #ifndef GENERIC_UMPC
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
-				      &prefswindow->apply_btn,	GTK_STOCK_APPLY,
-				      &prefswindow->cancel_btn,	GTK_STOCK_CANCEL,
-				      &prefswindow->ok_btn,	GTK_STOCK_OK);
+				      &prefswindow->apply_btn, NULL, _("_Apply"),
+				      &prefswindow->cancel_btn, NULL, _("_Cancel"),
+				      &prefswindow->ok_btn, NULL, _("_OK"));
 #else
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
-				      &prefswindow->apply_btn,	GTK_STOCK_APPLY,
-				      &prefswindow->ok_btn,	GTK_STOCK_CLOSE,
-				      NULL,			NULL);
+				      &prefswindow->apply_btn, NULL, _("_Apply"),
+				      &prefswindow->ok_btn, "window-close", _("_Close"),
+				      NULL, NULL, NULL);
 #endif
 	gtk_widget_show_all(prefswindow->confirm_area);
 	gtk_widget_show(prefswindow->vbox);
@@ -542,7 +544,12 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	}
 
 	MANAGE_WINDOW_SIGNALS_CONNECT(prefswindow->window);
-
+	
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
+				 &workarea);
+	x =  workarea.width;
+	y =  workarea.height;
+	
 	if (!geometry.min_height) {
 		
 		if (x < 800 && y < 600) {
@@ -553,10 +560,11 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			geometry.min_height = 550;
 		}
 	}
-	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window), NULL, &geometry,
-				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window),
+			NULL, &geometry, GDK_HINT_MIN_SIZE);
 	if (prefswindow->save_width && prefswindow->save_height) {
-		gtk_widget_set_size_request(prefswindow->window, *(prefswindow->save_width),
+		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window),
+				*(prefswindow->save_width),
 					    *(prefswindow->save_height));
 	}
 
@@ -567,7 +575,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));
-	gtk_adjustment_changed(adj);
 }
 
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
@@ -592,8 +599,8 @@ static void prefs_size_allocate_cb(GtkWidget *widget,
 
 	/* don't try to save size to NULL pointers */
 	if (prefswindow && prefswindow->save_width && prefswindow->save_height) {
-		*(prefswindow->save_width) = allocation->width;
-		*(prefswindow->save_height) = allocation->height;
+		gtk_window_get_size(GTK_WINDOW(widget),
+			prefswindow->save_width, prefswindow->save_height);
 	}
 }
 
@@ -658,6 +665,7 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 	gint pagenum, i;
 	GtkTreeIter iter;
 	GtkAdjustment *adj;
+	gchar *markup;
 
 #ifndef GENERIC_UMPC
 	if (currently_selected) 
@@ -687,7 +695,9 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 		i++;
 	labeltext = page->path[i];
 
-	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
+	markup = g_markup_printf_escaped("<span weight=\"bold\">\%s</span>", labeltext);
+	gtk_label_set_markup(GTK_LABEL(prefswindow->pagelabel), markup);
+	g_free(markup);
 
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
 					page->widget);
@@ -698,11 +708,9 @@ static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
 			GTK_SCROLLED_WINDOW(page->widget));
 	lower = gtk_adjustment_get_lower(adj);
 	gtk_adjustment_set_value(adj, lower);
-	gtk_adjustment_changed(adj);
 	adj = gtk_scrolled_window_get_hadjustment(
 			GTK_SCROLLED_WINDOW(page->widget));
 	gtk_adjustment_set_value(adj, lower);
-	gtk_adjustment_changed(adj);
 
 #ifdef GENERIC_UMPC
 	prefs_show_page(prefswindow);

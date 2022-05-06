@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -418,7 +418,8 @@ MessageView *messageview_create(MainWindow *mainwin)
 	mimeview->textview->messageview = messageview;
 	mimeview->messageview = messageview;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(vbox), "messageview");
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(headerview),
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(noticeview),
@@ -471,7 +472,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	GtkActionGroup *action_group;
 
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
 
@@ -677,11 +678,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	cm_toggle_menu_set_active_full(msgview->ui_manager, "Menu/View/AllHeaders",
 					prefs_common.show_all_headers);
 
-	if (prefs_common.toolbar_detachable) {
-		handlebox = gtk_handle_box_new();
-	} else {
-		handlebox = gtk_hbox_new(FALSE, 0);
-	}
+	handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
@@ -720,6 +717,9 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	gtk_window_set_title(GTK_WINDOW(window), _("Claws Mail - Message View"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.msgwin_width,
+			prefs_common.msgwin_height);
+
 	if (!geometry.min_height) {
 		geometry.min_width = 320;
 		geometry.min_height = 200;
@@ -727,8 +727,6 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 
-	gtk_widget_set_size_request(window, prefs_common.msgwin_width,
-				    prefs_common.msgwin_height);
 #ifdef G_OS_WIN32
 	gtk_window_move(GTK_WINDOW(window), 48, 48);
 #endif
@@ -861,8 +859,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "It is advised to not send the return receipt."),
 		  to, buf);
 		val = alertpanel_full(_("Warning"), message,
-				_("_Don't Send"), _("_Send"), NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				      NULL, _("_Don't Send"), NULL, _("_Send"),
+				      NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				      NULL, ALERT_WARNING);
 		g_free(message);				
 		if (val != G_ALERTALTERNATE) {
 			g_free(buf);
@@ -1527,8 +1526,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			}
 			messageview_find_part_depth_first(&context, MIMETYPE_TEXT, "html");
 			if (context.found &&
-			    ((msginfo->folder && msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS) ||
-			     ((msginfo->folder && msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT) &&
+			    (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS ||
+			     (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT &&
 			      prefs_common.promote_html_part))) { /* html found */
 				mimeinfo = context.found;
 				if (messageview_try_select_mimeinfo(messageview, msginfo, mimeinfo))
@@ -1838,8 +1837,8 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.msgwin_width  = allocation->width;
-	prefs_common.msgwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.msgwin_width, &prefs_common.msgwin_height);
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -2078,9 +2077,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 		  prefs_common_translated_header_name("Cc"));
 		val = alertpanel_with_widget(
 				_("Return Receipt Notification"),
-				text,
-				_("_Cancel"), _("_Send Notification"), NULL,
-				ALERTFOCUS_FIRST, FALSE, optmenu);
+				text, NULL, _("_Cancel"), NULL, _("_Send Notification"),
+				NULL, NULL, ALERTFOCUS_FIRST, FALSE, optmenu);
 		g_free(tr);
 		g_free(text);
 	} else
@@ -2090,8 +2088,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 				 "address that this message was sent to.\n"
 				 "Please choose which account you want to "
 				 "use for sending the receipt notification:"),
-				_("_Cancel"), _("_Send Notification"), NULL,
-				ALERTFOCUS_FIRST, FALSE, optmenu);
+				NULL, _("_Cancel"), NULL, _("_Send Notification"),
+				NULL, NULL, ALERTFOCUS_FIRST, FALSE, optmenu);
 
 	if (val != G_ALERTALTERNATE)
 		return NULL;
@@ -2243,7 +2241,7 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 						(prefs_common.textfont);
 	}
 	if (font_desc) {
-		gtk_widget_modify_font(tmpview->mimeview->textview->text, 
+		gtk_widget_override_font(tmpview->mimeview->textview->text, 
 			font_desc);
 		pango_font_description_free(font_desc);
 	}
@@ -2254,6 +2252,7 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 			print_mimeview(tmpview->mimeview, 
 				sel_start, sel_end, partnum);
 	}
+	messageview_clear(tmpview);
 	messageview_destroy(tmpview);
 }
 

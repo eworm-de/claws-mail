@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014-2016 Ricardo Mones and the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2014-2022 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ static GtkWidget *labeled_spinner_box(gchar *label, GtkWidget *spinner, gchar *u
 	gtk_widget_show(lbl);
 	lbla = gtk_label_new(units);
 	gtk_widget_show(lbla);
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	if (hint != NULL) {
 		CLAWS_SET_TIP(spinner, hint);
 	}
@@ -172,8 +172,8 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 
 	val = alertpanel_full(_("Clear icon cache"),
 			_("Are you sure you want to remove all cached avatar icons?"),
-			GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
-			NULL, ALERT_WARNING);
+			NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	if (val != G_ALERTALTERNATE)
 		return;
 
@@ -217,7 +217,7 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 	AvatarCacheStats *stats;
 	gchar *markup;
 
-	vbox =  gtk_vbox_new(FALSE, 6);
+	vbox =  gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	checkbox = create_checkbox(_("_Use cached icons"),
 				   _("Keep icons on disk for reusing instead "
@@ -247,15 +247,15 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 	markup = avatar_stats_label_markup(stats);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	button = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	button = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show(button);
 	g_signal_connect(button, "clicked",
 		G_CALLBACK(cache_clean_button_clicked_cb), label);
 	gtk_widget_set_sensitive(button, (stats != NULL && stats->bytes > 0));
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -334,7 +334,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		_("Redirect to a user provided URL")
 	};
 
-	vbox =  gtk_vbox_new(FALSE, 6);
+	vbox =  gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	for (i = 0; i < NUM_DEF_BUTTONS; ++i) {
 		enable = (libravatarprefs.default_mode == radio_value[i])? TRUE: FALSE;
@@ -352,7 +352,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 			gtk_entry_set_text(GTK_ENTRY(entry),
 				libravatarprefs.default_mode_url);
 			gtk_entry_set_max_length(GTK_ENTRY(entry), MAX_URL_LENGTH);
-			hbox = gtk_hbox_new(FALSE, 6);
+			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 			gtk_box_pack_start(GTK_BOX(hbox), radio[i], FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 			gtk_widget_set_sensitive(entry,
@@ -393,7 +393,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 	GtkWidget *chk_federated;
 #endif
 
-	vbox =  gtk_vbox_new(FALSE, 6);
+	vbox =  gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	chk_redirects = create_checkbox(_("_Allow redirects to other sites"),
 				   _("Follow redirect responses received from "
@@ -467,7 +467,7 @@ static void libravatar_prefs_create_widget_func(PrefsPage * _page,
 	vbox2 = p_create_frame_missing(page);
 	vbox3 = p_create_frame_network(page);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 
 	PACK_FRAME (vbox, frame, _("Icon cache"));

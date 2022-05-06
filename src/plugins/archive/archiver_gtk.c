@@ -1,8 +1,8 @@
 /* vim: set textwidth=80 tabstop=4 */
 
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ static void create_progress_dialog(struct ArchivePage* page) {
 				title,
 				GTK_WINDOW(mainwin->window),
 				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_STOCK_CANCEL,
+				_("_Cancel"),
 				GTK_RESPONSE_CANCEL,
 				NULL);
 
@@ -131,11 +131,11 @@ static void create_progress_dialog(struct ArchivePage* page) {
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(progress->progress_dialog));
 	gtk_container_add(GTK_CONTAINER(content_area), progress->frame);
 
-	progress->vbox1 = gtk_vbox_new (FALSE, 4);
+	progress->vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (progress->vbox1), 4);
 	gtk_container_add(GTK_CONTAINER(progress->frame), progress->vbox1);
 	
-	progress->hbox1 = gtk_hbox_new(FALSE, 8);
+	progress->hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_set_border_width(GTK_CONTAINER(progress->hbox1), 8);
 	gtk_box_pack_start(GTK_BOX(progress->vbox1),
 					progress->hbox1, FALSE, FALSE, 0);
@@ -150,7 +150,7 @@ static void create_progress_dialog(struct ArchivePage* page) {
 	gtk_box_pack_start(GTK_BOX(progress->hbox1),
 					progress->file_label, TRUE, TRUE, 0);
 
-	progress->hbox1 = gtk_hbox_new(FALSE, 8);
+	progress->hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_set_border_width(GTK_CONTAINER(progress->hbox1), 8);
 	gtk_box_pack_start(GTK_BOX(progress->vbox1),
 					progress->hbox1, FALSE, FALSE, 0);
@@ -572,8 +572,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 			AlertValue aval;
 
 			aval = alertpanel_full(_("Creating archive"), msg,
-				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 			g_free(msg);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -619,8 +619,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 				  "\nContinue anyway?"),
 				orig_file, g_slist_length(list));
 		aval = alertpanel_full(_("Creating archive"), msg,
-			GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
-			NULL, ALERT_WARNING);
+			NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+			ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
 			archive_free_file_list(page->md5, page->rename);
@@ -746,7 +746,7 @@ static void show_result(struct ArchivePage* page) {
 			_("Archive result"),
 			GTK_WINDOW(mainwin->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_OK,
+			_("_OK"),
 			GTK_RESPONSE_NONE,
 			NULL);
 	g_signal_connect_swapped(
@@ -941,8 +941,8 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 		_("Select file name for archive [suffix should reflect archive like .tgz]"),
 			NULL,
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Apply"), GTK_RESPONSE_APPLY,
 			NULL);
 
 	if (archiver_prefs.save_folder)
@@ -1040,9 +1040,9 @@ void archiver_gtk_show() {
 				_("Create Archive"),
 				GTK_WINDOW(mainwin->window),
 				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_STOCK_CANCEL,
+				_("_Cancel"),
 				GTK_RESPONSE_CANCEL,
-				GTK_STOCK_OK,
+				_("_OK"),
 				GTK_RESPONSE_ACCEPT,
 				NULL);
 
@@ -1058,11 +1058,11 @@ void archiver_gtk_show() {
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_container_add(GTK_CONTAINER(content_area), frame);
 
-	vbox1 = gtk_vbox_new (FALSE, 4);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), vbox1);
 	
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -1080,7 +1080,7 @@ void archiver_gtk_show() {
 	CLAWS_SET_TIP(folder_select,
 			_("Click this button to select a folder which is to be root of the archive"));
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -1102,7 +1102,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1231,7 +1231,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1281,7 +1281,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1320,7 +1320,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 

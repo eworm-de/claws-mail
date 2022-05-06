@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -366,20 +366,20 @@ static void folderview_column_set_titles(FolderView *folderview)
 	
 	gtk_cmclist_column_titles_active(GTK_CMCLIST(ctree));
 	 
-	hbox_folder = gtk_hbox_new(FALSE, 4);
-	hbox_new = gtk_hbox_new(FALSE, 4);
-	hbox_unread = gtk_hbox_new(FALSE, 4);
-	hbox_total = gtk_hbox_new(FALSE, 4);
+	hbox_folder = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_new = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_unread = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_total = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 
 	/* left justified */
 	gtk_box_pack_start(GTK_BOX(hbox_folder), label_folder, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_folder), 0, 0.5);
+	gtk_widget_set_halign(label_folder, GTK_ALIGN_START);
 	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
+	gtk_widget_set_halign(label_new, GTK_ALIGN_END);
 	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
+	gtk_widget_set_halign(label_unread, GTK_ALIGN_END);
 	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
+	gtk_widget_set_halign(label_total, GTK_ALIGN_END);
 
 	gtk_widget_show_all(hbox_folder);
 	gtk_widget_show_all(hbox_new);
@@ -455,6 +455,8 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 
 	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],
 					   titles);
+
+	gtk_widget_set_name(GTK_WIDGET(ctree), "folderview_sctree");
 
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
@@ -609,16 +611,15 @@ FolderView *folderview_create(MainWindow *mainwin)
 	folderview = g_new0(FolderView, 1);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_name(GTK_WIDGET(scrolledwin), "folderview");
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW(scrolledwin),
 		 GTK_POLICY_AUTOMATIC,
 		 prefs_common.folderview_vscrollbar_policy);
-	gtk_widget_set_size_request(scrolledwin,
-			     prefs_common.folderview_width,
-			     prefs_common.folderview_height);
 
 	folderview->scrolledwin  = scrolledwin;
 	ctree = folderview_ctree_create(folderview);
+	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
 	
 	/* create popup factories */
 	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
@@ -663,7 +664,7 @@ static void folderview_set_fonts(FolderView *folderview)
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
 	if (font_desc) {
-		gtk_widget_modify_font(ctree, font_desc);
+		gtk_widget_override_font(ctree, font_desc);
 		pango_font_description_free(font_desc);
 	}
 
@@ -880,8 +881,8 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	}
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(title, message,
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
-			  TRUE, NULL, ALERT_QUESTION);
+				      NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+				      ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
@@ -1108,8 +1109,8 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	    alertpanel_full(_("Rebuild folder tree"), 
 	    		 _("Rebuilding the folder tree will remove "
 			   "local caches. Do you want to continue?"),
-		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
-						 FALSE, NULL, ALERT_WARNING) 
+		       	 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			 ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING)
 		!= G_ALERTALTERNATE) {
 		return;
 	}
@@ -1139,7 +1140,6 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 		pos = gtk_scrolled_window_get_vadjustment(
 					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 		gtk_adjustment_set_value(pos, height);
-		gtk_adjustment_changed(pos);
 	}
 	label_window_destroy(window);
 	inc_unlock();
@@ -1518,6 +1518,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	GtkStyle *style = NULL, *prev_style;
 	FolderItem *item;
+	GdkRGBA black = { 0, 0, 0, 1 };
 	GdkPixbuf *xpm, *openxpm;
 	static GdkPixbuf *searchicon;
 	gboolean mark = FALSE;
@@ -1528,7 +1529,6 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	gboolean use_bold, use_color;
 	gint *col_pos = folderview->col_pos;
 	SpecialFolderItemType stype;
-	GdkColor gdk_color;
 	
 	item = gtk_cmctree_node_get_row_data(ctree, node);
 	cm_return_if_fail(item != NULL);
@@ -1734,22 +1734,18 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 
 	if (use_bold) {
 		style = bold_style;
-		if (item->op_count > 0) {
+		if (item->op_count > 0)
 			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
-		} else if (use_color) {
+		else if (use_color)
 			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
-		} else if (item->prefs->color != 0) {
-			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
-		}
+		else if (!gdk_rgba_equal(&item->prefs->color, &black))
+			gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 	} else if (use_color)
 		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
 	else if (item->op_count > 0)
 		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
-	else if (item->prefs->color != 0) {
-		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
-		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
-	}
+	else if (!gdk_rgba_equal(&item->prefs->color, &black))
+		gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);
 
@@ -2021,8 +2017,7 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
         g_signal_connect(G_OBJECT(popup), "selection_done",
                          G_CALLBACK(folderview_popup_close),
                          folderview);
-	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
-		       event->button, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(popup), NULL);
 }
 
 static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
@@ -2263,6 +2258,9 @@ void folderview_close_opened(FolderView *folderview, gboolean dirty)
 static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 				gint column, FolderView *folderview)
 {
+	GdkDisplay *display;
+	GdkSeat    *seat;
+	GdkDevice  *device;
 	static gboolean can_select = TRUE;	/* exclusive lock */
 	gboolean opened;
 	FolderItem *item;
@@ -2271,6 +2269,10 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	GtkCMCTreeNode *old_opened = folderview->opened;
 	START_TIMING("");
 	folderview->selected = row;
+	
+	display = gdk_display_get_default();
+	seat = gdk_display_get_default_seat(display);
+	device = gdk_seat_get_pointer(seat);
 
 	debug_print("newly selected %p, opened %p\n", folderview->selected, 
 			folderview->opened);
@@ -2326,8 +2328,8 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	/* ungrab the mouse event */
 	if (gtk_widget_has_grab(GTK_WIDGET(ctree))) {
 		gtk_grab_remove(GTK_WIDGET(ctree));
-		if (gdk_pointer_is_grabbed())
-			gdk_pointer_ungrab(GDK_CURRENT_TIME);
+		if (gdk_display_device_is_grabbed(display, device))
+			gdk_seat_ungrab(seat);
 	}
 
 	/* Open Folder */
@@ -2492,8 +2494,8 @@ static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL,
-						 ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
+			       NULL, _("_Cancel"), NULL, _("_Empty trash"), NULL, NULL,
+				ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 			return;
 	}
 	
@@ -2538,8 +2540,8 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES,
-			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+			       NULL, _("_No"), NULL, _("_Yes"),
+			       NULL, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* ask for confirmation before sending queued messages only
@@ -2550,8 +2552,8 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 		if (!prefs_common.work_offline) {
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
-			    	   GTK_STOCK_CANCEL, _("_Send"),
-				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+			    	   NULL, _("_Cancel"), NULL, _("_Send"),
+				   NULL, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
 	}
@@ -2646,8 +2648,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 					     _("Do you really want to make folder '%s' a subfolder of '%s'?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
-				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
-								 TRUE, NULL, ALERT_QUESTION);
+				       	 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+					 ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 		g_free(buf);
 
 		if ((status & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -2758,14 +2760,14 @@ static void folderview_processing_cb(GtkAction *action, gpointer data)
 	g_free (title);
 }
 
-void folderview_set_target_folder_color(gint color_op) 
+void folderview_set_target_folder_color(GdkRGBA color_op)
 {
 	GList *list;
 	FolderView *folderview;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
-		gtkut_convert_int_to_gdk_color(color_op, &folderview->color_op);
+		folderview->color_op = color_op;
 	}
 }
 
@@ -2794,10 +2796,8 @@ void folderview_reflect_prefs(void)
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gint height = gtk_adjustment_get_value(pos);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW],
-			&folderview->color_new);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_TGT_FOLDER],
-			&folderview->color_op);
+	folderview->color_new = prefs_common.color[COL_NEW];
+	folderview->color_op = prefs_common.color[COL_TGT_FOLDER];
 
 	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
 			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
@@ -2815,16 +2815,6 @@ void folderview_reflect_prefs(void)
 	g_free(last_boldfont);
 	last_boldfont = g_strdup(BOLD_FONT);
 	last_derive = prefs_common.derive_from_normal_font;
-
-#define STYLE_FREE(s)			\
-	if (s != NULL) {		\
-		g_object_unref(s);	\
-		s = NULL;		\
-	}
-
-	STYLE_FREE(bold_style);
-
-#undef STYLE_FREE
 
 	folderview_set_fonts(folderview);
 
@@ -2852,7 +2842,6 @@ void folderview_reflect_prefs(void)
 	pos = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gtk_adjustment_set_value(pos, height);
-	gtk_adjustment_changed(pos);
 	gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
 }
 
@@ -2905,8 +2894,9 @@ static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *even
 	if (folderview->nodes_to_recollapse) 
 		g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
-	context = gtk_drag_begin(widget, folderview->target_list,
-				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
+	context = gtk_drag_begin_with_coordinates(widget, folderview->target_list,
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event,
+				 -1, -1);
 	gtk_drag_set_icon_default(context);
 }
 #endif
@@ -3359,8 +3349,7 @@ static gboolean folderview_header_button_pressed(GtkWidget *widget,
 
 	/* Handle right-click for context menu */
 	if (event->button == 3) {
-		gtk_menu_popup(GTK_MENU(folderview->headerpopupmenu),
-				NULL, NULL, NULL, NULL, 3, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(folderview->headerpopupmenu), NULL);
 		return TRUE;
 	}
 

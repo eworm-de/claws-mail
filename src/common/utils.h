@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -99,83 +99,84 @@ typedef gint64 goffset;
 
 #define Xalloca(ptr, size, iffail) \
 { \
-        size_t __size = size; \
-        if (__size > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
-                iffail; \
-        } \
-        if ((ptr = alloca(size)) == NULL) { \
-                g_warning("can't allocate memory"); \
-                iffail; \
-        } \
+	size_t __size = size; \
+ \
+	if (__size > MAX_ALLOCA_MEM_SIZE) { \
+		g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
+		iffail; \
+	} \
+	if ((ptr = alloca(__size)) == NULL) { \
+		g_warning("can't allocate memory"); \
+		iffail; \
+	} \
 }
 
 #define Xstrdup_a(ptr, str, iffail) \
 { \
-        gchar *__tmp; \
-        size_t __size = strlen(str); \
+	gchar *__tmp; \
+	size_t __size = strlen(str); \
  \
-        if (__size > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
-                iffail; \
-        } \
-        if ((__tmp = alloca(__size + 1)) == NULL) { \
-                g_warning("can't allocate memory"); \
-                iffail; \
-        } else \
-                strcpy(__tmp, str); \
+	if (__size > MAX_ALLOCA_MEM_SIZE) { \
+		g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
+		iffail; \
+	} \
+	if ((__tmp = alloca(__size + 1)) == NULL) { \
+		g_warning("can't allocate memory"); \
+		iffail; \
+	} else \
+		strcpy(__tmp, str); \
  \
-        ptr = __tmp; \
+	ptr = __tmp; \
 }
 
 #define Xstrndup_a(ptr, str, len, iffail) \
 { \
-        gchar *__tmp; \
-        size_t __size = len; \
+	gchar *__tmp; \
+	size_t __size = len; \
  \
-        if (__size > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%" G_GSIZE_FORMAT "bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
-                iffail; \
-        } \
-        if ((__tmp = alloca(__size + 1)) == NULL) { \
-                g_warning("can't allocate memory"); \
-                iffail; \
-        } else { \
-                memcpy(__tmp, str, __size); \
-                __tmp[__size] = '\0'; \
-        } \
+	if (__size > MAX_ALLOCA_MEM_SIZE) { \
+		g_warning("%" G_GSIZE_FORMAT "bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
+		iffail; \
+	} \
+	if ((__tmp = alloca(__size + 1)) == NULL) { \
+		g_warning("can't allocate memory"); \
+		iffail; \
+	} else { \
+		memcpy(__tmp, str, __size); \
+		__tmp[__size] = '\0'; \
+	} \
  \
-        ptr = __tmp; \
+	ptr = __tmp; \
 }
 
 #define Xstrcat_a(ptr, str1, str2, iffail) \
 { \
-        gchar *__tmp; \
-        size_t len1, len2; \
+	gchar *__tmp; \
+	size_t len1, len2; \
  \
-        len1 = strlen(str1); \
-        len2 = strlen(str2); \
-        if (len1 + len2 > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
-                iffail; \
-        } \
-        if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
-                g_warning("can't allocate memory"); \
-                iffail; \
-        } else { \
-                memcpy(__tmp, str1, len1); \
-                memcpy(__tmp + len1, str2, len2 + 1); \
-        } \
+	len1 = strlen(str1); \
+	len2 = strlen(str2); \
+	if (len1 + len2 > MAX_ALLOCA_MEM_SIZE) { \
+		g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
+		iffail; \
+	} \
+	if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
+		g_warning("can't allocate memory"); \
+		iffail; \
+	} else { \
+		memcpy(__tmp, str1, len1); \
+		memcpy(__tmp + len1, str2, len2 + 1); \
+	} \
  \
-        ptr = __tmp; \
+	ptr = __tmp; \
 }
 
 #define AUTORELEASE_STR(str, iffail) \
 { \
-        gchar *__str; \
-        Xstrdup_a(__str, str, iffail); \
-        g_free(str); \
-        str = __str; \
+	gchar *__str; \
+	Xstrdup_a(__str, str, iffail); \
+	g_free(str); \
+	str = __str; \
 }
 
 #define FILE_OP_ERROR(file, func) \

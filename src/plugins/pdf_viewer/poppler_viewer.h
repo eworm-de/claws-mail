@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2016 Salvatore De Paolis & the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -86,7 +86,7 @@ struct _PdfViewer
 	GtkWidget			*doc_info;
 	GtkWidget			*doc_index;
 	/* end GtkButtons */
-	GtkTable			*table_doc_info;
+	GtkWidget			*table_doc_info;
 
 	PopplerDocument		*pdf_doc;
 	PopplerPage			*pdf_page;

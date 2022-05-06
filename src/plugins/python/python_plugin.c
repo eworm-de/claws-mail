@@ -75,8 +75,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	python_config.console_win_width = allocation->width;
-	python_config.console_win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&python_config.console_win_width, &python_config.console_win_height);
 }
 
 static void setup_python_console(void)
@@ -95,10 +95,11 @@ static void setup_python_console(void)
 
   gtk_window_set_geometry_hints(GTK_WINDOW(python_console), NULL, &geometry,
 				    GDK_HINT_MIN_SIZE);
-  gtk_widget_set_size_request(python_console, python_config.console_win_width,
+  gtk_window_set_default_size(GTK_WINDOW(python_console),
+				  python_config.console_win_width,
 				  python_config.console_win_height);
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   gtk_container_add(GTK_CONTAINER(python_console), vbox);
 
   console = parasite_python_shell_new();
@@ -595,9 +596,9 @@ static PyObject *get_StringIO_instance(void)
   PyObject *class_StringIO = NULL;
   PyObject *inst_StringIO = NULL;
 
-  module_StringIO = PyImport_ImportModule("cStringIO");
+  module_StringIO = PyImport_ImportModule("io");
   if(!module_StringIO) {
-    debug_print("Error getting traceback: Could not import module cStringIO\n");
+    debug_print("Error getting traceback: Could not import module io\n");
     goto done;
   }
 
@@ -618,44 +619,6 @@ done:
   Py_XDECREF(class_StringIO);
 
   return inst_StringIO;
-}
-
-static char* get_exception_information(PyObject *inst_StringIO)
-{
-  char *retval = NULL;
-  PyObject *meth_getvalue = NULL;
-  PyObject *result_getvalue = NULL;
-
-  if(!inst_StringIO)
-    goto done;
-
-  if(PySys_SetObject("stderr", inst_StringIO) != 0) {
-    debug_print("Error getting traceback: Could not set sys.stderr to a StringIO instance\n");
-    goto done;
-  }
-
-  meth_getvalue = PyObject_GetAttrString(inst_StringIO, "getvalue");
-  if(!meth_getvalue) {
-    debug_print("Error getting traceback: Could not get the getvalue method of the StringIO instance\n");
-    goto done;
-  }
-
-  PyErr_Print();
-
-  result_getvalue = PyObject_CallObject(meth_getvalue, NULL);
-  if(!result_getvalue) {
-    debug_print("Error getting traceback: Could not call the getvalue method of the StringIO instance\n");
-    goto done;
-  }
-
-  retval = g_strdup(PyString_AsString(result_getvalue));
-
-done:
-
-  Py_XDECREF(meth_getvalue);
-  Py_XDECREF(result_getvalue);
-
-  return retval ? retval : g_strdup("Unspecified error occurred");
 }
 
 static void log_func(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
@@ -686,6 +649,10 @@ gint plugin_init(gchar **error)
   if(!make_sure_directories_exist(error))
     goto err;
 
+  /* register moduke */
+  PyImport_AppendInittab("clawsmail", initclawsmail);
+  PyImport_AppendInittab("parasite", parasite_python_module_init);
+
   /* initialize python interpreter */
   Py_Initialize();
 
@@ -693,13 +660,6 @@ gint plugin_init(gchar **error)
    * in a string, a StringIO object is created, to which sys.stderr can be redirected in case
    * an error occurred. */
   inst_StringIO = get_StringIO_instance();
-
-  /* initialize Claws Mail Python module */
-  initclawsmail();
-  if(PyErr_Occurred()) {
-    *error = get_exception_information(inst_StringIO);
-    goto err;
-  }
 
   if(PyRun_SimpleString("import clawsmail") == -1) {
     *error = g_strdup("Error importing the clawsmail module");
@@ -799,7 +759,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-  return "GTK2";
+  return "GTK3";
 }
 
 const gchar *plugin_licence(void)

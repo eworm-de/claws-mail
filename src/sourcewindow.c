@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,8 +66,6 @@ SourceWindow *source_window_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
-	gtk_widget_set_size_request(window, prefs_common.sourcewin_width,
-				    prefs_common.sourcewin_height);
 	
 	if (!geometry.min_height) {
 		geometry.min_width = 400;
@@ -75,6 +73,8 @@ SourceWindow *source_window_create(void)
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.sourcewin_width,
+				    prefs_common.sourcewin_height);
 
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(source_window_size_alloc_cb),
@@ -101,7 +101,7 @@ SourceWindow *source_window_create(void)
 		font_desc = pango_font_description_from_string
 					(prefs_common.textfont);
 	if (font_desc)
-		gtk_widget_modify_font(text, font_desc);
+		gtk_widget_override_font(text, font_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
 
@@ -191,8 +191,8 @@ static void source_window_size_alloc_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.sourcewin_width  = allocation->width;
-	prefs_common.sourcewin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.sourcewin_width, &prefs_common.sourcewin_height);
 }
 
 static gint source_window_delete_cb(GtkWidget *widget, GdkEventAny *event,

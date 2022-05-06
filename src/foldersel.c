@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,8 +233,8 @@ static void foldersel_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.folderselwin_width = allocation->width;
-	prefs_common.folderselwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.folderselwin_width, &prefs_common.folderselwin_height);
 }
 
 static void foldersel_create(const gchar *title)
@@ -264,7 +264,7 @@ static void foldersel_create(const gchar *title)
 			 G_CALLBACK(foldersel_size_allocate_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	if (title != NULL) {
@@ -285,7 +285,7 @@ static void foldersel_create(const gchar *title)
 					G_TYPE_POINTER,
 					GDK_TYPE_PIXBUF,
 					GDK_TYPE_PIXBUF,
-					GDK_TYPE_COLOR,
+					GDK_TYPE_RGBA,
 					G_TYPE_INT);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(tree_store),
 					FOLDERSEL_FOLDERNAME,
@@ -331,7 +331,7 @@ static void foldersel_create(const gchar *title)
 	gtk_tree_view_column_set_attributes
 		(column, renderer,
 		 "text", FOLDERSEL_FOLDERNAME,
-		 "foreground-gdk", FOLDERSEL_FOREGROUND,
+		 "foreground-rgba", FOLDERSEL_FOREGROUND,
 		 "weight", FOLDERSEL_BOLD,
 		 NULL);
 	g_object_set(G_OBJECT(renderer), "weight", PANGO_WEIGHT_BOLD, NULL);
@@ -345,9 +345,9 @@ static void foldersel_create(const gchar *title)
 	gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &new_button,    GTK_STOCK_NEW,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button,     GTK_STOCK_OK);
+				      &new_button,    NULL, _("_New"),
+				      &cancel_button, NULL, _("_Cancel"),
+				      &ok_button,     NULL, _("_OK"));
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
@@ -366,7 +366,8 @@ static void foldersel_create(const gchar *title)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.folderselwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.folderselwin_width,
 				    prefs_common.folderselwin_height);
 
 	gtk_widget_show_all(vbox);
@@ -400,11 +401,8 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	GdkPixbuf *pixbuf, *pixbuf_open;
 	gboolean use_color;
 	PangoWeight weight = PANGO_WEIGHT_NORMAL;
-	GdkColor *foreground = NULL;
-	static GdkColor color_noselect = {0, COLOR_DIM, COLOR_DIM, COLOR_DIM};
-	static GdkColor color_new;
-
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &color_new);
+	GdkRGBA *foreground = NULL;
+	GdkRGBA color_noselect = {COLOR_DIM, COLOR_DIM, COLOR_DIM, 1.0};
 
 	name = folder_item_get_name(item);
 
@@ -439,7 +437,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	if (item->no_select)
 		foreground = &color_noselect;
 	else if (use_color)
-		foreground = &color_new;
+		foreground = &prefs_common.color[COL_NEW];
 
 	/* insert this node */
 	gtk_tree_store_append(store, iter, parent);

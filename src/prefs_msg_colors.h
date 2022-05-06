@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2004-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ typedef struct _ColorlabelPrefsWidgets	ColorlabelPrefsWidgets;
 
 struct _ColorlabelPrefs
 {
-	gulong	 color;
+	GdkRGBA color;
 	gchar	*label;
 
 };

@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * Copyright(C) 2019 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ char master_css[] = {
 #include "css.inc"
 };
 
-static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
+static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data);
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		gpointer user_data);
@@ -78,8 +78,8 @@ lh_widget::lh_widget()
 	/* drawing area */
 	m_drawing_area = gtk_drawing_area_new();
 	gtk_container_add(GTK_CONTAINER(m_viewport), m_drawing_area);
-	g_signal_connect(m_drawing_area, "expose-event",
-			G_CALLBACK(expose_event_cb), this);
+	g_signal_connect(m_drawing_area, "draw",
+			G_CALLBACK(draw_cb), this);
 	g_signal_connect(m_drawing_area, "motion_notify_event",
 			G_CALLBACK(motion_notify_event), this);
 	g_signal_connect(m_drawing_area, "button_press_event",
@@ -110,6 +110,8 @@ lh_widget::lh_widget()
 	m_partinfo = NULL;
 
 	m_showing_url = FALSE;
+
+	m_cairo_context = NULL;
 
 	gtk_widget_set_events(m_drawing_area,
 			        GDK_BUTTON_RELEASE_MASK
@@ -142,11 +144,7 @@ void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
 {
 	debug_print("lh_widget set_base_url '%s'\n",
 			(base_url ? base_url : "(null)"));
-	if (base_url)
-		m_base_url = base_url;
-	else
-		m_base_url.clear();
-
+	m_base_url = base_url;
 	return;
 }
 
@@ -199,7 +197,6 @@ void lh_widget::open_html(const gchar *contents)
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
 		m_blank = false;
-		gtk_widget_queue_draw(m_drawing_area);
 	}
 	lh_widget_statusbar_pop();
 }
@@ -238,6 +235,9 @@ void lh_widget::redraw()
 	gint width;
 	GdkWindow *gdkwin;
 	cairo_t *cr;
+	cairo_region_t *creg;
+	GdkDrawingContext *gdkctx;
+	gboolean destroy = FALSE;
 
 	if (m_html == NULL)
 		return;
@@ -267,13 +267,21 @@ void lh_widget::redraw()
 				m_html->width(), m_html->height());
 	}
 
-	/* Paint the rendered HTML. */
-	gdkwin = gtk_widget_get_window(m_drawing_area);
-	if (gdkwin == NULL) {
-		g_warning("lh_widget::redraw: No GdkWindow to draw on!");
-		return;
+	/* Use provided cairo context, if any. Otherwise create our own. */
+	if (m_cairo_context != NULL) {
+		cr = m_cairo_context;
+	} else {
+		gdkwin = gtk_widget_get_window(m_drawing_area);
+		if (gdkwin == NULL) {
+			g_warning("lh_widget::redraw: No GdkWindow to draw on!");
+			return;
+		}
+		creg = cairo_region_create_rectangle(&rect);
+		gdkctx = gdk_window_begin_draw_frame(gdkwin, creg);
+		cr = gdk_drawing_context_get_cairo_context(gdkctx);
+		destroy = TRUE;
 	}
-	cr = gdk_cairo_create(GDK_DRAWABLE(gdkwin));
+
 	if(!std::atomic_exchange(&m_blank, false)) {
 		draw(cr);
 	} else {
@@ -282,7 +290,11 @@ void lh_widget::redraw()
 		cairo_fill(cr);
 	}
 
-	cairo_destroy(cr);
+	/* Only destroy the used cairo context if we created it earlier. */
+	if (destroy) {
+		gdk_window_end_draw_frame(gdkwin, gdkctx);
+		cairo_region_destroy(creg);
+	}
 }
 
 void lh_widget::clear()
@@ -326,7 +338,9 @@ void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 	if (cursType == GDK_ARROW) {
 		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), NULL);
 	} else {
-		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
+		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area),
+				gdk_cursor_new_for_display(gtk_widget_get_display(m_drawing_area),
+					cursType));
 	}
 
 	/* If there is a href, show it in statusbar */
@@ -393,8 +407,7 @@ void lh_widget::popup_context_menu(const litehtml::tchar_t *url,
 
 	m_clicked_url = url;
 	gtk_widget_show_all(m_context_menu);
-	gtk_menu_popup(GTK_MENU(m_context_menu), NULL, NULL, NULL, NULL,
-			event->button, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(m_context_menu), (GdkEvent *)event);
 }
 
 void lh_widget::update_font()
@@ -467,12 +480,20 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 	return NULL;
 }
 
+void lh_widget::set_cairo_context(cairo_t *cr)
+{
+	m_cairo_context = cr;
+}
+
+
 ////////////////////////////////////////////////
-static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
+static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
+	w->set_cairo_context(cr);
 	w->redraw();
+	w->set_cairo_context(NULL);
 	return FALSE;
 }
 

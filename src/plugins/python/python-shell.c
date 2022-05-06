@@ -73,12 +73,8 @@ static gboolean parasite_python_shell_key_press_cb(GtkWidget *textview,
 static GtkVBoxClass *parent_class = NULL;
 //static guint signals[LAST_SIGNAL] = {0};
 
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-G_DEFINE_TYPE(ParasitePythonShell, parasite_python_shell, GTK_TYPE_VBOX);
-#else
 G_DEFINE_TYPE_WITH_CODE(ParasitePythonShell, parasite_python_shell,
     GTK_TYPE_VBOX, G_ADD_PRIVATE(ParasitePythonShell))
-#endif
 
 
 static void
@@ -89,10 +85,6 @@ parasite_python_shell_class_init(ParasitePythonShellClass *klass)
     parent_class = g_type_class_peek_parent(klass);
 
     object_class->finalize = parasite_python_shell_finalize;
-
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-    g_type_class_add_private(klass, sizeof(ParasitePythonShellPrivate));
-#endif
 }
 
 static void
@@ -132,7 +124,7 @@ parasite_python_shell_init(ParasitePythonShell *python_shell)
     /* Make the textview monospaced */
     font_desc = pango_font_description_from_string("monospace");
     pango_font_description_set_size(font_desc, 10 * PANGO_SCALE);
-    gtk_widget_modify_font(priv->textview, font_desc);
+    gtk_widget_override_font(priv->textview, font_desc);
     pango_font_description_free(font_desc);
 
     /* Create the end-of-buffer mark */

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #endif 
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -81,10 +82,10 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
 					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
-	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
+	gchar * action_btn = (open == TRUE) ? _("_Open"):_("_Save");
 	GtkWidget *chooser = gtk_file_chooser_dialog_new
 				(title, NULL, action, 
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				_("_Cancel"), GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);
 

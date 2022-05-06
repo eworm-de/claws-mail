@@ -1,6 +1,6 @@
 
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2007 Holger Berndt
+ * Copyright (C) 2005-2022 Holger Berndt and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -481,8 +481,6 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   gtk_window_set_position(GTK_WINDOW(entry->window), GTK_WIN_POS_CENTER);
   gtk_window_set_modal(GTK_WINDOW(entry->window), TRUE);
   gtk_window_set_resizable(GTK_WINDOW(entry->window), TRUE);
-  gtk_window_set_wmclass
-    (GTK_WINDOW(entry->window), "folder_selection", "Claws Mail");  
   g_signal_connect(G_OBJECT(entry->window), "delete_event",
 		   G_CALLBACK(delete_event), entry);
   g_signal_connect(G_OBJECT(entry->window), "key_press_event",
@@ -490,7 +488,7 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   MANAGE_WINDOW_SIGNALS_CONNECT(entry->window);
 
   /* vbox */
-  vbox = gtk_vbox_new(FALSE, 4);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
   gtk_container_add(GTK_CONTAINER(entry->window), vbox);
 
   /* scrolled window */
@@ -587,9 +585,9 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 10);
 
   gtkut_stock_button_set_create(&confirm_area,
-				&cancel_button, GTK_STOCK_CANCEL,
-				&ok_button,     GTK_STOCK_OK,
-				NULL,           NULL);
+				&cancel_button, NULL, _("_Cancel"),
+				&ok_button, NULL, _("_OK"),
+				NULL, NULL, NULL);
   gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
   gtk_widget_grab_default(ok_button);
 

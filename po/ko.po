@@ -43,7 +43,7 @@ msgid "E-mail client"
 msgstr ""
 
 #: ../claws-mail.desktop.in.h:2
-msgid "Lightweight and Fast GTK+ based Mail Client"
+msgid "Lightweight and Fast GTK based Mail Client"
 msgstr ""
 
 #: ../src/account.c:392
@@ -4291,31 +4291,31 @@ msgstr "정보"
 #: ../src/gtk/about.c:168
 #, fuzzy, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: %s %s (%s)"
 msgstr ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "운영 체계: %s %s (%s)"
 
 #: ../src/gtk/about.c:177
 #, fuzzy, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: %s"
 msgstr ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "운영 체계: %s"
 
 #: ../src/gtk/about.c:186
 #, fuzzy, c-format
 msgid ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "Locale: %s (charset: %s)\n"
 "Operating System: unknown"
 msgstr ""
-"GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+"GTK %d.%d.%d / GLib %d.%d.%d\n"
 "운영 체계: 모름"
 
 #: ../src/gtk/about.c:243 ../src/prefs_themes.c:730 ../src/wizard.c:527

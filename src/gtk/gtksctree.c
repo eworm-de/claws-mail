@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Parts of this file:
  * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
@@ -167,7 +167,7 @@ gtk_sctree_change_focus_row_expansion (GtkCMCTree          *ctree,
 
   clist = GTK_CMCLIST (ctree);
 
-  if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (ctree))) && 
+  if (gtkut_pointer_is_grabbed (GTK_WIDGET (ctree)) && 
       gtk_widget_has_grab (GTK_WIDGET(ctree)))
     return;
   

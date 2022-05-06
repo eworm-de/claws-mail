@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2015 the Claws Mail Team
  * Copyright (C) 2014-2015 Charles Lehner
  *
@@ -119,11 +119,11 @@ const gchar *plugin_desc(void)
 /**
  * Get the kind of plugin.
  *
- * @return The "GTK2" constant.
+ * @return The "GTK3" constant.
  */
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 /**
  * Get the license acronym the plugin is released under.

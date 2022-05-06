@@ -38,37 +38,27 @@ static int Account_init(clawsmail_AccountObject *self, PyObject *args, PyObject 
 
 static void Account_dealloc(clawsmail_AccountObject* self)
 {
-  self->ob_type->tp_free((PyObject*)self);
-}
-
-static int Account_compare(clawsmail_AccountObject *obj1, clawsmail_AccountObject *obj2)
-{
-  if(obj1->account->account_id < obj2->account->account_id)
-    return -1;
-  else if(obj1->account->account_id > obj2->account->account_id)
-    return 1;
-  else
-    return 0;
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject* Account_str(clawsmail_AccountObject *self)
 {
   if(self->account && self->account->account_name)
-    return PyString_FromFormat("Account: %s", self->account->account_name);
+    return PyUnicode_FromFormat("Account: %s", self->account->account_name);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_account_name(clawsmail_AccountObject *self, void *closure)
 {
   if(self->account && self->account->account_name)
-    return PyString_FromString(self->account->account_name);
+    return PyUnicode_FromString(self->account->account_name);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_address(clawsmail_AccountObject *self, void *closure)
 {
   if(self->account && self->account->address)
-    return PyString_FromString(self->account->address);
+    return PyUnicode_FromString(self->account->address);
   Py_RETURN_NONE;
 }
 
@@ -93,8 +83,7 @@ static PyGetSetDef Account_getset[] = {
 };
 
 static PyTypeObject clawsmail_AccountType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /* ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.Account",       /* tp_name*/
     sizeof(clawsmail_AccountObject), /* tp_basicsize*/
     0,                         /* tp_itemsize*/
@@ -102,7 +91,7 @@ static PyTypeObject clawsmail_AccountType = {
     0,                         /* tp_print*/
     0,                         /* tp_getattr*/
     0,                         /* tp_setattr*/
-    (cmpfunc)Account_compare,  /* tp_compare*/
+    0,                         /* tp_compare*/
     0,                         /* tp_repr*/
     0,                         /* tp_as_number*/
     0,                         /* tp_as_sequence*/

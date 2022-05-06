@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Michael Rasmussen and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 Michael Rasmussen and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -324,7 +323,6 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	GtkWidget *scrollwin;
 	GtkWidget *view;
 	GtkWidget *entry_value;
-	gint top;
 	GtkListStore *store;
 	GtkTreeViewColumn *col;
 	GtkCellRenderer *rdr;
@@ -332,7 +330,7 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 
 	personEditDlg = dialog;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(personEditDlg->notebook), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
@@ -344,11 +342,11 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 		gtk_notebook_get_nth_page(GTK_NOTEBOOK(personEditDlg->notebook), pageNum), label);
 
 	/* Split into two areas */
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
 	/* Attribute list */
-	vboxl = gtk_vbox_new(FALSE, 4);
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(hbox), vboxl);
 	gtk_container_set_border_width(GTK_CONTAINER(vboxl), 4);
 
@@ -381,17 +379,16 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_container_add(GTK_CONTAINER(scrollwin), view);
 
 	/* Data entry area */
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(N_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	gchar **attribute = (gchar **) ATTRIBUTE;
 
@@ -406,35 +403,38 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
 
-	gtk_table_attach(GTK_TABLE(table), combo_box, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), combo_box, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(combo_box, TRUE);
+	gtk_widget_set_halign(combo_box, GTK_ALIGN_FILL);
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(N_("Value"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entry_value = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_value, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_value, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entry_value, TRUE);
+	gtk_widget_set_halign(entry_value, GTK_ALIGN_FILL);
 
 	/* Button box */
-	vboxb = gtk_vbox_new(FALSE, 4);
+	vboxb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
-	vbuttonbox = gtk_vbutton_box_new();
+	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(vbuttonbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing(GTK_BOX(vbuttonbox), 8);
 	gtk_container_set_border_width(GTK_CONTAINER(vbuttonbox), 4);
 	gtk_container_add(GTK_CONTAINER(vboxb), vbuttonbox);
 
 	/* Buttons */
-	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	buttonDel = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonDel);
 
-	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+	buttonMod = gtkut_stock_button("document-save", _("_Save"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonMod);
 
-	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	buttonAdd = gtkut_stock_button("list-add", _("_Add"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonAdd);
 	
 	gtk_widget_set_sensitive(buttonDel,FALSE);

@@ -19,7 +19,7 @@ def get_current_word(buffer):
     if not end.ends_word():
         end.forward_word_end()
     return (start.get_text(end), start, end)
-    
+
 
 buffer = clawsmail.compose_window.text.get_buffer()         # get text buffer of body editor
 (current_word, start, end) = get_current_word(buffer)       # get current word under the cursor

@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -42,8 +42,6 @@ void statusbar_progress_all	(gint done, gint total, gint step);
 	if (mainwin->statusbar) \
 		gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
 			   mainwin->folderview_cid, str); \
-	if (mainwin->hbox_stat) \
-		gtkut_widget_draw_now(mainwin->hbox_stat); \
 }
 
 #define STATUSBAR_POP(mainwin) \

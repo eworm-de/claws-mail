@@ -52,12 +52,8 @@ guint				info_signals[LAST_SIGNAL] = { 0 };
 
 static void			gtk_hotkey_info_finalize (GObject * obj);
 
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-G_DEFINE_TYPE(GtkHotkeyInfo, gtk_hotkey_info, G_TYPE_OBJECT)
-#else
 G_DEFINE_TYPE_WITH_CODE(GtkHotkeyInfo, gtk_hotkey_info, G_TYPE_OBJECT,
 		G_ADD_PRIVATE(GtkHotkeyInfo))
-#endif
 
 /**
  * SECTION:gtk-hotkey-info
@@ -503,11 +499,6 @@ gtk_hotkey_info_class_init (GtkHotkeyInfoClass * klass)
 {
 	gtk_hotkey_info_parent_class = g_type_class_peek_parent (klass);
 
-#if !GLIB_CHECK_VERSION(2, 58, 0)
-	g_type_class_add_private (G_OBJECT_CLASS (klass),
-			sizeof (GtkHotkeyInfoPrivate));
-#endif
-	
 	G_OBJECT_CLASS (klass)->get_property = gtk_hotkey_info_get_property;
 	G_OBJECT_CLASS (klass)->set_property = gtk_hotkey_info_set_property;
 	G_OBJECT_CLASS (klass)->finalize = gtk_hotkey_info_finalize;

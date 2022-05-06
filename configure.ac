@@ -10,7 +10,7 @@ dnl version number
 INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=
+EXTRA_GTK3_VERSION=
 
 if test \( -d .git \); then
     AC_CHECK_PROG([GIT], [git], [yes], [no], [$PATH])
@@ -44,7 +44,7 @@ else
 fi
 
 if test \( "x$EXTRA_RELEASE" != "x" \); then
-    VERSION=${VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
+    VERSION=${VERSION}${EXTRA_RELEASE}${EXTRA_GTK3_VERSION}
 fi
 
 dnl set $target
@@ -247,7 +247,7 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl for gettext
-ALL_LINGUAS="ca cs da de el_GR en_GB es fi fr hu id_ID it ja nb nl pl pt_BR pt_PT ro ru sk sv tr zh_TW"
+ALL_LINGUAS="ca cs da de el_GR en_GB es fi fr hu id_ID it ja nb nl pl pt_BR ro ru sk sv tr zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
@@ -606,7 +606,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.20 cairo)
 
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
@@ -1203,7 +1203,7 @@ dnl Gdata:		libgdata
 dnl Litehtml		a C++ compiler, >=glib-2.36, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
-dnl 				   libcanberra_gtk hotkey
+dnl 				   libcanberra_gtk3 hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
 dnl PGP/Core:		libgpgme
@@ -1238,7 +1238,7 @@ AC_SUBST(EXPAT_CFLAGS)
 AC_SUBST(EXPAT_LIBS)
 
 dnl webkit *********************************************************************
-PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.10.0, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
+PKG_CHECK_MODULES(WEBKIT, webkit2gtk-4.0 >= 2.18.0, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
 AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(WEBKIT_CFLAGS)
 
@@ -1364,22 +1364,18 @@ if test x"$HAVE_GPGME" = xyes; then
 fi
 
 dnl Python *********************************************************************
-missing_python=""
-PKG_CHECK_MODULES(PYTHON, python2, HAVE_PYTHON=yes, HAVE_PYTHON=no)
-if test x"$HAVE_PYTHON" = xno; then
-	missing_python="python2"
-fi
-if test x"$HAVE_PYTHON" = xyes; then
-	PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3, [AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])], HAVE_PYTHON=no)
-	if test x"$HAVE_PYTHON" = xno; then
-		missing_python="pygtk-2.0 >= 2.10.3"
-	fi
-fi
+PKG_CHECK_MODULES(PYTHON, python3, HAVE_PYTHON=yes, HAVE_PYTHON=no)
+PKG_CHECK_MODULES(PYTHONEMBED, python3-embed, HAVE_PYTHONEMBED=yes, HAVE_PYTHONEMBED=no)
+PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJ=yes, HAVE_PYGOBJ=no)
+
 AC_SUBST(PYTHON_SHARED_LIB)
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
-AC_SUBST(PYGTK_CFLAGS)
-AC_SUBST(PYGTK_LIBS)
+AC_SUBST(PYTHONEMBED_SHARED_LIB)
+AC_SUBST(PYTHONEMBED_CFLAGS)
+AC_SUBST(PYTHONEMBED_LIBS)
+AC_SUBST(PYGOBJECT_CFLAGS)
+AC_SUBST(PYGOBJECT_LIBS)
 
 dnl libnotify ******************************************************************
 PKG_CHECK_MODULES(libnotify, libnotify >= 0.4.3, HAVE_LIBNOTIFY=yes, HAVE_LIBNOTIFY=no)
@@ -1389,13 +1385,13 @@ fi
 AC_SUBST(libnotify_CFLAGS)
 AC_SUBST(libnotify_LIBS)
 
-dnl libcanberra-gtk ************************************************************
-PKG_CHECK_MODULES(libcanberra_gtk, libcanberra-gtk >= 0.6, HAVE_LIBCANBERRA_GTK=yes, HAVE_LIBCANBERRA_GTK=no)
+dnl libcanberra-gtk3 ************************************************************
+PKG_CHECK_MODULES(libcanberra_gtk3, libcanberra-gtk3, HAVE_LIBCANBERRA_GTK=yes, HAVE_LIBCANBERRA_GTK=no)
 if test x"$HAVE_LIBCANBERRA_GTK" = xyes; then
-	AC_DEFINE(HAVE_LIBCANBERRA_GTK, 1, [Define if libcanberra-gtk support is enabled])
+	AC_DEFINE(HAVE_LIBCANBERRA_GTK, 1, [Define if libcanberra-gtk3 support is enabled])
 fi
-AC_SUBST(libcanberra_gtk_CFLAGS)
-AC_SUBST(libcanberra_gtk_LIBS)
+AC_SUBST(libcanberra_gtk3_CFLAGS)
+AC_SUBST(libcanberra_gtk3_LIBS)
 
 dnl unity/messaging-menu *******************************************************
 PKG_CHECK_MODULES(unity, unity messaging-menu, HAVE_UNITY=yes, HAVE_UNITY=no)
@@ -1573,7 +1569,7 @@ if test x"$enable_fancy_plugin" != xno; then
 	dependencies_missing=""
 
 	if test x"$HAVE_WEBKIT" = xno; then
-		dependencies_missing="libwebkit-1.0 $dependencies_missing"
+		dependencies_missing="libwebkit2gtk-4.0 $dependencies_missing"
 	fi
 	if test x"$HAVE_CURL" = xno; then
 		dependencies_missing="libcurl $dependencies_missing"
@@ -1763,9 +1759,9 @@ if test x"$enable_notification_plugin" != xno; then
 		notification_missing_dependencies="$notification_missing_dependencies libnotify"
 	fi
 	if test x"$HAVE_LIBCANBERRA_GTK" = xyes; then
-		notification_features="$notification_features libcanberra-gtk"
+		notification_features="$notification_features libcanberra-gtk3"
 	else
-		notification_missing_dependencies="$notification_missing_dependencies libcanberra-gtk"
+		notification_missing_dependencies="$notification_missing_dependencies libcanberra-gtk3"
 	fi
 	notification_features="$notification_features popup trayicon"
 else
@@ -1828,7 +1824,10 @@ if test x"$enable_python_plugin" != xno; then
 	dependencies_missing=""
 
 	if test x"$HAVE_PYTHON" = xno; then
-		dependencies_missing="$missing_python $dependencies_missing"
+		dependencies_missing="python3 $dependencies_missing"
+	fi
+	if test x"$HAVE_PYGOBJ" = xno; then
+		dependencies_missing="pygobject-3.0 $dependencies_missing"
 	fi
 
 	if test x"$dependencies_missing" = x; then

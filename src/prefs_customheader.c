@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -171,13 +170,12 @@ static void prefs_custom_header_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new (FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"), NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -195,75 +193,67 @@ static void prefs_custom_header_create(void)
 	g_signal_connect (G_OBJECT(cancel_btn), "clicked",
 			  G_CALLBACK(prefs_custom_header_cancel), NULL);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (3, 2, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1,
 			    FALSE, FALSE, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	hdr_label = gtk_label_new (_("Header"));
 	gtk_widget_show (hdr_label);
-	gtk_table_attach (GTK_TABLE (table1), hdr_label, 0, 1, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (hdr_label), 0, 0.5);
-	
+	gtk_label_set_xalign(GTK_LABEL (hdr_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), hdr_label, 0, 0, 1, 1);
+
 	hdr_combo = combobox_text_new(TRUE, "User-Agent", "Face", "X-Face",
 				      "X-Operating-System", NULL);
-	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), hdr_combo, 0, 1, 1, 1);
 
 	val_label = gtk_label_new (_("Value"));
 	gtk_widget_show (val_label);
-	gtk_table_attach (GTK_TABLE (table1), val_label, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (val_label), 0, 0.5);
-	
+	gtk_label_set_xalign(GTK_LABEL (val_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), val_label, 1, 0, 1, 1);
+
 	val_entry = gtk_entry_new ();
 	gtk_widget_show (val_entry);
-	gtk_table_attach (GTK_TABLE (table1), val_entry, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), val_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(val_entry, TRUE);
+	gtk_widget_set_halign(val_entry, GTK_ALIGN_FILL);
 
 	val_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (val_btn);
-	gtk_table_attach (GTK_TABLE (table1), val_btn, 2, 3, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), val_btn, 2, 1, 1, 1);
 	g_signal_connect (G_OBJECT (val_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_val_from_file_cb),
 			  NULL);
 
 	/* add / delete */
 
-	reg_hbox = gtk_hbox_new (FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (reg_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), reg_hbox, FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show (arrow);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
 
-	btn_hbox = gtk_hbox_new (TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), add_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (add_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_add_cb),
 			  NULL);
 
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (del_btn), "clicked",
@@ -271,7 +261,7 @@ static void prefs_custom_header_create(void)
 			  NULL);
 
 
-	ch_hbox = gtk_hbox_new (FALSE, 8);
+	ch_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (ch_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), ch_hbox, TRUE, TRUE, 0);
 
@@ -286,17 +276,17 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (list_view);
 	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), list_view);
 
-	btn_vbox = gtk_vbox_new (FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (up_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_up), NULL);
 
-	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
@@ -700,7 +690,8 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_tree_model_get(model, &sel,

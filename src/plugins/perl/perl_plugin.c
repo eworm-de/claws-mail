@@ -1,9 +1,9 @@
 /* Perl plugin -- Perl Support for Claws Mail
  *
- * Copyright (C) 2004-2007 Holger Berndt
+ * Copyright (C) 2004-2022 Holger Berndt and the Claws Mail Team
  *
- * Sylpheed and Claws Mail are GTK+ based, lightweight, and fast e-mail clients
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail are GTK based, lightweight, and fast e-mail clients
+ * Copyright (C) 1999-2022 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1745,8 +1745,8 @@ static int perl_load_file(void)
     message = g_strdup_printf(_("Error processing Perl script file: "
             "(line numbers may not be valid)\n%s"),
             SvPV(ERRSV,n_a));
-    val = alertpanel(_("Perl Plugin error"), message, _("Retry"),
-		     _("Abort"), _("Edit"), ALERTFOCUS_FIRST);
+    val = alertpanel(_("Perl Plugin error"), message, NULL, _("Retry"), NULL,
+		     _("Abort"), NULL, _("Edit"), ALERTFOCUS_FIRST);
     g_free(message);
 
     if(val == G_ALERTOTHER) {
@@ -2528,7 +2528,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-  return "GTK2";
+  return "GTK3";
 }
 
 const gchar *plugin_licence(void)

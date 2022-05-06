@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2021 the Claws Mail Team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -76,9 +75,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-
 	GtkWidget *checkbtn_autoextedit;
-
 	GtkWidget *frame;
 	GtkWidget *hbox_autosel;
 	GtkWidget *checkbtn_reply_account_autosel;
@@ -118,14 +115,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkTreeIter iter;
 	gchar *text;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* Account autoselection */
 	PACK_FRAME(vbox1, frame, _("Automatic account selection"));
 
-	hbox_autosel = gtk_hbox_new (TRUE, VSPACING_NARROW);
+	hbox_autosel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_widget_show (hbox_autosel);
 	gtk_container_add (GTK_CONTAINER (frame), hbox_autosel);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox_autosel), 8);
@@ -145,7 +142,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			   _("Automatically launch the external editor"));
 
 	/* Editing: automatically save draft */
-	hbox_autosave = gtk_hbox_new (FALSE, 8);
+	hbox_autosave = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_autosave);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
 
@@ -164,7 +161,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
 
 	/* Editing: automatically save draft when encrypted */
-	hbox_autosave_encrypted = gtk_hbox_new (FALSE, 8);
+	hbox_autosave_encrypted = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(hbox_autosave_encrypted), gtk_label_new("   "), FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox_autosave_encrypted);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave_encrypted, FALSE, FALSE, 0);
@@ -173,7 +170,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			   _("Even if message is to be encrypted"));
 
 	/* Editing: undo level */
-	hbox_undolevel = gtk_hbox_new (FALSE, 8);
+	hbox_undolevel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_undolevel);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_undolevel, FALSE, FALSE, 0);
 
@@ -189,7 +186,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
 	/* Editing: warn when inserting large files in message body */
-	hbox_warn_large_insert = gtk_hbox_new (FALSE, 8);
+	hbox_warn_large_insert = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_warn_large_insert);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_warn_large_insert, FALSE, FALSE, 0);
 
@@ -231,7 +228,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	/* dnd insert or attach */
 	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));
-	gtk_misc_set_alignment(GTK_MISC(label_dnd_insert_or_attach), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_dnd_insert_or_attach), 0.0);
 	gtk_widget_show (label_dnd_insert_or_attach);
 
 	optmenu_dnd_insert_or_attach = gtkut_sc_combobox_create(NULL, FALSE);
@@ -243,7 +240,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	COMBOBOX_ADD (menu, _("Insert"), COMPOSE_DND_INSERT);
 	COMBOBOX_ADD (menu, _("Attach"), COMPOSE_DND_ATTACH);
 
-	hbox_dnd_insert_or_attach = gtk_hbox_new(FALSE, 20);
+	hbox_dnd_insert_or_attach = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
 	gtk_widget_show(hbox_dnd_insert_or_attach);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dnd_insert_or_attach, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_dnd_insert_or_attach),
@@ -258,9 +255,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, spinbtn_warn_large_insert_size);
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, label_warn_large_insert_size);
 
-
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
-
 	prefs_writing->checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
 	prefs_writing->checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
 	prefs_writing->checkbtn_reedit_account_autosel  = checkbtn_reedit_account_autosel;
@@ -282,7 +277,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
-
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);

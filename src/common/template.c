@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2018 The Claws Mail team
+ * Copyright (C) 2001-2021 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

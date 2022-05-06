@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
@@ -60,11 +60,8 @@ MimeViewerFactory vcal_viewer_factory;
 
 static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data);
 
-static GdkColor uri_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA uri_color = {
+	0, 0, 0, 1
 };
 
 struct _VCalViewer
@@ -122,8 +119,8 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 				       "want to continue?"), 
 				       total);
 	if (total > 9
-	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
-		ALERTFOCUS_SECOND)
+	&&  alertpanel(_("Warning"), msg, NULL, _("_Cancel"),
+		       NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_SECOND)
 	    != G_ALERTALTERNATE) {
 		g_free(msg);
 		return;
@@ -861,7 +858,7 @@ static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file
 		font_desc = pango_font_description_from_string
 						(prefs_common_get_prefs()->textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(
+			gtk_widget_override_font(
 				vcalviewer->description, font_desc);
 			pango_font_description_free(font_desc);
 		}
@@ -961,9 +958,9 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 			 &send_notify);
 
 	val = alertpanel_full(_("Cancel meeting"),
-				   _("Are you sure you want to cancel this meeting?"),
-				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
-				   send_notify_chkbtn, ALERT_WARNING);
+			      _("Are you sure you want to cancel this meeting?"),
+			      NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			      ALERTFOCUS_FIRST, FALSE, send_notify_chkbtn, ALERT_WARNING);
 
 	if (val != G_ALERTALTERNATE)
 		return;
@@ -1057,9 +1054,9 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	
 	if (!account) {
 		AlertValue val = alertpanel_full(_("No account found"), 
-					_("You have no account matching any attendee.\n"
-					    "Do you want to reply anyway?"),
-				   	GTK_STOCK_CANCEL, _("Reply anyway"), NULL,
+						_("You have no account matching any attendee.\n"
+						  "Do you want to reply anyway?"),
+						NULL, _("_Cancel"), NULL, _("Reply anyway"), NULL, NULL,
 						ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION);
 		if (val == G_ALERTALTERNATE) {		
 			account = account_get_default();
@@ -1097,16 +1094,20 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	GtkWidget *label = gtk_label_new(tmpstr);		 	\
 	g_free(tmpstr);							\
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
-	gtk_misc_set_alignment (GTK_MISC(label), 1, 0);			\
-	gtk_table_attach (GTK_TABLE (vcalviewer->table), 		\
-			  label, 0, 1, i, i+1,				\
-			  GTK_FILL, GTK_FILL, 6, 6);			\
-	gtk_table_attach (GTK_TABLE (vcalviewer->table), 		\
-			  widget, 1, 2, i, i+1,				\
-			  GTK_FILL, GTK_FILL, 6, 6);			\
+	gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
+	gtk_grid_attach(GTK_GRID(vcalviewer->table), label, 0, i, 1, 1);\
+	gtk_widget_set_hexpand(label, TRUE);				\
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);			\
+	gtk_grid_attach(GTK_GRID(vcalviewer->table), widget,		\
+			1, i, 1, 1);					\
+	gtk_widget_set_hexpand(widget, TRUE);				\
+	gtk_widget_set_halign(widget, GTK_ALIGN_FILL);			\
 	if (GTK_IS_LABEL(widget)) {					\
 		gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
-		gtk_misc_set_alignment (GTK_MISC(widget),0, 0);		\
+		gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
+		gtk_label_set_yalign(GTK_LABEL(widget), 0.0);		\
+		gtk_label_set_line_wrap_mode(GTK_LABEL(widget),		\
+					     PANGO_WRAP_CHAR); 		\
 		gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);	\
 	}								\
 	i++;								\
@@ -1176,7 +1177,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->mimeviewer.scroll_page = vcal_viewer_scroll_page;
 	vcalviewer->mimeviewer.scroll_one_line = vcal_viewer_scroll_one_line;
 
-	vcalviewer->table = gtk_table_new(8, 2, FALSE);
+	vcalviewer->table = gtk_grid_new();
 	vcalviewer->type = gtk_label_new("meeting");
 	vcalviewer->who = gtk_label_new("who");
 	vcalviewer->start = gtk_label_new("start");
@@ -1192,22 +1193,22 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->reedit = gtk_button_new_with_label(_("Edit meeting..."));
 	vcalviewer->cancel = gtk_button_new_with_label(_("Cancel meeting..."));
 	vcalviewer->uribtn = gtk_button_new_with_label(_("Launch website"));
-	vcalviewer->unavail_box = gtk_hbox_new(FALSE, 6);
-	warning_img = gtk_image_new_from_stock
-                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	vcalviewer->unavail_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	warning_img = gtk_image_new_from_icon_name
+                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	warning_label = gtk_label_new(_("You are already busy at this time."));
 
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_img, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_label, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->answer, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->button, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->reedit, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->cancel, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->uribtn, FALSE, FALSE, 0);
 	
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), vcalviewer->unavail_box, FALSE, FALSE, 0);
 
@@ -1246,9 +1247,9 @@ MimeViewer *vcal_viewer_create(void)
 	TABLE_ADD_LINE(_("Action:"), vbox);
 	
 	vcalviewer->scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(vcalviewer->scrolledwin), 
-		vcalviewer->table);
+	gtk_widget_set_name(GTK_WIDGET(vcalviewer->scrolledwin), "vcalendar_viewer");
+	gtk_container_add(GTK_CONTAINER(vcalviewer->scrolledwin),
+			vcalviewer->table);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(vcalviewer->scrolledwin),
 				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
@@ -1334,8 +1335,7 @@ void vcalendar_init(void)
 				(GSourceFunc)vcal_webcal_check, 
 				(gpointer)NULL);
 	if (prefs_common_get_prefs()->enable_color) {
-		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->color[COL_URI],
-				       &uri_color);
+		uri_color = prefs_common_get_prefs()->color[COL_URI];
 	}
 
 	gtk_action_group_add_actions(mainwin->action_group, vcalendar_main_menu,

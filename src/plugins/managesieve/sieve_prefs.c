@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2004-2015 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
@@ -54,7 +54,7 @@ static PrefParam prefs[] = {
 
 #define PACK_HBOX(hbox, vbox) \
 { \
-	hbox = gtk_hbox_new (FALSE, 5); \
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5); \
 	gtk_widget_show (hbox); \
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0); \
 }
@@ -140,7 +140,7 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 	GtkListStore *menu;
 	GtkTreeIter iter;
 
-	page_vbox = gtk_vbox_new (FALSE, VSPACING);
+	page_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (page_vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (page_vbox), VBOX_BORDER);
 
@@ -148,7 +148,7 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 	PACK_CHECK_BUTTON (page_vbox, enable_checkbtn,
 			   _("Enable Sieve"));
 
-	sieve_vbox = gtk_vbox_new (FALSE, VSPACING);
+	sieve_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (sieve_vbox);
 	gtk_box_pack_start (GTK_BOX (page_vbox), sieve_vbox, FALSE, FALSE, 0);
 
@@ -212,23 +212,23 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 
 	/* Custom Auth Settings */
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
-	auth_custom_vbox = gtk_vbox_new (FALSE, VSPACING/2);
+	auth_custom_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING/2);
 	gtk_widget_show (auth_custom_vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (auth_custom_vbox), 0);
 	gtk_box_pack_start (GTK_BOX (hbox), auth_custom_vbox, TRUE, TRUE, 0);
 
 	/* User ID + Password */
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_custom_vbox), hbox, FALSE, FALSE, 0);
 
@@ -255,7 +255,7 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 
 	/* Authentication method */
 
-	auth_method_hbox = gtk_hbox_new (FALSE, 8);
+	auth_method_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (auth_method_hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), auth_method_hbox, FALSE, FALSE, 0);
 

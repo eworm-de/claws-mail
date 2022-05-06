@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -186,8 +185,8 @@ static void uri_opener_size_allocate_cb(GtkWidget *widget, GtkAllocation *alloca
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.uriopenerwin_width = allocation->width;
-	prefs_common.uriopenerwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.uriopenerwin_width, &prefs_common.uriopenerwin_height);
 }
 
 static void uri_opener_create(void) 
@@ -221,11 +220,11 @@ static void uri_opener_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtkut_stock_button_set_create(&hbox1, 
-				      &open_btn, GTK_STOCK_OPEN,
-				      &close_btn, GTK_STOCK_CLOSE,
-				      NULL, NULL);
+				      &open_btn, NULL, _("Open in browser"),
+				      &close_btn, NULL, _("Close"),
+				      NULL, NULL, NULL);
 
 	g_signal_connect(G_OBJECT(open_btn), "clicked",
 			 G_CALLBACK(uri_opener_open_cb), NULL);
@@ -236,18 +235,18 @@ static void uri_opener_create(void)
 	urilist = uri_opener_list_view_create();
 	
 	label = gtk_label_new(_("Any phishing URLs are shown in red, followed by the actual URL."));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = uri_opener_scrolled_win_create();
-	hbox_scroll = gtk_hbox_new(FALSE, 0);
+	hbox_scroll = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), scrolledwin, TRUE, TRUE, 0);
 	
 	select_all_btn = gtk_button_new_with_label(_("Select All"));
 	g_signal_connect(G_OBJECT(select_all_btn), "clicked",
 			 G_CALLBACK(uri_opener_select_all_cb), NULL);	
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), select_all_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 
@@ -266,7 +265,8 @@ static void uri_opener_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.uriopenerwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.uriopenerwin_width,
 				    prefs_common.uriopenerwin_height);
 
 	opener.window = window;
@@ -302,13 +302,10 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 		    visible_uri_path = get_uri_path(visible);
 		    if (path_cmp(uri_path, visible_uri_path) != 0)
 			    phishing_attempt = TRUE;
-		}
+	    }
 		if (phishing_attempt) {
-			gchar buf[8];
-
-			g_snprintf(buf, sizeof buf, "#%6.6lx", prefs_common.color[COL_LOG_ERROR]);
 			label = g_markup_printf_escaped("<span color=\"%s\"><b>%s</b></span>\n%s",
-						buf, visible, uri->uri);
+						gtkut_gdk_rgba_to_string(&prefs_common.color[COL_LOG_ERROR]), visible, uri->uri);
 		} else
 			label = g_markup_printf_escaped("%s",  uri->uri);
 	}
@@ -534,9 +531,7 @@ static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event
 			/* grey out some popup menu item if there is no selected row */
 			cm_menu_set_sensitive("UriOpenerPopup/Copy", (selected != NULL));
 
-			gtk_menu_popup(GTK_MENU(uri_opener_popup_menu), 
-			    	   NULL, NULL, NULL, NULL, 
-			    	   event->button, event->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(uri_opener_popup_menu), NULL);
 		}
 	}
 	return FALSE;

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,8 +68,8 @@ static void size_allocate_cb(GtkWidget *widget,
 	cm_return_if_fail(prefs_logwin_width != NULL);
 	cm_return_if_fail(prefs_logwin_height != NULL);
 
-	*prefs_logwin_width = allocation->width;
-	*prefs_logwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		prefs_logwin_width, prefs_logwin_height);
 }
 
 LogWindow *log_window_create(LogInstance instance)
@@ -140,7 +140,7 @@ LogWindow *log_window_create(LogInstance instance)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, *prefs_logwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), *prefs_logwin_width,
 				    *prefs_logwin_height);
 
 	logwin->window = window;
@@ -157,71 +157,40 @@ LogWindow *log_window_create(LogInstance instance)
 void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
-	GdkColormap *colormap;
-	gboolean success[LOG_COLORS];
-	GdkColor color[LOG_COLORS];
-	gint i;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_MSG], &color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_WARN], &color[1]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_ERROR], &color[2]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_IN], &color[3]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_OUT], &color[4]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_OK], &color[5]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_NOK], &color[6]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_SKIP], &color[7]);
-
-	logwin->msg_color = color[0];
-	logwin->warn_color = color[1];
-	logwin->error_color = color[2];
-	logwin->in_color = color[3];
-	logwin->out_color = color[4];
-	logwin->status_ok_color = color[5];
-	logwin->status_nok_color = color[6];
-	logwin->status_skip_color = color[7];
-
-	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(logwin->window));
-	gdk_colormap_alloc_colors(colormap, color, LOG_COLORS, FALSE, TRUE, success);
-
-	for (i = 0; i < LOG_COLORS; i++) {
-		if (success[i] == FALSE) {
-			GtkStyle *style;
-
-			g_warning("LogWindow: color allocation failed");
-			style = gtk_widget_get_style(logwin->window);
-			logwin->msg_color = logwin->warn_color =
-					logwin->error_color = logwin->in_color =
-					logwin->out_color = logwin->status_ok_color =
-					logwin->status_nok_color = logwin->status_skip_color =
-					style->black;
-			break;
-		}
-	}
+	logwin->msg_color = &prefs_common.color[COL_LOG_MSG];
+	logwin->warn_color = &prefs_common.color[COL_LOG_WARN];
+	logwin->error_color = &prefs_common.color[COL_LOG_ERROR];
+	logwin->in_color = &prefs_common.color[COL_LOG_IN];
+	logwin->out_color = &prefs_common.color[COL_LOG_OUT];
+	logwin->status_ok_color = &prefs_common.color[COL_LOG_STATUS_OK];
+	logwin->status_nok_color = &prefs_common.color[COL_LOG_STATUS_NOK];
+	logwin->status_skip_color = &prefs_common.color[COL_LOG_STATUS_SKIP];
 
 	buffer = logwin->buffer;
 	gtk_text_buffer_create_tag(buffer, "message",
-				   "foreground-gdk", &logwin->msg_color,
+				   "foreground-rgba", logwin->msg_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "warn",
-				   "foreground-gdk", &logwin->warn_color,
+				   "foreground-rgba", logwin->warn_color,
 				   NULL);
 	logwin->error_tag = gtk_text_buffer_create_tag(buffer, "error",
-				   "foreground-gdk", &logwin->error_color,
+				   "foreground-rgba", logwin->error_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "input",
-				   "foreground-gdk", &logwin->in_color,
+				   "foreground-rgba", logwin->in_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "output",
-				   "foreground-gdk", &logwin->out_color,
+				   "foreground-rgba", logwin->out_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_ok",
-				   "foreground-gdk", &logwin->status_ok_color,
+				   "foreground-rgba", logwin->status_ok_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_nok",
-				   "foreground-gdk", &logwin->status_nok_color,
+				   "foreground-rgba", logwin->status_nok_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_skip",
-				   "foreground-gdk", &logwin->status_skip_color,
+				   "foreground-rgba", logwin->status_skip_color,
 				   NULL);
 }
 
@@ -362,7 +331,7 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	       log_window_clip (logwindow, logwindow->clip_length);
 
 	if (!logwindow->hidden) {
-		GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
+		GtkAdjustment *vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(text));
 		gfloat upper = gtk_adjustment_get_upper(vadj) -
 		    gtk_adjustment_get_page_size(vadj);
 		gfloat value = gtk_adjustment_get_value(vadj);

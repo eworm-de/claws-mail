@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2017 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
 #include "gtk/filesel.h"
-#include "gtk/colorsel.h"
 #include "gtk/combobox.h"
 
 typedef struct _SpellingPage
@@ -68,20 +67,8 @@ typedef struct _SpellingPage
 	GtkWidget *misspelled_colorbtn;
 	GtkWidget *misspelled_useblack_label;
 
-	gint	   misspell_col;
+	GdkRGBA	   misspell_col;
 } SpellingPage;
-
-static void prefs_spelling_colorsel(GtkWidget *widget,
-				    gpointer data)
-{
-	SpellingPage *spelling = (SpellingPage *) data;
-	gint rgbcolor;
-
-	rgbcolor = colorsel_select_color_rgb(_("Pick color for misspelled word"), 
-					     spelling->misspell_col);
-	gtkut_set_widget_bgcolor_rgb(spelling->misspelled_colorbtn, rgbcolor);
-	spelling->misspell_col = rgbcolor;
-}
 
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
@@ -116,11 +103,11 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	GtkWidget *misspelled_hbox;
 	GtkWidget *misspelled_colorbtn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -151,53 +138,44 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	
 	vbox2 = gtkut_get_options_frame(vbox1, &dictionary_frame, _("Dictionary"));
 	
-	table = gtk_table_new(6, 4, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 0);
- 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
- 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+ 	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	gtk_box_pack_start(GTK_BOX(vbox2), table, TRUE, TRUE, 0);
 
 	default_dict_label = gtk_label_new(_("Default dictionary"));
 	gtk_widget_show(default_dict_label);
-	gtk_table_attach(GTK_TABLE (table), default_dict_label, 0, 1, 0, 1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(default_dict_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(default_dict_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), default_dict_label, 0, 0, 1, 1);
 	
 	default_dict_combo = gtkaspell_dictionary_combo_new(TRUE);
-	gtk_table_attach (GTK_TABLE (table), default_dict_combo, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), default_dict_combo, 1, 0, 1, 1);
 
 	default_alt_dict_label = gtk_label_new(_("Default alternate dictionary"));
 	gtk_widget_show(default_alt_dict_label);
-	gtk_table_attach(GTK_TABLE (table), default_alt_dict_label, 0, 1, 1, 2,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_alt_dict_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(default_alt_dict_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(default_alt_dict_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), default_alt_dict_label, 0, 1, 1, 1);
 	
 	default_alt_dict_combo = gtkaspell_dictionary_combo_new(FALSE);
-	gtk_table_attach (GTK_TABLE (table), default_alt_dict_combo, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), default_alt_dict_combo, 1, 1, 1, 1);
 
 	both_dict_check = gtk_check_button_new_with_label(
 				_("Check with both dictionaries"));
 	gtk_widget_show(both_dict_check);
-	gtk_table_attach (GTK_TABLE (table), both_dict_check, 1, 2, 2, 3,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), both_dict_check, 1, 2, 1, 1);
 
 #ifdef WIN32
-	get_dictionaries_btn = gtkut_get_link_btn(GTK_WIDGET(window), 
+	get_dictionaries_btn = gtk_link_button_new_with_label(
 				DICTS_URI, _("Get more dictionaries..."));
-
 	gtk_widget_show(get_dictionaries_btn);
-	gtk_table_attach (GTK_TABLE (table), get_dictionaries_btn, 1, 2, 3, 4,
-			  GTK_SHRINK, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), get_dictionaries_btn, 1, 3, 1, 1);
 #endif
-	misspelled_hbox = gtk_hbox_new(FALSE, 10);
+	misspelled_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show(misspelled_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), misspelled_hbox, FALSE, FALSE, 0);
 		
@@ -206,9 +184,12 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_label,
 		FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL(misspelled_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(misspelled_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(misspelled_label), 1.0);
 
-	misspelled_colorbtn = GTKUT_COLOR_BUTTON();
+	misspelled_colorbtn = gtk_color_button_new_with_rgba(
+				&prefs_common.color[COL_MISSPELLED]);
+	gtk_color_button_set_title(GTK_COLOR_BUTTON(misspelled_colorbtn),
+				   _("Pick color for misspelled word"));
 	gtk_widget_show(misspelled_colorbtn);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_colorbtn,
 		FALSE, FALSE, 0);
@@ -261,12 +242,6 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_alt_dict_combo),
 						prefs_common.alt_dictionary);
 
-	g_signal_connect(G_OBJECT(misspelled_colorbtn), "clicked",
-			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
-
-	prefs_spelling->misspell_col = prefs_common.color[COL_MISSPELLED];
-	gtkut_set_widget_bgcolor_rgb(misspelled_colorbtn, prefs_spelling->misspell_col);
-
 	prefs_spelling->window			= GTK_WIDGET(window);
 	prefs_spelling->automatic_frame =	automatic_frame;
 	prefs_spelling->dictionary_frame =	dictionary_frame;
@@ -312,7 +287,8 @@ static void prefs_spelling_save(PrefsPage *_page)
 		gtkaspell_get_dictionary_menu_active_item(
 				GTK_COMBO_BOX(spelling->default_alt_dict_combo));
 
-	prefs_common.color[COL_MISSPELLED] = spelling->misspell_col;
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(spelling->misspelled_colorbtn),
+				   &prefs_common.color[COL_MISSPELLED]);
 }
 
 static void prefs_spelling_destroy_widget(PrefsPage *_page)

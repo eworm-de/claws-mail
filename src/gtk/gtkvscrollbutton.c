@@ -106,7 +106,7 @@ GType gtk_vscrollbutton_get_type(void)
 			(const GTypeValueTable *) NULL	/* value table */
 	};
 
-	vscrollbutton_type = g_type_register_static (GTK_TYPE_VBOX, "GtkVScrollbutton", &vscrollbutton_info, (GTypeFlags)0);
+	vscrollbutton_type = g_type_register_static (GTK_TYPE_BOX, "GtkVScrollbutton", &vscrollbutton_info, (GTypeFlags)0);
     }
 
     return vscrollbutton_type;
@@ -148,15 +148,16 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     GtkWidget *arrow;
 
     if (!hand_cursor)
-	    hand_cursor = gdk_cursor_new(GDK_HAND2);
+	    hand_cursor = gdk_cursor_new_for_display(
+					gtk_widget_get_display(GTK_WIDGET(scrollbutton)),GDK_HAND2);
 
     scrollbutton->upbutton = gtk_event_box_new();
     scrollbutton->downbutton = gtk_event_box_new();
-    arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-up-symbolic", GTK_ICON_SIZE_MENU);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->upbutton), arrow);
     gtk_widget_set_size_request(scrollbutton->upbutton, -1, 16);
-    arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->downbutton), arrow);
     gtk_widget_set_size_request(scrollbutton->downbutton, -1, 16);

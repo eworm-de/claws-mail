@@ -51,9 +51,11 @@
 #include "file_checker.h"
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
+#ifdef GDK_WINDOWING_X11
 # define SN_API_NOT_YET_FROZEN
 # include <libsn/sn-launchee.h>
 # include <gdk/gdkx.h>
+#endif
 #endif
 
 #ifdef HAVE_DBUS_GLIB
@@ -171,9 +173,7 @@ static SnDisplay *sn_display = NULL;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
-#ifdef G_OS_UNIX
-static gchar *x_display = NULL;
-#endif
+
 typedef enum 
 {
 	ONLINE_MODE_DONT_CHANGE,
@@ -218,7 +218,8 @@ static void reset_statistics(void);
 		
 static void parse_cmd_opt(int argc, char *argv[]);
 
-static gint prohibit_duplicate_launch	(void);
+static gint prohibit_duplicate_launch	(int		*argc,
+					 char		***argv);
 static gchar * get_crashfile_name	(void);
 static gint lock_socket_remove		(void);
 static void lock_socket_input_cb	(gpointer	   data,
@@ -408,8 +409,8 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 			G_CALLBACK(chk_update_val), &backup);
 
 	if (alertpanel_full(_("Migration of configuration"), message,
-		 	GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND, FALSE,
-			keep_backup_chk, ALERT_QUESTION) != G_ALERTALTERNATE) {
+		 	NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_SECOND,
+			FALSE, keep_backup_chk, ALERT_QUESTION) != G_ALERTALTERNATE) {
 		return FALSE;
 	}
 	
@@ -847,19 +848,19 @@ static void main_dump_features_list(gboolean show_debug_only)
 		return;
 
 	if (show_debug_only)
-		debug_print("runtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		debug_print("runtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   gtk_major_version, gtk_minor_version, gtk_micro_version,
 			   glib_major_version, glib_minor_version, glib_micro_version);
 	else
-		g_print("runtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		g_print("runtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   gtk_major_version, gtk_minor_version, gtk_micro_version,
 			   glib_major_version, glib_minor_version, glib_micro_version);
 	if (show_debug_only)
-		debug_print("buildtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		debug_print("buildtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
 			   GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
 	else
-		g_print("buildtime GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		g_print("buildtime GTK %d.%d.%d / GLib %d.%d.%d\n",
 			   GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
 			   GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
 	
@@ -1091,11 +1092,15 @@ int main(int argc, char *argv[])
 	sock_init();
 
 	/* check and create unix domain socket for remote operation */
-	lock_socket = prohibit_duplicate_launch();
+	lock_socket = prohibit_duplicate_launch(&argc, &argv);
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
-		if(gtk_init_check(&argc, &argv))
+#ifdef GDK_WINDOWING_X11
+	if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+		if (gtk_init_check(&argc, &argv))
 			startup_notification_complete(TRUE);
+	}
+#endif
 #endif
 		return 0;
 	}
@@ -1105,7 +1110,6 @@ int main(int argc, char *argv[])
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
-		gtk_set_locale();
 		gtk_init(&argc, &argv);
 		crash_main(cmd.crash_params);
 #ifdef G_OS_WIN32
@@ -1134,23 +1138,7 @@ int main(int argc, char *argv[])
 
 	reset_statistics();
 	
-	gtk_set_locale();
 	gtk_init(&argc, &argv);
-
-#ifdef G_OS_WIN32
-	gtk_settings_set_string_property(gtk_settings_get_default(),
-			"gtk-theme-name",
-			"MS-Windows",
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-auto-mnemonics",
-			TRUE,
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-button-images",
-			TRUE,
-			"XProperty");
-#endif
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	went_offline_nm = FALSE;
@@ -1180,10 +1168,6 @@ int main(int argc, char *argv[])
 		install_dbus_status_handler();
 	}
 #endif
-
-	gtk_widget_set_default_colormap(
-		gdk_screen_get_system_colormap(
-			gdk_screen_get_default()));
 
 	gtkut_create_ui_manager();
 
@@ -1529,7 +1513,7 @@ int main(int argc, char *argv[])
 
 	num_folder_class = g_list_length(folder_get_list());
 
-	plugin_load_all("GTK2");
+	plugin_load_all("GTK3");
 
 	if (g_list_length(folder_get_list()) != num_folder_class) {
 		debug_print("new folders loaded, reloading processing rules\n");
@@ -1614,7 +1598,10 @@ int main(int argc, char *argv[])
 	static_mainwindow = mainwin;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
-	startup_notification_complete(FALSE);
+#ifdef GDK_WINDOWING_X11
+	if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
+		startup_notification_complete(FALSE);
+#endif
 #endif
 #ifdef HAVE_LIBSM
 	sc_session_manager_connect(mainwin);
@@ -1784,7 +1771,7 @@ static void exit_claws(MainWindow *mainwin)
 
 	main_window_destroy_all();
 	
-	plugin_unload_all("GTK2");
+	plugin_unload_all("GTK3");
 
 	matcher_done();
 	prefs_toolbar_done();
@@ -2296,7 +2283,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.warn_queued_on_exit && procmsg_have_queued_mails_fast()) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
-			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST)
+			       NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+			       ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE) {
 			main_window_popup(mainwin);
 		    	sc_exiting = FALSE;
@@ -2342,8 +2330,8 @@ gchar *claws_get_socket_name(void)
 		gint stat_ok;
 
 		socket_dir = g_strdup_printf("%s%cclaws-mail",
-                                    g_get_user_runtime_dir(), G_DIR_SEPARATOR);
-        stat_ok = g_stat(socket_dir, &st);
+					   g_get_user_runtime_dir(), G_DIR_SEPARATOR);
+		stat_ok = g_stat(socket_dir, &st);
 		if (stat_ok < 0 && errno != ENOENT) {
 			g_print("Error stat'ing socket_dir %s: %s\n",
 				socket_dir, g_strerror(errno));
@@ -2384,7 +2372,7 @@ static gchar *get_crashfile_name(void)
 	return filename;
 }
 
-static gint prohibit_duplicate_launch(void)
+static gint prohibit_duplicate_launch(int *argc, char ***argv)
 {
 	gint sock;
 	GList *curr;
@@ -2394,9 +2382,6 @@ static gint prohibit_duplicate_launch(void)
 	path = claws_get_socket_name();
 	/* Try to connect to the control socket */
 	sock = fd_connect_unix(path);
-	
-	if (x_display == NULL)
-		x_display = g_strdup(g_getenv("DISPLAY"));
 
 	if (sock < 0) {
 		gint ret;
@@ -2589,10 +2574,20 @@ static gint prohibit_duplicate_launch(void)
 		memset(buf, 0, sizeof(buf));
 		fd_gets(sock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
-		if (g_strcmp0(buf, x_display)) {
+
+		/* Try to connect to a display; if it is the same one as
+		 * the other Claws instance, then ask it to pop up. */
+		int diff_display = 1;
+		if (gtk_init_check(argc, argv)) {
+			GdkDisplay *display = gdk_display_get_default();
+			diff_display = g_strcmp0(buf, gdk_display_get_name(display));
+		}
+		if (diff_display) {
 			g_print("Claws Mail is already running on display %s.\n",
 				buf);
 		} else {
+			g_print("Claws Mail is already running on this display (%s).\n",
+				buf);
 			fd_close(sock);
 			sock = fd_connect_unix(path);
 			CM_FD_WRITE_ALL("popup\n");
@@ -2678,7 +2673,9 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_popup(mainwin);
 #ifdef G_OS_UNIX
 	} else if (!STRNCMP(buf, "get_display")) {
-		CM_FD_WRITE_ALL(x_display);
+		GdkDisplay* display = gtk_widget_get_display(mainwin->window);
+		const gchar *display_name = gdk_display_get_name(display);
+		CM_FD_WRITE_ALL(display_name);
 #endif
 	} else if (!STRNCMP(buf, "receive_all")) {
 		inc_all_account_mail(mainwin, FALSE, FALSE,

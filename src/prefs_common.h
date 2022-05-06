@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -239,7 +239,7 @@ struct _PrefsCommon
 	ColorlabelPrefs custom_colorlabel[COLORLABELS];
 
 	/* program colors */
-	gulong color[COL_LAST_COLOR_INDEX];
+	GdkRGBA color[COL_LAST_COLOR_INDEX];
 
 	/* image viewer */
 	gboolean display_img;
@@ -278,7 +278,6 @@ struct _PrefsCommon
 	gboolean goto_last_folder_on_startup;
 
 	ToolbarStyle toolbar_style;
-	gboolean toolbar_detachable;
 	gboolean show_statusbar;
 	gboolean show_col_headers;
 
@@ -459,7 +458,6 @@ struct _PrefsCommon
 
 	gint io_timeout_secs;
 
-	gboolean gtk_can_change_accels;
 	gboolean gtk_enable_accels;
 	
 	/* Memory cache*/

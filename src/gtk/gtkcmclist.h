@@ -34,6 +34,15 @@
 
 G_BEGIN_DECLS
 
+
+/* Generic visibility flags */
+typedef enum
+{
+  GTK_VISIBILITY_NONE,
+  GTK_VISIBILITY_PARTIAL,
+  GTK_VISIBILITY_FULL
+} GtkVisibility;
+
 /* clist flags */
 enum {
   GTK_CMCLIST_IN_DRAG             = 1 <<  0,
@@ -226,15 +235,13 @@ struct _GtkCMCList
 
   gint drag_highlight_row;
   GtkCMCListDragPos drag_highlight_pos;
+  int draw_now;
 };
 
 struct _GtkCMCListClass
 {
   GtkContainerClass parent_class;
   
-  void  (*set_scroll_adjustments) (GtkCMCList       *clist,
-				   GtkAdjustment  *hadjustment,
-				   GtkAdjustment  *vadjustment);
   void   (*refresh)             (GtkCMCList       *clist);
   void   (*select_row)          (GtkCMCList       *clist,
 				 gint            row,

@@ -1,6 +1,6 @@
 /* GData plugin for Claws Mail
  * Copyright (C) 2011 Holger Berndt
- * Copyright (C) 2011-2016 the Claws Mail team
+ * Copyright (C) 2011-2019 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,44 +133,46 @@ gchar* ask_user_for_auth_code(const gchar *auth_uri)
       "\n\nVisit Google's authorization page by pressing the button below. After you "
       "confirmed the authorization, you will get an authorization code. Enter that code "
       "in the field below to grant Claws Mail access to your Google contact list."));
-  gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-  btn_ok = gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+  gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+  btn_ok = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_OK"), GTK_RESPONSE_OK);
   gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
   gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
   gtk_widget_set_sensitive(btn_ok, FALSE);
 
-  table = gtk_table_new(2, 3, FALSE);
-  gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-  gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+  table = gtk_grid_new();
+  gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+  gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
   str = g_strconcat("<b>", _("Step 1:"), "</b>", NULL);
   label = gtk_label_new(str);
   g_free(str);
   gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
   link_button = gtk_button_new_with_label(_("Click here to open the Google authorization page in a browser"));
   auth_code_query_data = g_new0(AuthCodeQueryButtonData,1);
-  gtk_table_attach(GTK_TABLE(table), link_button, 1, 3, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), link_button, 1, 0, 1, 1);
 
   str = g_strconcat("<b>", _("Step 2:"), "</b>", NULL);
   label = gtk_label_new(str);
   g_free(str);
   gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
-  gtk_table_attach(GTK_TABLE(table), gtk_label_new(_("Enter code:")), 1, 2, 1, 2, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table),  gtk_label_new(_("Enter code:")), 1, 1, 1, 1);
 
   entry = gtk_entry_new();
   g_signal_connect(G_OBJECT(entry), "changed", (GCallback)auth_code_entry_changed_cb, (gpointer)btn_ok);
-  gtk_table_attach(GTK_TABLE(table), entry, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), entry, 2, 1, 1, 1);
+  gtk_widget_set_hexpand(entry, TRUE);
+  gtk_widget_set_halign(entry, GTK_ALIGN_FILL);
 
   auth_code_query_data->auth_uri = auth_uri;
   auth_code_query_data->entry = entry;
   g_signal_connect(G_OBJECT(link_button), "clicked", (GCallback)auth_uri_link_button_clicked_cb, (gpointer)auth_code_query_data);
 
-  vbox = gtk_vbox_new(FALSE, 4);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
   gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog))), vbox, FALSE, FALSE, 0);

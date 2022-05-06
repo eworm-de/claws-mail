@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "gtkcmoptionmenu.h"
 #include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -174,75 +173,4 @@ void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), sensitive);
 
 	g_list_free(children);
-}
-
-void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
-			  gpointer user_data)
-{
-        GtkWidget *widget;
-        gint wheight;
-        gint wx, wy;
-	GtkAllocation allocation;
-	GtkRequisition mreq, wreq;
-	GdkScreen *screen;
-	GdkRectangle monitor;
-	gint monitor_num;
-
-	cm_return_if_fail(x && y);
- 	cm_return_if_fail(GTK_IS_BUTTON(user_data));
-
-	widget = GTK_WIDGET(user_data);
-
-        gdk_window_get_origin(gtk_widget_get_window(widget), x, y);
-        gtk_widget_get_requisition(widget, &wreq);
-        wheight = wreq.height;
-        gtk_widget_get_allocation(widget, &allocation);
-        wx = allocation.x;
-        wy = allocation.y;
-        
-	gtk_widget_size_request(GTK_WIDGET(menu), &mreq);
-	screen = gtk_widget_get_screen (widget);
-	monitor_num = gdk_screen_get_monitor_at_point (screen, *x, *y);
-	gdk_screen_get_monitor_geometry (screen, monitor_num, 
-					 &monitor);
-
-        *x = *x + wx;
-        *y = *y + wy + wheight;
-	
-	if (*y + mreq.height >= monitor.height)
-		*y -= mreq.height;
-}
-
-gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
-				 GCompareFunc func)
-{
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gpointer menu_data;
-	GList *children;
-	GList *cur;
-	gint n, found = -1;
-
-	menu = gtk_cmoption_menu_get_menu(optmenu);
-	children = gtk_container_get_children(GTK_CONTAINER(GTK_MENU_SHELL(menu)));
-
-	for (cur = children, n = 0;
-	     cur != NULL; cur = cur->next, n++) {
-		menuitem = GTK_WIDGET(cur->data);
-		menu_data = g_object_get_data(G_OBJECT(menuitem),
-					      MENU_VAL_ID);
-		if (func) {
-			if (func(menu_data, data) == 0) {
-				found = n;
-				break;
-			}
-		} else if (menu_data == data) {
-			found = n;
-			break;
-		}
-	}
-
-	g_list_free(children);
-
-	return found;
 }

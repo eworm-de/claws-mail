@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012  the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -109,6 +109,11 @@ gboolean claws_init(int *argc, char ***argv)
 #endif /*ENABLE_NLS*/
 	putenv("G_BROKEN_FILENAMES=1");
 	putenv("LIBOVERLAY_SCROLLBAR=0");
+
+	/* Disable GTK's overlay scrollbar feature, unless user has
+	 * this environment variable already set. */
+	if (!g_getenv("GTK_OVERLAY_SCROLLING"))
+		putenv("GTK_OVERLAY_SCROLLING=0");
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {

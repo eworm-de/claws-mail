@@ -294,7 +294,7 @@ msgstr ""
 "האם אתה בטוח כי ברצונך להחליף את כל שמות האפיון\n"
 "עם המערך השגרתי?"
 
-# CM (and GTK+ are) is running on Win too
+# CM (and GTK are) is running on Win too
 #: src/addrcustomattr.c:212 src/addressbook.c:438 src/addressbook.c:466
 #: src/addressbook.c:483 src/edittags.c:272
 #: src/plugins/archive/archiver_gtk.c:1186 src/prefs_actions.c:1090

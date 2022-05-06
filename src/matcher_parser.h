@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (c) 2001-2002 by Hiroyuki Yamamoto & The Claws Mail Team.
  *
  * This program is free software; you can redistribute it and/or modify

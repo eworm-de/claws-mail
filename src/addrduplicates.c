@@ -1,5 +1,5 @@
-/* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 Holger Berndt <hb@claws-mail.org> 
+/* Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2007-2022 Holger Berndt <hb@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -123,7 +123,7 @@ static gboolean create_dialog()
 
 	want_search = FALSE;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	check_same_book = gtk_check_button_new_with_label(_("Show duplicates in "
 	                  "the same book"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_same_book),
@@ -144,8 +144,8 @@ static gboolean create_dialog()
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
-	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND, NULL,
-												ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
+	                      NULL, _("_Cancel"), "edit-find", _("_Find"), NULL, NULL,
+			     ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
 
@@ -346,10 +346,10 @@ static void present_finder_results(GtkWindow *parent)
 	                              GDK_HINT_MIN_SIZE);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Duplicate email addresses"));
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
 
-	hpaned = gtk_hpaned_new();
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox), hpaned, TRUE, TRUE, 0);
 
 	scrolled_win = gtk_scrolled_window_new(NULL,NULL);
@@ -370,8 +370,8 @@ static void present_finder_results(GtkWindow *parent)
 		gtk_paned_add2(GTK_PANED(hpaned), scrolled_win);
 		inline_edit_vbox = NULL;
 	} else {
-		inline_edit_vbox = gtk_vbox_new(FALSE, 4);
-		vpaned = gtk_vpaned_new();
+		inline_edit_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), scrolled_win, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), inline_edit_vbox, TRUE, FALSE);
 		gtk_paned_pack2(GTK_PANED(hpaned), vpaned, TRUE, FALSE);
@@ -382,21 +382,21 @@ static void present_finder_results(GtkWindow *parent)
 	if(pos < 200)
 		gtk_paned_set_position(GTK_PANED(hpaned), 200);
 
-	hbox = gtk_hbutton_box_new();
+	hbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(hbox), 2);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	edit_btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_box_pack_start(GTK_BOX(hbox), edit_btn, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive(edit_btn, FALSE);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox), del_btn, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive(del_btn, FALSE);
 
-	close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close = gtkut_stock_button("window-close", _("_Close"));
 	gtk_box_pack_start(GTK_BOX(hbox), close, TRUE, TRUE, 0);
 
 	g_signal_connect(dialog, "destroy",
@@ -790,8 +790,8 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),
-	                  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-										ALERTFOCUS_SECOND);
+	                  NULL, _("_Cancel"), "edit-delete", _("D_elete"),
+			  NULL, NULL, ALERTFOCUS_SECOND);
 	if(aval != G_ALERTALTERNATE)
 		return;
 
@@ -838,9 +838,10 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 	/* Test for read only */
 	iface = ds->interface;
 	if( iface && iface->readOnly ) {
-		alertpanel( _("Delete address"),
-		            _("This address data is read-only and cannot be deleted."),
-		            GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+		alertpanel(_("Delete address"),
+			   _("This address data is read-only and cannot be deleted."),
+			   "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+			   ALERTFOCUS_FIRST );
 		return FALSE;
 	}
 

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include "gtkcmoptionmenu.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_matcher.h"
@@ -459,8 +458,7 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 		prefs_matcher_create();
 	} else {
 		/* update color label menu */
-		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(matcher.color_optmenu),
-				colorlabel_create_color_menu());
+		colorlabel_refill_combobox_colormenu(GTK_COMBO_BOX(matcher.color_optmenu));
 	}
 
 	manage_window_set_transient(GTK_WINDOW(matcher.window));
@@ -482,8 +480,8 @@ static void prefs_matcher_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.matcherwin_width = allocation->width;
-	prefs_common.matcherwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.matcherwin_width, &prefs_common.matcherwin_height);
 }
 
 /*!
@@ -568,11 +566,11 @@ static void prefs_matcher_create(void)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"), NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
@@ -590,7 +588,7 @@ static void prefs_matcher_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_cancel), NULL);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 2);
 
@@ -598,34 +596,35 @@ static void prefs_matcher_create(void)
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 	
-	table = gtk_table_new(3, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(frame), table);
-	gtk_widget_set_size_request(frame, -1, -1);
+// 	gtk_widget_set_size_request(frame, -1, -1);
 	
-	upper_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
-	hbox = gtk_hbox_new(FALSE, 0);
+	upper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), upper_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 0, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 	
-	lower_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
-	hbox = gtk_hbox_new(FALSE, 0);
+	lower_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lower_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 1, 2, 
-			 GTK_FILL, GTK_SHRINK, 2, 2);
-	
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 1, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
+
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget(size_group, upper_hbox);
 	gtk_size_group_add_widget(size_group, lower_hbox);
 	
 	/* criteria combo box */
 	criteria_label = gtk_label_new(_("Match criteria"));
-	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(criteria_label), 1.0);
 	gtk_widget_set_size_request(criteria_label, -1, -1);
-	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), criteria_label, 0, 0, 1, 1);
 
 	criteria_combo = gtkut_sc_combobox_create(NULL, FALSE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -647,8 +646,7 @@ static void prefs_matcher_create(void)
 
 	gtk_widget_set_size_request(criteria_combo, 150, -1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), MATCH_ALL);
-	gtk_table_attach(GTK_TABLE(table), criteria_combo, 1, 2, 0, 1,
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), criteria_combo, 1, 0, 1, 1);
 	g_signal_connect(G_OBJECT(criteria_combo), "changed",
 			 G_CALLBACK(prefs_matcher_criteria_select),
 			 NULL);
@@ -697,21 +695,19 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_sensitive(GTK_WIDGET(addressbook_select_btn), FALSE);
 #endif
 	match_label = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(match_label), 1, 0.5);
-	gtk_table_attach(GTK_TABLE(table), match_label, 0, 1, 1, 2,
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_label_set_xalign(GTK_LABEL(match_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), match_label, 0, 1, 1, 1);
 
-	match_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), match_hbox, 1, 2, 1, 2,
-			 GTK_FILL, GTK_SHRINK, 2, 2); 
+	match_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach(GTK_GRID(table), match_hbox, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(match_hbox, TRUE);
+	gtk_widget_set_halign(match_hbox, GTK_ALIGN_FILL);
 
 	match_combo = gtkut_sc_combobox_create(NULL, TRUE);
 	gtk_box_pack_start(GTK_BOX(match_hbox), match_combo, TRUE, TRUE, 0);
 	
 	/* color labels combo */
-	color_optmenu = gtk_cmoption_menu_new();
-	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
-				 colorlabel_create_color_menu());
+	color_optmenu = colorlabel_create_combobox_colormenu();
 	gtk_box_pack_start(GTK_BOX(match_hbox), color_optmenu, FALSE, FALSE, 0);
 	
 	/* address header name */
@@ -726,7 +722,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(lower_hbox), match_label2, FALSE, FALSE, 0);
 
 	/* numeric value */
-	numeric_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	numeric_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(lower_hbox), numeric_hbox, FALSE, FALSE, 0);
 
 	numeric_entry = gtk_spin_button_new_with_range(0, 1000, 1);
@@ -745,52 +741,54 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(lower_hbox), string_entry, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(string_entry, 300, -1);
 
-	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_size_group_add_widget(size_group, hbox);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	PACK_CHECK_BUTTON(vbox, case_checkbtn, _("Case sensitive"));
 	PACK_CHECK_BUTTON(vbox, regexp_checkbtn, _("Use regexp"));
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
 	gtk_box_pack_end(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
-			 GTK_FILL, GTK_SHRINK, 4, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 
 	/* Date widgets */
-	date_vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	calendar = gtk_calendar_new();
 	gtk_box_pack_start(GTK_BOX(hbox), calendar, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(lower_hbox), date_vbox, FALSE, FALSE, 0);
 
-	date_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	date_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(date_vbox), date_hbox, FALSE, FALSE, 0);
 
 	time_entry = gtkut_time_select_combo_new();
 	gtk_box_pack_start(GTK_BOX(date_hbox), time_entry, FALSE, FALSE, 0);
 	time_label = gtk_label_new(_("on:"));
-	gtk_misc_set_alignment(GTK_MISC(time_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(time_label),0);
+	gtk_label_set_yalign(GTK_LABEL(time_label),0.5);
 	gtk_box_pack_start(GTK_BOX(date_hbox), time_label, FALSE, FALSE, 0);
 	
 	/* test info button */
-	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	test_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (test_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_test_info),
 			 window);
 
 	/* register / substitute / delete */
-	reg_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_register_cb), NULL);
@@ -801,14 +799,12 @@ static void prefs_matcher_create(void)
 			 G_CALLBACK(prefs_matcher_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("list-remove", _("_Remove"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_delete_cb), NULL);
 
-	cond_hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	cond_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox1), cond_hbox, TRUE, TRUE, 0);
 
 	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -824,21 +820,21 @@ static void prefs_matcher_create(void)
 					    GTK_SHADOW_ETCHED_IN);
 	gtk_container_add(GTK_CONTAINER(cond_scrolledwin), cond_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_up), NULL);
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_down), NULL);
 
 	/* boolean operation */
-	GtkWidget *hbox_bool = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	GtkWidget *hbox_bool = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_bool, FALSE, FALSE, 0);
 
 	bool_op_label = gtk_label_new(_("Message must match"));
@@ -861,7 +857,7 @@ static void prefs_matcher_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.matcherwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.matcherwin_width,
 				    prefs_common.matcherwin_height);
 
 	gtk_widget_show_all(window);
@@ -980,7 +976,7 @@ static void prefs_matcher_reset_condition(void)
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
 	if (match_combo2_model_set())
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
-	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.color_optmenu), 0);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
@@ -1626,9 +1622,8 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 		break;
 		
 	case CRITERIA_COLORLABEL:
-		value = colorlabel_get_color_menu_active_item
-			(gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU
-				(matcher.color_optmenu))); 
+		value = colorlabel_get_combobox_colormenu_active(
+				GTK_COMBO_BOX(matcher.color_optmenu));
 		break;
 
 	case CRITERIA_HEADER:
@@ -2049,7 +2044,7 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
 	case MATCH_LABEL:
-		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.color_optmenu), 0);
 		prefs_matcher_set_model(matcher.match_combo2, matcher.model_set);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Label"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("is"));
@@ -2168,10 +2163,10 @@ static void prefs_matcher_ok(void)
 
 				if (!matcher_str || strcmp(matcher_str, str) != 0) {
 	                        	val = alertpanel(_("Entry not saved"),
-       		                        	 _("The entry was not saved. Close anyway?"),
-               		                	 GTK_STOCK_CLOSE,
-						 _("_Continue editing"),
-						 NULL,
+       		                        	 _("The entry was not saved.\nClose anyway?"),
+               		                	 NULL, _("_Close"),
+						 NULL, _("_Continue editing"),
+						 NULL, NULL,
 						 ALERTFOCUS_SECOND);
 					if (G_ALERTDEFAULT != val) {
 						g_free(matcher_str);						 
@@ -2459,7 +2454,6 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	MatcherProp *prop;
 	gboolean negative_cond;
 	gint criteria;
-	GtkWidget *menu;
 	GtkTreeIter iter;
 	gboolean is_valid;
 	struct tm lt;
@@ -2655,10 +2649,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
-		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu),
-					    prop->value + 1);
-		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(matcher.color_optmenu));
-		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
+		colorlabel_set_combobox_colormenu_active(
+				GTK_COMBO_BOX(matcher.color_optmenu), prop->value);
 		break;
 
 	case MATCHCRITERIA_NOT_HEADER:

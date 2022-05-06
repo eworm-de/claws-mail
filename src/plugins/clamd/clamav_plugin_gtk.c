@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2017 the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2021 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,8 +88,8 @@ static void clamd_folder_cb(GtkWidget *widget, gpointer data)
 					"Select file with clamd configuration [clamd.conf]",
 					NULL,
 					GTK_FILE_CHOOSER_ACTION_OPEN,
-					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+					_("_Cancel"), GTK_RESPONSE_CANCEL,
+					_("_Apply"), GTK_RESPONSE_APPLY,
 					NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/etc");
 	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_APPLY) {
@@ -217,7 +217,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *label1;
 /*  	GtkWidget *enable_arc;*/
   	GtkWidget *label2;
-  	GtkObject *max_size_adj;
+  	GtkAdjustment *max_size_adj;
   	GtkWidget *max_size;
 	GtkWidget *hbox1;
   	GtkWidget *recv_infected;
@@ -237,11 +237,11 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 
 	enable_clamav = page->enable_clamav;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 4);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -250,7 +250,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 
  	SET_TOGGLE_SENSITIVITY (enable_clamav, enable_arc);*/
 
- 	hbox1 = gtk_hbox_new (FALSE, 8);
+ 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 /*	SET_TOGGLE_SENSITIVITY (enable_arc, hbox1);*/
@@ -274,7 +274,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, FALSE, 0);
  	SET_TOGGLE_SENSITIVITY (enable_clamav, label2);
 
-  	hbox1 = gtk_hbox_new (FALSE, 8);
+  	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -299,7 +299,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 			     _("Click this button to select a folder for storing infected mail"));
  	SET_TOGGLE_SENSITIVITY (enable_clamav, save_folder_select);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -311,7 +311,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 			     _("Should configuration be done automatic or manual"));
  	SET_TOGGLE_SENSITIVITY (enable_clamav, setting_type);
 	
-  	hbox_auto1 = gtk_hbox_new (FALSE, 8);
+  	hbox_auto1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_auto1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_auto1, FALSE, FALSE, 0);
 
@@ -333,7 +333,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 			     _("Click this button to select full path to clamd.conf"));
  	SET_TOGGLE_SENSITIVITY (enable_clamav, config_folder_select);
 
-  	hbox_auto2 = gtk_hbox_new (FALSE, 8);
+  	hbox_auto2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_auto2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_auto2, FALSE, FALSE, 0);
 
@@ -345,7 +345,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (blank);
 	gtk_box_pack_start (GTK_BOX (hbox_auto2), blank, TRUE, TRUE, 0);
 
-	permission_select = gtk_button_new_from_stock(GTK_STOCK_FIND_AND_REPLACE);
+	permission_select = gtkut_stock_button("edit-find-replace", _("Find and _Replace"));
 			/*gtk_button_new_with_mnemonic(_("_Check Permission"));*/
 	gtk_widget_show (permission_select);
   	gtk_box_pack_start (GTK_BOX (hbox_auto2), permission_select, FALSE, FALSE, 0);
@@ -353,7 +353,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 			     _("Click this button to check and adjust folder permissions"));
  	SET_TOGGLE_SENSITIVITY (enable_clamav, permission_select);
 
-  	hbox_manual1 = gtk_hbox_new (FALSE, 8);
+  	hbox_manual1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_manual1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_manual1, FALSE, FALSE, 0);
 
@@ -372,7 +372,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (blank);
 	gtk_box_pack_start (GTK_BOX (hbox_manual1), blank, TRUE, TRUE, 0);
 
-  	hbox_manual2 = gtk_hbox_new (FALSE, 8);
+  	hbox_manual2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_manual2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_manual2, FALSE, FALSE, 0);
 

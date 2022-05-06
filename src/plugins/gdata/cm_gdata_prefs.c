@@ -1,5 +1,7 @@
-/* GData plugin for Claws Mail
- * Copyright (C) 2011 Holger Berndt
+/*
+ * GData plugin for Claws-Mail
+ * Claws Mail -- A GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2011-2018 Holger Berndt and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +74,7 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   GtkWidget *label;
   GtkWidget *entry;
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
   /* auth frame */
   frame = gtk_frame_new(_("Authentication"));
@@ -80,30 +82,32 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
   /* username */
-  table = gtk_table_new(2, 2, FALSE);
+  table = gtk_grid_new();
   label = gtk_label_new(_("Username:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
   entry = gtk_entry_new();
   gtk_widget_set_size_request(entry, 250, -1);
-  gtk_table_attach(GTK_TABLE(table), entry, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+  gtk_grid_attach(GTK_GRID(table), entry, 1, 0, 1, 1);
+  gtk_widget_set_hexpand(entry, TRUE);
+  gtk_widget_set_halign(entry, GTK_ALIGN_FILL);
   gdata_page.entry_username = entry;
   gtk_container_add(GTK_CONTAINER(frame), table);
 
-  table = gtk_table_new(2, 2, FALSE);
+  table = gtk_grid_new();
   gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
   label = gtk_label_new(_("Polling interval (seconds):"));
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
   spinner = gtk_spin_button_new_with_range(10, 10000, 10);
-  gtk_table_attach(GTK_TABLE(table), spinner, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+  gtk_grid_attach(GTK_GRID(table), spinner, 1, 0, 1, 1);
   gdata_page.spin_max_cache_age = spinner;
 
   label = gtk_label_new(_("Maximum number of results:"));
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
   spinner = gtk_spin_button_new_with_range(0, G_MAXINT, 50);
-  gtk_table_attach(GTK_TABLE(table), spinner, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+  gtk_grid_attach(GTK_GRID(table), spinner, 1, 1, 1, 1);
   gdata_page.spin_max_num_results = spinner;
 
   gtk_widget_show_all(vbox);

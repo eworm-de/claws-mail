@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
  * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
  * This file Copyright (C) 2009-2013 Salvatore De Paolis <iwkse@claws-mail.org>
@@ -29,13 +29,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <webkit/webkitwebview.h>
-#include <webkit/webkitversion.h>
-#include <webkit/webkitwebframe.h>
-#include <webkit/webkitnetworkrequest.h>
-#include <webkit/webkitwebnavigationaction.h>
-#include <webkit/webkitwebpolicydecision.h>
-#include <webkit/webkitglobals.h>
+#include <webkit2/webkit2.h>
+#include <webkitdom/webkitdom.h>
 #include <prefs_common.h>
 #include "common/claws.h"
 #include "common/version.h"
@@ -91,21 +86,22 @@ struct _FancyViewer
 	GtkWidget         *enable_images;
 	GtkWidget         *enable_scripts;
 	GtkWidget         *enable_plugins;
-	GtkWidget	  *enable_java;
+	GtkWidget         *enable_java;
 	GtkWidget         *enable_remote_content;
 	GtkWidget         *open_external;
 	GtkWidget         *stylesheet;
 
 	GtkWidget         *progress;
-	WebKitWebSettings *settings;
+	WebKitSettings    *settings;
+	WebKitNetworkProxySettings *no_remote_content_proxy_settings;
 	gboolean          printing;
 	gboolean          override_prefs_images;
 	gboolean          override_prefs_remote_content;
 	gboolean          override_prefs_scripts;
 	gboolean          override_prefs_plugins;
 	gboolean          override_prefs_external;
-	gboolean	  override_prefs_java;
-	gchar		 *override_stylesheet;
+	gboolean          override_prefs_java;
+	gchar             *override_stylesheet;
 
 	const gchar       *curlfile;
 	FILE              *stream;
@@ -121,11 +117,12 @@ struct _FancyViewer
 	gint              click_y;
 
 	/* DOM Objects */
-	WebKitDOMDocument	  *doc;
+	WebKitDOMDocument     *doc;
 	WebKitDOMDOMWindow    *window;
 	WebKitDOMDOMSelection *selection;
-	WebKitDOMRange		  *range;
+	WebKitDOMRange        *range;
 };
+
 #define OPEN_INTERNAL FALSE
 #define OPEN_EXTERNAL TRUE
 #define CTRL_KEY 4

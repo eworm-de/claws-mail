@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2018 the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2022 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,7 +112,6 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 	GtkTreeSelection *sel;
 	GtkTreeModel *model;
 	GtkTreeIter iter, previter;
-	GtkTreePath *path;
 
 	/* Get currently selected iter */
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
@@ -120,22 +119,11 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 		return;
 
 	/* Now get the iter above it, if any */
-	/* GTK+2 does not have gtk_tree_model_iter_previous(), so
-	 * we have to get through GtkPath */
-	path = gtk_tree_model_get_path(model, &iter);
-	if (!gtk_tree_path_prev(path)) {
-		/* No previous path, are we already on top? */
-		gtk_tree_path_free(path);
+	previter = iter;
+	if (!gtk_tree_model_iter_previous(model, &previter)) {
+		/* No previous iter, are we already on top? */
 		return;
 	}
-
-	if (!gtk_tree_model_get_iter(model, &previter, path)) {
-		/* Eh? */
-		gtk_tree_path_free(path);
-		return;
-	}
-
-	gtk_tree_path_free(path);
 
 	gtk_list_store_move_before(GTK_LIST_STORE(model), &iter, &previter);
 
@@ -205,8 +193,8 @@ static void foldersort_size_allocate_cb(GtkWidget *widget, GtkAllocation *alloca
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.foldersortwin_width = allocation->width;
-	prefs_common.foldersortwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.foldersortwin_width, &prefs_common.foldersortwin_height);
 }
 
 void foldersort_open()
@@ -249,13 +237,13 @@ void foldersort_open()
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), dialog);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_focus(ok_btn);
@@ -265,12 +253,12 @@ void foldersort_open()
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
                          G_CALLBACK(cancel_clicked), dialog);
 
-	vbox1 = gtk_vbox_new(FALSE, 8);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
@@ -282,7 +270,7 @@ void foldersort_open()
 	gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), label1, FALSE, FALSE, 0);
 
-	hbox2 = gtk_hbox_new(FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
@@ -317,17 +305,17 @@ void foldersort_open()
 	gtk_widget_show(folderlist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), folderlist);
 
-	btn_vbox = gtk_vbox_new(FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox2), btn_vbox, FALSE, FALSE, 0);
 
-	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	moveup_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(moveup_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), moveup_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(moveup_btn,
 			_("Move the selected mailbox up"));
 
-	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	movedown_btn =  gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(movedown_btn,
@@ -340,7 +328,8 @@ void foldersort_open()
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.foldersortwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.foldersortwin_width,
 				    prefs_common.foldersortwin_height);
 
 	dialog->window = window;

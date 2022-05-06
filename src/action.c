@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1223,6 +1223,7 @@ static void update_io_dialog(Children *children)
 		text = g_strdup_printf(format, _("Completed"), 
 				       children->initial_nb - children->nb,
 				       children->initial_nb);
+		gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(children->progress_bar), TRUE);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(children->progress_bar), text);
 		g_free(text);
 	}
@@ -1280,8 +1281,8 @@ static void actions_io_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.actionsiodialog_width = allocation->width;
-	prefs_common.actionsiodialog_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.actionsiodialog_width, &prefs_common.actionsiodialog_height);
 }
 
 static void create_io_dialog(Children *children)
@@ -1294,7 +1295,6 @@ static void create_io_dialog(Children *children)
 	GtkWidget *label;
 	GtkWidget *text;
 	GtkWidget *scrolledwin;
-	GtkWidget *hbox;
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
@@ -1303,8 +1303,6 @@ static void create_io_dialog(Children *children)
 	debug_print("Creating action IO dialog\n");
 
 	dialog = gtk_dialog_new();
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Action's input/output"));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
@@ -1317,7 +1315,7 @@ static void create_io_dialog(Children *children)
 	g_signal_connect(G_OBJECT(dialog), "size_allocate",
 			 G_CALLBACK(actions_io_size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(
 				gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
@@ -1333,6 +1331,7 @@ static void create_io_dialog(Children *children)
 				       GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrolledwin), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_widget_hide(scrolledwin);
 
@@ -1343,7 +1342,7 @@ static void create_io_dialog(Children *children)
 		font_desc = pango_font_description_from_string
 			(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text, font_desc);
+			gtk_widget_override_font(text, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}
@@ -1356,7 +1355,7 @@ static void create_io_dialog(Children *children)
 	gtk_widget_show(text);
 
 	if (children->open_in) {
-		input_hbox = gtk_hbox_new(FALSE, 8);
+		input_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 		gtk_widget_show(input_hbox);
 
 		entry = gtk_entry_new();
@@ -1369,7 +1368,7 @@ static void create_io_dialog(Children *children)
 		}
 		gtk_widget_show(entry);
 
-		send_button = gtk_button_new_from_stock(GTK_STOCK_EXECUTE);
+		send_button = gtkut_stock_button("system-run", _("_Execute"));
 		g_signal_connect(G_OBJECT(send_button), "clicked",
 				 G_CALLBACK(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE,
@@ -1390,8 +1389,11 @@ static void create_io_dialog(Children *children)
 #endif
 		
 		progress_bar = gtk_progress_bar_new();
-		gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(progress_bar),
-				GTK_PROGRESS_LEFT_TO_RIGHT);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(progress_bar),
+				GTK_ORIENTATION_HORIZONTAL);
+		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(progress_bar),
+				FALSE);
+
 		text = g_strdup_printf(format, _("Completed"), 
 		                       children->initial_nb);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar),
@@ -1401,19 +1403,18 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_stock_button_set_create(&hbox, &abort_button, GTK_STOCK_STOP,
-				      &close_button, GTK_STOCK_CLOSE, NULL, NULL);
+	abort_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Stop"),
+					     GTK_RESPONSE_NONE);
+	close_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_Close"),
+					     GTK_RESPONSE_NONE);
+	gtk_widget_grab_default(close_button);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
 	g_signal_connect(G_OBJECT(close_button), "clicked",
 			 G_CALLBACK(hide_io_dialog_cb), children);
-	gtk_widget_show(hbox);
 
 	if (children->nb)
 		gtk_widget_set_sensitive(close_button, FALSE);
-
-	gtk_container_add(GTK_CONTAINER(
-			gtk_dialog_get_action_area(GTK_DIALOG(dialog))), hbox);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 582;
@@ -1422,7 +1423,7 @@ static void create_io_dialog(Children *children)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(dialog, prefs_common.actionsiodialog_width,
+	gtk_window_set_default_size(GTK_WINDOW(dialog), prefs_common.actionsiodialog_width,
 				    prefs_common.actionsiodialog_height);
 
 	gtk_widget_show(dialog);

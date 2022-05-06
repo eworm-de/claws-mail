@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,11 +141,10 @@ GSList *grouplist_dialog(Folder *folder)
 
 static void grouplist_dialog_create(void)
 {
-	GtkWidget *vbox;
-	GtkWidget *hbox;
+	GtkWidget *grid;
+	GtkWidget *hgrid;
 	GtkWidget *msg_label;
 	GtkWidget *search_button;
-	GtkWidget *confirm_area;
 	GtkWidget *cancel_button;	
 	GtkWidget *refresh_button;	
 	GtkWidget *scrolledwin;
@@ -155,8 +154,6 @@ static void grouplist_dialog_create(void)
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Newsgroup subscription"));
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
@@ -167,36 +164,47 @@ static void grouplist_dialog_create(void)
 			 G_CALLBACK(grouplist_size_allocate), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	grid = gtk_grid_new();
+	gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(grid), 8);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(grid),
+			GTK_ORIENTATION_VERTICAL);
 	gtk_container_add(GTK_CONTAINER(
-				gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+				gtk_dialog_get_content_area(GTK_DIALOG(dialog))), grid);
 
 	msg_label = gtk_label_new(_("Select newsgroups for subscription:"));
-	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
+	gtk_widget_set_hexpand(msg_label, TRUE);
+	gtk_widget_set_vexpand(msg_label, FALSE);
+	gtk_widget_set_halign(msg_label, GTK_ALIGN_START);
+	gtk_container_add(GTK_CONTAINER(grid), msg_label);
 
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	hgrid = gtk_grid_new();
+	gtk_grid_set_column_spacing(GTK_GRID(hgrid), 8);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(hgrid),
+			GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_hexpand(hgrid, TRUE);
+	gtk_widget_set_vexpand(hgrid, FALSE);
+	gtk_container_add(GTK_CONTAINER(grid), hgrid);
 
 	msg_label = gtk_label_new(_("Find groups:"));
-	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), msg_label);
 
 	entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	gtk_widget_set_hexpand(entry, TRUE);
+	gtk_container_add(GTK_CONTAINER(hgrid), entry);
 	g_signal_connect(G_OBJECT(entry), "activate",
 			 G_CALLBACK(entry_activated), NULL);
 
 	search_button = gtk_button_new_with_label(_(" Search "));
-	gtk_box_pack_start(GTK_BOX(hbox), search_button, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), search_button);
 
 	g_signal_connect(G_OBJECT(search_button), "clicked",
 			 G_CALLBACK(search_clicked), NULL);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_box_pack_start(GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_widget_set_hexpand(scrolledwin, TRUE);
+	gtk_widget_set_vexpand(scrolledwin, TRUE);
+	gtk_container_add(GTK_CONTAINER(grid), scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
@@ -219,18 +227,18 @@ static void grouplist_dialog_create(void)
 	g_signal_connect(G_OBJECT(ctree), "button-press-event",
 			 G_CALLBACK(button_press_cb), NULL);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
 	status_label = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(hbox), status_label, FALSE, FALSE, 0);
+	gtk_widget_set_hexpand(status_label, TRUE);
+	gtk_widget_set_vexpand(status_label, FALSE);
+	gtk_widget_set_halign(status_label, GTK_ALIGN_START);
+	gtk_container_add(GTK_CONTAINER(grid), status_label);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &refresh_button, GTK_STOCK_REFRESH,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK);
-	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			  confirm_area);
+	refresh_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Refresh"),
+					       GTK_RESPONSE_NONE);
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(ok_button);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
@@ -406,9 +414,10 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	if (!pattern || *pattern == '\0')
 		pattern = "*";
 
-	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
 	window = gtk_widget_get_window(dialog);
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(window), GDK_WATCH);
 	gdk_window_set_cursor(window, watch_cursor);
 	main_window_cursor_wait(mainwindow_get_mainwindow());
 	GTK_EVENTS_FLUSH();
@@ -440,8 +449,11 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
-
+#if GLIB_CHECK_VERSION(2,70,0)
+		if (g_pattern_spec_match_string(pspec, ginfo->name)) {
+#else
 		if (g_pattern_match_string(pspec, ginfo->name)) {
+#endif
 			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
 						(GCompareFunc)g_ascii_strcasecmp)
@@ -505,8 +517,8 @@ static void grouplist_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 {
 	cm_return_if_fail( allocation != NULL );
 	
-	prefs_common.news_subscribe_width	= allocation->width;
-	prefs_common.news_subscribe_height	= allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.news_subscribe_width, &prefs_common.news_subscribe_height);
 }
 
 static gint window_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)

@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2006-2022  Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -193,10 +193,9 @@ static gboolean kwarn_before_send_hook(gpointer source, gpointer data)
 				bold_text,
 				compose->sending?_("Send it anyway?"):_("Queue it anyway?"));
 		aval = alertpanel(_("Keyword warning"), message,
-				  GTK_STOCK_CANCEL,
-					compose->sending ? _("_Send") : _("Queue"),
-					NULL,
-					ALERTFOCUS_SECOND);
+				  NULL, _("_Cancel"),
+				  NULL, compose->sending ? _("_Send") : _("Queue"),
+				  NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		g_free(bold_text);
 		if (aval != G_ALERTALTERNATE)
@@ -276,11 +275,11 @@ const gchar *plugin_desc(void)
 /**
  * Get the kind of plugin.
  *
- * @return The "GTK2" constant.
+ * @return The "GTK3" constant.
  */
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 
 /**

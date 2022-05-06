@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 Tristan Chabredier <wwp@claws-mail.org> and 
  * the Claws Mail team
  *
@@ -72,7 +72,7 @@ static GtkWidget *prefs_logging_create_check_buttons(GtkWidget **checkbtn1,
 {
 	GtkWidget *hbox_checkbtn;
 
-	hbox_checkbtn = gtk_hbox_new(FALSE, VBOX_BORDER);
+	hbox_checkbtn = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VBOX_BORDER);
 	gtk_widget_show(hbox_checkbtn);
 	
 	PACK_CHECK_BUTTON (hbox_checkbtn, *checkbtn1, label1); 
@@ -128,14 +128,14 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_log_status;
 	GtkSizeGroup *log_size_group;
 	
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* Protocol log */
 	vbox_network_log = gtkut_get_options_frame(vbox1, &frame_logging, _("Network log"));
 
-	hbox_clip_network_log = gtk_hbox_new (FALSE, 8);
+	hbox_clip_network_log = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_network_log), hbox_clip_network_log);
 	gtk_widget_show (hbox_clip_network_log);
 
@@ -166,7 +166,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON (vbox1_filtering_log, checkbtn_filtering_log,
 			   _("Enable logging of filtering/processing rules"));
-	hbox_filtering_log = gtk_hbox_new (FALSE, 8);
+	hbox_filtering_log = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_filtering_log);
 	gtk_widget_show (hbox_filtering_log);
 
@@ -194,7 +194,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 						_("post-processing folders"));
 	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
 	
-	hbox_checkbtn = gtk_hbox_new(TRUE, VBOX_BORDER);
+	hbox_checkbtn = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VBOX_BORDER);
 	gtk_widget_show(hbox_checkbtn);
 	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
 	PACK_CHECK_BUTTON (hbox_checkbtn, checkbtn_filtering_log_folder_proc,
@@ -210,7 +210,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, frame_filtering_log);
 
-	hbox_filtering_log_level = gtk_hbox_new (FALSE, 8);
+	hbox_filtering_log_level = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_filtering_log_level);
 	gtk_box_pack_start(GTK_BOX (vbox1_filtering_log), hbox_filtering_log_level, FALSE, FALSE, 0);
 
@@ -242,7 +242,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				"Caution: the higher the level, the greater the "
 				"impact on performance."));
 
-	hbox_clip_filtering_log = gtk_hbox_new (FALSE, 8);
+	hbox_clip_filtering_log = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_clip_filtering_log);
 	gtk_widget_show (hbox_clip_filtering_log);
 	PACK_CHECK_BUTTON (hbox_clip_filtering_log, checkbtn_clip_filtering_log,
@@ -275,7 +275,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	label = gtk_label_new(_("Write the following information to disk..."));
 	gtk_widget_show(label);
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_add (GTK_CONTAINER (vbox_disk_log), hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);

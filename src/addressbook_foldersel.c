@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,8 +133,8 @@ static void addressbook_foldersel_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.addressbook_folderselwin_width = allocation->width;
-	prefs_common.addressbook_folderselwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addressbook_folderselwin_width, &prefs_common.addressbook_folderselwin_height);
 }
 
 static void addressbook_foldersel_create( void )
@@ -165,12 +165,12 @@ static void addressbook_foldersel_create( void )
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressbook_foldersel_size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
 
@@ -209,9 +209,9 @@ static void addressbook_foldersel_create( void )
 	gtk_container_add( GTK_CONTAINER(tree_win), view );
 
 	/* Button panel */
-	gtkut_stock_button_set_create( &hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL );
+	gtkut_stock_button_set_create( &hbbox, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL );
 	gtk_box_pack_end( GTK_BOX(vbox), hbbox, FALSE, FALSE, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 	gtk_widget_grab_default( ok_btn );
@@ -230,7 +230,8 @@ static void addressbook_foldersel_create( void )
 
 	gtk_window_set_geometry_hints( GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE );
-	gtk_widget_set_size_request( window, prefs_common.addressbook_folderselwin_width,
+	gtk_window_set_default_size( GTK_WINDOW(window),
+				    prefs_common.addressbook_folderselwin_width,
 				    prefs_common.addressbook_folderselwin_height );
 
 	gtk_widget_show_all( vbox );

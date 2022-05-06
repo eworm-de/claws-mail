@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * This file (C) 2008 Andrej Kacian <andrej@kacian.sk>
  *
  * - Export feed list to OPML

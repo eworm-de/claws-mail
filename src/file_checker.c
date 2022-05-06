@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2013-2021 the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2013-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,8 +80,8 @@ static gboolean verify_folderlist_xml()
 		msg = g_strdup_printf
 			(_("The file %s is missing! "
 			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-				ALERTFOCUS_FIRST);
+		aval = alertpanel(_("Warning"), msg, NULL, _("_No"), NULL, _("_Yes"),
+				  NULL, NULL, ALERTFOCUS_FIRST);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE)
 			return FALSE;
@@ -104,8 +104,8 @@ static gboolean verify_folderlist_xml()
 			msg = g_strdup_printf
 				(_("The file %s is empty or corrupted! "
 				   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-			aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-					ALERTFOCUS_FIRST);
+			aval = alertpanel(_("Warning"), msg, NULL, _("_No"), NULL, _("_Yes"),
+					  NULL, NULL, ALERTFOCUS_FIRST);
 			g_free(msg);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;

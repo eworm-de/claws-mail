@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2013 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,8 +52,8 @@ typedef struct _ExtProgPage
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
-	
-#endif
+#endif /* !G_OS_WIN32 */
+
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
@@ -77,27 +76,26 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
-#endif
+#endif /* !G_OS_WIN32 */
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
+
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
 	int i = 0;
 	gchar *tmp;
 
-	table = gtk_table_new(2, 1, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
- 	vbox = gtk_vbox_new(TRUE, 0);
+ 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 
-	gtk_table_attach(GTK_TABLE (table), vbox, 0, 1, 0, 1,
-                    	 (GtkAttachOptions) (GTK_SHRINK),
-                    	 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), vbox, 0, 0, 1, 1);
 
 	hint_label = gtk_label_new(_("%s will be replaced with file name / URI"));
 	gtk_label_set_justify (GTK_LABEL (hint_label), GTK_JUSTIFY_LEFT);
@@ -115,16 +113,16 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			   hint_label, FALSE, FALSE, 4);
 #endif
 
-	table2 = gtk_table_new(7, 2, FALSE);
+	table2 = gtk_grid_new();
 	gtk_widget_show(table2);
 	gtk_container_set_border_width(GTK_CONTAINER(table2), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table2), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table2), 8);
-	
-	gtk_table_attach(GTK_TABLE (table), table2, 0, 1, 1, 2,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
-	
+	gtk_grid_set_row_spacing(GTK_GRID(table2), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table2), 8);
+
+	gtk_grid_attach(GTK_GRID(table), table2, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(table2, TRUE);
+	gtk_widget_set_halign(table2, GTK_ALIGN_FILL);
+
 	cmds_use_system_default_checkbtn = gtk_check_button_new_with_label(
 		_("Use system defaults when possible")); 
 	
@@ -142,19 +140,15 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 		g_free(tmp);
 
 	
-	gtk_table_attach(GTK_TABLE (table2), cmds_use_system_default_checkbtn, 0, 2, i, i+1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
+	gtk_grid_attach(GTK_GRID(table2), cmds_use_system_default_checkbtn, 0, i, 2, 1);
 	
 #ifndef G_OS_WIN32
 	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
 	i++;
-	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, i, i+1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (uri_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (uri_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table2), uri_label, 0, i, 1, 1);
 
 	uri_combo = combobox_text_new(TRUE,
 			       DEFAULT_BROWSER_CMD,
@@ -169,21 +163,19 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "rxvt -e w3m '%s'",
 			       "rxvt -e lynx '%s'",
 			       NULL);
-	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, i, i+1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table2), uri_combo, 1, i, 1, 1);
 
 	uri_entry = gtk_bin_get_child(GTK_BIN((uri_combo)));
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
-#endif	
+#endif /* !G_OS_WIN32 */
+
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
 
 	i++;
-	gtk_table_attach(GTK_TABLE (table2), exteditor_label, 0, 1, i, i+1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (exteditor_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (exteditor_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (exteditor_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table2), exteditor_label, 0, i, 1, 1);
 
 	exteditor_combo = combobox_text_new(TRUE,
 					"gedit %s",
@@ -200,8 +192,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 					"kterm -e jed %s",
 					"kterm -e vi %s",
 					NULL);
-	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, i, i+1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table2), exteditor_combo, 1, i, 1, 1);
 
 	exteditor_entry = gtk_bin_get_child(GTK_BIN((exteditor_combo)));
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
@@ -211,11 +202,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show(astextviewer_label);
 
 	i++;
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_label, 0, 1, i, i+1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (astextviewer_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (astextviewer_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (astextviewer_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table2), astextviewer_label, 0, i, 1, 1);
 
 	astextviewer_entry = gtk_entry_new ();
 	gtk_widget_show(astextviewer_entry);
@@ -224,16 +213,18 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
  			       "message view via a script when using the 'Display as text' "
 			       "contextual menu item"));
 	
-	gtk_table_attach(GTK_TABLE (table2), astextviewer_entry, 1, 2, i, i+1,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table2), astextviewer_entry, 1, i, 1, 1);
+	gtk_widget_set_hexpand(astextviewer_entry, TRUE);
+	gtk_widget_set_halign(astextviewer_entry, GTK_ALIGN_FILL);
+
 	gtk_entry_set_text(GTK_ENTRY(astextviewer_entry), 
 			   prefs_common.mime_textviewer ? prefs_common.mime_textviewer : "");
 
 #ifndef G_OS_WIN32
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_label);
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_combo);
-#endif
+#endif /* !G_OS_WIN32 */
+
 #if 0 /* we should do that, but it detaches the editor and breaks
 	 compose.c's external composition. */
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, exteditor_label);
@@ -257,7 +248,7 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 #ifndef G_OS_WIN32
 	prefs_common.uri_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->uri_entry), 0, -1);
-#endif
+#endif /* !G_OS_WIN32 */
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);
 	prefs_common.mime_textviewer = gtk_editable_get_chars

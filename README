@@ -1,4 +1,4 @@
-Claws Mail - a GTK+ lightweight and fast e-mail client
+Claws Mail - a GTK lightweight and fast e-mail client
 
 ---------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ Summary:
 --------------------------
 
 Claws Mail is a lightweight and highly configurable email client
-and news reader based on the GTK+ GUI toolkit, it runs on the X
+and news reader based on the GTK GUI toolkit, it runs on the X
 Window System.
 
 Claws Mail is free software distributed under the GNU GPL.
@@ -130,9 +130,9 @@ All plugin preferences can be found under
 
   o Fancy
     Renders HTML mails and HTML parts of multipart messages using the
-    GTK+ port of the WebKit library. External content is blocked by
+    GTK port of the WebKit library. External content is blocked by
     default (including images) to avoid remote tracking, but can be
-    enabled either globally or just on the displayed message. The GTK+
+    enabled either globally or just on the displayed message. The GTK
     WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
 
   o Fetchinfo
@@ -594,10 +594,12 @@ https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 GTK 3 Version
 -------------
+2022-04-03	4.1.0
 2021-07-10	4.0.0
 
 GTK 2 Version
 -------------
+2022-04-03	3.19.0
 2021-07-10	3.18.0
 2020-10-19	3.17.8
 2020-09-28	3.17.7

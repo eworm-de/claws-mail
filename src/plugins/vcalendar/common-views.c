@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  *
  * Copyright (c) 2007-2008 Juha Kautto (juha at xfce.org)
  * Copyright (c) 2008 Colin Leroy (colin@colino.net)
@@ -69,41 +69,43 @@ static GtkActionEntry view_event_popup_entries[] =
 GtkWidget *build_line(gint start_x, gint start_y
         , gint width, gint height, GtkWidget *hour_line, GdkColor *line_color)
 {
-    GdkColormap *pic1_cmap;
-    GdkVisual *pic1_vis;
-    GdkPixmap *pic1;
-    GdkGC *pic1_gc;
     GtkWidget *new_hour_line;
-    gint depth = 16;
+		cairo_t *cr;
+		cairo_surface_t *pic1;
     gboolean first = FALSE;
 
+		debug_print("build_line [%d,%d] %dx%d %s\n",
+				start_x, start_y, width, height, hour_line ? "widget" : "no widget");
     /*
      * GdkPixbuf *scaled;
     scaled = gdk_pixbuf_scale_simple (pix, w, h, GDK_INTERP_BILINEAR);
     */
-     
-    pic1_cmap = gdk_colormap_get_system();
-    pic1_vis = gdk_colormap_get_visual(pic1_cmap);
-    depth = gdk_visual_get_depth(pic1_vis);
+    
+    pic1 = cairo_image_surface_create(CAIRO_FORMAT_A1, width, height);
+    cr = cairo_create(pic1);
+
     if (hour_line == NULL) {
-        pic1 = gdk_pixmap_new(NULL, width, height, depth);
-        gdk_drawable_set_colormap(pic1, pic1_cmap);
         first = TRUE;
+    } else {
+        gdk_cairo_set_source_pixbuf(cr, gtk_image_get_pixbuf(GTK_IMAGE(hour_line)), 0, 0);
     }
-    else
-        gtk_image_get_pixmap(GTK_IMAGE(hour_line), &pic1, NULL);
-    pic1_gc = gdk_gc_new(pic1);
+
     if (first) {
-        gdk_gc_set_foreground(pic1_gc, line_color);
-        gdk_draw_rectangle(pic1, pic1_gc, TRUE, start_x, start_y, width, height);
+        cairo_set_source_rgb(cr,
+            (double)line_color->red/255,
+            (double)line_color->green/255,
+            (double)line_color->blue/255);
+        cairo_rectangle(cr, start_x, start_y, width, height);
     }
     else {
-        gdk_draw_rectangle(pic1, pic1_gc, TRUE, start_x, start_y, width, height);
+        cairo_rectangle(cr, start_x, start_y, width, height);
     }
-    
-    new_hour_line = gtk_image_new_from_pixmap(pic1, NULL);
-    g_object_unref(pic1_gc);
-    g_object_unref(pic1);
+
+    cairo_fill(cr);
+		cairo_destroy(cr);
+
+    new_hour_line = gtk_image_new_from_surface(pic1);
+    cairo_surface_destroy(pic1);
     return(new_hour_line);
 }
 

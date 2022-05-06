@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2015 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,8 +177,9 @@ static gboolean exp_html_move_file( void ) {
 		"The HTML output directory '%s'\n" \
 		"does not exist. Do you want to create it?" ),
 		_exportCtl_->dirOutput );
-	aval = alertpanel( _("Create directory" ),
-		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST );
+	aval = alertpanel(_("Create directory" ),
+			  msg, NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			  ALERTFOCUS_FIRST );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
 
@@ -189,7 +190,8 @@ static gboolean exp_html_move_file( void ) {
 			"Could not create output directory for HTML file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				       "window-close", _("_Close"), NULL, NULL,
+				       NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				       NULL, ALERT_ERROR);
 		g_free( msg );
 		return FALSE;
@@ -290,7 +292,10 @@ static void export_html_next( GtkWidget *widget ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(exphtml_dlg.btnCancel),
-				GTK_STOCK_CLOSE);
+				_("_Close"));
+			gtk_button_set_image(GTK_BUTTON(exphtml_dlg.btnCancel),
+				gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
+
 			exp_html_finish_show();
 			exporthtml_save_settings( _exportCtl_ );
 			export_html_message();
@@ -346,9 +351,8 @@ static void export_html_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelBook;
 	GtkWidget *entryHtml;
 	GtkWidget *btnFile;
-	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( exphtml_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -360,38 +364,33 @@ static void export_html_page_file( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( exphtml_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new( 3, 3, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Address Book" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	labelBook = gtk_label_new( "Address book name goes here" );
-	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelBook, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "HTML Output File" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entryHtml = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryHtml, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entryHtml, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entryHtml, TRUE);
+	gtk_widget_set_halign(entryHtml, GTK_ALIGN_FILL);
 
 	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
-	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
-		GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), btnFile, 2, 1, 1, 1);
 
 	gtk_widget_show_all(vbox);
 
@@ -420,9 +419,7 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkLinkEMail;
 	GtkWidget *checkAttributes;
 
-	gint top;
-
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( exphtml_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -434,18 +431,16 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( exphtml_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new( 5, 3, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Stylesheet" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	optmenuCSS = gtkut_sc_combobox_create(NULL, TRUE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuCSS)));
@@ -458,15 +453,12 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	COMBOBOX_ADD(menu, _("Custom-3"), EXPORT_HTML_ID_CUSTOM3);
 	COMBOBOX_ADD(menu, _("Custom-4"), EXPORT_HTML_ID_CUSTOM4);
 
-	gtk_table_attach(GTK_TABLE(table), optmenuCSS, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), optmenuCSS, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "Full Name Format" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	optmenuName = gtkut_sc_combobox_create(NULL, TRUE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuName)));
@@ -474,26 +466,19 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	COMBOBOX_ADD(menu, _("First Name, Last Name"), EXPORT_HTML_FIRST_LAST);
 	COMBOBOX_ADD(menu, _("Last Name, First Name"), EXPORT_HTML_LAST_FIRST);
 
-	gtk_table_attach(GTK_TABLE(table), optmenuName, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), optmenuName, 1, 1, 1, 1);
 
 	/* Third row */
-	top++;
 	checkBanding = gtk_check_button_new_with_label( _( "Color Banding" ) );
-	gtk_table_attach(GTK_TABLE(table), checkBanding, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkBanding, 1, 2, 1, 1);
 
 	/* Fourth row */
-	top++;
 	checkLinkEMail = gtk_check_button_new_with_label( _( "Format Email Links" ) );
-	gtk_table_attach(GTK_TABLE(table), checkLinkEMail, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkLinkEMail, 1, 3, 1, 1);
 
 	/* Fifth row */
-	top++;
 	checkAttributes = gtk_check_button_new_with_label( _( "Format User Attributes" ) );
-	gtk_table_attach(GTK_TABLE(table), checkAttributes, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkAttributes, 1, 4, 1, 1);
 
 	gtk_widget_show_all(vbox);
 
@@ -516,9 +501,8 @@ static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelBook;
 	GtkWidget *labelFile;
 	GtkWidget *btnBrowse;
-	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( exphtml_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -528,36 +512,33 @@ static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 		GTK_NOTEBOOK( exphtml_dlg.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( exphtml_dlg.notebook ), pageNum ), label );
 
-	table = gtk_table_new( 3, 3, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Address Book:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	labelBook = gtk_label_new("Full name of address book goes here");
-	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelBook, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "File Name:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	labelFile = gtk_label_new("File name goes here");
-	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelFile), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelFile), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelFile, 1, 1, 1, 1);
 
 	/* Third row */
-	top++;
 	btnBrowse = gtk_button_new_with_label( _( "Open with Web Browser" ) );
-	gtk_table_attach(GTK_TABLE(table), btnBrowse, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), btnBrowse, 1, 2, 1, 1);
 
 	gtk_widget_show_all(vbox);
 
@@ -598,11 +579,11 @@ static void export_html_dialog_create( void ) {
 			 G_CALLBACK(export_html_key_pressed),
 			 NULL );
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	vnbox = gtk_vbox_new(FALSE, 4);
+	vnbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
 	gtk_widget_show(vnbox);
 	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
@@ -616,15 +597,15 @@ static void export_html_dialog_create( void ) {
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &btnPrev, GTK_STOCK_GO_BACK,
-				      &btnNext, GTK_STOCK_GO_FORWARD,
-				      &btnCancel, GTK_STOCK_CANCEL);
+	gtkut_stock_button_set_create(&hbbox, &btnPrev, "go-previous", _("_Previous"),
+				      &btnNext, "go-next", _("_Next"),
+				      &btnCancel, NULL, _("_Cancel"));
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);
@@ -699,7 +680,7 @@ void addressbook_exp_html( AddressCache *cache ) {
 		export_html_create();
 
 	gtk_button_set_label(GTK_BUTTON(exphtml_dlg.btnCancel),
-			     GTK_STOCK_CANCEL);
+			     _("_Cancel"));
 	exphtml_dlg.cancelled = FALSE;
 	gtk_widget_show(exphtml_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(exphtml_dlg.window));

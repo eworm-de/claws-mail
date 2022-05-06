@@ -27,9 +27,9 @@ Table of contents:
   prefixes that Claws Mail doesn't yet know about from the subject
   header.
 
-* main/Print-action-names-to-stdout
+* main/Print-action-names
   Prints the names of all actions that are currently in the
-  action group of Claws Mail's main window to standard output 
+  action group of Claws Mail's main window into a TextView widget.
 
 * main/Recursively-mark-messages-as-read
   Demonstrates how to perform actions to a directory tree under the
@@ -46,7 +46,7 @@ Table of contents:
   Tomboy Reminder addin into the note.
   To achieve this, this example demonstrates how to talk to other
   programs via D-Bus, as well as how to query additional information
-  from the user using direct GTK+ programming.
+  from the user using direct GTK programming.
 
 * main/Open-Tomboy-Notes
   This example opens all Tomboy notes which link to any of the currently

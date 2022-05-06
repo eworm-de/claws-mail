@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
+action_group = clawsmail.get_mainwindow_action_group()
+actions = []
+for action in action_group.list_actions():
+    actions.append(action.get_name())
+actions.sort()
+
+win = Gtk.Window(title="List of actions")
+win.connect("destroy", Gtk.main_quit)
+win.set_position(Gtk.WindowPosition.CENTER)
+swin = Gtk.ScrolledWindow(None, None)
+swin.set_min_content_height(400)
+swin.set_min_content_width(600)
+buf = Gtk.TextBuffer()
+buf.set_text('\n'.join(actions))
+view = Gtk.TextView.new_with_buffer(buf)
+swin.add(view)
+win.add(swin)
+win.show_all()
+win.present()
+Gtk.main()

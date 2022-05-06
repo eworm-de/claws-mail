@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -268,7 +268,7 @@ void archive_free_file_list(gboolean md5, gboolean rename) {
 			debug_print("unlinking %s\n", path);
 			if (g_unlink(path) < 0)
                                 FILE_OP_ERROR(path, "g_unlink");
-                        g_free(path);
+			g_free(path);
 		}
 		archive_free_file_info(file);
 		file_list->data = NULL;

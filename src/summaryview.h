@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -117,8 +117,8 @@ struct _SummaryView
 	SummaryColumnState col_state[N_SUMMARY_COLS];
 	gint col_pos[N_SUMMARY_COLS];
 
-	GdkColor color_marked;
-	GdkColor color_dim;
+	GdkRGBA color_marked;
+	GdkRGBA color_dim;
 
 	guint lock_count;
 

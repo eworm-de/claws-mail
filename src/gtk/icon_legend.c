@@ -1,6 +1,6 @@
 /*
- * This file Copyright (C) 2005-2012 Paul Mangan <paul@claws-mail.org>
- * and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -112,6 +111,7 @@ void legend_show(void)
 static void legend_create(void)
 {
 	GtkWidget *window;
+	GtkWidget *scrolledwindow;
 	GtkWidget *vbox;
 	GtkWidget *confirm_area;
 	GtkWidget *close_button;
@@ -120,7 +120,6 @@ static void legend_create(void)
 	GtkWidget *icon_label;
 	GtkWidget *desc_label;
 	GtkWidget *table;
-	GtkWidget *frame;
 	gint i, j, k;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "icon_legend");
@@ -135,11 +134,11 @@ static void legend_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	gtk_widget_realize(window);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 2);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -150,22 +149,29 @@ static void legend_create(void)
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 
-	table = gtk_table_new(ROWS, 4, FALSE);
+	scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW(scrolledwindow),
+		 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrolledwindow), TRUE);
+	gtk_widget_show(scrolledwindow);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwindow, TRUE, TRUE, 0);
+
+	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	for (i = 0, j = 0, k = 0; i < ICONS; ++i, ++k) {
 		icon_label = stock_pixmap_widget(legend_icons[i]);
-		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
-		gtk_table_attach(GTK_TABLE(table), icon_label, j, j + 1, k, k + 1,
-				GTK_FILL, 0, 0, 0);
+		gtk_widget_set_halign(icon_label, GTK_ALIGN_CENTER);
+		gtk_widget_set_valign(icon_label, GTK_ALIGN_CENTER);
+		gtk_grid_attach(GTK_GRID(table), icon_label, j, k, 1, 1);
 
 		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
-		gtk_misc_set_alignment (GTK_MISC (desc_label), 0, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(desc_label), 0.0);
 		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
-		gtk_table_attach(GTK_TABLE(table), desc_label, j + 1, j + 2, k, k + 1,
-				GTK_FILL, 0, 0, 0);
+		gtk_grid_attach(GTK_GRID(table), desc_label, j+1, k, 1, 1);
 
 		if (i == ICONS / 2) {
 			j = 2;
@@ -173,11 +179,10 @@ static void legend_create(void)
 		}
 	}
 
-	PACK_FRAME(vbox, frame, NULL);
-	gtk_container_add(GTK_CONTAINER(frame), table);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow), GTK_WIDGET(table));
 
-	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &close_button, "window-close", _("_Close"),
+				      NULL, NULL, NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 4);
 	gtk_widget_grab_default(close_button);
 	g_signal_connect_closure

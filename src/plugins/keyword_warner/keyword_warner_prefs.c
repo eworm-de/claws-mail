@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 2006-2022 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -77,12 +77,13 @@ static void keyword_warner_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *skip_signature_checkbox;
 	GtkWidget *case_sensitive_checkbox;
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	label = gtk_label_new(_("Warn when one of the following regular expressions is matched (one per line)"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_misc_set_padding(GTK_MISC(label), 2, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_widget_set_margin_start(GTK_WIDGET(label), 2);
+	gtk_widget_set_margin_end(GTK_WIDGET(label), 0);
 
 	case_sensitive_checkbox = gtk_check_button_new_with_label(_("Expressions are case sensitive"));
 	gtk_toggle_button_set_active(
@@ -148,7 +149,7 @@ static void keyword_warner_prefs_create_widget_func(PrefsPage * _page,
 		  "from checking for the regular expressions above"));
 	page->skip_signature = skip_signature_checkbox;
 	
-	vbox = gtk_vbox_new(FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
 	gtk_container_add(GTK_CONTAINER(vbox), vbox1);

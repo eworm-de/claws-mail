@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -218,11 +218,14 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->always_sign = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->always_encrypt = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->save_copy_to_folder = FALSE;
-	prefs->color = 0;
 
 	prefs->enable_processing = FALSE;
 	prefs->enable_processing_when_opening = FALSE;
 	prefs->processing = NULL;
+	prefs->color.red = 0;
+	prefs->color.green = 0;
+	prefs->color.blue = 0;
+	prefs->color.alpha = 1;
 
 	prefs->newmailcheck = TRUE;
 	prefs->offlinesync = FALSE;

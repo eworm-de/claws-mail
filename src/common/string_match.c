@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- regexp pattern matching utilities
+ * Claws Mail -- regexp pattern matching utilities
  * Copyright (C) 2001 Thomas Link, Hiroyuki Yamamoto
  *                    Modified by Melvin Hadasht.
  *

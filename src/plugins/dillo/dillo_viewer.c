@@ -1,5 +1,5 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkx.h>
 #include <gdk/gdkx.h>
 
 #include "common/claws.h"
@@ -62,7 +63,7 @@ static GtkWidget *dillo_get_widget(MimeViewer *_viewer)
 	return GTK_WIDGET(viewer->widget);
 }
 
-static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
+static gboolean socket_destroy_cb(GObject *object, gpointer data)
 {
 	DilloViewer *viewer = (DilloViewer *) data;
 	debug_print("Destroyed dillo socket %p\n", viewer->socket);
@@ -144,7 +145,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
 				      (!load_images(viewer) ? "-l " : ""),
 				      (dillo_prefs.full ? "-f " : ""),
-				      (gint) GDK_WINDOW_XWINDOW(gdkwin),
+				      (gint) GDK_WINDOW_XID(gdkwin),
 				      viewer->filename);
 
 		execute_command_line(cmd, TRUE, NULL);
@@ -257,7 +258,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 
 const gchar *plugin_licence(void)

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2303,6 +2303,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
 	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), TRUE);
+	gtk_widget_set_hexpand(toolbar, TRUE);
 	
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 
@@ -3084,8 +3085,8 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES,
-			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+			       NULL, _("_No"), NULL, _("_Yes"),
+			       NULL, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* ask for confirmation before sending queued messages only
@@ -3104,8 +3105,8 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (found && !prefs_common.work_offline) {
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
-			    	   GTK_STOCK_CANCEL, _("_Send"),
-				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+			    	   NULL, _("_Cancel"), NULL, _("_Send"),
+				   NULL, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
 	}

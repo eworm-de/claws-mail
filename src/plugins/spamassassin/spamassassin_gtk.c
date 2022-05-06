@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 the Claws Mail Team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,11 +266,11 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkCellRenderer *renderer;
 	GtkTreeIter iter;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 4);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -280,19 +280,17 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	vbox_transport = gtkut_get_options_frame(vbox2, &frame_transport, _("Transport"));
 
-	table_transport = gtk_table_new (3, 3, FALSE);
+	table_transport = gtk_grid_new();
 	gtk_widget_show (table_transport);
 	gtk_box_pack_start(GTK_BOX(vbox_transport), table_transport, TRUE, TRUE, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table_transport), 4);
-	gtk_table_set_col_spacings (GTK_TABLE (table_transport), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table_transport), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table_transport), 8);
 
 	transport_label = gtk_label_new(_("Type of transport"));
 	gtk_widget_show(transport_label);
-	gtk_table_attach (GTK_TABLE (table_transport), transport_label, 0, 1, 0, 1,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(transport_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(transport_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(transport_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table_transport), transport_label, 0, 0, 1, 1);
 
 	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
 	transport_optmenu = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
@@ -303,38 +301,32 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 				       renderer, "text", 0, NULL);
 	gtk_widget_show(transport_optmenu);
 
-	gtk_table_attach (GTK_TABLE (table_transport), transport_optmenu, 1, 2, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table_transport), transport_optmenu, 1, 0, 1, 1);
 
 	user_label = gtk_label_new(_("User"));
 	gtk_widget_show(user_label);
-	gtk_table_attach (GTK_TABLE (table_transport), user_label, 0, 1, 1, 2,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(user_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(user_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(user_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table_transport), user_label, 0, 1, 1, 1);
 
 	user_entry = gtk_entry_new();
 	gtk_widget_show(user_entry);
-	gtk_table_attach (GTK_TABLE (table_transport), user_entry, 1, 2, 1, 2,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table_transport), user_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(user_entry, TRUE);
+	gtk_widget_set_halign(user_entry, GTK_ALIGN_FILL);
 	CLAWS_SET_TIP(user_entry, _("User to use with spamd server"));
 
 	spamd_label = gtk_label_new(_("spamd"));
 	gtk_widget_show(spamd_label);
-	gtk_table_attach (GTK_TABLE (table_transport), spamd_label, 0, 1, 2, 3,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(spamd_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(spamd_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(spamd_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table_transport), spamd_label, 0, 2, 1, 1);
 
-	hbox_spamd = gtk_hbox_new(FALSE, 8);
+	hbox_spamd = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_spamd);
-	gtk_table_attach (GTK_TABLE (table_transport), hbox_spamd, 1, 2, 2, 3,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table_transport), hbox_spamd, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox_spamd, TRUE);
+	gtk_widget_set_halign(hbox_spamd, GTK_ALIGN_FILL);
 
 	spamd_hostname_entry = gtk_entry_new();
 	gtk_widget_show(spamd_hostname_entry);
@@ -359,7 +351,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_socket_entry, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(spamd_socket_entry, _("Path of Unix socket"));
 
-	hbox_compress = gtk_hbox_new(FALSE, 8);
+	hbox_compress = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_compress);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_compress, TRUE, TRUE, 0);
 
@@ -370,7 +362,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(compress_checkbtn,
 			_("Enable compression if spamd uses it, otherwise disable it."));
 
-	hbox_max_size = gtk_hbox_new(FALSE, 8);
+	hbox_max_size = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_max_size);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_max_size, TRUE, TRUE, 0);
 
@@ -390,7 +382,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_kb_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_kb_label, FALSE, FALSE, 0);
 
-	hbox_timeout = gtk_hbox_new(FALSE, 8);
+	hbox_timeout = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_timeout);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_timeout, TRUE, TRUE, 0);
 
@@ -411,7 +403,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(timeout_seconds_label);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_seconds_label, FALSE, FALSE, 0);
 
-	hbox_process_emails = gtk_hbox_new(FALSE, 8);
+	hbox_process_emails = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_process_emails);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_process_emails, TRUE, TRUE, 0);
 
@@ -420,7 +412,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(process_emails_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_process_emails), process_emails_checkbtn, TRUE, TRUE, 0);
 
-	hbox_save_spam = gtk_hbox_new(FALSE, 8);
+	hbox_save_spam = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_save_spam);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_save_spam, TRUE, TRUE, 0);
 
@@ -440,7 +432,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(save_spam_folder_select,
 			_("Click this button to select a folder for storing spam"));
 
-	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
+	hbox_mark_as_read = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_mark_as_read);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_mark_as_read, TRUE, TRUE, 0);
 
@@ -449,7 +441,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(mark_as_read_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_mark_as_read), mark_as_read_checkbtn, TRUE, TRUE, 0);
 
-	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	hbox_whitelist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_whitelist, TRUE, TRUE, 0);
 

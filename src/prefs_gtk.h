@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -111,7 +111,7 @@ struct _PrefsDialog
 /* This can be used in vboxes, as well as in hboxes. */
 #define PACK_SPACER(box, vbox, spacing) \
 { \
-	vbox = gtk_vbox_new(FALSE, 0); \
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0); \
 	gtk_widget_show(vbox); \
 	gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, TRUE, spacing); \
 }

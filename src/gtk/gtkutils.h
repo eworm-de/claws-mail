@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,31 +52,57 @@
 #define GTKUT_CTREE_REFRESH(clist) \
 	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
 
-#define GTKUT_COLOR_BUTTON() \
-	gtk_button_new_with_label("\x20\xE2\x80\x83\x20")
+/* String used in color button labels.
+ * Instead of hardcoding a size which doesn't look the same on different
+ * resolutions, use a space;m-space;space label and let GTK to compute
+ * the appropriate button size for current font.
+ * This macro is only used in gtkut_set_button_color(). */
+#define GTKUT_COLOR_BUTTON_LABEL "\x20\xE2\x80\x83\x20"
+
+/* Set "color" to the same color as "rgba" */
+#define GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color) { \
+	color.pixel = 0; \
+	color.red   = (guint16)(rgba.red * 65535); \
+	color.green = (guint16)(rgba.green * 65535); \
+	color.blue  = (guint16)(rgba.blue * 65535); \
+}
+
+/* Set "rgba" to the same color as "color" */
+#define GTKUT_GDKCOLOR_TO_GDKRGBA(color, rgba) { \
+	rgba.red   = (gdouble)color.red / 65535; \
+	rgba.green = (gdouble)color.green / 65535; \
+	rgba.blue  = (gdouble)color.blue / 65535; \
+	rgba.alpha = 1.0; \
+}
+
+/* Since GDK's gdk_rgba_to_string() produces a string
+ * representation unsuitable for us, we have to have
+ * our own function to produce a "#rrggbb" string from
+ * a GdkRGBA.
+ * The returned string has to be freed by the caller. */
+gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba);
 
 gboolean gtkut_get_font_size		(GtkWidget	*widget,
 					 gint		*width,
 					 gint		*height);
 
-void gtkut_convert_int_to_gdk_color	(gint		 rgbvalue,
-					 GdkColor	*color);
-gint gtkut_convert_gdk_color_to_int	(GdkColor 	*color);
-
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn);
 
 void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
 		GtkWidget **help_button,
-		GtkWidget **button1, const gchar *label1,
-		GtkWidget **button2, const gchar *label2,
-		GtkWidget **button3, const gchar *label3);
+		GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+		GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+		GtkWidget **button3, const gchar *stock_icon3, const gchar *label3);
 
 void gtkut_stock_button_set_create	(GtkWidget	**bbox,
 					 GtkWidget	**button1,
+					 const gchar	 *stock_icon1,
 					 const gchar	 *label1,
 					 GtkWidget	**button2,
+					 const gchar	 *stock_icon2,
 					 const gchar	 *label2,
 					 GtkWidget	**button3,
+					 const gchar	 *stock_icon3,
 					 const gchar	 *label3);
 
 void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
@@ -109,9 +135,6 @@ void gtkut_ctree_set_focus_row		(GtkCMCTree	*ctree,
 void gtkut_clist_set_focus_row		(GtkCMCList	*clist,
 					 gint		 row);
 
-void gtkut_container_remove		(GtkContainer	*container,
-					 GtkWidget	*widget);
-
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
 void gtkut_text_view_set_position		(GtkTextView *text, gint pos);
 gboolean gtkut_text_view_search_string	(GtkTextView *text, const gchar *str,
@@ -130,7 +153,6 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,
 					 gint		*py);
-void gtkut_widget_draw_now		(GtkWidget	*widget);
 void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
@@ -140,15 +162,13 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GCallback	 	 callback,
 					 gpointer		 data);
 
-void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
-					 guint 		 rgbvalue);
-
 void gtkut_widget_set_small_font_size(GtkWidget *widget);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 
 GtkWidget *gtkut_get_browse_file_btn(const gchar *label);
 GtkWidget *gtkut_get_browse_directory_btn(const gchar *label);
 GtkWidget *gtkut_get_replace_btn(const gchar *label);
+GtkWidget *gtkut_stock_button(const gchar *stock_image, const gchar *label);
 GtkWidget *gtkut_get_options_frame(GtkWidget *box, GtkWidget **frame, const gchar *frame_label);
 #if HAVE_LIBCOMPFACE
 GtkWidget *xface_get_from_header(const gchar *o_xface);
@@ -159,7 +179,6 @@ gboolean get_tag_range(GtkTextIter *iter,
 				       GtkTextIter *end_iter);
 
 GtkWidget *face_get_from_header(const gchar *o_face);
-GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *label);
 
 GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click);
 void gtkutils_scroll_one_line	(GtkWidget *widget, 
@@ -235,6 +254,8 @@ void auto_configure_service(AutoConfigureData *data);
 gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, gchar **srvhost, guint16 *srvport);
 #endif
 
+gboolean gtkut_pointer_is_grabbed(GtkWidget *widget);
+
 /* Returns pointer stored in selected row of a tree view's model
  * in a given column. The column has to be of type G_TYPE_POINTER
  * or G_TYPE_STRING (in this case, the returned value has to be
@@ -245,24 +266,5 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 		gint column, GtkTreeModel **_model, GtkTreeSelection **_selection,
 		GtkTreeIter *_iter);
-
-#if GTK_CHECK_VERSION (3, 2, 0)
-#define GTK_TYPE_VBOX GTK_TYPE_BOX
-#define GtkVBox GtkBox
-#define GtkVBoxClass GtkBoxClass
-#define gtk_vbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
-    "homogeneous", hmg, "spacing", spc, \
-    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
-#define GTK_TYPE_HBOX GTK_TYPE_BOX
-#define GtkHBox GtkBox
-#define GtkHBoxClass GtkBoxClass
-#define gtk_hbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
-    "homogeneous", hmg, "spacing", spc, \
-    "orientation", GTK_ORIENTATION_HORIZONTAL, NULL)
-#define gtk_hseparator_new() g_object_new (GTK_TYPE_SEPARATOR, NULL)
-#define gtk_hpaned_new() g_object_new (GTK_TYPE_PANED, NULL)
-#define gtk_vpaned_new() g_object_new (GTK_TYPE_PANED, \
-    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
-#endif
 
 #endif /* __GTKUTILS_H__ */

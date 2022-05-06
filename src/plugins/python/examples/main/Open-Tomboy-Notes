@@ -1,9 +1,7 @@
 # -*- Mode: python -*-
 
 import re
-
 import dbus
-import gtk
 
 # collect message ids of all selected messages
 msgids = set()

@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,6 @@ static void edit_ldap_bdn_create(void) {
 	GtkWidget *cancel_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
-	gint top;
 	GtkListStore *store;
 	GtkTreeSelection *sel;
 	GtkTreeViewColumn *col;
@@ -158,47 +157,46 @@ static void edit_ldap_bdn_create(void) {
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(edit_ldap_bdn_key_pressed), NULL );
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 0 );
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Hostname"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	host_label = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), host_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(host_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(host_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), host_label, 1, 0, 1, 1);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("Port"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	port_label = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), port_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(port_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(port_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 1, 1, 1, 1);
 
 	/* Third row */
-	top = 2;
 	label = gtk_label_new(_("Search Base"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	basedn_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), basedn_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), basedn_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(basedn_entry, TRUE);
+	gtk_widget_set_halign(basedn_entry, GTK_ALIGN_FILL);
 
 	/* Basedn list */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
 
@@ -231,20 +229,20 @@ static void edit_ldap_bdn_create(void) {
 
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 	gtk_widget_grab_default(ok_btn);
 
-	hsep = gtk_hseparator_new();
+	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",
