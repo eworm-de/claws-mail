@@ -401,7 +401,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 				     gchar *buf, size_t buf_size)
 {
 	FILE *fp;
-	gint32 data_ver;
+	gint32 data_ver = 0;
 
 	cm_return_val_if_fail(file != NULL, NULL);
 
