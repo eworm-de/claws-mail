@@ -90,7 +90,7 @@ my %lang = (
 	},
 	'pl.po' => {
 		'out' => 1, 'name' => 'Polish',
-		'last' => 'Jakub Jankiewicz <jcubic@jcubic.pl>',
+		'last' => '&#x141;ukasz Wojni&#x142;owicz <lukasz.wojnilowicz@gmail.com>',
 	},
 	'pt_BR.po' => {
 		'out' => 1, 'name' => 'Brazilian Portuguese',
