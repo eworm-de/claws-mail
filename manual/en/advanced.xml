@@ -52,7 +52,7 @@
       </example>
       <example>
         <title>Spam management using <ulink 
-	  url="http://bogofilter.sourceforge.net/">Bogofilter</ulink>
+	  url="https://bogofilter.sourceforge.io/">Bogofilter</ulink>
 	</title>
 	<variablelist>
 	  <varlistentry>
@@ -82,19 +82,19 @@
 	</variablelist>
       </example>
       <example>
-        <title>Search Google using an external script</title>
+        <title>Search DuckDuckGo using an external script</title>
 	<variablelist>
 	  <varlistentry>
 	    <term>
-	Menu name: <emphasis>Search/Google</emphasis> 
-	Command Line: <command>|/path/to/google_search.pl</command>
+	Menu name: <emphasis>Search/DuckDuckGo</emphasis>
+	Command Line: <command>|/path/to/ddg_search.pl</command>
 	    </term>
 	    <listitem>
 	      <para>
-	Searches Google for the currently selected text 
+	Searches DuckDuckGo for the currently selected text
 	(<emphasis>|</emphasis>) using the external script <emphasis><ulink 
 	url="https://www.claws-mail.org/tools.php"
-	>google_search.pl</ulink></emphasis>.
+	>ddg_search.pl</ulink></emphasis>.
 	      </para>
 	    </listitem>
 	  </varlistentry>

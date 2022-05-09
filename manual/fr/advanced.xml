@@ -39,7 +39,7 @@
         </variablelist>
       </example>
       <example>
-        <title>Gestion des pourriels en utilisant <ulink url="http://bogofilter.sourceforge.net/">Bogofilter</ulink></title>
+        <title>Gestion des pourriels en utilisant <ulink url="https://bogofilter.sourceforge.io/">Bogofilter</ulink></title>
         <variablelist>
           <varlistentry>
             <term>Menu nom&nbsp;: <emphasis>Bogofilter/Marquer comme courriels légitimes</emphasis> Ligne de Commande&nbsp;: <emphasis>bogofilter -n -v -B "%f"</emphasis></term>
@@ -60,13 +60,13 @@
         </variablelist>
       </example>
       <example>
-        <title>Recherche Google en utilisant un script externe</title>
+        <title>Recherche DuckDuckGo en utilisant un script externe</title>
         <variablelist>
           <varlistentry>
-            <term>Menu nom&nbsp;: <emphasis>Recherche/Google</emphasis> Ligne de Commande&nbsp;: <emphasis>|/path/to/google_search.pl</emphasis></term>
+            <term>Menu nom&nbsp;: <emphasis>Recherche/DuckDuckGo</emphasis> Ligne de Commande&nbsp;: <emphasis>|/path/to/ddg_search.pl</emphasis></term>
             <listitem>
               <para>
-                Effectue une recherche sur google pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="http://www.claws-mail.org/tools.php">google_search.pl</ulink></emphasis>.
+                Effectue une recherche sur DuckDuckGo pour le texte sélectionné (<emphasis>|</emphasis>) en utilisant le script externe <emphasis><ulink url="https://www.claws-mail.org/tools.php">ddg_search.pl</ulink></emphasis>.
 			  </para>
             </listitem>
           </varlistentry>
