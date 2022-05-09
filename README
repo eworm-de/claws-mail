@@ -88,7 +88,7 @@ All plugin preferences can be found under
     Archives mail folders using libarchive library. Folders can be archived 
     with or without compression (ZIP, GZIP or BZIP2) and also in several 
     formats (TAR, SHAR, PAX or CPIO).
-    Libarchive is available from http://www.libarchive.org/.
+    Libarchive is available from https://www.libarchive.org/.
 
   o Attachment Remover
     Selectively removes attachments from messages. Messages are permanently 
@@ -106,23 +106,23 @@ All plugin preferences can be found under
     delete mail identified as spam or save it to a designated folder.
     Bogofilter is a pure Bayesian filter, therefore it has better
     speed performance than SpamAssassin but might catch less spam.
-    Bogofilter is available from http://bogofilter.sourceforge.net/.
+    Bogofilter is available from https://bogofilter.sourceforge.io/.
  
   o BSFilter
     Checks all messages received from IMAP, POP or local accounts using 
     BSFilter, a bayesian spam filter program, which has to be installed 
     locally. Messages identified as spam can be deleted or saved to a 
     designated folder. 
-    Bsfilter is available from http://sourceforge.jp/projects/bsfilter/.
+    Bsfilter is available from https://osdn.net/projects/bsfilter/.
 
   o Clamd
     Uses the Clam AntiVirus in daemon mode to scan received messages from 
     IMAP, POP or local accounts. Scanning is done through a socket to the 
     daemon, so it has to be previously configured to allow this. 
-    Clam AntiVirus is available from http://www.clamav.net/.
+    Clam AntiVirus is available from https://www.clamav.net/.
 
   o Dillo
-    Uses the Dillo browser (http://www.dillo.org) to render HTML mails
+    Uses the Dillo browser (https://www.dillo.org/) to render HTML mails
     and HTML parts of multipart messages. Dillo is started with
     special options to embed its window inside Claws Mail's message
     view and to render the HTML safely. If required, remote content
@@ -133,7 +133,7 @@ All plugin preferences can be found under
     GTK port of the WebKit library. External content is blocked by
     default (including images) to avoid remote tracking, but can be
     enabled either globally or just on the displayed message. The GTK
-    WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
+    WebKit is available from https://trac.webkit.org/wiki/WebKitGTK.
 
   o Fetchinfo
     Modifies downloaded messages and inserts special headers containing 
@@ -162,7 +162,7 @@ All plugin preferences can be found under
   o MailMbox
     Handles mailboxes in Mbox format using the libEtPan! library. Mbox 
     files can be added to the folder tree and used like regular mailboxes.
-    LibEtPan! is available from http://www.etpan.org/.
+    LibEtPan! is available from https://www.etpan.org/libetpan.html.
 
   o Managesieve
     Manage sieve filters on a server using the ManageSieve protocol.
@@ -178,7 +178,7 @@ All plugin preferences can be found under
     Sound notifications are also possible through libcanberra. Each method 
     can be customized in detail through the plugin preferences.
     Indicator library is available from https://launchpad.net/libindicator/
-    and libcanberra from http://0pointer.de/lennart/projects/libcanberra/.
+    and libcanberra from https://0pointer.de/lennart/projects/libcanberra/.
 
   o Perl
     Extends the filtering possibilities of Claws Mail. Provides a Perl 5 
@@ -191,30 +191,32 @@ All plugin preferences can be found under
     Displays Portable Document Format (PDF) and PostScript attachments 
     within the message view using Poppler. PostScript attachments are 
     converted to PDF on the fly by the 'gs' tool, which has to be installed 
-    first. The 'gs' tool is available from http://pages.cs.wisc.edu/~ghost/.
-    The Poppler library is available from http://poppler.freedesktop.org/.
+    first. The 'gs' tool is available from https://pages.cs.wisc.edu/~ghost/.
+    The Poppler library is available from https://poppler.freedesktop.org/.
 	
   o PGP/Core
     Handles core PGP functions and is required by the PGP/Inline
     and PGP/MIME plugins.
-    Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
+    Uses GnuPG/GPGME, https://www.gnupg.org/software/gpgme/index.html.
 
   o PGP/inline
     Handles inline PGP signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
+    own mails.
+    Uses GnuPG/GPGME, https://www.gnupg.org/software/gpgme/index.html.
 
   o PGP/MIME
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
+    own mails.
+    Uses GnuPG/GPGME, https://www.gnupg.org/software/gpgme/index.html.
 
   o Python
     Provides Python scripting access to Claws Mail functions. A testing 
     console is also featured. Scripts can be saved to specific folders 
     for automatic loading on startup or being available as new menu items 
     under the '/Tools/Python scripts' menu. 
-    Python is available from http://python.org/.
+    Python is available from https://python.org/.
 
   o RSSyl
     Creates mailboxes where newsfeeds in RSS 1.0, RSS 2.0 or Atom format 
@@ -230,18 +232,18 @@ All plugin preferences can be found under
     Scans incoming mail received from a POP, IMAP or LOCAL account using 
     SpamAssassin. It can optionally delete mail identified as spam or save 
     it to a designated folder. 
-    SpamAssassin is available from http://spamassassin.apache.org/.
+    SpamAssassin is available from https://spamassassin.apache.org/.
 
   o Spam Report
     Reports spam messages to online spam harvesting sites. Sites suported 
-    are http://www.signal-spam.fr/ and http://www.spamcop.net/. The Debian 
+    are https://www.signal-spam.fr/ and https://www.spamcop.net/. The Debian
     mailing list spam nomination system is also supported.
 
   o TNEF Parser
     Decodes attachments with 'application/ms-tnef' MIME type (also known 
     as "winmail.dat" files) in Claws Mail, using the ytnef library. 
     Decoded parts can be saved to files.
-    The ytnef library is available from http://ytnef.sourceforge.net/.
+    The ytnef library is available from https://github.com/Yeraze/ytnef.
 
   o VCalendar
     Displays vCalendar messages. Only the meeting subset of the vCalendar 
