@@ -1,6 +1,7 @@
 
-AC_PREREQ(2.59)
-AC_INIT(src/main.c)
+AC_PREREQ([2.69])
+AC_INIT
+AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -48,7 +49,7 @@ if test \( "x$EXTRA_RELEASE" != "x" \); then
 fi
 
 dnl set $target
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
 dnl
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
@@ -90,25 +91,30 @@ AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_HEADERS(claws-features.h)
 
 AM_MAINTAINER_MODE
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl Checks for programs.
 dnl AC_ARG_PROGRAM
 AC_PROG_CC
-AC_ISC_POSIX
+AC_SEARCH_LIBS([strerror],[cposix])
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_CPP
 dnl AC_PROG_RANLIB
-AM_PROG_LEX
+AC_PROG_LEX(noyywrap)
 AC_PROG_YACC
 AC_LIB_PREFIX
-AC_LIBTOOL_WIN32_DLL
+AU_DEFUN([AC_LIBTOOL_WIN32_DLL],
+[AC_REQUIRE(AC_CANONICAL_HOST)_LT_SET_OPTION([LT_INIT],[win32-dll])
+m4_warn([obsolete],[AC_LIBTOOL_WIN32_DLL: Remove this warning and the call to _LT_SET_OPTION when you
+put the 'win32-dll' option into LT_INIT's first parameter.])
+])
+
 LT_INIT
-LT_AC_PROG_RC
-AC_LIBTOOL_RC
-AC_PROG_LIBTOOL
+LT_PROG_RC
+LT_LANG([Windows Resource])
+LT_INIT
 AC_PROG_AWK
 
 dnl AC_PROG_CXX will set CXX=g++ even if it finds no useable C++
@@ -126,7 +132,7 @@ AC_SYS_LARGEFILE
 dnl ******************************
 dnl Checks for host
 dnl Not needed anymore because we
-dnl do AC_CANONICAL_SYSTEM above
+dnl do AC_CANONICAL_TARGET above
 dnl ******************************
 dnl AC_CANONICAL_HOST
 
@@ -399,11 +405,8 @@ AC_SUBST(SM_LIBS)
 dnl Check for __VA_OPT__ macro
 AC_CACHE_CHECK([for __VA_OPT__],
 	[ac_cv_va_opt],
-	[AC_TRY_COMPILE([#include <stdio.h>],
-		[#define va_opt_printf(format, ...) fprintf(stderr, format __VA_OPT__(,) __VA_ARGS__)
-		va_opt_printf("success\n");],
-		[ac_cv_va_opt=yes],
-		[ac_cv_va_opt=no])]
+	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>]], [[#define va_opt_printf(format, ...) fprintf(stderr, format __VA_OPT__(,) __VA_ARGS__)
+		va_opt_printf("success\n");]])],[ac_cv_va_opt=yes],[ac_cv_va_opt=no])]
 )
 if test "$ac_cv_va_opt" = yes; then
 	AC_DEFINE([HAVE_VA_OPT], [1], [Define if __VA_OPT__ macro works])
@@ -412,9 +415,7 @@ fi
 dnl Check for d_type member in struct dirent
 AC_MSG_CHECKING([whether struct dirent has d_type member])
 AC_CACHE_VAL(ac_cv_dirent_d_type,[
-	AC_TRY_COMPILE([#include <dirent.h>],
-		       [struct dirent d; d.d_type = DT_REG;],
-		       ac_cv_dirent_d_type=yes, ac_cv_dirent_d_type=no)
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <dirent.h>]], [[struct dirent d; d.d_type = DT_REG;]])],[ac_cv_dirent_d_type=yes],[ac_cv_dirent_d_type=no])
 ])
 AC_MSG_RESULT($ac_cv_dirent_d_type)
 if test $ac_cv_dirent_d_type = yes; then
@@ -427,7 +428,7 @@ GNUPG_FUNC_MKDIR_TAKES_ONE_ARG
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
-AC_HEADER_STDC
+
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
@@ -494,19 +495,17 @@ if test x"$enable_ipv6" = xyes; then
 	AC_MSG_CHECKING([for IPv6 support])
 	if test x"$platform_win32" = xyes; then
 		AC_CACHE_VAL(ac_cv_ipv6,[
-			AC_TRY_COMPILE([
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 					#include <ws2tcpip.h>
-				], [struct in6_addr a;],
-				ac_cv_ipv6=yes, ac_cv_ipv6=no)
+				]], [[struct in6_addr a;]])],[ac_cv_ipv6=yes],[ac_cv_ipv6=no])
 		])
 	else
 		AC_CACHE_VAL(ac_cv_ipv6,[
-			AC_TRY_COMPILE([
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 					#define INET6
 					#include <sys/types.h>
 					#include <netinet/in.h>
-				], [int x = IPPROTO_IPV6; struct in6_addr a;],
-				ac_cv_ipv6=yes, ac_cv_ipv6=no)
+				]], [[int x = IPPROTO_IPV6; struct in6_addr a;]])],[ac_cv_ipv6=yes],[ac_cv_ipv6=no])
 		])
 	fi
 	AC_MSG_RESULT($ac_cv_ipv6)
@@ -721,13 +720,11 @@ if test x$os_win32 = xno; then
   t_oldLibs="$LIBS"
   LIBS="$LIBS"
   ac_cv_var__res_options=no
-  AC_TRY_LINK([#include <sys/types.h>
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
  	     #include <sys/socket.h>
 	     #include <netinet/in.h>
  	     #include <arpa/nameser.h>
-	     #include <resolv.h>],
- 	  	[_res.options = RES_INIT;],
- 	 	ac_cv_var__res_options=yes);
+	     #include <resolv.h>]], [[_res.options = RES_INIT;]])],[ac_cv_var__res_options=yes],[]);
   if test "$ac_cv_var__res_options" != "yes"; then
 	LIBRESOLV="-lresolv"
   fi
@@ -979,7 +976,7 @@ if test x"$enable_libetpan" = xyes; then
         if test "x$libetpan_result" = "xyes"; then
             AC_MSG_CHECKING([whether libetpan-config hints compiles and links fine])
             LIBS="$LIBS $LIBETPAN_LIBS"
-            AC_TRY_LINK([#include <libetpan/dbstorage.h>], [db_mailstorage_init(NULL, NULL);], [libetpan_result=yes], [libetpan_result=no])
+            AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <libetpan/dbstorage.h>]], [[db_mailstorage_init(NULL, NULL);]])],[libetpan_result=yes],[libetpan_result=no])
             AC_MSG_RESULT([$libetpan_result])
         fi
     fi
@@ -1431,18 +1428,12 @@ if test $have_ytnef -eq 1; then
 	else
 		ytnef_include="#include <libytnef/ytnef.h>"
 	fi
-	AC_TRY_COMPILE([#include <stdio.h>
-									${ytnef_include}],
-									[SwapDDWord(0, 0);],
-									[have_ytnef=1],
-									[have_ytnef=0])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+									${ytnef_include}]], [[SwapDDWord(0, 0);]])],[have_ytnef=1],[have_ytnef=0])
 	if test $have_ytnef -eq 0; then
-		AC_TRY_COMPILE([#include <stdio.h>
-										${ytnef_include}],
-										[SwapDDWord(0);],
-										[have_ytnef=1;
-										 YTNEF_CFLAGS="${YTNEF_CFLAGS} -DYTNEF_OLD_SWAPDDWORD"],
-										[have_ytnef=0])
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+										${ytnef_include}]], [[SwapDDWord(0);]])],[have_ytnef=1;
+										 YTNEF_CFLAGS="${YTNEF_CFLAGS} -DYTNEF_OLD_SWAPDDWORD"],[have_ytnef=0])
 	fi
 	if test $have_ytnef -eq 1; then
 		YTNEF_LIBS="-lytnef"
@@ -2141,7 +2132,7 @@ dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 m4/Makefile
 po/Makefile.in
@@ -2224,6 +2215,7 @@ config/Makefile
 manual/Makefile
 claws-mail.pc
 ])
+AC_OUTPUT
 
 dnl Output the configuration summary
 echo ""
