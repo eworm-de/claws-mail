@@ -88,7 +88,7 @@ static gchar *legend_icon_desc[] = {
 	N_("Folder (normal, opened)"),
 	N_("Folder with read messages hidden"),
 	N_("Folder contains marked messages"),
-	N_("IMAP folder which contains sub-folders only"),
+	N_("IMAP folder which contains subfolders only"),
 	N_("IMAP mailbox showing only subscribed folders"),
 };
 

@@ -869,13 +869,13 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	if (read) {
 		title = _("Mark all as read");
 		message = recursive? _("Do you really want to mark all mails in this "
-							"folder and its sub-folders as read?") :
+							"folder and its subfolders as read?") :
 							_("Do you really want to mark all mails in this "
 							"folder as read?");
 	} else {
 		title = _("Mark all as unread");
 		message = recursive? _("Do you really want to mark all mails in this "
-							"folder and its sub-folders as unread?") :
+							"folder and its subfolders as unread?") :
 							_("Do you really want to mark all mails in this "
 							"folder as unread?");
 	}

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ static void exportldif_fmt_folder(
 	/* Export entries in this folder */
 	exportldif_fmt_person( ctl, stream, folder );
 
-	/* Export entries in sub-folders */
+	/* Export entries in subfolders */
 	node = folder->listFolder;
 	while( node ) {
 		AddrItemObject *aio = node->data;

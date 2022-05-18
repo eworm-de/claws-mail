@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2002-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -191,7 +191,7 @@ void addrharvest_set_folder_size(
 /*
  * Specify folder recursion.
  * Entry: harvester Harvester object.
- *        value     TRUE to process sub-folders, FALSE to process folder only.
+ *        value     TRUE to process subfolders, FALSE to process folder only.
  */
 void addrharvest_set_recurse(
 	AddressHarvester* harvester, const gboolean value )
