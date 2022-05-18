@@ -12,8 +12,7 @@
 
 AC_DEFUN([_AM_PATH_GPGME_CONFIG],
 [ AC_ARG_WITH(gpgme-prefix,
-            AC_HELP_STRING([--with-gpgme-prefix=PFX],
-                           [prefix where GPGME is installed (optional)]),
+            AS_HELP_STRING([--with-gpgme-prefix=PFX],[prefix where GPGME is installed (optional)]),
      gpgme_config_prefix="$withval", gpgme_config_prefix="")
   if test "x$gpgme_config_prefix" != x ; then
       GPGME_CONFIG="$gpgme_config_prefix/bin/gpgme-config"
