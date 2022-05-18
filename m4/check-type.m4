@@ -10,20 +10,19 @@ dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
 AC_DEFUN([CLAWS_CHECK_TYPE],
-[AC_REQUIRE([AC_HEADER_STDC])dnl
-AC_MSG_CHECKING(for $1)
+[AC_MSG_CHECKING(for $1)
 AC_CACHE_VAL(claws_cv_type_$1,
-[AC_TRY_COMPILE([
+[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <sys/types.h>
 #if STDC_HEADERS
 #include <stdlib.h>
 #include <stddef.h>
 #endif
 $3
-], [
+]], [[
 #undef $1
 int a = sizeof($1);
-], claws_cv_type_$1=yes, claws_cv_type_$1=no)])dnl
+]])],[claws_cv_type_$1=yes],[claws_cv_type_$1=no])])dnl
 AC_MSG_RESULT($claws_cv_type_$1)
 if test $claws_cv_type_$1 = no; then
   AC_DEFINE($1, $2, $4)

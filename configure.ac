@@ -443,16 +443,6 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
-dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
-dnl may be defined only in wchar.h (this happens with gcc-2.96).
-dnl So we need to use this extended macro.
-CLAWS_CHECK_TYPE(wint_t, unsigned int,
-[
-#if HAVE_WCHAR_H
-#include <wchar.h>
-#endif
-], Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.)
-
 GNUPG_CHECK_TYPEDEF(u32, HAVE_U32_TYPEDEF, Used to test for a u32 typedef)
 AC_CHECK_SIZEOF(unsigned short, 2)
 AC_CHECK_SIZEOF(unsigned int, 4)
