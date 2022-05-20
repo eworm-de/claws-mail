@@ -47,7 +47,7 @@ static gchar *OAUTH2info[4][17]={
   {"accounts.google.com",
    "",
    ".",
-   "urn:ietf:wg:oauth:2.0:oob",
+   "http://127.0.0.1:8888",
    "/o/oauth2/auth",
    "/o/oauth2/token",
    "/o/oauth2/token",
@@ -64,7 +64,7 @@ static gchar *OAUTH2info[4][17]={
   {"login.microsoftonline.com",
    "",
    "",
-   "https://login.microsoftonline.com/common/oauth2/nativeclient",
+   "http://127.0.0.1:8888",
    "/common/oauth2/v2.0/authorize",
    "/common/oauth2/v2.0/token",
    "/common/oauth2/v2.0/token",
@@ -76,12 +76,12 @@ static gchar *OAUTH2info[4][17]={
    "",
    "offline",
    "wl.imap offline_access",
-   "fragment",
+   "query",
    ""},
   {"login.microsoftonline.com",
    "",
    "",
-   "https://login.microsoftonline.com/common/oauth2/nativeclient",
+   "http://127.0.0.1:8888",
    "/common/oauth2/v2.0/authorize",
    "/common/oauth2/v2.0/token",
    "/common/oauth2/v2.0/token",
@@ -93,7 +93,7 @@ static gchar *OAUTH2info[4][17]={
    "",
    "offline",
    "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
-   "fragment",
+   "query",
    ""},
   {"api.login.yahoo.com",
    "",
@@ -116,9 +116,9 @@ static gchar *OAUTH2info[4][17]={
 
 static gchar *OAUTH2CodeMarker[5][2] = {
     {"",""},
-    {"google_begin_mark","google_end_mark"}, /* Not used since token avalable to user to copy in browser window */
-    {"#code=","&session_state"},
-    {"#code=","&session_state"},
+    {"code=","&scope="},
+    {"code="," HTTP"},
+    {"code="," HTTP"},
     {"yahoo_begin_mark","yahoo_end_mark"} /* Not used since token avalable to user to copy in browser window */
 };
 
@@ -191,9 +191,9 @@ static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token)
 
 static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar* response) {
 	gchar* token = NULL;
-
+	
         debug_print("Auth response: %s\n", response);
-        if (provider == OAUTH2AUTH_YAHOO || provider == OAUTH2AUTH_GOOGLE) {
+        if (provider == OAUTH2AUTH_YAHOO) {
                 /* Providers which display auth token in browser for users to copy */
                 token = g_strdup(response);
         } else {
@@ -206,7 +206,7 @@ static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar
                         return NULL;
                 token = g_strndup(start, stop - start);
         }
-
+	
 	return token;
 }
 
@@ -225,8 +225,8 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	SockInfo *sock;
 	gchar *client_id;
 	gchar *client_secret;
-    gchar *token = NULL;
-    gchar *tmp;
+        gchar *token = NULL;
+        gchar *tmp;
 	gint i;
 
 	i = (int)provider - 1;
@@ -239,7 +239,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
                 log_message(LOG_PROTOCOL, _("OAuth2 missing authorization code\n"));
                 return (1);
         }
-
+        debug_print("Connect: %s:443\n", OAUTH2info[i][OA2_BASE_URL]);
 	sock = sock_connect(OAUTH2info[i][OA2_BASE_URL], 443);
 	if (sock == NULL) {
                 log_message(LOG_PROTOCOL, _("OAuth2 connection error\n"));
@@ -267,12 +267,9 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	else
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
 
-	uri = g_uri_escape_string (client_id, NULL, FALSE);
-	uri2 = g_uri_escape_string (token, NULL, FALSE);
-	body = g_strconcat ("client_id=", uri, "&code=", uri2, NULL);
-    g_free(uri2);
-    g_free(uri);
-    g_free(token);
+        body = g_strconcat ("client_id=", client_id, "&code=", token, NULL);
+        debug_print("Body: %s\n", body);
+        g_free(token);
 
 	if(OAUTH2info[i][OA2_CLIENT_SECRET][0]){
 	  //Only allow custom client secret if the service provider would usually expect a client secret
@@ -283,45 +280,35 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  uri = g_uri_escape_string (client_secret, NULL, FALSE);
 	  tmp = g_strconcat (body, "&client_secret=", uri, NULL);
 	  g_free(body);
-      g_free(uri);
+          g_free(uri);
 	  body = tmp;
 	}else{
 	  client_secret = g_strconcat ("", NULL);
 	}
 
 	if(OAUTH2info[i][OA2_REDIRECT_URI][0]) {
-	  uri = g_uri_escape_string (OAUTH2info[i][OA2_REDIRECT_URI], NULL, FALSE);
-	  tmp = g_strconcat (body, "&redirect_uri=", uri, NULL);
+          tmp = g_strconcat(body, "&redirect_uri=", OAUTH2info[i][OA2_REDIRECT_URI], NULL);
 	  g_free(body);
-	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_GRANT_TYPE_ACCESS][0]) {
-	  uri = g_uri_escape_string (OAUTH2info[i][OA2_GRANT_TYPE_ACCESS], NULL, FALSE);
-	  tmp = g_strconcat (body, "&grant_type=", uri, NULL);
+          tmp = g_strconcat(body, "&grant_type=", OAUTH2info[i][OA2_GRANT_TYPE_ACCESS], NULL);
 	  g_free(body);
-	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_TENANT][0]) {
-	  uri = g_uri_escape_string (OAUTH2info[i][OA2_TENANT], NULL, FALSE);
-	  tmp = g_strconcat (body, "&tenant=", uri, NULL);
+          tmp = g_strconcat(body, "&tenant=", OAUTH2info[i][OA2_TENANT], NULL);
 	  g_free(body);
-	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_SCOPE_FOR_ACCESS][0]) {
-	  uri = g_uri_escape_string (OAUTH2info[i][OA2_SCOPE_FOR_ACCESS], NULL, FALSE);
-	  tmp = g_strconcat (body, "&scope=", uri, NULL);
+          tmp = g_strconcat(body, "&scope=", OAUTH2info[i][OA2_SCOPE_FOR_ACCESS], NULL);
 	  g_free(body);
-	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_STATE][0]) {
-	  uri = g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE);
-	  tmp = g_strconcat (body, "&state=", uri, NULL);
+          tmp = g_strconcat(body, "&state=", OAUTH2info[i][OA2_STATE], NULL);
 	  g_free(body);
-	  g_free(uri);
 	  body = tmp;
 	}
 
