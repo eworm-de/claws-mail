@@ -117,8 +117,8 @@ static gchar *OAUTH2info[4][17]={
 static gchar *OAUTH2CodeMarker[5][2] = {
     {"",""},
     {"code=","&scope="},
-    {"code="," HTTP"},
-    {"code="," HTTP"},
+    {"code=","&session_state="},
+    {"code=","&session_state="},
     {"yahoo_begin_mark","yahoo_end_mark"} /* Not used since token avalable to user to copy in browser window */
 };
 
