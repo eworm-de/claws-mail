@@ -6024,7 +6024,7 @@ static void * prefs_account_oauth2_listener(void * param)
 	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *)oauth2_page.protocol_optmenu;
 	GtkWidget *optmenu = protocol_optmenu->combobox;
 	Oauth2Service service;
-        OAUTH2Data *OAUTH2Data = g_malloc(sizeof(* OAUTH2Data));
+        OAUTH2Data *OAUTH2Data = NULL;
 
 	
 	//pthread_detach(pthread_self());
@@ -6085,6 +6085,7 @@ static void * prefs_account_oauth2_listener(void * param)
 		  gtk_widget_set_sensitive(oauth2_page.oauth2_authcode_entry, FALSE);
 		  gtk_widget_set_sensitive(oauth2_page.oauth2_authorise_btn, FALSE);
 		  
+                  OAUTH2Data = g_malloc(sizeof(* OAUTH2Data));
 		  oauth2_init (OAUTH2Data);
 		  
 		  OAUTH2Data->custom_client_secret = 
