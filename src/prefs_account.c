@@ -6047,6 +6047,7 @@ static void * prefs_account_oauth2_listener(void * param)
 	//Bind
 	if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
 	{
+                close(socket_desc);
 		debug_print("oauth2 listener bind failed\n");
 		return NULL;
 	}
