@@ -10607,6 +10607,8 @@ static void compose_save_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 	compose_draft(compose, COMPOSE_KEEP_EDITING);
 	compose->rmode = COMPOSE_REEDIT;
+	compose->modified = FALSE;
+	compose_set_title(compose);
 }
 
 void compose_attach_from_list(Compose *compose, GList *file_list, gboolean free_data)
