@@ -5147,7 +5147,7 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	}
 	debug_print("Starting oauth2 listener thread\n");
 	oauth2_listener_cancel = 0;
-	int ret = pthread_create(&oauth2_listener_tid, NULL, prefs_account_oauth2_listener, (void*)win);
+	int ret = pthread_create(&oauth2_listener_tid, NULL, prefs_account_oauth2_listener, NULL);
         cm_return_if_fail(ret != 0);
 }
 
@@ -6155,11 +6155,6 @@ static void * prefs_account_oauth2_listener(void * param)
 	g_free(trim_text);
 	g_free(OAUTH2Data);
 	
-	//To Do
-	//(3) Work out how to give an indicataion in the main window that authentication has happened
-	//(6) Clean up, test, copy over to git version
-	//(1) Work out why extracting code from this causes segfault in oauth2_get_token_from_response
-	//http://127.0.0.1:8888/?code=M.R3_BAY.09a02423-7bf8-8e51-c4a3-5565f8e7d56b HTTP/1.1
 	return NULL;
 }
 
