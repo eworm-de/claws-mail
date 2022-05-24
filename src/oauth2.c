@@ -69,13 +69,13 @@ static gchar *OAUTH2info[4][17]={
    "/common/oauth2/v2.0/token",
    "/common/oauth2/v2.0/token",
    "code",
-   "wl.imap offline_access",
+   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
    "authorization_code",
    "refresh_token",
    "common",
    "",
    "offline",
-   "wl.imap offline_access",
+   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
    "query",
    ""},
   {"login.microsoftonline.com",
@@ -117,7 +117,7 @@ static gchar *OAUTH2info[4][17]={
 static gchar *OAUTH2CodeMarker[5][2] = {
     {"",""},
     {"code=","&scope="},
-    {"code=","&session_state="},
+    {"code="," HTTP"},
     {"code=","&session_state="},
     {"yahoo_begin_mark","yahoo_end_mark"} /* Not used since token avalable to user to copy in browser window */
 };
@@ -322,6 +322,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  header = g_strconcat ("", NULL);
 	}
 
+        debug_print("Complete body: %s\n", body);
 	oauth2_post_request (request, OAUTH2info[i][OA2_BASE_URL], OAUTH2info[i][OA2_ACCESS_RESOURCE], header, body);
 	ret = oauth2_contact_server (sock, request, response);
 
