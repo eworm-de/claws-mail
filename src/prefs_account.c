@@ -5113,17 +5113,17 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	url = g_malloc(OAUTH2BUFSIZE+1);
 	Oauth2Service service;
 	const gchar * custom_client_id = NULL;
-	
+	int ret;
+
 	service = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
-	
 
 	custom_client_id = gtk_entry_get_text((GtkEntry *)oauth2_page.oauth2_client_id_entry);
-	
+
 	oauth2_authorisation_url(service, &url, custom_client_id);
-	
+
 	win = gtk_widget_get_toplevel (optmenu);
 	len = strlen(url);
-       
+
 	clip = gtk_widget_get_clipboard (win, GDK_SELECTION_PRIMARY);
 	clip2 = gtk_widget_get_clipboard (win, GDK_SELECTION_CLIPBOARD);
 	gtk_clipboard_set_text (clip, url, len);
@@ -5147,8 +5147,9 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	}
 	debug_print("Starting oauth2 listener thread\n");
 	oauth2_listener_cancel = 0;
-	int ret = pthread_create(&oauth2_listener_tid, NULL, prefs_account_oauth2_listener, NULL);
-        cm_return_if_fail(ret != 0);
+	ret = pthread_create(&oauth2_listener_tid, NULL, prefs_account_oauth2_listener, NULL);
+	if (ret != 0)
+		g_warning("can't create thread: %d", ret);
 }
 
 static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
