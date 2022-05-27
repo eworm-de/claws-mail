@@ -6021,6 +6021,7 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 		debug_print("oauth2 listener could not create socket\n");
 		g_task_return_boolean (task, TRUE);
 		g_object_unref (task);
+		return;
 	}
 	debug_print("oauth2 listener socket created\n");
 	
@@ -6036,6 +6037,7 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 		debug_print("oauth2 listener bind failed\n");
 		g_task_return_boolean (task, TRUE);
 		g_object_unref (task);
+		return;
 	}
 	debug_print("oauth2 listener bind done\n");
 
@@ -6060,6 +6062,7 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 				debug_print("oauth2 listener accept failed\n");
 				g_task_return_boolean (task, TRUE);
 				g_object_unref (task);
+				return;
 			}
 			debug_print("oauth2 listener connection accepted\n");
 
