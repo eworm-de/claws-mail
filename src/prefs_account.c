@@ -6003,7 +6003,8 @@ static void prefs_account_receive_itv_spinbutton_value_changed_cb(GtkWidget *w, 
 static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer task_data, GCancellable *cancellable)
 {
 	struct Oauth2Listener *oauth2_listener_data = (struct Oauth2Listener *)task_data;
-	int socket_desc, client_sock, c;
+	unsigned int socket_desc;
+	int client_sock, c;
 	struct sockaddr_in server , client;
 	char client_message[2000];
 	char reply[600];
