@@ -5807,8 +5807,6 @@ static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
 	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
 }
 
-#define CL(x) ((gdouble)x / 65535)
-
 static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
 		gpointer user_data)
 {
@@ -5822,8 +5820,6 @@ static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
 		gtk_widget_modify_base(entry, GTK_STATE_NORMAL, NULL);
 	}
 }
-
-#undef CL
 
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 					  gpointer user_data)
