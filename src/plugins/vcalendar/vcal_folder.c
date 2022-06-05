@@ -69,8 +69,6 @@
 #include <gtk/gtk.h>
 #include <dirent.h>
 
-#define VCAL_FOLDERITEM(item) ((VCalFolderItem *) item)
-
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif

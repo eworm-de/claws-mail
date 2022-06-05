@@ -65,8 +65,6 @@
   RFC 2076
 */
 
-#define TMPDIR "/tmp"
-
 /* mbox is a file with a corresponding filename */
 
 #define UID_HEADER "X-LibEtPan-UID:"

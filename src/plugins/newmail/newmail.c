@@ -36,7 +36,6 @@
 
 #define LOG_NAME	"NewLog"
 #define DEFAULT_DIR	"Mail"
-#define BUFSIZE		2048
 
 static gulong hook_id = HOOK_NONE;
 

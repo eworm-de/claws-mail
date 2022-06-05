@@ -1641,7 +1641,6 @@ static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up)
 
 }
 
-#define BUTTON_H_PADDING 3
 #define ADD_BUTTON_TO_GRID(widget, stock_image) \
 	widget = gtk_button_new(); \
 	img = stock_pixmap_widget(stock_image); \
@@ -2105,7 +2104,6 @@ static MimeViewer *pdf_viewer_create(void)
 #undef ADD_BUTTON_TO_GRID
 #undef ADD_TOGGLE_BUTTON_TO_GRID
 #undef ADD_SEP_TO_GRID
-#undef BUTTON_H_PADDING
 #undef SEP_H_PADDING
 
 static MimeViewerFactory pdf_viewer_factory =
