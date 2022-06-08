@@ -6003,8 +6003,10 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 	int client_sock, c;
 	struct sockaddr_in server , client;
 	char client_message[2000];
-	char reply[600];
-	char reply_message[400];
+	char *reply;
+	char *reply_message;
+	char *title;
+	char *body;
 	fd_set rfds;
 	gint ret = 1;
 	struct timeval timeout;
@@ -6072,15 +6074,23 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 
 			if(!ret){
 				oauth2_listener_data->success = TRUE;
-				sprintf(reply_message, "<html><body><h1>Authorisation complete</h1><p>Your oauth2 authorisation code has been received by Claws Mail</p></body></html>");
+				title = _("Authorisation complete");
+				body = _("Your OAuth2 authorisation code has been received by Claws Mail");
 			}else{
 				//Something went wrong
-				log_message(LOG_PROTOCOL, "oauth2 authorisation code not received\n");
-				sprintf(reply_message, "<html><body><h1>Authorisation NOT completed</h1><p>Your authorisation code was not received by Claws Mail</p></body></html>");
+				title = _("Authorisation NOT completed");
+				body = _("Your OAuth2 authorisation code was not received by Claws Mail");
+				log_message(LOG_PROTOCOL, "OAuth2 authorisation code not received\n");
 			}
-
-			sprintf(reply, "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: %lu\r\n\r\n%s", strlen(reply_message), reply_message);
+			reply_message = g_strconcat("<html><head><title>", title,
+					"</title><meta charset=\"utf-8\"></head><body><h1>", title,
+					"</h1><p>", body, "</p></body></html>", NULL);
+			reply = g_strdup_printf(
+					"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: %lu\r\n\r\n%s",
+					strlen(reply_message), reply_message);
+			g_free(reply_message);
 			write(client_sock, reply, strlen(reply));
+			g_free(reply);
 			close(client_sock);
 		}
 	}while(ret && !oauth2_listener_cancel);
