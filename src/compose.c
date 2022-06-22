@@ -9708,7 +9708,7 @@ static void compose_exec_ext_editor(Compose *compose)
 			   G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
 			   NULL, NULL, &pid, &error)) {
 		alertpanel_error(_("Could not spawn the following "
-				 "command:\n%s\n%s"),
+				 "external editor command:\n%s\n%s"),
 				 cmd, error ? error->message : _("Unknown error"));
 		if (error)
 			g_error_free(error);
