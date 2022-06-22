@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -537,7 +537,7 @@ struct _PrefsCommon
 	gint news_subscribe_width;
 	gint news_subscribe_height;
 
-    gint imap_scan_tree_recurs_limit;
+	gint imap_scan_tree_recurs_limit;
 	gint warn_dnd;
 	gint broken_are_utf8;
 	gint skip_ssl_cert_check;
@@ -547,7 +547,9 @@ struct _PrefsCommon
 	gint hide_quotes;
 	gboolean unsafe_ssl_certs;
 	gboolean real_time_sync;
-	
+	gboolean show_save_all_success;
+	gboolean show_save_all_failure;
+
 	gchar *print_paper_type;
 	gint print_paper_orientation;
 	gint print_margin_top;
