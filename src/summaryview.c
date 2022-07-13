@@ -6618,6 +6618,10 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 		case GTK_CMCELL_TEXT:
 			if (gtk_cmctree_node_get_text(ctree, node, column, &text) != TRUE)
 				return FALSE;
+			if (column == summaryview->col_pos[S_COL_FROM])
+				text = info->from;
+			else if (column == summaryview->col_pos[S_COL_TO])
+				text = info->to;
 			break;
 		case GTK_CMCELL_PIXTEXT:
 			if (gtk_cmctree_node_get_pixtext(ctree, node, column, &text, 
