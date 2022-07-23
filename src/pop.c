@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,6 +178,7 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	return PS_SUCCESS;
 }
 
+#ifdef USE_GNUTLS
 static gint pop3_getauth_oauth2_send(Pop3Session *session)
 {
 	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
@@ -202,6 +203,7 @@ static gint pop3_getauth_oauth2_send(Pop3Session *session)
 	g_free(out);
 	return PS_SUCCESS;
 }
+#endif
 
 static gint pop3_getrange_stat_send(Pop3Session *session)
 {
@@ -533,8 +535,10 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
 		log_print(LOG_PROTOCOL, "POP> PASS ********\n");
+#ifdef USE_GNUTLS
         else if  (!g_ascii_strncasecmp(buf, "AUTH XOAUTH2 ", 13))
 		log_print(LOG_PROTOCOL, "POP> AUTH XOAUTH2  ********\n");
+#endif
 	else
 		log_print(LOG_PROTOCOL, "POP> %s\n", buf);
 
@@ -989,12 +993,12 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 #ifdef USE_GNUTLS
 		if (pop3_session->ac_prefs->ssl_pop == SSL_STARTTLS)
 			val = pop3_stls_send(pop3_session);
+                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 #endif
 		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_APOP)
 			val = pop3_getauth_apop_send(pop3_session);
-                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
-			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 			val = pop3_getauth_user_send(pop3_session);
 		break;
@@ -1015,7 +1019,9 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
+#ifdef USE_GNUTLS
         case POP3_GETAUTH_OAUTH2:
+#endif
 		if (!pop3_session->pop_before_smtp)
 			val = pop3_getrange_stat_send(pop3_session);
 		else

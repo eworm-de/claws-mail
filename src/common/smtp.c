@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,11 @@ static void smtp_session_destroy(Session *session);
 static gint smtp_auth(SMTPSession *session);
 #ifdef USE_GNUTLS
 static gint smtp_starttls(SMTPSession *session);
+static gint smtp_auth_oauth2(SMTPSession *session);
 #endif
 static gint smtp_auth_cram_md5(SMTPSession *session);
 static gint smtp_auth_login(SMTPSession *session);
 static gint smtp_auth_plain(SMTPSession *session);
-static gint smtp_auth_oauth2(SMTPSession *session);
 
 static gint smtp_ehlo(SMTPSession *session);
 static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg);
@@ -176,11 +176,13 @@ static gint smtp_auth(SMTPSession *session)
                  &&
 		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0)
 		smtp_auth_plain(session);
+#ifdef USE_GNUTLS
 	else if ((session->forced_auth_type == SMTPAUTH_OAUTH2
 		  || session->forced_auth_type == 0)
                  &&
 		  (session->avail_auth_type & SMTPAUTH_OAUTH2) != 0)
 		smtp_auth_oauth2(session);
+#endif
 	else if (session->forced_auth_type == 0) {
 		log_warning(LOG_PROTOCOL, _("No SMTP AUTH method available\n"));
 		return SM_AUTHFAIL;
@@ -323,8 +325,10 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 				session->avail_auth_type |= SMTPAUTH_CRAM_MD5;
 			if (strcasestr(p, "DIGEST-MD5"))
 				session->avail_auth_type |= SMTPAUTH_DIGEST_MD5;
+#ifdef USE_GNUTLS
 			if (strcasestr(p, "XOAUTH2"))
 				session->avail_auth_type |= SMTPAUTH_OAUTH2;
+#endif
 		}
 		if (g_ascii_strncasecmp(p, "SIZE", 4) == 0) {
 			p += 5;
@@ -399,7 +403,7 @@ static gint smtp_auth_plain(SMTPSession *session)
 	return SM_OK;
 }
 
-
+#ifdef USE_GNUTLS
 static gint smtp_auth_oauth2(SMTPSession *session)
 {
 	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
@@ -428,6 +432,7 @@ static gint smtp_auth_oauth2(SMTPSession *session)
 
 	return SM_OK;
 }
+#endif
 
 static gint smtp_auth_login(SMTPSession *session)
 {
@@ -547,7 +552,9 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_AUTH_PLAIN:
 	case SMTP_AUTH_LOGIN_USER:
 	case SMTP_AUTH_LOGIN_PASS:
+#ifdef USE_GNUTLS
         case SMTP_AUTH_OAUTH2:
+#endif
 	case SMTP_AUTH_CRAM_MD5:
 		log_print(LOG_PROTOCOL, "ESMTP< %s\n", msg);
 		break;
@@ -670,7 +677,9 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case SMTP_AUTH_PLAIN:
 	case SMTP_AUTH_LOGIN_PASS:
+#ifdef USE_GNUTLS
         case SMTP_AUTH_OAUTH2:
+#endif
 	case SMTP_AUTH_CRAM_MD5:
 		ret = smtp_from(smtp_session);
 		break;

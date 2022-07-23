@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2016 DINH Viet Hoa and the Claws Mail team
+ * Copyright (C) 2005-2022 the Claws Mail team and DINH Viet Hoa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -999,9 +999,11 @@ static void login_run(struct etpan_thread_op * op)
 			param->type, NULL, NULL, NULL,
 			NULL, param->login,
 			param->password, NULL);
-	else if (!strcmp(param->type, "XOAUTH2")) {
+#ifdef USE_GNUTLS
+	else if (!strcmp(param->type, "XOAUTH2"))
                 r = mailimap_oauth2_authenticate(param->imap, param->login, param->password);
-	} else
+#endif
+	else
 		r = mailimap_authenticate(param->imap,
 			param->type, NULL, NULL, NULL,
 			param->login, param->login,

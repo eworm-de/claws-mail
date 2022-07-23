@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2020 the Claws Mail team
+ * Copyright (C) 2020-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #ifdef HAVE_CONFIG_H
 #include "claws-features.h"
 #endif
+
+#ifdef USE_GNUTLS
 
 #include <glib.h>
 
@@ -79,3 +81,5 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data);
 guchar* oauth2_decode(const gchar *in);
 void oauth2_encode(const gchar *in);
+
+#endif	/* USE_GNUTLS */

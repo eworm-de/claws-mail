@@ -72,7 +72,9 @@
 #include "main.h"
 #include "passwordstore.h"
 #include "file-utils.h"
+#ifdef USE_GNUTLS
 #include "oauth2.h"
+#endif
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -913,9 +915,11 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_PLAIN:
 		ok = imap_cmd_login(session, user, pass, "PLAIN");
 		break;
+#ifdef USE_GNUTLS
 	case IMAP_AUTH_OAUTH2:
 		ok = imap_cmd_login(session, user, pass, "XOAUTH2");
 		break;
+#endif
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
@@ -932,7 +936,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				"\t DIGEST-MD5 %d\n"
 				"\t SCRAM-SHA-1 %d\n"
 				"\t PLAIN %d\n"
+#ifdef USE_GNUTLS
 				"\t OAUTH2 %d\n"
+#endif
 				"\t LOGIN %d\n"
 				"\t GSSAPI %d\n", 
 			imap_has_capability(session, "ANONYMOUS"),
@@ -940,7 +946,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			imap_has_capability(session, "DIGEST-MD5"),
 			imap_has_capability(session, "SCRAM-SHA-1"),
 			imap_has_capability(session, "PLAIN"),
+#ifdef USE_GNUTLS
 			imap_has_capability(session, "XOAUTH2"),
+#endif
 			imap_has_capability(session, "LOGIN"),
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
@@ -957,8 +965,10 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
 		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try plaintext login before giving up */
 			ok = imap_cmd_login(session, user, pass, "plaintext");
+#ifdef USE_GNUTLS
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "XOAUTH2"))
 			ok = imap_cmd_login(session, user, pass, "XOAUTH2");
+#endif
 	}
 
 	if (ok == MAILIMAP_NO_ERROR)
@@ -993,12 +1003,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				     "compiled with SASL support and the "
 				     "LOGIN SASL plugin is installed.");
 		}
-
+#ifdef USE_GNUTLS
 		if (type == IMAP_AUTH_OAUTH2) {
 			ext_info = _("\n\nOAuth2 error. Check and correct your OAuth2 "
 				     "account preferences.");
 		} 
-
+#endif
 		if (time(NULL) - last_login_err > 10) {
 			if (!prefs_common.no_recv_err_panel) {
 				alertpanel_error_log(_("Connection to %s failed: "
@@ -1320,10 +1330,10 @@ static gint imap_session_authenticate(IMAPSession *session,
 	gboolean failed = FALSE;
 	gint ok = MAILIMAP_NO_ERROR;
 	g_return_val_if_fail(account->userid != NULL, MAILIMAP_ERROR_BAD_STATE);
-
+#ifdef USE_GNUTLS
 	if(account->imap_auth_type == IMAP_AUTH_OAUTH2)
 	        oauth2_check_passwds (account);
-	
+#endif
 	if (!password_get(account->userid, account->recv_server, "imap",
 			 SESSION(session)->port, &acc_pass)) {
 		acc_pass = passwd_store_get_account(account->account_id,
