@@ -2178,7 +2178,6 @@ src/plugins/python/Makefile
 src/plugins/python/examples/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpcore/version.rc
-src/plugins/pgpcore/tests/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpmime/version.rc
 src/plugins/pgpinline/Makefile

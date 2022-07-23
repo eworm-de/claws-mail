@@ -5,11 +5,6 @@
 
 include $(srcdir)/../win_plugin.mk
 
-if BUILD_TESTS
-include $(top_srcdir)/tests.mk
-SUBDIRS = . tests
-endif
-
 IFLAGS = \
 	-I$(top_builddir)/src \
 	-I$(top_builddir)/src/common \
