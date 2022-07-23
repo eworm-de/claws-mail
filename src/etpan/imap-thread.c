@@ -97,6 +97,7 @@ static int do_mailimap_socket_connect(mailimap * imap, const char * server,
 	return mailimap_connect(imap, stream);
 }
 
+#ifdef USE_GNUTLS
 static int do_mailimap_ssl_connect_with_callback(mailimap * imap, const char * server,
 	gushort port,
 	void (* callback)(struct mailstream_ssl_context * ssl_context, void * data),
@@ -142,6 +143,7 @@ static int do_mailimap_ssl_connect_with_callback(mailimap * imap, const char * s
 
 	return mailimap_connect(imap, stream);
 }
+#endif
 
 static gboolean thread_manager_event(GIOChannel * source,
     GIOCondition condition,

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2016 DINH Viet Hoa and the Claws Mail team
+ * Copyright (C) 2005-2022 the Claws Mail team and DINH Viet Hoa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ static int do_newsnntp_socket_connect(newsnntp * imap, const char * server,
 	return newsnntp_connect(imap, stream);
 }
 
+#ifdef USE_GNUTLS
 static int do_newsnntp_ssl_connect_with_callback(newsnntp * imap, const char * server,
 	gushort port,
 	void (* callback)(struct mailstream_ssl_context * ssl_context, void * data),
@@ -137,7 +138,7 @@ static int do_newsnntp_ssl_connect_with_callback(newsnntp * imap, const char * s
 
 	return newsnntp_connect(imap, stream);
 }
-
+#endif
 
 static void nntp_logger(int direction, const char * str, size_t size) 
 {

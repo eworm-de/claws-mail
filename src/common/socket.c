@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,14 +129,13 @@ static guint io_timeout = 60;
 
 static GList *sock_connect_data_list = NULL;
 
+#ifdef USE_GNUTLS
 static gboolean ssl_sock_prepare	(GSource	*source,
 					 gint		*timeout);
 static gboolean ssl_sock_check		(GSource	*source);
 static gboolean ssl_sock_dispatch	(GSource	*source,
 					 GSourceFunc	 callback,
 					 gpointer	 user_data);
-
-#ifdef USE_GNUTLS
 GSourceFuncs ssl_watch_funcs = {
 	ssl_sock_prepare,
 	ssl_sock_check,

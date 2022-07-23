@@ -26,6 +26,7 @@
 
 #define MISSING "x"
 
+#if defined USE_GNUTLS
 static GHashTable *federated = NULL;
 
 /**
@@ -70,6 +71,7 @@ static void add_federated_url_for_domain(const gchar *url, const gchar *domain)
 	debug_print("new cached avatar url for domain %s: %s\n", domain, url);
 	g_hash_table_insert(federated, g_strdup(domain), g_strdup(url)); 
 }
+#endif
 
 /**
  * Retrieves the federated URL for a given email address.
