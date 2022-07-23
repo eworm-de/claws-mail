@@ -215,7 +215,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	gchar *request;
 	gchar *response;
 	gchar *body;
-	gchar *uri, *uri2;
+	gchar *uri;
 	gchar *header;
 	gchar *tmp_hd, *tmp_hd_encoded;
 	gchar *access_token;
