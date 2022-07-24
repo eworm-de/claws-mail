@@ -452,15 +452,15 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)C_("GnuTLS", "adds support for encrypted connections to servers\n"), -1);
 
-#if USE_OAUTH2
+#if HAVE_ICONV
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" OAuth2 "), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" iconv "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter,
-		(gchar *)C_("OAuth2", "adds support for OAuth2 authentication\n"), -1);
+		(gchar *)C_("iconv", "allows converting to and from different character sets\n"), -1);
 
 #if INET6
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -471,16 +471,6 @@ static GtkWidget *about_create_child_page_features(void)
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)C_("IPv6", "adds support for IPv6 addresses\n"), -1);
-
-#if HAVE_ICONV
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
-#else
-	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
-#endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" iconv "), -1,
-						 "bold", NULL);
-	gtk_text_buffer_insert(buffer, &iter, 
-		(gchar *)C_("iconv", "allows converting to and from different character sets\n"), -1);
 
 #if USE_JPILOT
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -512,6 +502,16 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter, 
 		(gchar *)C_("libetpan", "adds support for IMAP and NNTP servers\n"), -1);
 
+#if HAVE_SVG
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
+#else
+	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
+#endif
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" librSVG "), -1,
+						 "bold", NULL);
+	gtk_text_buffer_insert(buffer, &iter,
+		(gchar *)C_("librSVG", "adds support for SVG themes\n"), -1);
+
 #if HAVE_LIBSM
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
@@ -532,15 +532,15 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_insert(buffer, &iter,
 		(gchar *)C_("NetworkManager", "adds support for detection of network connection changes\n"), -1);
 
-#if HAVE_SVG
+#if USE_OAUTH2
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
 #else
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, inactive_pixbuf);
 #endif
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" librSVG "), -1,
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, (" OAuth2 "), -1,
 						 "bold", NULL);
 	gtk_text_buffer_insert(buffer, &iter,
-		(gchar *)C_("librSVG", "adds support for SVG themes\n"), -1);
+		(gchar *)C_("OAuth2", "adds support for OAuth2 authentication\n"), -1);
 
 	return scrolledwin;
 }
