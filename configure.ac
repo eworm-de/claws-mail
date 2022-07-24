@@ -596,7 +596,7 @@ esac
 AC_MSG_CHECKING([whether GnuTLS support is present for OAuth2])
 if test x"$enable_gnutls" = xyes; then
 	AC_MSG_RESULT([yes])
-	AC_MSG_CHECKING([whether to build oauth2 support])
+	AC_MSG_CHECKING([whether to build OAuth2 support])
 	if test x"$enable_oauth2" = xyes; then
 		AC_MSG_RESULT([yes])
 		AC_DEFINE(USE_OAUTH2, 1, [Define if OAuth2 is to be activated.])
