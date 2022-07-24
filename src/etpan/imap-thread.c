@@ -1001,7 +1001,7 @@ static void login_run(struct etpan_thread_op * op)
 			param->type, NULL, NULL, NULL,
 			NULL, param->login,
 			param->password, NULL);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	else if (!strcmp(param->type, "XOAUTH2"))
                 r = mailimap_oauth2_authenticate(param->imap, param->login, param->password);
 #endif

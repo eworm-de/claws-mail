@@ -21,7 +21,7 @@
 #include "claws-features.h"
 #endif
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 
 #include <glib.h>
 

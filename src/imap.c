@@ -72,7 +72,7 @@
 #include "main.h"
 #include "passwordstore.h"
 #include "file-utils.h"
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 #include "oauth2.h"
 #endif
 
@@ -1330,7 +1330,7 @@ static gint imap_session_authenticate(IMAPSession *session,
 	gboolean failed = FALSE;
 	gint ok = MAILIMAP_NO_ERROR;
 	g_return_val_if_fail(account->userid != NULL, MAILIMAP_ERROR_BAD_STATE);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	if(account->imap_auth_type == IMAP_AUTH_OAUTH2)
 	        oauth2_check_passwds (account);
 #endif

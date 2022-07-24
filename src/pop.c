@@ -178,7 +178,7 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	return PS_SUCCESS;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static gint pop3_getauth_oauth2_send(Pop3Session *session)
 {
 	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
@@ -535,7 +535,7 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
 		log_print(LOG_PROTOCOL, "POP> PASS ********\n");
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
         else if  (!g_ascii_strncasecmp(buf, "AUTH XOAUTH2 ", 13))
 		log_print(LOG_PROTOCOL, "POP> AUTH XOAUTH2  ********\n");
 #endif
@@ -993,7 +993,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 #ifdef USE_GNUTLS
 		if (pop3_session->ac_prefs->ssl_pop == SSL_STARTTLS)
 			val = pop3_stls_send(pop3_session);
-                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+		else
+#endif
+#ifdef USE_OAUTH2
+                if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
 			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 #endif
@@ -1008,8 +1011,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			return -1;
 		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_APOP)
 			val = pop3_getauth_apop_send(pop3_session);
+#ifdef USE_OAUTH2
                 else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
 			val = pop3_getauth_oauth2_send(pop3_session);
+#endif
 		else
 			val = pop3_getauth_user_send(pop3_session);
 		break;
@@ -1019,7 +1024,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
         case POP3_GETAUTH_OAUTH2:
 #endif
 		if (!pop3_session->pop_before_smtp)

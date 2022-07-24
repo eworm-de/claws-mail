@@ -277,6 +277,10 @@ AC_ARG_ENABLE(gnutls,
 		[  --disable-gnutls                Do not build GnuTLS support for TLS],
 		    [enable_gnutls=$enableval], [enable_gnutls=yes])
 
+AC_ARG_ENABLE(oauth2,
+		[  --disable-oauth2                Do not build OAuth2 support],
+		    [enable_oauth2=$enableval], [enable_oauth2=yes])
+
 AC_ARG_ENABLE(enchant,
 		[  --disable-enchant               Do not build Enchant support for spell-checking],
 		[enable_enchant=$enableval], [enable_enchant=yes])
@@ -589,6 +593,21 @@ case $pwd_crypto in
 		;;
 esac
 
+AC_MSG_CHECKING([whether GnuTLS support is present for OAuth2])
+if test x"$enable_gnutls" = xyes; then
+	AC_MSG_RESULT([yes])
+	AC_MSG_CHECKING([whether to build oauth2 support])
+	if test x"$enable_oauth2" = xyes; then
+		AC_MSG_RESULT([yes])
+		AC_DEFINE(USE_OAUTH2, 1, [Define if OAuth2 is to be activated.])
+	else
+		AC_MSG_RESULT([no])
+		enable_oauth2=no
+	fi
+else
+	AC_MSG_RESULT([no])
+	enable_oauth2=no
+fi
 
 dnl ************************
 dnl ** GTK user interface **
@@ -2218,6 +2237,7 @@ else
 	echo "LDAP               : $enable_ldap"
 fi
 echo "gnuTLS             : $enable_gnutls"
+echo "OAuth2             : $enable_oauth2"
 echo "iconv              : $am_cv_func_iconv"
 echo "compface           : $enable_compface"
 echo "IPv6               : $enable_ipv6"

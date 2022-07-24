@@ -42,6 +42,8 @@ static void smtp_session_destroy(Session *session);
 static gint smtp_auth(SMTPSession *session);
 #ifdef USE_GNUTLS
 static gint smtp_starttls(SMTPSession *session);
+#endif
+#ifdef USE_OAUTH2
 static gint smtp_auth_oauth2(SMTPSession *session);
 #endif
 static gint smtp_auth_cram_md5(SMTPSession *session);
@@ -176,7 +178,7 @@ static gint smtp_auth(SMTPSession *session)
                  &&
 		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0)
 		smtp_auth_plain(session);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	else if ((session->forced_auth_type == SMTPAUTH_OAUTH2
 		  || session->forced_auth_type == 0)
                  &&
@@ -403,7 +405,7 @@ static gint smtp_auth_plain(SMTPSession *session)
 	return SM_OK;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static gint smtp_auth_oauth2(SMTPSession *session)
 {
 	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;

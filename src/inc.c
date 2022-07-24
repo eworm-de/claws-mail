@@ -61,7 +61,7 @@
 #include "hooks.h"
 #include "logwindow.h"
 #include "passwordstore.h"
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 #include "oauth2.h"
 #endif
 
@@ -635,7 +635,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			manage_window_focus_in
 				(inc_dialog->dialog->window,
 				 NULL, NULL);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 		if(pop3_session->ac_prefs->use_pop_auth && 
 		   pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
 		     oauth2_check_passwds (pop3_session->ac_prefs);

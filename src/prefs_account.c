@@ -61,7 +61,7 @@
 #include "smtp.h"
 #include "imap.h"
 #include "pop.h"
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 #include "oauth2.h"
 #endif
 #include "remotefolder.h"
@@ -104,7 +104,7 @@ struct AutocheckWidgets {
 
 static GSList *prefs_pages = NULL;
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static GTask *oauth2_listener_task;
 static int oauth2_listener_cancel = 0;
 static int oauth2_listener_closed = 0;
@@ -215,7 +215,7 @@ typedef struct SendPage
 	GtkWidget *pop_auth_minutes_lbl;
 } SendPage;
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 typedef struct Oauth2Page
 {
 	PrefsPage page;
@@ -389,7 +389,7 @@ typedef struct AdvancedPage
 static BasicPage basic_page;
 static ReceivePage receive_page;
 static SendPage send_page;
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static Oauth2Page oauth2_page;
 #endif
 static ComposePage compose_page;
@@ -417,7 +417,7 @@ static char *protocol_names[] = {
 	N_("None (SMTP only)")
 };
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 struct Oauth2Listener {
 	int success;
   	Oauth2Service service;
@@ -439,7 +439,7 @@ static void prefs_account_smtp_auth_type_set_data_from_optmenu (PrefParam *ppara
 static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 static void prefs_account_pop_auth_type_set_data_from_optmenu (PrefParam *pparam);
 static void prefs_account_pop_auth_type_set_optmenu	(PrefParam *pparam);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void prefs_account_oauth2_provider_set_data_from_optmenu	(PrefParam *pparam);
 static void prefs_account_oauth2_provider_set_optmenu	(PrefParam *pparam);
 static void prefs_account_oauth2_copy_url                       (GtkButton *button, gpointer data);
@@ -670,7 +670,7 @@ static PrefParam send_param[] = {
 };
 
 static PrefParam oauth2_param[] = {
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	{"oauth2_auth_provider", "0", &tmp_ac_prefs.oauth2_provider, P_ENUM,
 	 &oauth2_page.oauth2_auth_optmenu,
 	 prefs_account_oauth2_provider_set_data_from_optmenu,
@@ -1650,9 +1650,11 @@ static void receive_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu2, _("Select"), 0);
 	COMBOBOX_ADD (menu2, NULL, 0);
 	COMBOBOX_ADD (menu2, "APOP", POPAUTH_APOP);
-#ifdef USE_GNUTLS
 	COMBOBOX_ADD (menu2, "OAuth2", POPAUTH_OAUTH2);
+#ifndef USE_OAUTH2
+	gtk_list_store_set(menu2, &iter, COMBOBOX_SENS, FALSE, -1);
 #endif
+
 	SET_TOGGLE_SENSITIVITY (pop_auth_checkbtn, vbox5);
 
 	PACK_CHECK_BUTTON (vbox2, rmmail_checkbtn,
@@ -1789,8 +1791,9 @@ static void receive_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu, "SCRAM-SHA-1", IMAP_AUTH_SCRAM_SHA1);
 	COMBOBOX_ADD (menu, "PLAIN", IMAP_AUTH_PLAIN);
 	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
-#ifdef USE_GNUTLS
 	COMBOBOX_ADD (menu, "OAUTH2", IMAP_AUTH_OAUTH2);
+#ifndef USE_OAUTH2
+	gtk_list_store_set(menu, &iter, COMBOBOX_SENS, FALSE, -1);
 #endif
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
@@ -2048,8 +2051,9 @@ static void send_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu, "PLAIN", SMTPAUTH_PLAIN);
 	COMBOBOX_ADD (menu, "LOGIN", SMTPAUTH_LOGIN);
 	COMBOBOX_ADD (menu, "CRAM-MD5", SMTPAUTH_CRAM_MD5);
-#ifdef USE_GNUTLS
 	COMBOBOX_ADD (menu, "OAUTH2", SMTPAUTH_OAUTH2);
+#ifndef USE_OAUTH2
+	gtk_list_store_set(menu, &iter, COMBOBOX_SENS, FALSE, -1);
 #endif
 	COMBOBOX_ADD (menu, "DIGEST-MD5", SMTPAUTH_DIGEST_MD5);
 	gtk_list_store_set(menu, &iter, COMBOBOX_SENS, FALSE, -1);
@@ -2196,7 +2200,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	page->page.widget = vbox1;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void oauth2_create_widget_func(PrefsPage * _page,
                                            GtkWindow * window,
                                            gpointer data)
@@ -3645,7 +3649,7 @@ static gint prefs_basic_apply(void)
 			gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)),
 			FALSE);
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	/* Manual password change - reset expiry on OAUTH2 tokens*/
 	passwd_store_set_account(tmp_ac_prefs.account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, "0", FALSE);
 #endif
@@ -3691,7 +3695,7 @@ static gint prefs_send_apply(void)
 			PWS_ACCOUNT_SEND,
 			gtk_entry_get_text(GTK_ENTRY(send_page.smtp_pass_entry)),
 			FALSE);
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	/* Manual password change - reset expiry on OAUTH2 tokens*/
 	passwd_store_set_account(tmp_ac_prefs.account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, "0", FALSE);
 #endif
@@ -3699,7 +3703,7 @@ static gint prefs_send_apply(void)
 	return 0;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static gint prefs_oauth2_apply(void)
 {
 	prefs_set_data_from_dialog(oauth2_param);
@@ -3811,7 +3815,7 @@ static void send_destroy_widget_func(PrefsPage *_page)
 	/* SendPage *page = (SendPage *) _page; */
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void oauth2_destroy_widget_func(PrefsPage *_page)
 {
 	/* Oauth2Page *page = (Oauth2Page *) _page; */
@@ -3885,7 +3889,7 @@ static gboolean send_can_close_func(PrefsPage *_page)
 	return prefs_send_apply() >= 0;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static gboolean oauth2_can_close_func(PrefsPage *_page)
 {	
 	Oauth2Page *page = (Oauth2Page *) _page;
@@ -3992,7 +3996,7 @@ static void send_save_func(PrefsPage *_page)
 		cancelled = FALSE;
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void oauth2_save_func(PrefsPage *_page)
 {
 	Oauth2Page *page = (Oauth2Page *) _page;
@@ -4139,7 +4143,7 @@ static void register_send_page(void)
 	prefs_account_register_page((PrefsPage *) &send_page);
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void register_oauth2_page(void)
 {
 	static gchar *path[3];
@@ -4347,7 +4351,7 @@ void prefs_account_init()
 	hooks_register_hook(SSL_CERT_GET_PASSWORD, sslcert_get_password, NULL);
 #endif
 	register_proxy_page();
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 	register_oauth2_page();
 #endif
 	register_advanced_page();
@@ -5096,7 +5100,7 @@ static void prefs_account_pop_auth_type_set_optmenu(PrefParam *pparam)
 	combobox_select_by_data(optmenu, type);
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 static void prefs_account_oauth2_provider_set_data_from_optmenu(PrefParam *pparam)
 {
 	*((Oauth2Service *)pparam->data) =
@@ -6050,7 +6054,7 @@ static void prefs_account_receive_itv_spinbutton_value_changed_cb(GtkWidget *w, 
 	}
 }
 
-#ifdef USE_GNUTLS
+#ifdef USE_OAUTH2
 //Automation of the oauth2 authorisation process to receive loopback callback generated by redirect in browser
 static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer task_data, GCancellable *cancellable)
 {
