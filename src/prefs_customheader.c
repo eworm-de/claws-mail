@@ -499,7 +499,12 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 	       (*entry_text == '\n' || *entry_text == '\r' || 
 	        *entry_text == '\t' || *entry_text == ' '))
 		entry_text++;
-	
+
+	if (strchr(entry_text, ':') != NULL) {
+		alertpanel_error(_("A colon (:) is not allowed in a custom header."));
+		return;
+	}
+
 	if (!custom_header_is_allowed(entry_text)) {
 		alertpanel_error(_("This Header name is not allowed as a custom header."));
 		return;
