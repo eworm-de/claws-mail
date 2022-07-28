@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -103,6 +102,9 @@ void custom_header_free(CustomHeader *ch)
 gboolean custom_header_is_allowed(const gchar *header)
 {
 	cm_return_val_if_fail(header != NULL, FALSE);
+
+	if (strchr(header, ':') != NULL)
+		return FALSE;
 
 	if (g_ascii_strcasecmp(header, "Date")         != 0 &&
 	    g_ascii_strcasecmp(header, "From")         != 0 &&
