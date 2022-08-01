@@ -4718,7 +4718,7 @@ msgstr "Content-Type:"
 
 #: src/gtk/headers.h:43
 msgid "Content-Transfer-Encoding"
-msgstr "Content-Transfer-Encoding:"
+msgstr "Content-Transfer-Encoding"
 
 #: src/gtk/headers.h:43
 msgid "Content-Transfer-Encoding:"
