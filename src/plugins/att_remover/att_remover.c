@@ -285,25 +285,25 @@ static void fill_attachment_store(GtkTreeView *list_view, MimeInfo *partinfo)
 	partinfo = procmime_mimeinfo_next(partinfo);
 	if (!partinfo)
 		return;
-		
+
 	while (partinfo) {
 		if (MIMEINFO_NOT_ATTACHMENT(partinfo)) {
     			partinfo = procmime_mimeinfo_next(partinfo);
 			continue;
 		}
-			
+
 		content_type = procmime_get_content_type_str(
 					partinfo->type, partinfo->subtype);
-		
-		name = procmime_mimeinfo_get_parameter(partinfo, "filename");
+
+		name = g_markup_escape_text(procmime_mimeinfo_get_parameter(partinfo, "filename"), -1);
 		if (!name)
-			name = procmime_mimeinfo_get_parameter(partinfo, "name");
+			name = g_markup_escape_text(procmime_mimeinfo_get_parameter(partinfo, "name"), -1);
 		if (!name)
 			name = _("unknown");
-		
-		label = g_strconcat("<b>",_("Type:"), "</b> ", content_type, "   <b>",
-			 _("Size:"), "</b> ", to_human_readable((goffset)partinfo->length),
-			"\n", "<b>", _("Filename:"), "</b> ", name, NULL);
+
+		label = g_strconcat("<b>", _("Type"), ":</b> ", content_type, "   <b>",
+			 _("Size"), ":</b> ", to_human_readable((goffset)partinfo->length),
+			"\n", "<b>", _("Filename"), ":</b> ", name, NULL);
 
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter,
