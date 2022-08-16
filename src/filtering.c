@@ -600,12 +600,12 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 
 		/* debug output */
 		if (debug_filtering_session) {
-			if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
 				if (filtering->account_id == 0) {
 					log_status_ok(LOG_DEBUG_FILTERING,
 							_("rule is not account-based\n"));
 				} else {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 						log_status_ok(LOG_DEBUG_FILTERING,
 								_("rule is account-based [id=%d, name='%s'], "
 								"matching the account currently used to retrieve messages\n"),
@@ -615,19 +615,19 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 			}
 			else
 			if (!matches) {
-				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
-					log_status_skip(LOG_DEBUG_FILTERING,
-							_("rule is account-based, "
-							"not matching the account currently used to retrieve messages\n"));
-				} else {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-						PrefsAccount *account = account_find_from_id(filtering->account_id);
+				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+					PrefsAccount *account = account_find_from_id(filtering->account_id);
 
+					log_status_skip(LOG_DEBUG_FILTERING,
+							_("rule is account-based [id=%d, name='%s'], "
+							"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
+							filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
+							ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
+				} else {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
 						log_status_skip(LOG_DEBUG_FILTERING,
-								_("rule is account-based [id=%d, name='%s'], "
-								"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
-								filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
-								ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
+								_("rule is account-based, "
+								"not matching the account currently used to retrieve messages\n"));
 					}
 				}
 			}
