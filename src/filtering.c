@@ -600,34 +600,46 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 
 		/* debug output */
 		if (debug_filtering_session) {
-			if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
-				if (filtering->account_id == 0) {
-					log_status_ok(LOG_DEBUG_FILTERING,
-							_("rule is not account-based\n"));
+			if (matches) {
+				/* either because rule is not account-based */
+    			if (filtering->account_id == 0) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+       					log_status_ok(LOG_DEBUG_FILTERING,
+	    						_("rule is not account-based\n"));
+                    }
 				} else {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+					/* or because it is account-based, and matching current account */
+					if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+						/* with fewer detail when rule is OK */
 						log_status_ok(LOG_DEBUG_FILTERING,
-								_("rule is account-based [id=%d, name='%s'], "
-								"matching the account currently used to retrieve messages\n"),
-								ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
+								_("rule is account-based, "
+								"matching the account currently used to retrieve messages\n"));
+					} else {
+						if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_HIGH) {
+							/* with more detail when rule is OK */
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is account-based [id=%d, name='%s'], "
+									"matching the account currently used to retrieve messages\n"),
+									ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
+						}
 					}
 				}
-			}
-			else
-			if (!matches) {
-				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-					PrefsAccount *account = account_find_from_id(filtering->account_id);
-
+			} else {
+				if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+					/* with fewer detail when rule is skipped */
 					log_status_skip(LOG_DEBUG_FILTERING,
-							_("rule is account-based [id=%d, name='%s'], "
-							"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
-							filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
-							ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
+							_("rule is account-based, "
+							"not matching the account currently used to retrieve messages\n"));
 				} else {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+					if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_HIGH) {
+						/* with more detail when rule is skipped */
+						PrefsAccount *account = account_find_from_id(filtering->account_id);
+
 						log_status_skip(LOG_DEBUG_FILTERING,
-								_("rule is account-based, "
-								"not matching the account currently used to retrieve messages\n"));
+								_("rule is account-based [id=%d, name='%s'], "
+								"not matching the account currently used to retrieve messages [id=%d, name='%s']\n"),
+								filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
+								ac_prefs->account_id, ac_prefs?ac_prefs->account_name:_("NON_EXISTENT"));
 					}
 				}
 			}
@@ -640,18 +652,28 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 
 			/* debug output */
 			if (debug_filtering_session) {
-				if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-					if (filtering->account_id == 0) {
+				if (filtering->account_id == 0) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+        				log_status_ok(LOG_DEBUG_FILTERING,
+		    					_("rule is not account-based, "
+			    				"but all rules are applied on user request anyway\n"));
+                    }
+				} else {
+					if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+						/* with fewer detail when rule is OK */
 						log_status_ok(LOG_DEBUG_FILTERING,
-								_("rule is not account-based, "
-								"all rules are applied on user request anyway\n"));
+								_("rule is account-based, "
+								"but all rules are applied on user request anyway\n"));
 					} else {
-						PrefsAccount *account = account_find_from_id(filtering->account_id);
+						if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+							/* with more detail when rule is OK */
+							PrefsAccount *account = account_find_from_id(filtering->account_id);
 
-						log_status_ok(LOG_DEBUG_FILTERING,
-								_("rule is account-based [id=%d, name='%s'], "
-								"but all rules are applied on user request\n"),
-								filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is account-based [id=%d, name='%s'], "
+									"but all rules are applied on user request anyway\n"),
+									filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
+						}
 					}
 				}
 			}
@@ -662,23 +684,27 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 
 			/* debug output */
 			if (debug_filtering_session) {
-				if (!matches) {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-						PrefsAccount *account = account_find_from_id(filtering->account_id);
-
-						log_status_skip(LOG_DEBUG_FILTERING,
-								_("rule is account-based [id=%d, name='%s'], "
-								"skipped on user request\n"),
-								filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
-					} else {
+				if (matches) {
+					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+    					log_status_ok(LOG_DEBUG_FILTERING,
+	    						_("rule is not account-based\n"));
+                    }
+				} else {
+					if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+						/* with fewer detail when rule is skipped */
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based, "
 								"skipped on user request\n"));
-					}
-				} else {
-					if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-						log_status_ok(LOG_DEBUG_FILTERING,
-								_("rule is not account-based\n"));
+					} else {
+						if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_HIGH) {
+							/* with more detail when rule is skipped */
+							PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+							log_status_skip(LOG_DEBUG_FILTERING,
+									_("rule is account-based [id=%d, name='%s'], "
+									"skipped on user request\n"),
+									filtering->account_id, account?account->account_name:_("NON_EXISTENT"));
+						}
 					}
 				}
 			}
@@ -689,32 +715,46 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 
 			/* debug output */
 			if (debug_filtering_session) {
-				if (!matches) {
-					if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-						PrefsAccount *account = account_find_from_id(filtering->account_id);
-
-						log_status_skip(LOG_DEBUG_FILTERING,
-								_("rule is account-based [id=%d, name='%s'], "
-								"not matching current account [id=%d, name='%s']\n"),
-								filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
-								cur_account->account_id, cur_account?cur_account->account_name:_("NON_EXISTENT"));
+				if (matches) {
+					if (filtering->account_id == 0) {
+						if (prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_MED) {
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is not account-based\n"));
+                        }
 					} else {
+						if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+							/* with fewer detail when rule is OK */
+							log_status_ok(LOG_DEBUG_FILTERING,
+									_("rule is account-based, "
+									"matching current account\n"));
+						} else {
+							if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+								/* with more detail when rule is OK */
+								PrefsAccount *account = account_find_from_id(filtering->account_id);
+
+								log_status_ok(LOG_DEBUG_FILTERING,
+										_("rule is account-based [id=%d, name='%s'], "
+										"matching current account [id=%d, name='%s']\n"),
+										account->account_id, account?account->account_name:_("NON_EXISTENT"),
+										cur_account->account_id, cur_account?cur_account->account_name:_("NON_EXISTENT"));
+							}
+						}
+					}
+				} else {
+					if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_MED) {
+						/* with fewer detail when rule is skipped */
 						log_status_skip(LOG_DEBUG_FILTERING,
 								_("rule is account-based, "
 								"not matching current account\n"));
-					}
-				} else {
-					if (matches && prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
-						if (filtering->account_id == 0) {
-							log_status_ok(LOG_DEBUG_FILTERING,
-									_("rule is not account-based\n"));
-						} else {
+					} else {
+						if (prefs_common.filtering_debug_level == FILTERING_DEBUG_LEVEL_HIGH) {
+							/* with more detail when rule is skipped */
 							PrefsAccount *account = account_find_from_id(filtering->account_id);
 
-							log_status_ok(LOG_DEBUG_FILTERING,
+							log_status_skip(LOG_DEBUG_FILTERING,
 									_("rule is account-based [id=%d, name='%s'], "
-									"current account [id=%d, name='%s']\n"),
-									account->account_id, account?account->account_name:_("NON_EXISTENT"),
+									"not matching current account [id=%d, name='%s']\n"),
+									filtering->account_id, account?account->account_name:_("NON_EXISTENT"),
 									cur_account->account_id, cur_account?cur_account->account_name:_("NON_EXISTENT"));
 						}
 					}
