@@ -121,6 +121,7 @@ static void description_create(DescriptionWindow * dwindow)
 				gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 				gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 				gtk_label_set_yalign(GTK_LABEL(label), 0.0);
+				gtk_widget_set_margin_end(GTK_WIDGET(label), 12);
 				gtk_grid_attach(GTK_GRID(table), label, col, line, 1, 1);
 
 				gtk_widget_get_preferred_size(label, &req, NULL);
