@@ -10555,6 +10555,7 @@ warn_err:
 		compose->mode = COMPOSE_REEDIT;
 		
 		if (action == COMPOSE_AUTO_SAVE) {
+			compose->modified = FALSE;
 			compose->autosaved_draft = compose->targetinfo;
 		}
 		compose_set_title(compose);
