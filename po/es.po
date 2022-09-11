@@ -11442,7 +11442,7 @@ msgstr "Ningún método de autenticación Sieve disponible\n"
 #: src/plugins/managesieve/managesieve.c:442
 msgid "Selected Sieve auth method not available\n"
 msgstr ""
-"El método para la autenticación Sieve seleccionado no está disponible\n"
+"El método seleccionado para la autenticación Sieve no está disponible\n"
 
 #: src/plugins/managesieve/managesieve.c:675
 msgid "Disconnected"
@@ -11474,7 +11474,7 @@ msgstr "hubo un error en la sesión Sieve\n"
 #: src/plugins/managesieve/managesieve.c:869
 #, c-format
 msgid "error occurred on Sieve session. data: %s\n"
-msgstr "hubo un error en la sesión Sieve. data: %s\n"
+msgstr "hubo un error en la sesión Sieve. Datos: %s\n"
 
 #: src/plugins/managesieve/managesieve.c:878
 #, c-format
@@ -11483,7 +11483,7 @@ msgstr "mensaje desconocido en la sesión de Sieve: %d\n"
 
 #: src/plugins/managesieve/managesieve.c:1160
 msgid "Sieve: retrying auth\n"
-msgstr "Sieve: reintentar autenticación\n"
+msgstr "Sieve: reintentando autenticación\n"
 
 #: src/plugins/managesieve/managesieve.c:1162
 msgid "Auth method not available"
@@ -11492,7 +11492,7 @@ msgstr "Método de autenticación no disponible"
 #: src/plugins/managesieve/managesieve.c:1179
 #, c-format
 msgid "sending error on Sieve session: %s\n"
-msgstr "enviando error en la sesión de Sieve: %s\n"
+msgstr "error de envío en la sesión de Sieve: %s\n"
 
 #: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5824
 msgid "_Filter"
@@ -11519,7 +11519,7 @@ msgstr "Revirtiendo..."
 
 #: src/plugins/managesieve/sieve_editor.c:334
 msgid "Revert script"
-msgstr "Script de reversión"
+msgstr "Revertir script"
 
 #: src/plugins/managesieve/sieve_editor.c:335
 msgid "This script has been modified. Revert the unsaved changes?"
@@ -11562,7 +11562,7 @@ msgstr "Añadir script Sieve"
 
 #: src/plugins/managesieve/sieve_manager.c:161
 msgid "Enter name for a new Sieve filter script."
-msgstr "Introduzca un nombre para el nuevo script Sieve."
+msgstr "Introduzca un nombre para el nuevo script de filtrado Sieve."
 
 #: src/plugins/managesieve/sieve_manager.c:247
 msgid "Enter new name for the script."
@@ -11607,7 +11607,7 @@ msgstr "_Renombrar"
 
 #: src/plugins/managesieve/sieve_manager.c:807
 msgid "To use Sieve, enable it in an account's preferences."
-msgstr "Para usar el Sieve, habilitarlo en las preferencias de la cuenta."
+msgstr "Para usar Sieve, habilítelo en las preferencias de una cuenta."
 
 #: src/plugins/managesieve/sieve_plugin.c:38
 #: src/plugins/managesieve/sieve_plugin.c:156
@@ -11639,7 +11639,8 @@ msgstr "Nombre del servidor"
 #: src/plugins/managesieve/sieve_prefs.c:172
 msgid "Connect to this host instead of the host used for receiving mail"
 msgstr ""
-"Conectar a este servidor en lugar del servidor utilizado para recibir correo"
+"Conectar a este servidor en lugar del servidor utilizado para recibir "
+"el correo"
 
 #: src/plugins/managesieve/sieve_prefs.c:176
 msgid "Server port"
