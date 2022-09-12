@@ -374,7 +374,7 @@ static void addressadd_load_folder( GtkTreeIter *parent_iter,
 	gchar *name;
 	FolderInfo *fi;
 
-	list = parentFolder->listFolder;
+	list = parentFolder != NULL? parentFolder->listFolder: NULL;
 	while( list ) {
 		folder = list->data;
 		name = g_strdup( ADDRITEM_NAME(folder) );
