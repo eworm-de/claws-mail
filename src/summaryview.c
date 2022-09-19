@@ -3357,8 +3357,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 
-	if (prefs_common.bold_unread) {
-		START_TIMING("bold_unread");
+	if (prefs_common.bold_unread || prefs_common.bold_marked) {
+		START_TIMING("bold_unread/bold_marked");
 		while (node) {
 			GtkCMCTreeNode *next = GTK_CMCTREE_NODE_NEXT(node);
 			if (GTK_CMCTREE_ROW(node)->children)
@@ -3982,8 +3982,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 					"");
 	}
 
-	if (prefs_common.bold_unread &&
-	    ((MSG_IS_UNREAD(flags) && !MSG_IS_IGNORE_THREAD(flags)) ||
+	if ((prefs_common.bold_unread || prefs_common.bold_marked) &&
+	    (((MSG_IS_UNREAD(flags) || MSG_IS_MARKED(flags)) && !MSG_IS_IGNORE_THREAD(flags)) ||
 	     (!GTK_CMCTREE_ROW(row)->expanded &&
 	      GTK_CMCTREE_ROW(row)->children &&
 	      summary_have_unread_children(summaryview, row))))
@@ -7414,7 +7414,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 	node = GTK_CMCTREE_NODE(GTK_CMCLIST(summaryview->ctree)->row_list);
 
 	summary_freeze(summaryview);
-	if (prefs_common.bold_unread) {
+	if (prefs_common.bold_unread || prefs_common.bold_marked) {
 		while (node) {
 			GtkCMCTreeNode *next = GTK_CMCTREE_NODE_NEXT(node);
 			if (GTK_CMCTREE_ROW(node)->children)

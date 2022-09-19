@@ -464,6 +464,8 @@ static PrefParam param[] = {
 
 	 {"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
 	 NULL, NULL, NULL},
+	 {"bold_marked", "FALSE", &prefs_common.bold_marked, P_BOOL,
+	 NULL, NULL, NULL},
 
 #ifndef GENERIC_UMPC
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
