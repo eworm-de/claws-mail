@@ -580,6 +580,15 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>bold_marked</literal></term>
+	<listitem>
+	  <para>
+    Show marked messages in the message list of summary view using a
+    bold font when set to '1' (default). '0' will use normal font.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
