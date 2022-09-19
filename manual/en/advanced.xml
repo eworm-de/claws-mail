@@ -584,7 +584,7 @@
 	<listitem>
 	  <para>
     Show marked messages in the message list of summary view using a
-    bold font when set to '1' (default). '0' will use normal font.
+    bold font when set to '1'. '0' (default) will use normal font.
 	  </para>
 	</listitem>
       </varlistentry>
