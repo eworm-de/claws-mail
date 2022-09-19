@@ -619,6 +619,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>bold_marked</literal></term>
+	<listitem>
+	  <para>
+    Mostrar los mensajes marcados utilizando negrita en la lista de
+    mensajes si está a '1'. Con '0' (predeterminado) se usará la
+    tipografía normal.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
