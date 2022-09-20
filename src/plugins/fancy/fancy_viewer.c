@@ -110,6 +110,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		g_strfreev(msg_font_params);
 	}
 	webkit_web_view_set_settings(viewer->view, viewer->settings);
+	webkit_web_context_set_cache_model(webkit_web_context_get_default(), WEBKIT_CACHE_MODEL_DOCUMENT_VIEWER);
 	if (viewer->override_prefs_remote_content)
 		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
 	else
@@ -523,7 +524,7 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 	gchar *image;
 	gint err;
 	MimeInfo *partinfo = viewer->to_load;
-	
+
 	filename = viewer->filename;
 	if ((!g_ascii_strncasecmp(uri, "cid:", 4)) || (!g_ascii_strncasecmp(uri, "mid:", 4))) {
 		image = g_strconcat("<", uri + 4, ">", NULL);
