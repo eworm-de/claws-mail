@@ -26,6 +26,7 @@ EXTRA_DIST = \
 	claws-mail.png \
 	autogen.sh \
 	claws-features.h.in \
+	get-git-version \
 	version
 
 # hicolor icon theme, base class of all icon themes

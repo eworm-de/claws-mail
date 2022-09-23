@@ -1,0 +1,17 @@
+#!/bin/sh
+if test \( -d .git \); then
+  git=`which git`
+  if test \( -x "$git" \); then
+    version=`git describe --abbrev=6 --dirty --always`
+    echo "echo $version" > ./version
+  else
+    echo "Error: *** git not found. See http://git-scm.com/"
+    exit 1
+  fi
+elif test \( -s ./version \); then
+  version=`sh -c ". ./version"`
+else
+  echo "Error: *** invalid tree. Neither '.git' nor 'version' were found"
+  exit 1
+fi
+echo -n $version

@@ -1,9 +1,16 @@
 
 AC_PREREQ([2.69])
-AC_INIT
+
+m4_define([claws_VERSION],
+    m4_esyscmd([./get-git-version]))
+
+AC_INIT([claws-mail],
+    m4_defn([claws_VERSION]))
 AC_CONFIG_SRCDIR([src/main.c])
-AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CANONICAL_TARGET
+AM_INIT_AUTOMAKE([no-define])
 
 PACKAGE=claws-mail
 
@@ -13,17 +20,7 @@ BINARY_AGE=0
 EXTRA_RELEASE=
 EXTRA_GTK3_VERSION=
 
-if test \( -d .git \); then
-    AC_CHECK_PROG([GIT], [git], [yes], [no], [$PATH])
-    if test \( "$GIT" = "no" \); then
-	AC_MSG_ERROR([*** git not found. See http://git-scm.com/])
-    else
-	GIT_VERSION=`git describe --abbrev=6 --dirty --always`
-	echo "echo ${GIT_VERSION}" > ./version
-    fi
-else
-    GIT_VERSION=`sh -c ". $srcdir/version"`
-fi
+GIT_VERSION=m4_defn([claws_VERSION])
 
 if test \( -z "$GIT_VERSION" \); then
 	AC_MSG_ERROR([*** could not determine program version])
@@ -48,11 +45,6 @@ if test \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${VERSION}${EXTRA_RELEASE}${EXTRA_GTK3_VERSION}
 fi
 
-dnl set $target
-AC_CANONICAL_TARGET
-
-dnl
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
 dnl AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 dnl AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)
