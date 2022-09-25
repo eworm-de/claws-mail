@@ -247,13 +247,13 @@ All plugin preferences can be found under
 
   o VCalendar
     Displays vCalendar messages. Only the meeting subset of the vCalendar 
-    format is currently supported, which includes planning, sendding and 
+    format is currently supported, which includes planning, sending and
     receiving invitations and answering them. Public calendar (WebCal) 
     subscriptions, free/busy information export/import and reminding of 
     events is also supported.
     
 
-Additonal plugins can be found here:
+Additional plugins can be found here:
 https://www.claws-mail.org/plugins.php
 
 
@@ -398,7 +398,7 @@ https://www.claws-mail.org/plugins.php
     subject regexp "Bug" & to regexp "claws-mail"
 
     Additionally, it is possible to use simpler yet equally
-    powerfull patterns for message selections. Mutt users will
+    powerful patterns for message selections. Mutt users will
     immediately recognise most of the available patterns:
 
     Pattern  Parameter  Selects
@@ -461,7 +461,7 @@ https://www.claws-mail.org/plugins.php
     f "john beavis"    messages from john beavis
     %f "John Beavis"   messages from John Beavis (case sensitive)
     ~s foo             messages which do not have foo in the subject
-    f foo & ~s bar     messages from foo that do not have bar in thesubject
+    f foo & ~s bar     messages from foo that do not have bar in the subject
 
 
 6. Custom toolbar
@@ -504,7 +504,7 @@ https://www.claws-mail.org/plugins.php
 -----------------
 
   There's several options which are not widely used and were not
-  added to the configuration interface to avoid excesive bloat.
+  added to the configuration interface to avoid excessive bloat.
 
   The complete and up to date list of hidden options can be found
   on Hidden preferences section of Claws Mail Manual:
@@ -526,7 +526,7 @@ https://www.claws-mail.org/plugins.php
 10. How to contribute
 ---------------------
 
-You are encourged to send patches via the Claws Mail bugzilla at
+You are encouraged to send patches via the Claws Mail bugzilla at
 https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 But please first read the patch guidelines here:
 https://www.claws-mail.org/devel.php
