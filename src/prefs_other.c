@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2022 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("Select preset:"));
+		(_("Select preset keyboard shortcuts:"));
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
@@ -133,7 +133,7 @@ static void prefs_keybind_select(void)
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
+/*
 	label = gtk_label_new
 		(_("You can also modify each menu shortcut by pressing\n"
 		   "any key(s) when focusing the mouse pointer on the item."));
@@ -141,7 +141,7 @@ static void prefs_keybind_select(void)
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtkut_widget_set_small_font_size (label);
-
+*/
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
