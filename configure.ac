@@ -1355,10 +1355,20 @@ if test x"$HAVE_PERL" = xyes; then
 fi
 
 dnl Gpgme **********************************************************************
-AM_PATH_GPGME(1.0.0, HAVE_GPGME=yes, HAVE_GPGME=no)
-if test x"$HAVE_GPGME" = xyes; then
+dnl First try to find gpgme with gpgme-config.  Use pkgconfig if not found
+AM_PATH_GPGME(1.1.1, HAVE_GPGME_CONFIG=yes, HAVE_GPGME_CONFIG=no)
+if test x"$HAVE_GPGME_CONFIG" = xno; then
+	PKG_CHECK_MODULES(GPGME, [gpgme >= 1.1.1], HAVE_GPGME_PKGCONFIG=yes, HAVE_GPGME_PKGCONFIG=no)
+	if test x"$HAVE_GPGME_PKGCONFIG" = xyes; then
+		PKG_CHECK_MODULES(LIBGPG_ERROR, [gpg-error])
+	fi
+fi
+
+if test x"$HAVE_GPGME_CONFIG" = xyes -o x"$HAVE_GPGME_PKGCONFIG" = xyes; then
 	AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.)
-	AM_PATH_GPGME(1.1.1, AC_DEFINE(HAVE_GPGME_PKA_TRUST, 1, [Define if GPGME supports PKA.]))
+	HAVE_GPGME=yes
+else
+	HAVE_GPGME=no
 fi
 
 dnl Python *********************************************************************

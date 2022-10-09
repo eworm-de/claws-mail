@@ -27,6 +27,7 @@ EXTRA_pgpcore_la_DEPENDENCIES = $(plugin_extra_deps)
 pgpcore_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS) \
 	$(GPGME_LIBS) \
+	$(LIBGPG_ERROR_LIBS) \
 	$(ENCHANT_LIBS)
 
 pgpcore_la_CPPFLAGS = \

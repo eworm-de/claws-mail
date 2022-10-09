@@ -32,6 +32,7 @@ EXTRA_smime_la_DEPENDENCIES = $(plugin_extra_deps)
 smime_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS)  \
 	$(GPGME_LIBS) \
+	$(LIBGPG_ERROR_LIBS) \
 	$(ENCHANT_LIBS)
 
 smime_la_CPPFLAGS = \

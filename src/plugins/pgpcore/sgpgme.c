@@ -613,21 +613,20 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 				g_string_append_c(siginfo, (gchar)*primary_fpr);
 			}
 			g_string_append_c(siginfo, '\n');
-#ifdef HAVE_GPGME_PKA_TRUST
-                        if (sig->pka_trust == 1 && sig->pka_address) {
-                                g_string_append_printf(siginfo,
-                                   _("WARNING: Signer's address \"%s\" "
-                                      "does not match DNS entry\n"), 
-                                   sig->pka_address);
-                        }
-                        else if (sig->pka_trust == 2 && sig->pka_address) {
-                                g_string_append_printf(siginfo,
-                                   _("Verified signer's address is \"%s\"\n"),
-                                   sig->pka_address);
-                                /* FIXME: Compare the address to the
-                                 * From: address.  */
-                        }
-#endif /*HAVE_GPGME_PKA_TRUST*/
+
+			if (sig->pka_trust == 1 && sig->pka_address) {
+				g_string_append_printf(siginfo,
+					_("WARNING: Signer's address \"%s\" "
+					"does not match DNS entry\n"),
+					sig->pka_address);
+			}
+			else if (sig->pka_trust == 2 && sig->pka_address) {
+				g_string_append_printf(siginfo,
+					_("Verified signer's address is \"%s\"\n"),
+						sig->pka_address);
+						/* FIXME: Compare the address to the
+						 * From: address.  */
+			}
 		}
 
 		g_string_append(siginfo, "\n");
