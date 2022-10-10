@@ -111,10 +111,12 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 	}
 	webkit_web_view_set_settings(viewer->view, viewer->settings);
 	webkit_web_context_set_cache_model(webkit_web_context_get_default(), WEBKIT_CACHE_MODEL_DOCUMENT_VIEWER);
-	if (viewer->override_prefs_remote_content)
-		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
-	else
-		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_CUSTOM, viewer->no_remote_content_proxy_settings);
+	webkit_web_view_send_message_to_page(viewer->view,
+		webkit_user_message_new("LoadRemoteContent",
+			g_variant_new_boolean(viewer->override_prefs_remote_content)),
+		NULL,
+		NULL,
+		NULL);
 
 	if (viewer->override_stylesheet) {
 		/* copied from vimb */
@@ -1122,9 +1124,6 @@ static MimeViewer *fancy_viewer_create(void)
 	}
 */
 	viewer->settings = webkit_settings_new();
-	// Proxy "" makes libsoup backend think that there is no way
-	// to connect, which is ideal.
-	viewer->no_remote_content_proxy_settings = webkit_network_proxy_settings_new("", NULL);
 	g_object_set(viewer->settings, "user-agent", "Fancy Viewer", NULL);
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewer->scrollwin),
@@ -1267,6 +1266,9 @@ gint plugin_init(gchar **error)
 			return -1;
 		}
 	g_free(directory);
+
+	webkit_web_context_set_web_extensions_directory(webkit_web_context_get_default(),
+		FANCY_WEB_EXTENSIONS_DIR);
 
 	fancy_prefs_init();
 

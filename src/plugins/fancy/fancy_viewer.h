@@ -93,7 +93,6 @@ struct _FancyViewer
 
 	GtkWidget         *progress;
 	WebKitSettings    *settings;
-	WebKitNetworkProxySettings *no_remote_content_proxy_settings;
 	gboolean          printing;
 	gboolean          override_prefs_images;
 	gboolean          override_prefs_remote_content;
