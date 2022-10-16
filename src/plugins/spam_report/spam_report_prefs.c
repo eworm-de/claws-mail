@@ -130,6 +130,7 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 	for (i = 0; i < INTF_LAST; i++) {
 		gchar *pass;
 		prefs_page->frame[i] = gtk_frame_new(spam_interfaces[i].name);
+		gtk_frame_set_label_align(GTK_FRAME(prefs_page->frame[i]), 0.01, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), prefs_page->frame[i], FALSE, FALSE, 6);
 
 		prefs_page->user_entry[i] = gtk_entry_new();
