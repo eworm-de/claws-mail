@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2022040200, Last Updated Sat Apr  2 07:07:01 2022 UTC */
+	/* Version 2022101600, Last Updated Sun Oct 16 07:07:02 2022 UTC */
 	"aaa",
 	"aarp",
 	"abarth",
@@ -184,7 +184,6 @@ static const gchar *toplvl_domains [] = {
 	"brussels",
 	"bs",
 	"bt",
-	"bugatti",
 	"build",
 	"builders",
 	"business",
@@ -204,7 +203,6 @@ static const gchar *toplvl_domains [] = {
 	"cam",
 	"camera",
 	"camp",
-	"cancerresearch",
 	"canon",
 	"capetown",
 	"capital",
@@ -661,6 +659,7 @@ static const gchar *toplvl_domains [] = {
 	"kh",
 	"ki",
 	"kia",
+	"kids",
 	"kim",
 	"kinder",
 	"kindle",
