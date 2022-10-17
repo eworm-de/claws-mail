@@ -43,6 +43,7 @@
 #include "common/passcrypt.h"
 #include "prefs_common.h"
 
+#define GNUTLS_PRIORITY "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1"
 //Yahoo requires token requests to send POST header Authorization: Basic
 //where the password is Base64 encoding of client_id:client_secret
 
@@ -255,7 +256,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	gint timeout_secs = prefs_common_get_prefs()->io_timeout_secs;
 	debug_print("Socket timeout: %i sec(s)\n", timeout_secs);
 	sock_set_io_timeout(timeout_secs);
-	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
+	sock->gnutls_priority = GNUTLS_PRIORITY;
         if (ssl_init_socket(sock) == FALSE) {
                 log_message(LOG_PROTOCOL, _("OAuth2 TLS connection error\n"));
                 g_free(token);
@@ -397,7 +398,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	gint timeout_secs = prefs_common_get_prefs()->io_timeout_secs;
 	debug_print("Socket timeout: %i sec(s)\n", timeout_secs);
 	sock_set_io_timeout(timeout_secs);
-	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
+	sock->gnutls_priority = GNUTLS_PRIORITY;
         if (ssl_init_socket(sock) == FALSE) {
                 log_message(LOG_PROTOCOL, _("OAuth2 TLS connection error\n"));
                 return (1);
