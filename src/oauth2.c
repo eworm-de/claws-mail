@@ -147,7 +147,7 @@ static gint oauth2_filter_access (gchar *json, gchar *access_token, gint *expiry
        GMatchInfo *matchInfo;
        GRegex *regex;
        
-       regex = g_regex_new ("\"access_token\": ?\"(.*?)\",?", 0, 0, NULL);
+       regex = g_regex_new ("\"access_token\": ?\"(.*?)\",?", G_REGEX_RAW, 0, NULL);
        g_regex_match (regex, json, 0, &matchInfo);
        if (g_match_info_matches (matchInfo)) 
 	 g_stpcpy (access_token,g_match_info_fetch (matchInfo, 1));
@@ -158,7 +158,7 @@ static gint oauth2_filter_access (gchar *json, gchar *access_token, gint *expiry
        
        g_match_info_free (matchInfo);
        
-       regex = g_regex_new ("\"expires_in\": ?([0-9]*),?", 0, 0, NULL);
+       regex = g_regex_new ("\"expires_in\": ?([0-9]*),?", G_REGEX_RAW, 0, NULL);
        g_regex_match (regex, json, 0, &matchInfo);
        if (g_match_info_matches (matchInfo)){
 	 // Reduce available token life to avoid attempting connections with (near) expired tokens
@@ -178,7 +178,7 @@ static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token)
        GMatchInfo *matchInfo;
        GRegex *regex;
        
-       regex = g_regex_new ("\"refresh_token\": ?\"(.*?)\",?", 0, 0, NULL);
+       regex = g_regex_new ("\"refresh_token\": ?\"(.*?)\",?", G_REGEX_RAW, 0, NULL);
        g_regex_match (regex, json, 0, &matchInfo);
        if (g_match_info_matches (matchInfo)) 
 	 g_stpcpy (refresh_token,g_match_info_fetch (matchInfo, 1));
