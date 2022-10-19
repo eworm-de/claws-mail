@@ -103,6 +103,8 @@ static void web_page_created_cb(WebKitWebExtension *extension,
 
 G_MODULE_EXPORT void webkit_web_extension_initialize(WebKitWebExtension *extension)
 {
+	g_setenv("G_MESSAGES_DEBUG", "Fancy-Web-Ext", FALSE);
+
 	g_debug("Initializing Fancy web process extension");
 
 	g_signal_connect(extension,
