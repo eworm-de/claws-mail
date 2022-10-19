@@ -6157,11 +6157,10 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
         }
 
 	if (compose->to_list) {
-    		if (compose->account->protocol != A_NNTP)
-            		mailac = compose->account;
-		else if (cur_account && cur_account->protocol != A_NNTP)
+    		mailac = compose->account;
+		if (!mailac && cur_account && cur_account->protocol != A_NNTP)
 	    		mailac = cur_account;
-		else if (!(mailac = compose_current_mail_account())) {
+		else if (!mailac && !(mailac = compose_current_mail_account())) {
 			alertpanel_error(_("No account for sending mails available!"));
 			return COMPOSE_QUEUE_ERROR_NO_MSG;
 		}
