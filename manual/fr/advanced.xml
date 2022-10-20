@@ -612,6 +612,18 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+	    <term>
+          <literal>bold_marked</literal>
+        </term>
+	    <listitem>
+	      <para>
+            Dans la liste des messages, les messages qui sont marqués s'affichent en gras
+            si cette option est mise à '1'. '0' (par défaut) pour afficher les messages
+            marqués avec une police de texte normale.
+	      </para>
+	    </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>
           <literal>bold_unread</literal>
         </term>
