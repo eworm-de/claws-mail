@@ -3982,11 +3982,12 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 					"");
 	}
 
-	if ((prefs_common.bold_unread || prefs_common.bold_marked) &&
-	    (((MSG_IS_UNREAD(flags) || MSG_IS_MARKED(flags)) && !MSG_IS_IGNORE_THREAD(flags)) ||
-	     (!GTK_CMCTREE_ROW(row)->expanded &&
+	if (((prefs_common.bold_unread && MSG_IS_UNREAD(flags)) ||
+	     (prefs_common.bold_marked && MSG_IS_MARKED(flags))) &&
+	    !MSG_IS_IGNORE_THREAD(flags) ||
+	    (!GTK_CMCTREE_ROW(row)->expanded &&
 	      GTK_CMCTREE_ROW(row)->children &&
-	      summary_have_unread_children(summaryview, row))))
+	      summary_have_unread_children(summaryview, row)))
 		style = bold_style;
 
 	/* set mark column */
