@@ -1267,6 +1267,25 @@ gint plugin_init(gchar **error)
 		}
 	g_free(directory);
 
+	gchar *web_ext_filename = g_strconcat(FANCY_WEB_EXTENSION_FILE,
+		".",
+		G_MODULE_SUFFIX,
+		NULL);
+	gchar *web_ext_file = g_build_path(G_DIR_SEPARATOR_S,
+		FANCY_WEB_EXTENSIONS_DIR,
+		web_ext_filename,
+		NULL);
+
+	if (!g_file_test(web_ext_file, G_FILE_TEST_EXISTS)) {
+		*error = g_strdup_printf(_("Failed to find the companion WebKit extension %s"), web_ext_file);
+		g_free(web_ext_filename);
+		g_free(web_ext_file);
+		return -1;
+	}
+
+	g_free(web_ext_filename);
+	g_free(web_ext_file);
+
 	webkit_web_context_set_web_extensions_directory(webkit_web_context_get_default(),
 		FANCY_WEB_EXTENSIONS_DIR);
 

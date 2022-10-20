@@ -16,7 +16,7 @@ webextensiondir = $(pkglibdir)/plugins/web_extensions
 
 if BUILD_FANCY_PLUGIN
 plugin_LTLIBRARIES = fancy.la
-webextension_LTLIBRARIES = libfancywebextension.la
+webextension_LTLIBRARIES = fancywebextension.la
 endif
 
 fancy_la_LDFLAGS = \
@@ -39,7 +39,8 @@ fancy_la_CPPFLAGS = \
 	$(WEBKIT_CFLAGS) \
 	$(LIBSOUP_GNOME_CFLAGS) \
 	$(CURL_CFLAGS) \
-	-DFANCY_WEB_EXTENSIONS_DIR=\""$(pkglibdir)/plugins/web_extensions"\"
+	-DFANCY_WEB_EXTENSIONS_DIR=\""$(pkglibdir)/plugins/web_extensions"\" \
+	-DFANCY_WEB_EXTENSION_FILE=\""fancywebextension"\"
 
 fancy_la_SOURCES = \
 	fancy_prefs.c \
@@ -47,9 +48,9 @@ fancy_la_SOURCES = \
 	fancy_viewer.c \
 	fancy_viewer.h
 
-libfancywebextension_la_SOURCES = fancy_web_extension.c
-libfancywebextension_la_CFLAGS = $(WEBKIT_CFLAGS)
-libfancywebextension_la_LIBADD = $(WEBKIT_LIBS)
-libfancywebextension_la_LDFLAGS = -module -avoid-version -no-undefined
+fancywebextension_la_SOURCES = fancy_web_extension.c
+fancywebextension_la_CFLAGS = $(WEBKIT_CFLAGS)
+fancywebextension_la_LIBADD = $(WEBKIT_LIBS)
+fancywebextension_la_LDFLAGS = -module -avoid-version -no-undefined
 
 .PHONY: test
