@@ -1024,13 +1024,15 @@ fi
 AC_MSG_CHECKING([whether to use valgrind])
 if test x$enable_valgrind = xyes; then
 	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(VALGRIND, valgrind >= 2.4.0,
-			  enable_valgrind=yes, enable_valgrind=no)
-	if test x"$enable_valgrind" = xyes; then
+	PKG_CHECK_MODULES([VALGRIND], [valgrind >= 2.4.0],
+	[
 		AC_DEFINE(HAVE_VALGRIND, 1, Define if you want valgrind support)
-	else
-		AC_MSG_RESULT(not found)
-	fi
+		enable_valgrind=yes
+	],
+	[
+		AC_MSG_NOTICE([valgrind support deactivated as valgrind >= 2.4.0 was not found])
+		enable_valgrind=no
+	])
 else
 	AC_MSG_RESULT(no)
 fi
