@@ -31,15 +31,16 @@ static gboolean web_page_send_request_cb(WebKitWebPage *web_page,
 	gboolean is_remote = TRUE;
 	gboolean should_block;
 	const char *request_uri = webkit_uri_request_get_uri(request);
-	const char *scheme = g_uri_peek_scheme(request_uri);
+	gchar *scheme = g_uri_parse_scheme(request_uri);
 
 	if (scheme == NULL)
 		return TRUE;
 
-	if (strcmp(scheme, "cid") == 0 ||
-		strcmp(scheme, "file") == 0 ||
-		strcmp(scheme, "about") == 0)
+	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
+		g_ascii_strcasecmp(scheme, "file") == 0 ||
+		g_ascii_strcasecmp(scheme, "about") == 0)
 		is_remote = FALSE;
+	g_free(scheme);
 
 	if (is_remote)
 		should_block = !load_remote_content;
