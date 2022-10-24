@@ -1326,8 +1326,15 @@ if test x"$HAVE_PERL" = xyes; then
 fi
 if test x"$HAVE_PERL" = xyes; then
 	AC_MSG_CHECKING(for perl module ExtUtils::Embed)
+	PERL_MOD_EXT_UTILS_EMBED=no
 	if perl -MExtUtils::Embed; then
 		AC_MSG_RESULT(ok)
+		PERL_MOD_EXT_UTILS_EMBED=yes
+	else
+		AC_MSG_RESULT(no)
+	fi
+
+	if test x"$PERL_MOD_EXT_UTILS_EMBED" = xyes; then
 		AC_MSG_CHECKING(for Perl compile flags)
 		PERL_CFLAGS=`perl -MExtUtils::Embed -e ccopts`
 		PERL_CFLAGS=`echo $PERL_CFLAGS | sed 's/-D_FILE_OFFSET_BITS=[[0-9]]*//'`
@@ -1337,25 +1344,25 @@ if test x"$HAVE_PERL" = xyes; then
 		PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lc\>//'`
 		AC_MSG_RESULT(ok)
 		AC_MSG_NOTICE([Adding perl LIBS ${PERL_CFLAGS}])
-	else
-		AC_MSG_RESULT(no)
-		HAVE_PERL=no
 	fi
-	
+
 	if test x"$HAVE_PERL" = xyes; then
 		AC_CHECK_LIB(perl,perl_alloc,[AC_DEFINE(HAVE_LIBPERL, 1, Check for libperl.)], 
 			 		     [ HAVE_LIBPERL=no ])
 	fi
+
 	if test x"$HAVE_LIBPERL" = xno; then
-		LIBPERL_PREFIX=`perl -MExtUtils::Embed -e perl_inc`
-		LIBPERL_PREFIX=`echo $LIBPERL_PREFIX |sed 's/-I//'`
-		AC_MSG_CHECKING([for libperl.so])
-		if test -f "$LIBPERL_PREFIX/libperl.so"; then
-			AC_MSG_RESULT(yes)
-			HAVE_LIBPERL=yes
-		else
-			AC_MSG_RESULT(no)
-		fi	
+		if test x"$PERL_MOD_EXT_UTILS_EMBED" = xyes; then
+			LIBPERL_PREFIX=`perl -MExtUtils::Embed -e perl_inc`
+			LIBPERL_PREFIX=`echo $LIBPERL_PREFIX |sed 's/-I//'`
+			AC_MSG_CHECKING([for libperl.so])
+			if test -f "$LIBPERL_PREFIX/libperl.so"; then
+				AC_MSG_RESULT(yes)
+				HAVE_LIBPERL=yes
+			else
+				AC_MSG_RESULT(no)
+			fi
+		fi
 	fi
 	PERL="perl"
 	AC_SUBST(PERL)
