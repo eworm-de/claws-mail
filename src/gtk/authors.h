@@ -1,8 +1,6 @@
 static char *TEAM_LIST[] = {
-"Holger Berndt <berndth@users.sf.net>",
 "Jonathan Boeing <jonathan@claws-mail.org>",
 "Tristan Chabredier <wwp@claws-mail.org>",
-"Darko Koruga <darko@users.sf.net>",
 "Thorsten Maerz <thorsten@claws-mail.org>",
 "Paul Mangan <paul@claws-mail.org>",
 "Ricardo Mones Lastra <ricardo@mones.org>",
@@ -12,6 +10,7 @@ NULL
 };
 
 static char *EX_TEAM_LIST[] = {
+"Holger Berndt",
 "Hoà Viêt Dinh",
 "Keith Edmunds",
 "Match Grun",
@@ -21,6 +20,7 @@ static char *EX_TEAM_LIST[] = {
 "Alfons Hoogervorst",
 "Andrej Kacian",
 "Werner Koch",
+"Darko Koruga",
 "Charles Lehner",
 "Colin Leroy-Mira",
 "Paweł Pękala",
