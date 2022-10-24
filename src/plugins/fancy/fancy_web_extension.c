@@ -39,9 +39,9 @@ static gboolean web_page_send_request_cb(WebKitWebPage *web_page,
 	if (scheme == NULL)
 		return TRUE;
 #if GLIB_CHECK_VERSION(2,66,0)
-	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
-	    g_ascii_strcasecmp(scheme, "file") == 0 ||
-	    g_ascii_strcasecmp(scheme, "about") == 0)
+	if (strcmp(scheme, "cid") == 0 ||
+	    strcmp(scheme, "file") == 0 ||
+	    strcmp(scheme, "about") == 0)
  		is_remote = FALSE;
 #else
 	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
