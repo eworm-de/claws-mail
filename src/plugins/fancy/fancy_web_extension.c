@@ -31,17 +31,25 @@ static gboolean web_page_send_request_cb(WebKitWebPage *web_page,
 	gboolean is_remote = TRUE;
 	gboolean should_block;
 	const char *request_uri = webkit_uri_request_get_uri(request);
+#if GLIB_CHECK_VERSION(2,66,0)
+	const char *scheme = g_uri_peek_scheme(request_uri);
+#else
 	gchar *scheme = g_uri_parse_scheme(request_uri);
-
+#endif
 	if (scheme == NULL)
 		return TRUE;
-
+#if GLIB_CHECK_VERSION(2,66,0)
+	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
+	    g_ascii_strcasecmp(scheme, "file") == 0 ||
+	    g_ascii_strcasecmp(scheme, "about") == 0)
+ 		is_remote = FALSE;
+#else
 	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
 		g_ascii_strcasecmp(scheme, "file") == 0 ||
 		g_ascii_strcasecmp(scheme, "about") == 0)
 		is_remote = FALSE;
 	g_free(scheme);
-
+#endif
 	if (is_remote)
 		should_block = !load_remote_content;
 	else
