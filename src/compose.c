@@ -9822,13 +9822,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 		AlertValue val;
 		gchar *msg;
 
-		pidmsg = g_strdup_printf
-#if GLIB_CHECK_VERSION(2, 50, 0)
-			 (_("process id: %" G_PID_FORMAT),
-#else
-			 (_("process id: %d"),
-#endif
-			 pid);
+		pidmsg = g_strdup_printf(_("process id: %" G_PID_FORMAT), pid);
 
 		msg = g_strdup_printf
 			(_("The external editor is still working.\n"
