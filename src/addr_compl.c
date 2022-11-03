@@ -965,6 +965,10 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	GtkRequisition r;
 	GdkGrabStatus status;
 	gint x, y, width;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(cw->list_view));
+	GtkTreeIter iter;
+	GdkRectangle cell_rect;
+	gint extra_height = 0;
 
 	gdk_window_get_position(gtk_widget_get_window(cw->window), &x, &y);
 	width = gdk_window_get_width(gtk_widget_get_window(cw->window));
@@ -972,7 +976,14 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gtk_widget_queue_resize_no_redraw(cw->list_view);
 	gtk_widget_get_preferred_size(cw->list_view, &r, NULL);
 
-	gtk_widget_set_size_request(cw->window, width, r.height);
+	if (model && gtk_tree_model_get_iter_first(model, &iter)) {
+		GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+
+		gtk_tree_view_get_cell_area(GTK_TREE_VIEW(cw->list_view), path, NULL, &cell_rect);
+		gtk_tree_path_free(path);
+		extra_height = cell_rect.height + 4;
+	}
+	gtk_widget_set_size_request(cw->window, width, r.height + extra_height);
 
 	display = gdk_display_get_default();
 	status = gdk_seat_grab(gdk_display_get_default_seat(display),
@@ -1758,11 +1769,11 @@ static GtkWidget *addr_compl_list_view_create(CompletionWindow *window)
 
 	model = GTK_TREE_MODEL(addr_compl_create_store());
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
-	g_object_unref(model);	
-	
+	g_object_unref(model);
+
 	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_headers_visible(list_view, FALSE);
-	
+
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 	gtk_tree_selection_set_select_function(selector, addr_compl_selected,
