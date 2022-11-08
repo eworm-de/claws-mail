@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __POP_H__
@@ -51,6 +50,7 @@ typedef enum {
 	POP3_STLS,
 #endif
 	POP3_GETAUTH_USER,
+	POP3_GETAUTH_USER_PHASE2,
 	POP3_GETAUTH_PASS,
 	POP3_GETAUTH_APOP,
 	POP3_GETAUTH_OAUTH2,
@@ -135,7 +135,7 @@ struct _Pop3Session
 
 	GHashTable *uidl_table;
 	GHashTable *partial_recv_table;
-	
+
 	gboolean new_msg_exist;
 	gboolean uidl_is_valid;
 
@@ -151,7 +151,7 @@ struct _Pop3Session
 				 const gchar	*file);
 };
 
-#define POPBUFSIZE	512
+#define POPBUFSIZE	8192
 /* #define IDLEN	128 */
 #define IDLEN		POPBUFSIZE
 

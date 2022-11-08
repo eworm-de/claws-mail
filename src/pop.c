@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -41,6 +40,7 @@
 #include "log.h"
 #include "hooks.h"
 #include "file-utils.h"
+#include "oauth2.h"
 
 static gint pop3_greeting_recv		(Pop3Session *session,
 					 const gchar *msg);
@@ -179,7 +179,7 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 }
 
 #ifdef USE_OAUTH2
-static gint pop3_getauth_oauth2_send(Pop3Session *session)
+static gint pop3_getauth_oauth2_send_generic(Pop3Session *session)
 {
 	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
 	gint len;
@@ -190,18 +190,65 @@ static gint pop3_getauth_oauth2_send(Pop3Session *session)
 	session->state = POP3_GETAUTH_OAUTH2;
 	memset(buf, 0, sizeof buf);
 
-	/* "user=" {User} "^Aauth=Bearer " {Access Token} "^A^A"*/
-       /* session->pass contains the OAUTH2 Access Token*/
+	/* "user=" {User} "^Aauth=Bearer " {Access Token} "^A^A" */
+	/* session->pass contains the OAUTH2 Access Token */
 	len = sprintf(buf, "user=%s\1auth=Bearer %s\1\1", session->user, session->pass);
 	b64buf = g_base64_encode(buf, len);
 	out = g_strconcat("AUTH XOAUTH2 ", b64buf, NULL);
 	g_free(b64buf);
-       
+
 	pop3_gen_send(session, "%s", out);
-        /* Any error response contains base64({JSON-Body}) containing three values: status, schemes, and scope */
-        /* This could be dealt with but is currently written to the log in a fairly graceful fail - not crucial */
+	/* Any error response contains base64({JSON-Body}) containing three values: status, schemes, and scope */
+	/* This could be dealt with but is currently written to the log in a fairly graceful fail - not crucial */
 	g_free(out);
 	return PS_SUCCESS;
+}
+
+/* Microsoft requires authentication to be split in two lines */
+static gint pop3_getauth_oauth2_send_microsoft_1(Pop3Session *session)
+{
+	cm_return_val_if_fail(session->user != NULL, -1);
+	cm_return_val_if_fail(session->pass != NULL, -1);
+
+	session->state = POP3_GETAUTH_USER_PHASE2;
+
+	pop3_gen_send(session, "AUTH XOAUTH2");
+
+	return PS_SUCCESS;
+}
+
+static gint pop3_getauth_oauth2_send_microsoft_2(Pop3Session *session)
+{
+	gchar buf[MESSAGEBUFSIZE], *b64buf;
+	gint len;
+
+	cm_return_val_if_fail(session->user != NULL, -1);
+	cm_return_val_if_fail(session->pass != NULL, -1);
+
+	session->state = POP3_GETAUTH_OAUTH2;
+	memset(buf, 0, sizeof buf);
+
+	/* "user=" {User} "^Aauth=Bearer " {Access Token} "^A^A"*/
+	/* session->pass contains the OAUTH2 Access Token*/
+	len = sprintf(buf, "user=%s\1auth=Bearer %s\1\1", session->user, session->pass);
+	b64buf = g_base64_encode(buf, len);
+
+	pop3_gen_send(session, "%s", b64buf);
+
+	g_free(b64buf);
+	/* Any error response contains base64({JSON-Body}) containing three values: status, schemes, and scope */
+	/* This could be dealt with but is currently written to the log in a fairly graceful fail - not crucial */
+	return PS_SUCCESS;
+}
+
+static gint pop3_getauth_oauth2_send(Pop3Session *session)
+{
+	gint oauth2_provider = session->ac_prefs->oauth2_provider;
+	return (  oauth2_provider == OAUTH2AUTH_OUTLOOK ||
+		  oauth2_provider == OAUTH2AUTH_EXCHANGE
+		? pop3_getauth_oauth2_send_microsoft_1(session)
+		: pop3_getauth_oauth2_send_generic(session)
+		);
 }
 #endif
 
@@ -295,11 +342,11 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 		session->msg[num].uidl = g_strdup(id);
 
 		recv_time = (time_t)(GPOINTER_TO_INT(g_hash_table_lookup(
-			   		session->uidl_table, id)));
+					session->uidl_table, id)));
 		session->msg[num].recv_time = recv_time;
 
 		if (recv_time != RECV_TIME_NONE) {
-			debug_print("num %d uidl %s: already got it\n", num, id);		
+			debug_print("num %d uidl %s: already got it\n", num, id);
 		} else {
 			debug_print("num %d uidl %s: unknown\n", num, id);
 		}
@@ -309,7 +356,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 
 		if (recv_time != RECV_TIME_NONE
 		|| partial_recv != POP3_TOTALLY_RECEIVED) {
-			session->msg[num].received = 
+			session->msg[num].received =
 				(partial_recv != POP3_MUST_COMPLETE_RECV);
 			session->msg[num].partial_recv = partial_recv;
 			if (partial_recv == POP3_MUST_COMPLETE_RECV)
@@ -371,7 +418,7 @@ static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *data,
 static gint pop3_retr_send(Pop3Session *session)
 {
 	session->state = POP3_RETR;
-	debug_print("retrieving %d [%s]\n", session->cur_msg, 
+	debug_print("retrieving %d [%s]\n", session->cur_msg,
 		session->msg[session->cur_msg].uidl ?
 		 session->msg[session->cur_msg].uidl:" ");
 	pop3_gen_send(session, "RETR %d", session->cur_msg);
@@ -385,16 +432,16 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	MailReceiveData mail_receive_data;
 
 	/* NOTE: we allocate a slightly larger buffer with a zero terminator
-	 * because some plugins may think that it has a C string. */ 
+	 * because some plugins may think that it has a C string. */
 	mail_receive_data.session  = session;
 	mail_receive_data.data     = g_new0(gchar, len + 1);
 	mail_receive_data.data_len = len;
-	memcpy(mail_receive_data.data, data, len); 
-	
+	memcpy(mail_receive_data.data, data, len);
+
 	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
 	file = get_tmp_file();
-	if (pop3_write_msg_to_file(file, mail_receive_data.data, 
+	if (pop3_write_msg_to_file(file, mail_receive_data.data,
 				   mail_receive_data.data_len, NULL) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
@@ -403,18 +450,18 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	}
 	g_free(mail_receive_data.data);
 
-	if (session->msg[session->cur_msg].partial_recv 
+	if (session->msg[session->cur_msg].partial_recv
 	    == POP3_MUST_COMPLETE_RECV) {
 		gchar *old_file = partial_get_filename(
 				session->ac_prefs->recv_server,
 				session->ac_prefs->userid,
 				session->msg[session->cur_msg].uidl);
-		
+
 		if (old_file) {
 			partial_delete_old(old_file);
 			g_free(old_file);
 		}
-	} 
+	}
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
 	drop_ok = session->drop_message(session, file);
@@ -424,7 +471,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 		session->error_val = PS_IOERR;
 		return -1;
 	}
-	
+
 	session->cur_total_bytes += session->msg[session->cur_msg].size;
 	session->cur_total_recv_bytes += session->msg[session->cur_msg].size;
 	session->cur_total_num++;
@@ -452,14 +499,14 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 	gint drop_ok;
 	MailReceiveData mail_receive_data;
 	gchar *partial_notice = NULL;
-	
+
 	/* NOTE: we allocate a slightly larger buffer with a zero terminator
-	 * because some plugins may think that it has a C string. */ 
+	 * because some plugins may think that it has a C string. */
 	mail_receive_data.session  = session;
 	mail_receive_data.data     = g_new0(gchar, len + 1);
 	mail_receive_data.data_len = len;
 	memcpy(mail_receive_data.data, data, len);
-	
+
 	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
 	partial_notice = g_strdup_printf("SC-Marked-For-Download: 0\n"
@@ -469,11 +516,11 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 					 "SC-Message-Size: %d",
 					 session->msg[session->cur_msg].uidl,
 					 session->ac_prefs->recv_server,
-			   		 session->ac_prefs->userid,
+					 session->ac_prefs->userid,
 					 session->msg[session->cur_msg].size);
 	file = get_tmp_file();
 	if (pop3_write_msg_to_file(file, mail_receive_data.data,
-				   mail_receive_data.data_len,  
+				   mail_receive_data.data_len,
 				   partial_notice) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
@@ -527,18 +574,23 @@ static gint pop3_logout_send(Pop3Session *session)
 static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 {
 	gchar buf[POPBUFSIZE + 1];
+	int length;
 	va_list args;
 
 	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf) - 2, format, args);
+	length = g_vsnprintf(buf, sizeof(buf) - 2, format, args);
 	va_end(args);
+	if (length > POPBUFSIZE)
+		g_warning("POP buffer length overflow! (wanted to write = %d > %d = buf size)\n", length, POPBUFSIZE);
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
 		log_print(LOG_PROTOCOL, "POP> PASS ********\n");
 #ifdef USE_OAUTH2
-        else if  (!g_ascii_strncasecmp(buf, "AUTH XOAUTH2 ", 13))
+	else if  (!g_ascii_strncasecmp(buf, "AUTH XOAUTH2", 12))
 		log_print(LOG_PROTOCOL, "POP> AUTH XOAUTH2  ********\n");
 #endif
+	else if (length > 128)
+		log_print(LOG_PROTOCOL, "POP> %.128s... (truncated from %d)\n", buf, length);
 	else
 		log_print(LOG_PROTOCOL, "POP> %s\n", buf);
 
@@ -624,16 +676,16 @@ static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 	time_t now;
 	gint partial_recv;
 	gchar *sanitized_uid = g_strdup(ac_prefs->userid);
-	
+
 	subst_for_filename(sanitized_uid);
-	
+
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 	partial_recv_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
 			   "-", sanitized_uid, NULL);
-			   
+
 	g_free(sanitized_uid);
 	if ((fp = claws_fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
@@ -658,7 +710,7 @@ static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
-		
+
 		if (sscanf(buf, "%s\t%ld\t%s", uidl, (long int *) &recv_time, tmp) < 3) {
 			if (sscanf(buf, "%s\t%ld", uidl, (long int *) &recv_time) != 2) {
 				if (sscanf(buf, "%s", uidl) != 1)
@@ -688,7 +740,7 @@ static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 	claws_fclose(fp);
 	session->uidl_table = table;
 	session->partial_recv_table = partial_recv_table;
-	
+
 	return;
 }
 
@@ -706,7 +758,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 	Pop3MsgInfo *msg;
 	gint n;
 	gchar *sanitized_uid = g_strdup(session->ac_prefs->userid);
-	
+
 	subst_for_filename(sanitized_uid);
 
 	if (!session->uidl_is_valid) {
@@ -731,10 +783,10 @@ gint pop3_write_uidl_list(Pop3Session *session)
 		msg = &session->msg[n];
 		if (msg->uidl && msg->received &&
 		    (!msg->deleted || session->state != POP3_DONE))
-			TRY(fprintf(fp, "%s\t%ld\t%d\n", 
-				msg->uidl, (long int) 
-				msg->recv_time, 
-				msg->partial_recv) 
+			TRY(fprintf(fp, "%s\t%ld\t%d\n",
+				msg->uidl, (long int)
+				msg->recv_time,
+				msg->partial_recv)
 			    > 0);
 	}
 
@@ -788,7 +840,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 			return -1;
 		}
 	}
-	
+
 	/* +------------------+----------------+--------------------------+ *
 	 * ^data              ^prev            ^cur             data+len-1^ */
 
@@ -868,9 +920,9 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    msg->recv_time != RECV_TIME_KEEP &&
 		    msg->partial_recv == POP3_TOTALLY_RECEIVED &&
 		    session->current_time - msg->recv_time >=
-                    ((ac->msg_leave_time * 24 * 60 * 60) +
-                     (ac->msg_leave_hour * 60 * 60))) {
-			log_message(LOG_PROTOCOL, 
+		    ((ac->msg_leave_time * 24 * 60 * 60) +
+		     (ac->msg_leave_hour * 60 * 60))) {
+			log_message(LOG_PROTOCOL,
 					_("POP: Deleting expired message %d [%s]\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ");
 			session->cur_total_bytes += size;
@@ -879,18 +931,18 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		}
 
 		if (size_limit_over) {
-			if (!msg->received && msg->partial_recv != 
+			if (!msg->received && msg->partial_recv !=
 			    POP3_MUST_COMPLETE_RECV) {
 				pop3_top_send(session, ac->size_limit);
 				return POP3_TOP;
 			} else if (msg->partial_recv == POP3_MUST_COMPLETE_RECV)
 				break;
 
-			log_message(LOG_PROTOCOL, 
+			log_message(LOG_PROTOCOL,
 					_("POP: Skipping message %d [%s] (%d bytes)\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ", size);
 		}
-		
+
 		if (size == 0 || msg->received || size_limit_over) {
 			session->cur_total_bytes += size;
 			if (session->cur_msg == session->count) {
@@ -912,7 +964,8 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 
 	log_print(LOG_PROTOCOL, "POP< %s\n", msg);
 
-	if (!strncmp(msg, "+OK", 3))
+	/* exchange replies '+' in response to first line of auth xoauth */
+	if (!strncmp(msg, "+OK", 3) || !strncmp(msg, "+", 1))
 		ok = PS_SUCCESS;
 	else if (!strncmp(msg, "-ERR", 4)) {
 		if (strstr(msg + 4, "lock") ||
@@ -944,7 +997,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				log_warning(LOG_PROTOCOL, _("command not supported\n"));
 				ok = PS_NOTSUPPORTED;
 				break;
-				
+
 			default:
 				log_error(LOG_PROTOCOL, _("error occurred on POP session\n"));
 				ok = PS_ERROR;
@@ -996,7 +1049,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		else
 #endif
 #ifdef USE_OAUTH2
-                if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
 			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 #endif
@@ -1012,7 +1065,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_APOP)
 			val = pop3_getauth_apop_send(pop3_session);
 #ifdef USE_OAUTH2
-                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+		else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
 			val = pop3_getauth_oauth2_send(pop3_session);
 #endif
 		else
@@ -1022,10 +1075,15 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	case POP3_GETAUTH_USER:
 		val = pop3_getauth_pass_send(pop3_session);
 		break;
+#ifdef USE_OAUTH2
+	case POP3_GETAUTH_USER_PHASE2:
+		val = pop3_getauth_oauth2_send_microsoft_2(pop3_session);
+		break;
+#endif
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 #ifdef USE_OAUTH2
-        case POP3_GETAUTH_OAUTH2:
+	case POP3_GETAUTH_OAUTH2:
 #endif
 		if (!pop3_session->pop_before_smtp)
 			val = pop3_getrange_stat_send(pop3_session);
