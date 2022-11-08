@@ -2728,6 +2728,8 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			mainwin->messageview->visible = TRUE;
 			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), ppaned);
 			gtk_container_add(GTK_CONTAINER(container), ppaned);
+			gtk_paned_set_position(GTK_PANED(ppaned),
+					       prefs_common.summaryview_height);
 			g_object_unref(ppaned);
 		}
 		break;
