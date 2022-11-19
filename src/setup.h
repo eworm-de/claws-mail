@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __SETUP_H__
@@ -24,7 +23,6 @@
 
 #include "mainwindow.h"
 
-void setup(MainWindow *mainwin);
 gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path);
 
 #endif /* __SETUP_H__ */
