@@ -12,7 +12,7 @@ IFLAGS = \
 	-I$(top_srcdir)/src/gtk
 
 plugindir = $(pkglibdir)/plugins
-webextensiondir = $(pkglibdir)/plugins/web_extensions
+webextensiondir = $(pkglibdir)/web_extensions
 
 if BUILD_FANCY_PLUGIN
 plugin_LTLIBRARIES = fancy.la
@@ -39,7 +39,7 @@ fancy_la_CPPFLAGS = \
 	$(WEBKIT_CFLAGS) \
 	$(LIBSOUP_GNOME_CFLAGS) \
 	$(CURL_CFLAGS) \
-	-DFANCY_WEB_EXTENSIONS_DIR=\""$(pkglibdir)/plugins/web_extensions"\" \
+	-DFANCY_WEB_EXTENSIONS_DIR=\""$(pkglibdir)/web_extensions"\" \
 	-DFANCY_WEB_EXTENSION_FILE=\""fancywebextension"\"
 
 fancy_la_SOURCES = \
