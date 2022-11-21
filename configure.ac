@@ -1819,6 +1819,9 @@ if test x"$enable_perl_plugin" != xno; then
 	if test x"$HAVE_LIBPERL" = xno; then
 		dependencies_missing="libperl $dependencies_missing"
 	fi
+	if test x"$PERL_MOD_EXT_UTILS_EMBED" = xno; then
+		dependencies_missing="ExtUtils::Embed $dependencies_missing"
+	fi
 
 	if test x"$dependencies_missing" = x; then
 		PLUGINS="$PLUGINS perl"
