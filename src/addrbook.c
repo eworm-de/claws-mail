@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2001-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /* General functions for accessing address book files */
@@ -232,6 +231,7 @@ static void addrbook_print_book(AddressBookFile *book, FILE *stream)
 	addrcache_print(book->addressCache, stream);
 }
 
+#ifdef DEBUG_ADDRBOOK
 /**
  * Dump entire address book traversing folders.
  * \param book   Address book.
@@ -247,6 +247,7 @@ void addrbook_dump_book(AddressBookFile *book, FILE *stream)
 	folder = book->addressCache->rootFolder;
 	addritem_print_item_folder(folder, stream);
 }
+#endif
 
 /**
  * Remove specified group from address book. Note that object should still

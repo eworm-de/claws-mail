@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -2175,7 +2174,9 @@ static void addressbook_clip_cut_cb( GtkAction *action, gpointer data ) {
 	_clipBoard_->cutFlag = TRUE;
 	addrclip_clear( _clipBoard_ );
 	addrclip_add( _clipBoard_, _addressSelect_ );
-	/* addrclip_list_show( _clipBoard_, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrclip_list_show( _clipBoard_, stdout );
+#endif
 }
 
 /**
@@ -2185,7 +2186,9 @@ static void addressbook_clip_copy_cb(GtkAction *action, gpointer data) {
 	_clipBoard_->cutFlag = FALSE;
 	addrclip_clear( _clipBoard_ );
 	addrclip_add( _clipBoard_, _addressSelect_ );
-	/* addrclip_list_show( _clipBoard_, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrclip_list_show( _clipBoard_, stdout );
+#endif
 }
 
 /**
@@ -2239,7 +2242,9 @@ static void addressbook_clip_paste_cb( GtkAction *action, gpointer data ) {
 		folderGroup = addrclip_paste_copy( _clipBoard_, abf, folder );
 	}
 
-	/* addrclip_list_show( _clipBoard_, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrclip_list_show( _clipBoard_, stdout );
+#endif
 	if( folderGroup ) {
 		/* Update tree by inserting node for each folder or group */
 		addressbook_treenode_add_list(
@@ -2318,7 +2323,9 @@ static void addressbook_treenode_cut_cb( GtkAction *action, gpointer data ) {
 	addressbook_treenode_to_clipboard();
 	addrclip_clear( _clipBoard_ );
 	addrclip_add( _clipBoard_, _addressSelect_ );
-	/* addrclip_list_show( _clipBoard_, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrclip_list_show( _clipBoard_, stdout );
+#endif
 }
 
 /**
@@ -2329,7 +2336,9 @@ static void addressbook_treenode_copy_cb( GtkAction *action, gpointer data ) {
 	addressbook_treenode_to_clipboard();
 	addrclip_clear( _clipBoard_ );
 	addrclip_add( _clipBoard_, _addressSelect_ );
-	/* addrclip_list_show( _clipBoard_, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrclip_list_show( _clipBoard_, stdout );
+#endif
 }
 
 /**

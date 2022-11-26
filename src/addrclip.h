@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2002-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -52,8 +51,10 @@ void addrclip_set_index		( AddressClipboard *clipBoard,
 void addrclip_add		( AddressClipboard *clipBoard,
 				  AddrSelectList *asl );
 gboolean addrclip_is_empty	( AddressClipboard *clipBoard );
+#ifdef DEBUG_ADDRBOOK
 void addrclip_list_show		( AddressClipboard *clipBoard,
 				  FILE *stream );
+#endif
 void addrclip_delete_item	( AddressClipboard *clipBoard );
 GList *addrclip_paste_copy	( AddressClipboard *clipBoard,
 				  AddressBookFile *book,

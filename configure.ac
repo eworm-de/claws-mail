@@ -333,6 +333,10 @@ AC_ARG_ENABLE(tests,
 				[  --enable-tests                   Build unit tests],
 				[enable_tests=$enableval], [enable_tests=no])
 
+AC_ARG_ENABLE(addressbook-debug,
+        [  --enable-addressbook-debug      Build with addressbook debug calls],
+        [enable_addressbook_debug=$enableval], [enable_addressbook_debug=no])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -1045,6 +1049,14 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(BUILD_TESTS, test "x$enable_tests" = "xyes")
+
+AC_MSG_CHECKING([whether to build addressbook debug calls])
+if test x$enable_addressbook_debug = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG_ADDRBOOK, 1, [Define if you want addressbook debug calls])
+else
+	AC_MSG_RESULT(no)
+fi
 
 dnl *************************
 dnl ** section for plugins **

@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -2169,7 +2168,9 @@ static gboolean addrindex_process_book( AddressIndex *addrIndex, XMLFile *file, 
 
 	addrindex_process_node( abf, rootNode, abf->addressCache->rootFolder, NULL, NULL );
 
-	/* addrbook_dump_book( abf, stdout ); */
+#ifdef DEBUG_ADDRBOOK
+	addrbook_dump_book( abf, stdout );
+#endif
 	addrbook_save_data( abf );
 	addrIndex->retVal = abf->retVal;
 	if( abf->retVal == MGU_SUCCESS ) retVal = TRUE;
