@@ -23,20 +23,6 @@
 
 #include "utils.h"
 
-#ifndef HAVE_U32_TYPEDEF
-  #undef u32	    /* maybe there is a macro with this name */
-  typedef guint32 u32;
-  #define HAVE_U32_TYPEDEF
-#endif
-
-typedef struct {  /* Hmm, should be private */
-    u32 A,B,C,D;
-    u32  nblocks;
-    unsigned char buf[64];
-    int  count;
-    int  finalized;
-} MD5_CONTEXT;
-
 void md5_hex_digest(char *hexdigest, const unsigned char *s);
 int md5_hex_digest_file(char *hexdigest, const unsigned char *file);
 void md5_hex_hmac(char *hexdigest,

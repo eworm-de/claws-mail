@@ -443,7 +443,6 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
-GNUPG_CHECK_TYPEDEF(u32, HAVE_U32_TYPEDEF, Used to test for a u32 typedef)
 AC_CHECK_SIZEOF(unsigned short, 2)
 AC_CHECK_SIZEOF(unsigned int, 4)
 AC_CHECK_SIZEOF(unsigned long, 4)

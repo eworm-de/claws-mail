@@ -48,8 +48,8 @@
  * Rotate a 32 bit integer by n bytes
  */
 #if defined(__GNUC__) && defined(__i386__)
-static inline u32
-rol( u32 x, int n)
+static inline guint32
+rol( guint32 x, int n)
 {
 	__asm__("roll %%cl,%0"
 		:"=r" (x)
@@ -60,6 +60,13 @@ rol( u32 x, int n)
 #define rol(x,n) ( ((x) << (n)) | ((x) >> (32-(n))) )
 #endif
 
+typedef struct {
+    guint32 A,B,C,D;
+    guint32  nblocks;
+    unsigned char buf[64];
+    int  count;
+    int  finalized;
+} MD5_CONTEXT;
 
 static void
 md5_init(MD5_CONTEXT *ctx)
@@ -90,12 +97,12 @@ md5_init(MD5_CONTEXT *ctx)
 static void
 transform(MD5_CONTEXT *ctx, const unsigned char *data)
 {
-	u32 correct_words[16];
-	u32 A = ctx->A;
-	u32 B = ctx->B;
-	u32 C = ctx->C;
-	u32 D = ctx->D;
-	u32 *cwp = correct_words;
+	guint32 correct_words[16];
+	guint32 A = ctx->A;
+	guint32 B = ctx->B;
+	guint32 C = ctx->C;
+	guint32 D = ctx->D;
+	guint32 *cwp = correct_words;
 
 #ifdef BIG_ENDIAN_HOST
 	{
@@ -263,7 +270,7 @@ md5_update(MD5_CONTEXT *hd, const unsigned char *inbuf, size_t inlen)
 static void
 do_final(MD5_CONTEXT *hd)
 {
-	u32 t, msb, lsb;
+	guint32 t, msb, lsb;
 	unsigned char *p;
 
 	md5_update(hd, NULL, 0); /* flush */
@@ -309,10 +316,10 @@ do_final(MD5_CONTEXT *hd)
 #define X(a) do { *p++ = hd->a      ; *p++ = hd->a >> 8;      \
 		  *p++ = hd->a >> 16; *p++ = hd->a >> 24; } while(0)
 #else /* little endian */
-	/*#define X(a) do { *(u32*)p = hd->##a ; p += 4; } while(0)*/
+	/*#define X(a) do { *(guint32*)p = hd->##a ; p += 4; } while(0)*/
 	/* Unixware's cpp doesn't like the above construct so we do it his way:
 	 * (reported by Allan Clark) */
-#define X(a) do { *(u32*)p = (*hd).a ; p += 4; } while(0)
+#define X(a) do { *(guint32*)p = (*hd).a ; p += 4; } while(0)
 #endif
 	X(A);
 	X(B);
