@@ -424,7 +424,7 @@ if test $ac_cv_dirent_d_type = yes; then
 fi
 
 # Check whether mkdir does not take the permission argument.
-GNUPG_FUNC_MKDIR_TAKES_ONE_ARG
+AX_FUNC_MKDIR
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
