@@ -2174,7 +2174,6 @@ dnl ****************************
 
 AC_CONFIG_FILES([
 Makefile
-m4/Makefile
 po/Makefile.in
 src/common/version.h
 src/Makefile
