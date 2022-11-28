@@ -1383,16 +1383,14 @@ if test x"$HAVE_PERL" = xyes; then
 fi
 
 dnl Gpgme **********************************************************************
-dnl First try to find gpgme with gpgme-config.  Use pkgconfig if not found
-AM_PATH_GPGME(1.1.1, HAVE_GPGME_CONFIG=yes, HAVE_GPGME_CONFIG=no)
-if test x"$HAVE_GPGME_CONFIG" = xno; then
-	PKG_CHECK_MODULES(GPGME, [gpgme >= 1.1.1], HAVE_GPGME_PKGCONFIG=yes, HAVE_GPGME_PKGCONFIG=no)
-	if test x"$HAVE_GPGME_PKGCONFIG" = xyes; then
-		PKG_CHECK_MODULES(LIBGPG_ERROR, [gpg-error])
-	fi
+PKG_CHECK_MODULES(GPGME, [gpgme >= 1.1.1], HAVE_GPGME_PKGCONFIG=yes, HAVE_GPGME_PKGCONFIG=no)
+if test x"$HAVE_GPGME_PKGCONFIG" = xyes; then
+    PKG_CHECK_MODULES(LIBGPG_ERROR, [gpg-error])
+else
+    AM_PATH_GPGME(1.1.1, HAVE_GPGME_CONFIG=yes, HAVE_GPGME_CONFIG=no)
 fi
 
-if test x"$HAVE_GPGME_CONFIG" = xyes -o x"$HAVE_GPGME_PKGCONFIG" = xyes; then
+if test x"$HAVE_GPGME_PKGCONFIG" = xyes -o x"$HAVE_GPGME_CONFIG" = xyes; then
 	AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.)
 	HAVE_GPGME=yes
 else
