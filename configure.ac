@@ -976,13 +976,18 @@ if test x"$enable_libetpan" = xyes; then
         fi
     ])
     if test "x$libetpan_config" = "xyes"; then
+        libetpan_save_CPPFLAGS=$CPPFLAGS
+        CPPFLAGS="$CPPFLAGS $LIBETPAN_CFLAGS"
         AC_CHECK_HEADER(libetpan/libetpan.h, [libetpan_result=yes])
         if test "x$libetpan_result" = "xyes"; then
             AC_MSG_CHECKING([whether libetpan-config hints compiles and links fine])
+            libetpan_save_LIBS=$LIBS
             LIBS="$LIBS $LIBETPAN_LIBS"
             AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <libetpan/dbstorage.h>]], [[db_mailstorage_init(NULL, NULL);]])],[libetpan_result=yes],[libetpan_result=no])
+            LIBS=$libetpan_save_LIBS
             AC_MSG_RESULT([$libetpan_result])
         fi
+        CPPFLAGS=$libetpan_save_CPPFLAGS
     fi
     if test "x$libetpan_result" = "xyes"; then
         if test $libetpan_versiontype -eq 1; then
