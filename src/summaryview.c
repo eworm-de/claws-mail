@@ -8503,21 +8503,6 @@ gint summaryview_export_mbox_list(SummaryView *summaryview)
 	return ret;
 }
 
-void summaryview_lock(SummaryView *summaryview, FolderItem *item)
-{
-	if (!summaryview || !summaryview->folder_item || !item) {
-		return;
-	}
-
-	if (summaryview->folder_item->folder == item->folder) {
-		gtk_widget_set_sensitive(summaryview->ctree, FALSE);
-	}
-}
-void summaryview_unlock(SummaryView *summaryview, FolderItem *item)
-{
-	gtk_widget_set_sensitive(summaryview->ctree, TRUE);
-}
-
 static void summary_reedit_cb(GtkAction *gaction, gpointer data)
 {
 	SummaryView *summaryview = (SummaryView *)data;

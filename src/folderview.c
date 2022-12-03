@@ -1207,7 +1207,6 @@ gint folderview_check_new(Folder *folder)
 			     item->processing_pending == TRUE)) {
 				if (folder_item_scan(item) < 0) {
 					if (folder) {
-						summaryview_unlock(folderview->summaryview, item);
 						if (FOLDER_TYPE(item->folder) == F_NEWS || FOLDER_IS_LOCAL(folder)) {
 							log_error(LOG_PROTOCOL, _("Couldn't scan folder %s\n"),
 								item->path ? item->path:item->name);
@@ -1221,7 +1220,6 @@ gint folderview_check_new(Folder *folder)
 				}
 			} else if (!item->folder->klass->scan_required) {
 				if (folder_item_scan(item) < 0) {
-					summaryview_unlock(folderview->summaryview, item);
 					if (folder && !FOLDER_IS_LOCAL(folder)) {
 						STATUSBAR_POP(folderview->mainwin);
 						break;

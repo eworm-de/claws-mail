@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2022 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -329,8 +329,6 @@ void summary_set_prefs_from_folderitem
 void summary_save_prefs_to_folderitem
                                   (SummaryView *summaryview, FolderItem *item);
 gint summaryview_export_mbox_list (SummaryView *summaryview);
-void summaryview_lock(SummaryView *summaryview, FolderItem *item);
-void summaryview_unlock(SummaryView *summaryview, FolderItem *item);
 void summary_reflect_prefs(void);
 void summaryview_activate_quicksearch(SummaryView *summaryview, gboolean show);
 void summary_set_menu_sensitive	(SummaryView		*summaryview);
