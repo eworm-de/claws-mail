@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -775,6 +775,9 @@ static void search_type_changed_cb(GtkComboBox *combobox,
 		 * the current search type is visible on a closed combobox */
 		select_correct_combobox_menuitem(quicksearch);
 	}
+
+	/* update history list */
+	quicksearch_set_search_strings(quicksearch);
 
 	/* Update search results */
 	quicksearch_invoke_execute(quicksearch, FALSE);
