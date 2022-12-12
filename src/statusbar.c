@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -92,18 +91,6 @@ void statusbar_puts_all(const gchar *str)
 
 	for (cur = statusbar_list; cur != NULL; cur = cur->next)
 		statusbar_puts(GTK_STATUSBAR(cur->data), str);
-}
-
-void statusbar_print(GtkStatusbar *statusbar, const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE];
-
-	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
-	va_end(args);
-
-	statusbar_puts(statusbar, buf);
 }
 
 void statusbar_print_all(const gchar *format, ...)
