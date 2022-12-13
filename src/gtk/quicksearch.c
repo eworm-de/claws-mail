@@ -777,7 +777,7 @@ static void search_type_changed_cb(GtkComboBox *combobox,
 	}
 
 	/* update history list */
-	quicksearch_set_search_strings(quicksearch);
+	quicksearch_set_popdown_strings(quicksearch);
 
 	/* Update search results */
 	quicksearch_invoke_execute(quicksearch, FALSE);
