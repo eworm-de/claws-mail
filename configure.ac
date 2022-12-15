@@ -333,13 +333,13 @@ AC_ARG_ENABLE(tests,
 				[  --enable-tests                   Build unit tests],
 				[enable_tests=$enableval], [enable_tests=no])
 
-AC_ARG_ENABLE(addressbook-debug,
-        [  --enable-addressbook-debug      Build with addressbook debug calls],
-        [enable_addressbook_debug=$enableval], [enable_addressbook_debug=no])
+AC_ARG_ENABLE(more-addressbook-debug,
+        [  --enable-more-addressbook-debug Build with additional addressbook debug calls],
+        [enable_more_addressbook_debug=$enableval], [enable_more_addressbook_debug=no])
 
-AC_ARG_ENABLE(ldap-debug,
-        [  --enable-ldap-debug             Build with LDAP debug calls],
-        [enable_ldap_debug=$enableval], [enable_ldap_debug=no])
+AC_ARG_ENABLE(more-ldap-debug,
+        [  --enable-more-ldap-debug        Build with additional LDAP debug calls],
+        [enable_more_ldap_debug=$enableval], [enable_more_ldap_debug=no])
 
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
@@ -1058,34 +1058,28 @@ else
 fi
 AM_CONDITIONAL(BUILD_TESTS, test "x$enable_tests" = "xyes")
 
-dnl =======================
-dnl section for debug calls
-dnl =======================
+dnl ==================================
+dnl section for additional debug calls
+dnl ==================================
 
-DEBUG_CALLS=""
+more_debug_output_modules=""
 
-AC_MSG_CHECKING([whether to build addressbook debug calls])
-if test x$enable_addressbook_debug = xyes; then
-	DEBUG_CALLS="$DEBUG_CALLS AddressBook"
+AC_MSG_CHECKING([whether to build addressbook with more debug calls])
+if test x$enable_more_addressbook_debug = xyes; then
+	more_debug_output_modules="$more_debug_output_modules AddressBook"
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(DEBUG_ADDRBOOK, 1, [Define if you want addressbook debug calls])
+	AC_DEFINE(DEBUG_ADDRBOOK, 1, [Define if you want additional addressbook debug calls])
 else
 	AC_MSG_RESULT(no)
 fi
 
-AC_MSG_CHECKING([whether to build LDAP debug calls])
-if test x$enable_ldap_debug = xyes; then
-	DEBUG_CALLS="$DEBUG_CALLS LDAP"
+AC_MSG_CHECKING([whether to build LDAP with more debug calls])
+if test x$enable_more_ldap_debug = xyes; then
+	more_debug_output_modules="$more_debug_output_modules LDAP"
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(DEBUG_LDAP, 1, [Define if you want LDAP debug calls])
+	AC_DEFINE(DEBUG_LDAP, 1, [Define if you want additional LDAP debug calls])
 else
 	AC_MSG_RESULT(no)
-fi
-
-if test -z "$DEBUG_CALLS"; then
-	DEBUG_CALLS="no"
-else
-	DEBUG_CALLS=`echo $DEBUG_CALLS | sed 's/^\s+|\s+$//;s/\s/, /g'`
 fi
 
 dnl *************************
@@ -2314,7 +2308,13 @@ echo "SVG support        : $enable_svg"
 echo "Config dir         : $ac_cv_with_config_dir"
 echo "Password crypto    : $pwd_crypto"
 echo "Unit tests         : $enable_tests"
-echo "Debug calls        : $DEBUG_CALLS"
+
+if test -n "$more_debug_output_modules"; then
+	echo "More debug output enabled for:"
+	for module in $more_debug_output_modules; do
+		echo "            - $module"
+	done
+fi
 
 echo "Plugins"
 echo "   Built:"
