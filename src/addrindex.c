@@ -1460,7 +1460,9 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		}
 		g_free( criteria );
 	}
-	/* ldapsvr_print_data( server, stdout ); */
+#ifdef DEBUG_LDAP
+	ldapsvr_print_data( server, stdout );
+#endif
 
 	return ds;
 }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2021 the Claws Mail team and Match Grun
+ * Copyright (C) 2003-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,11 +119,11 @@ gint ldapsvr_get_status( LdapServer *server ) {
  */
 ItemFolder *ldapsvr_get_root_folder( LdapServer *server ) {
 	cm_return_val_if_fail( server != NULL, NULL );
-	/*
-	g_print( "ldapsvr_get_root_folder/start\n" );
+#ifdef DEBUG_LDAP
+	debug_print( "ldapsvr_get_root_folder/start\n" );
 	ldapsvr_print_data( server, stdout );
-	g_print( "ldapsvr_get_root_folder/done\n" );
-	*/
+	debug_print( "ldapsvr_get_root_folder/done\n" );
+#endif
 	return addrcache_get_root_folder( server->addressCache );
 }
 
@@ -277,10 +277,11 @@ void ldapsvr_free( LdapServer *server ) {
 	g_free( server );
 }
 
+#ifdef DEBUG_LDAP
 /**
  * Display object to specified stream.
  * \param server Server object.
- * \param stream     Output stream.
+ * \param stream Output stream.
  */
 void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
 	GList *node;
@@ -311,6 +312,7 @@ void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
 		node = g_list_next( node );
 	}
 }
+#endif
 
 /**
  * Return link list of persons.

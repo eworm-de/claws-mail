@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -91,7 +90,9 @@ gboolean ldapsvr_get_search_flag( LdapServer *server );
 void ldapsvr_set_search_flag	( LdapServer *server, const gboolean value );
 gint ldapsvr_read_data ( LdapServer *server );
 
+#ifdef DEBUG_LDAP
 void ldapsvr_print_data		( LdapServer *server, FILE *stream );
+#endif
 void ldapsvr_cancel_read	( LdapServer *server );
 
 ItemFolder *ldapsvr_get_root_folder	( LdapServer *server );

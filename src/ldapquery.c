@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -695,13 +695,17 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	/* Initialize connection */
 	if (debug_get_mode()) {
 		debug_print("===ldapqry_connect===\n");
-		/*ldapqry_print(qry, stdout);*/
+#ifdef DEBUG_LDAP
+		ldapqry_print(qry, stdout);
+#endif
 	}
 	ctl = qry->control;
-	/*if (debug_get_mode()) {
+#ifdef DEBUG_LDAP
+	if (debug_get_mode()) {
 		ldapctl_print(ctl, stdout);
 		debug_print("======\n");
-	}*/
+	}
+#endif
 	ldapqry_touch( qry );
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
@@ -1348,6 +1352,7 @@ gboolean ldapquery_remove_results( LdapQuery *qry ) {
 	return retVal;
 }
 
+#ifdef DEBUG_LDAP
 void ldapqry_print(LdapQuery *qry, FILE *stream) {
 	cm_return_if_fail( qry != NULL );
 
@@ -1363,6 +1368,7 @@ void ldapqry_print(LdapQuery *qry, FILE *stream) {
 	fprintf(stream, "touchTime: %d\n", (int) qry->touchTime);
 	fprintf(stream, "data: %s\n", qry->data?(gchar *)qry->data:"null");
 }
+#endif
 
 #endif	/* USE_LDAP */
 

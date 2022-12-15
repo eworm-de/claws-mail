@@ -337,6 +337,10 @@ AC_ARG_ENABLE(addressbook-debug,
         [  --enable-addressbook-debug      Build with addressbook debug calls],
         [enable_addressbook_debug=$enableval], [enable_addressbook_debug=no])
 
+AC_ARG_ENABLE(ldap-debug,
+        [  --enable-ldap-debug             Build with LDAP debug calls],
+        [enable_ldap_debug=$enableval], [enable_ldap_debug=no])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -1058,6 +1062,14 @@ AC_MSG_CHECKING([whether to build addressbook debug calls])
 if test x$enable_addressbook_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG_ADDRBOOK, 1, [Define if you want addressbook debug calls])
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to build LDAP debug calls])
+if test x$enable_ldap_debug = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG_LDAP, 1, [Define if you want LDAP debug calls])
 else
 	AC_MSG_RESULT(no)
 fi

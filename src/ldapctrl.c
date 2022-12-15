@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2021 the Claws Mail team and Match Grun
+ * Copyright (C) 2003-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -322,6 +321,7 @@ void ldapctl_free( LdapControl *ctl ) {
 	g_free( ctl );
 }
 
+#ifdef DEBUG_LDAP
 /**
  * Display object to specified stream.
  * \param ctl    Control object to process.
@@ -363,6 +363,7 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	}
 	pthread_mutex_unlock( ctl->mutexCtl );
 }
+#endif
 
 /**
  * Copy member variables to specified object. Mutex lock object is

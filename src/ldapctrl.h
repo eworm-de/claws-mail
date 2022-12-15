@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -99,7 +98,9 @@ GList *ldapctl_get_criteria_list( const LdapControl* ctl );
 void ldapctl_criteria_list_clear( LdapControl *ctl );
 void ldapctl_criteria_list_add	( LdapControl *ctl, gchar *attr );
 void ldapctl_free		( LdapControl *ctl );
+#ifdef DEBUG_LDAP
 void ldapctl_print		( const LdapControl *ctl, FILE *stream );
+#endif
 void ldapctl_copy		( const LdapControl *ctlFrom,
 				  LdapControl *ctlTo );
 gchar *ldapctl_format_criteria	( LdapControl *ctl, const gchar *searchVal );
