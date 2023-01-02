@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,6 +189,8 @@ static void folderview_search_cb	(GtkAction 	*action,
 					 gpointer	 data);
 static void folderview_run_processing_cb(GtkAction 	*action,
 					 gpointer	 data);
+static void folderview_startup_folder_cb(GtkAction	*action,
+					 gpointer	 data);
 
 static void folderview_property_cb	(GtkAction 	*action,
 					 gpointer	 data);
@@ -252,6 +254,7 @@ static GtkActionEntry folderview_common_popup_entries[] =
 	{"FolderViewPopup/---",              NULL, "---", NULL, NULL , NULL},
 	{"FolderViewPopup/RunProcessing",    NULL, N_("R_un processing rules"), NULL, NULL, G_CALLBACK(folderview_run_processing_cb) },
 	{"FolderViewPopup/SearchFolder",     NULL, N_("_Search folder..."), NULL, NULL, G_CALLBACK(folderview_search_cb) },
+	{"FolderViewPopup/OpenFolder",       NULL, N_("Open on start-up"), NULL, NULL, G_CALLBACK(folderview_startup_folder_cb) },
 	{"FolderViewPopup/Properties",       NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(folderview_property_cb) },
 	{"FolderViewPopup/Processing",       NULL, N_("Process_ing..."), NULL, NULL, G_CALLBACK(folderview_processing_cb) },
 	{"FolderViewPopup/EmptyTrash",       NULL, N_("Empty _trash..."), NULL, NULL, G_CALLBACK(folderview_empty_trash_cb) },
@@ -1956,6 +1959,7 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Separator1", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "RunProcessing", "FolderViewPopup/RunProcessing", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SearchFolder", "FolderViewPopup/SearchFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "OpenFolder", "FolderViewPopup/OpenFolder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Properties", "FolderViewPopup/Properties", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Processing", "FolderViewPopup/Processing", GTK_UI_MANAGER_MENUITEM)
 
@@ -2572,6 +2576,20 @@ static void folderview_search_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
 	summary_search(folderview->summaryview);
+}
+
+static void folderview_startup_folder_cb(GtkAction *action, gpointer data)
+{
+	FolderView *folderview = (FolderView *)data;
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = folderview_get_selected_item(folderview);
+
+	prefs_common.goto_last_folder_on_startup = FALSE;
+	prefs_common.goto_folder_on_startup = TRUE;
+	prefs_common.startup_folder = folder_item_get_identifier(item);
 }
 
 static void folderview_run_processing_cb(GtkAction *action, gpointer data)

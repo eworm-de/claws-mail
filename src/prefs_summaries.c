@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2022 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2023 the Claws Mail Team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "foldersel.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_summary_open.h"
@@ -59,6 +60,9 @@ typedef struct _SummariesPage
 	GtkWidget *entry_datefmt;
 
 	GtkWidget *checkbtn_reopen_last_folder;
+	GtkWidget *checkbtn_startup_folder;
+	GtkWidget *startup_folder_entry;
+	GtkWidget *startup_folder_select;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_show_on_folder_open;
 	GtkWidget *checkbtn_show_on_search_results;
@@ -110,6 +114,41 @@ static void mark_as_read_toggled		(GtkToggleButton *button,
 						 GtkWidget *spinbtn);
 static void always_show_msg_toggled		(GtkToggleButton *button,
 						 gpointer user_data);
+
+static void reopen_last_folder_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active(toggle_btn);
+	gtk_widget_set_sensitive(widget, !is_active);
+	if (is_active)
+		prefs_common.goto_folder_on_startup = FALSE;
+}
+
+static void startup_folder_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active(toggle_btn);
+	gtk_widget_set_sensitive(widget, !is_active);
+	if (is_active)
+		prefs_common.goto_last_folder_on_startup = FALSE;
+}
+
+static void foldersel_cb(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *entry = (GtkWidget *) data;
+	FolderItem *item;
+	gchar *item_id;
+	gint newpos = 0;
+	
+	item = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE, NULL);
+	if (item && (item_id = folder_item_get_identifier(item)) != NULL) {
+		gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
+		gtk_editable_insert_text(GTK_EDITABLE(entry), item_id, strlen(item_id), &newpos);
+		g_free(item_id);
+	}
+}
 
 static GtkWidget *date_format_create(GtkButton *button, void *data)
 {
@@ -339,6 +378,9 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
 	GtkWidget *checkbtn_reopen_last_folder;
+	GtkWidget *checkbtn_startup_folder;
+	GtkWidget *startup_folder_entry;
+	GtkWidget *startup_folder_select;
 	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_show_on_folder_open;
 	GtkWidget *checkbtn_show_on_search_results;
@@ -413,6 +455,31 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_reopen_last_folder,
 		 _("Open last opened folder at start-up"));
+
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_widget_show(hbox0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON
+		(hbox0, checkbtn_startup_folder,
+		 _("Open selected folder at start-up"));
+
+	startup_folder_entry = gtk_entry_new();
+	gtk_widget_show(startup_folder_entry);
+	gtk_box_pack_start(GTK_BOX(hbox0), startup_folder_entry, TRUE, TRUE, 0);
+	startup_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
+	gtk_widget_show(startup_folder_select);
+	gtk_box_pack_start(GTK_BOX(hbox0), startup_folder_select, FALSE, FALSE, 0);
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_startup_folder, startup_folder_entry)
+	SET_TOGGLE_SENSITIVITY(checkbtn_startup_folder, startup_folder_select)
+
+	g_signal_connect(G_OBJECT(checkbtn_reopen_last_folder), "toggled",
+			 G_CALLBACK(reopen_last_folder_toggled), checkbtn_startup_folder);
+	g_signal_connect(G_OBJECT(checkbtn_startup_folder), "toggled",
+			 G_CALLBACK(startup_folder_toggled), checkbtn_reopen_last_folder);
+	g_signal_connect(G_OBJECT(startup_folder_select), "clicked",
+			 G_CALLBACK(foldersel_cb), startup_folder_entry);
 
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_run_processingrules_mark_all_read,
@@ -681,6 +748,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->checkbtn_threadsubj = checkbtn_threadsubj;
 	prefs_summaries->entry_datefmt = entry_datefmt;
 	prefs_summaries->checkbtn_reopen_last_folder = checkbtn_reopen_last_folder;
+	prefs_summaries->checkbtn_startup_folder = checkbtn_startup_folder;
+	prefs_summaries->startup_folder_entry = startup_folder_entry;
 
 	prefs_summaries->checkbtn_always_show_msg = checkbtn_always_show_msg;
 	prefs_summaries->checkbtn_show_on_folder_open = checkbtn_show_on_folder_open;
@@ -731,6 +800,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.date_format?prefs_common.date_format:"");	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_reopen_last_folder),
 			prefs_common.goto_last_folder_on_startup);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_startup_folder),
+			prefs_common.goto_folder_on_startup);
+	gtk_entry_set_text(GTK_ENTRY(startup_folder_entry),
+			   prefs_common.startup_folder?prefs_common.startup_folder:"");
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_always_show_msg),
 			prefs_common.always_show_msg);
@@ -809,6 +882,10 @@ static void prefs_summaries_save(PrefsPage *_page)
 
 	prefs_common.goto_last_folder_on_startup = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_reopen_last_folder));
+	prefs_common.goto_folder_on_startup = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_startup_folder));
+	prefs_common.startup_folder = gtk_editable_get_chars(
+			GTK_EDITABLE(page->startup_folder_entry), 0, -1);
 
 	prefs_common.always_show_msg = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_always_show_msg));

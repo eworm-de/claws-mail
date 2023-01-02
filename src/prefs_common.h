@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,6 +277,8 @@ struct _PrefsCommon
 
 	gchar *last_opened_folder;
 	gboolean goto_last_folder_on_startup;
+	gchar *startup_folder;
+	gboolean goto_folder_on_startup;
 
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;

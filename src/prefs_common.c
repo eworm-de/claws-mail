@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1211,6 +1211,10 @@ static PrefParam param[] = {
 	{"last_opened_folder", "", &prefs_common.last_opened_folder,
 	P_STRING, NULL, NULL, NULL },
 	{"goto_last_folder_on_startup", "FALSE", &prefs_common.goto_last_folder_on_startup,
+	P_BOOL, NULL, NULL, NULL },
+	{"startup_folder", "", &prefs_common.startup_folder,
+	P_STRING, NULL, NULL, NULL },
+	{"goto_folder_on_startup", "FALSE", &prefs_common.goto_folder_on_startup,
 	P_BOOL, NULL, NULL, NULL },
 	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
 	 NULL, NULL, NULL},
