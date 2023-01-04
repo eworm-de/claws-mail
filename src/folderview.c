@@ -2000,9 +2000,14 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 	SET_SENS("FolderViewPopup/Processing", item->node->parent != NULL && 
 		!item->no_select && !item->processing_pending);
 
-	SET_SENS("FolderViewPopup/OpenFolder", item->node->parent != NULL
-		&& (!prefs_common.goto_folder_on_startup
-			|| strcmp(folder_item_get_identifier(item), prefs_common.startup_folder)));
+	if (item->node->parent != NULL) {
+		gchar *id = folder_item_get_identifier(item);
+		SET_SENS("FolderViewPopup/OpenFolder", !prefs_common.goto_folder_on_startup
+			|| strcmp(id, prefs_common.startup_folder));
+		g_free(id);
+	} else {
+		SET_SENS("FolderViewPopup/OpenFolder", FALSE);
+	}
 
 	if (item == folder->trash || item == special_trash
 	    || folder_has_parent_of_type(item, F_TRASH)) {
