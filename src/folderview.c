@@ -2005,8 +2005,6 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 		SET_SENS("FolderViewPopup/OpenFolder", !prefs_common.goto_folder_on_startup
 			|| strcmp(id, prefs_common.startup_folder));
 		g_free(id);
-	} else {
-		SET_SENS("FolderViewPopup/OpenFolder", FALSE);
 	}
 
 	if (item == folder->trash || item == special_trash
@@ -2597,8 +2595,8 @@ static void folderview_startup_folder_cb(GtkAction *action, gpointer data)
 	item = folderview_get_selected_item(folderview);
 
 	prefs_common.goto_last_folder_on_startup = FALSE;
-	prefs_common.goto_folder_on_startup = TRUE;
 	prefs_common.startup_folder = folder_item_get_identifier(item);
+	prefs_common.goto_folder_on_startup = prefs_common.startup_folder? TRUE : FALSE;
 }
 
 static void folderview_run_processing_cb(GtkAction *action, gpointer data)
