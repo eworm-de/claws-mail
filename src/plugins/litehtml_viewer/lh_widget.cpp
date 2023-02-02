@@ -144,7 +144,11 @@ void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
 {
 	debug_print("lh_widget set_base_url '%s'\n",
 			(base_url ? base_url : "(null)"));
-	m_base_url = base_url;
+	if (base_url)
+		m_base_url = base_url;
+	else
+		m_base_url.clear();
+
 	return;
 }
 
