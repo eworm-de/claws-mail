@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2023 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
 #include "prefs_gtk.h"
 
 #include "bogofilter.h"
+#include "main.h"
 #include "inc.h"
 #include "log.h"
 #include "prefs_common.h"
@@ -83,6 +84,8 @@ static gulong hook_id = HOOK_NONE;
 static MessageCallback message_callback;
 
 static BogofilterConfig config;
+
+extern SessionStats session_stats;
 
 static PrefParam param[] = {
 	{"process_emails", "TRUE", &config.process_emails, P_BOOL,
@@ -303,7 +306,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 								data->mail_filtering_data->filtered, msginfo);
 						}
 						data->new_spams = g_slist_prepend(data->new_spams, msginfo);
-
+						session_stats.spam++;
 					} else if (whitelisted && parts && parts[0] && parts[1] && 
 							(*parts[1] == 'S' || *parts[1] == 'U')) {
 

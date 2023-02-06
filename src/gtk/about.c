@@ -760,6 +760,11 @@ static void about_update_stats(void)
 					session_stats.received);
 		gtk_text_buffer_insert_with_tags_by_name(stats_text_buffer, &iter, buf, -1,
 				"indented-list-item", "bold", NULL);
+		if (session_stats.spam > 0) {
+			g_snprintf(buf, sizeof(buf), _("Spam messages: %d\n"), session_stats.spam);
+			gtk_text_buffer_insert_with_tags_by_name(stats_text_buffer, &iter, buf, -1,
+								 "indented-list-item", NULL);
+		}
 
 		gtk_text_buffer_insert(stats_text_buffer, &iter, "\n", 1);
 		gtk_text_buffer_insert_with_tags_by_name(stats_text_buffer, &iter,

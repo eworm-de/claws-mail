@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team
+ * Copyright (C) 1999-2023 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@
 
 #include "libspamc.h"
 #include "spamassassin.h"
+#include "main.h"
 #include "inc.h"
 #include "log.h"
 #include "prefs_common.h"
@@ -87,6 +88,8 @@ static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static MessageCallback message_callback;
 
 static SpamAssassinConfig config;
+
+extern SessionStats session_stats;
 
 static PrefParam param[] = {
 	{"enable", "FALSE", &config.enable, P_BOOL,
@@ -297,6 +300,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (is_spam) {
 		debug_print("message is spam\n");
 		procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+		session_stats.spam++;
 		if (config.receive_spam) {
 			FolderItem *save_folder = NULL;
 

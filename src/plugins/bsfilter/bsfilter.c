@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and
+ * Copyright (C) 1999-2023 the Claws Mail team and
  * Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,7 @@
 #include "utils.h"
 
 #include "bsfilter.h"
+#include "main.h"
 #include "inc.h"
 #include "log.h"
 #include "prefs_common.h"
@@ -82,6 +83,8 @@ static gulong hook_id = HOOK_NONE;
 static MessageCallback message_callback;
 
 static BsfilterConfig config;
+
+extern SessionStats session_stats;
 
 static PrefParam param[] = {
 	{"process_emails", "TRUE", &config.process_emails, P_BOOL,
@@ -340,6 +343,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	} else {
 		if (!whitelisted || (whitelisted && !config.learn_from_whitelist)) {
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
+			session_stats.spam++;
 			debug_print("flagging spam: %d\n", msginfo->msgnum);
 			filtered = TRUE;
 		}
