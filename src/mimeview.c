@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1669,7 +1669,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 		fp = claws_fopen(partinfo->data.filename, "rb");
 		if (fp != NULL && fseek(fp, partinfo->offset, SEEK_SET) == 0) {
-			headers = procheader_get_header_array_asis(fp);
+			headers = procheader_get_header_array(fp);
 			if (headers) {
 				gint i;
 				for (i = 0; i < headers->len; i++) {

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1926,10 +1926,11 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	cm_return_val_if_fail(fp != NULL, NULL);
 
 	if (prefs_common.show_all_headers) {
-		headers = procheader_get_header_array_asis(fp);
+		headers = procheader_get_header_array(fp);
 		sorted_headers = g_ptr_array_new();
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
+			unfold_line(header->body);
 			if (!procheader_header_is_internal(header->name))
 				g_ptr_array_add(sorted_headers, header);
 			else
@@ -1945,7 +1946,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		return NULL;
 	}
 
-	headers = procheader_get_header_array_asis(fp);
+	headers = procheader_get_header_array(fp);
 
 	sorted_headers = g_ptr_array_new();
 
@@ -1956,7 +1957,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-
+			unfold_line(header->body);
 			if (procheader_headername_equal(header->name,
 							dp->name)) {
 				if (dp->hidden)
@@ -1973,6 +1974,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	if (prefs_common.show_other_header) {
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
+			unfold_line(header->body);
 			if (!procheader_header_is_internal(header->name)) {
 				g_ptr_array_add(sorted_headers, header);
 			} else {
