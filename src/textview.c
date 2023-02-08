@@ -1930,7 +1930,6 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		sorted_headers = g_ptr_array_new();
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-			unfold_line(header->body);
 			if (!procheader_header_is_internal(header->name))
 				g_ptr_array_add(sorted_headers, header);
 			else
@@ -1957,7 +1956,6 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-			unfold_line(header->body);
 			if (procheader_headername_equal(header->name,
 							dp->name)) {
 				if (dp->hidden)
