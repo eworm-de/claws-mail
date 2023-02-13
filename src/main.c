@@ -2768,6 +2768,12 @@ static void lock_socket_input_cb(gpointer data,
 				session_stats.received);
  		CM_FD_WRITE_ALL(tmp);
 
+		if (session_stats.spam > 0) {
+			g_snprintf(tmp, sizeof(tmp), _("Spam messages: %d\n"),
+					session_stats.spam);
+			CM_FD_WRITE_ALL(tmp);
+		}
+
  		CM_FD_WRITE_ALL("\n");
 
 		g_snprintf(tmp, sizeof(tmp), _("Outgoing traffic\n"));
