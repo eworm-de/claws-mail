@@ -1040,6 +1040,7 @@ static void reset_statistics(void)
 	session_stats.sent = 0;
 	session_stats.replied = 0;
 	session_stats.forwarded = 0;
+	session_stats.spam = 0;
 	session_stats.time_started = time(NULL);
 }
 
