@@ -35,6 +35,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "imap.h"
 #include "oauth2.h"
 #include "md5.h"
 #include "utils.h"
@@ -653,7 +654,9 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	if (ret)
 		log_message(LOG_PROTOCOL, _("OAuth2 access token not obtained\n"));
 	else {
-		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_RECV, OAUTH2Data->access_token, FALSE);
+		if (ac_prefs->imap_auth_type == IMAP_AUTH_OAUTH2 ||
+		    (ac_prefs->use_pop_auth && ac_prefs->pop_auth_type == POPAUTH_OAUTH2))
+			passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_RECV, OAUTH2Data->access_token, FALSE);
 		if (ac_prefs->use_smtp_auth && ac_prefs->smtp_auth_type == SMTPAUTH_OAUTH2)
 			passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_SEND, OAUTH2Data->access_token, FALSE);
 		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, OAUTH2Data->expiry_str, FALSE);
