@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2021-2022 the Claws Mail team
+ * Copyright (C) 2021-2023 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -626,45 +626,44 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	OAUTH2Data->custom_client_id = ac_prefs->oauth2_client_id;
 	OAUTH2Data->custom_client_secret = ac_prefs->oauth2_client_secret;
 	
-	if(passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_EXPIRY)) {
-	  acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY);
-	  expiry = atoi(acc);
-	  g_free(acc);
-	  if (expiry >  (g_get_real_time () / G_USEC_PER_SEC)){
-	    g_free(OAUTH2Data);
-	    log_message(LOG_PROTOCOL, _("OAuth2 access token still fresh\n"));
-	    g_free(uid);
-	    return (0);
-	  }
+	if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_EXPIRY)) {
+		acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY);
+		expiry = atoi(acc);
+		g_free(acc);
+		if (expiry >  (g_get_real_time () / G_USEC_PER_SEC)) {
+			g_free(OAUTH2Data);
+			log_message(LOG_PROTOCOL, _("OAuth2 access token still fresh\n"));
+			g_free(uid);
+			return (0);
+		}
 	}
 	
-	if(passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_REFRESH)) {
-	  log_message(LOG_PROTOCOL, _("OAuth2 obtaining access token using refresh token\n"));
-	  OAUTH2Data->refresh_token = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH);
-	  ret = oauth2_use_refresh_token (ac_prefs->oauth2_provider, OAUTH2Data);
-	}else if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_AUTH)) {
-	  log_message(LOG_PROTOCOL, _("OAuth2 trying for fresh access token with authorization code\n"));
-	  acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_AUTH);
-	  ret = oauth2_obtain_tokens (ac_prefs->oauth2_provider, OAUTH2Data, acc);
-	  g_free(acc);
-	}else{
-	  ret = 1;
-	}
+	if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_REFRESH)) {
+		log_message(LOG_PROTOCOL, _("OAuth2 obtaining access token using refresh token\n"));
+		OAUTH2Data->refresh_token = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH);
+		ret = oauth2_use_refresh_token (ac_prefs->oauth2_provider, OAUTH2Data);
+	} else if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_AUTH)) {
+		log_message(LOG_PROTOCOL, _("OAuth2 trying for fresh access token with authorization code\n"));
+		acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_AUTH);
+		ret = oauth2_obtain_tokens (ac_prefs->oauth2_provider, OAUTH2Data, acc);
+		g_free(acc);
+	} else
+		ret = 1;
 	
-	if (ret){
-	  log_message(LOG_PROTOCOL, _("OAuth2 access token not obtained\n"));
-	}else{
-	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_RECV, OAUTH2Data->access_token, FALSE);
-      if (ac_prefs->use_smtp_auth && ac_prefs->smtp_auth_type == SMTPAUTH_OAUTH2)
-	        passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_SEND, OAUTH2Data->access_token, FALSE);
-	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, OAUTH2Data->expiry_str, FALSE);
-	  //Some providers issue replacement refresh tokens with each access token. Re-store whether replaced or not. 
-	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH, OAUTH2Data->refresh_token, FALSE);
-	  log_message(LOG_PROTOCOL, _("OAuth2 access and refresh token updated\n"));  
+	if (ret)
+		log_message(LOG_PROTOCOL, _("OAuth2 access token not obtained\n"));
+	else {
+		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_RECV, OAUTH2Data->access_token, FALSE);
+		if (ac_prefs->use_smtp_auth && ac_prefs->smtp_auth_type == SMTPAUTH_OAUTH2)
+			passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_SEND, OAUTH2Data->access_token, FALSE);
+		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, OAUTH2Data->expiry_str, FALSE);
+		//Some providers issue replacement refresh tokens with each access token. Re-store whether replaced or not. 
+		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH, OAUTH2Data->refresh_token, FALSE);
+		log_message(LOG_PROTOCOL, _("OAuth2 access and refresh token updated\n"));  
 	}
 
 	g_free(OAUTH2Data);
-    g_free(uid);
+	g_free(uid);
 	
 	return (ret);
 }
