@@ -1,8 +1,8 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
- * This file Copyright (C) 2009-2013 Salvatore De Paolis <iwkse@claws-mail.org>
+ * Copyright (C) 1999-2023 the Claws Mail Team
+ * This file Copyright (C) 2009-2023 Salvatore De Paolis <iwkse@claws-mail.org>
  *  and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,10 +50,6 @@
 #include <curl/curl.h>
 #include <curl/curlver.h>
 #include "filesel.h"
-
-#ifdef HAVE_LIBSOUP_GNOME
-#include <libsoup/soup-gnome.h>
-#endif
 
 typedef enum _NavigationMode {
 	NAV_DEFAULT,

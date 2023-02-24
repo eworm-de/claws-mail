@@ -1,4 +1,4 @@
-# Copyright 1999-2022 the Claws Mail team.
+# Copyright 1999-2023 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
@@ -28,7 +28,6 @@ EXTRA_fancy_la_DEPENDENCIES = $(plugin_extra_deps)
 fancy_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS) \
 	$(WEBKIT_LIBS) \
-	$(LIBSOUP_GNOME_LIBS) \
 	$(CURL_LIBS)
 
 fancy_la_CPPFLAGS = \
@@ -37,7 +36,6 @@ fancy_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(WEBKIT_CFLAGS) \
-	$(LIBSOUP_GNOME_CFLAGS) \
 	$(CURL_CFLAGS) \
 	-DFANCY_WEB_EXTENSIONS_DIR=\""$(pkglibdir)/web_extensions"\" \
 	-DFANCY_WEB_EXTENSION_FILE=\""fancywebextension"\"

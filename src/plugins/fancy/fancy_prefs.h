@@ -1,6 +1,6 @@
 /* 
  * Claws Mail -- A GTK based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2014 the Claws Mail Team
+ * Copyright(C) 1999-2023 the Claws Mail Team
  * == Fancy Plugin ==
  * This file Copyright (C) 2009 -2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
@@ -35,11 +35,8 @@ struct _FancyPrefs
 	gboolean enable_java;
 	gboolean open_external;
 	gint zoom_level;
-#ifdef HAVE_LIBSOUP_GNOME
-	gboolean enable_gnome_proxy;
-#endif
-	gboolean enable_proxy;
-	gchar *proxy_str;
+	// gboolean enable_proxy;
+	// gchar *proxy_str;
 	gchar *stylesheet;
 };
 

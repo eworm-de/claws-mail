@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- A GTK based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
- * Copyright(C) 1999-2022 the Claws Mail Team
+ * Copyright(C) 1999-2023 the Claws Mail Team
  * This file Copyright (C) 2009-2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  *
@@ -1106,23 +1106,6 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->mimeviewer.scroll_one_line = fancy_scroll_one_line;
 	viewer->view = WEBKIT_WEB_VIEW(webkit_web_view_new());
 
-/*#ifdef HAVE_LIBSOUP_GNOME
-  TODO webkit_get_default_session() missing 
-   *     enum WebKitNetworkProxySettings
-   * */
- /* Use GNOME proxy settings through libproxy */
-/*	if (fancy_prefs.enable_gnome_proxy) {
-		SoupSession *session = webkit_get_default_session();
-		soup_session_add_feature_by_type (session, SOUP_TYPE_PROXY_RESOLVER_GNOME);
-	}
-#endif
-	
-	if (fancy_prefs.enable_proxy) {
-		SoupSession *session = webkit_get_default_session();
-		SoupURI* pURI = soup_uri_new(fancy_prefs.proxy_str);
-		g_object_set(session, "proxy-uri", pURI, NULL);
-	}
-*/
 	viewer->settings = webkit_settings_new();
 	g_object_set(viewer->settings, "user-agent", "Fancy Viewer", NULL);
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
