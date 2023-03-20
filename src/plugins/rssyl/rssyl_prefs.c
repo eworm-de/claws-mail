@@ -154,7 +154,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 
 	/* Whether to refresh all feeds on CM startup */
 	refresh_on_startup = gtk_check_button_new_with_label(
-			_("Refresh all feeds on application start"));
+			_("Refresh all feeds on start-up"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_on_startup),
 			rssyl_prefs.refresh_on_startup);
 	gtk_box_pack_start(GTK_BOX(vbox1), refresh_on_startup, FALSE, FALSE, 0);
