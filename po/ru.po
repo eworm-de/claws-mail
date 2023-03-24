@@ -4641,7 +4641,7 @@ msgstr "Коричневый"
 
 #: src/gtk/colorlabel.c:45 src/prefs_common.c:392
 msgid "Grey"
-msgstr "Зеленый"
+msgstr "Серый"
 
 #: src/gtk/colorlabel.c:46 src/prefs_common.c:396
 msgid "Light brown"
