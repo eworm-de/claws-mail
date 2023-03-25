@@ -17460,7 +17460,7 @@ msgstr "Вид сообщения"
 
 #: src/prefs_msg_colors.c:152
 msgid "Enable coloration of message text"
-msgstr "Включить окраску теста сообщения"
+msgstr "Включить окраску текста сообщения"
 
 #: src/prefs_msg_colors.c:160
 msgid "Quote"
