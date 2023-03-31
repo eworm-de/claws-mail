@@ -367,8 +367,8 @@ static MimeViewer *image_viewer_create(void)
 	gtk_widget_show(load_button);
 	gtk_widget_set_size_request(GTK_WIDGET(load_button), 6, -1);
 	gtk_grid_attach(GTK_GRID(table1), load_button, 0, 4, 1, 1);
-	gtk_widget_set_hexpand(load_button, FALSE);
-	gtk_widget_set_halign(load_button, GTK_ALIGN_FILL);
+	gtk_widget_set_hexpand(load_button, TRUE);
+	gtk_widget_set_halign(load_button, GTK_ALIGN_START);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);
