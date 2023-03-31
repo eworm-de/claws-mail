@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -316,11 +316,6 @@ static MimeViewer *image_viewer_create(void)
 	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
 	gtk_grid_attach(GTK_GRID(table1), label3, 0, 0, 2, 1);
 
-	label4 = gtk_label_new(_("Filesize:"));
-	gtk_widget_show(label4);
-	gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), label4, 0, 1, 1, 1);
-
 	filename = gtk_label_new("");
 	gtk_widget_show(filename);
 	gtk_label_set_xalign(GTK_LABEL(filename), 0.0);
@@ -328,10 +323,15 @@ static MimeViewer *image_viewer_create(void)
 	gtk_widget_set_hexpand(filename, TRUE);
 	gtk_widget_set_halign(filename, GTK_ALIGN_FILL);
 
+	label4 = gtk_label_new(_("Filesize:"));
+	gtk_widget_show(label4);
+	gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label4, 0, 1, 2, 1);
+
 	filesize = gtk_label_new("");
 	gtk_widget_show(filesize);
 	gtk_label_set_xalign(GTK_LABEL(filesize), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), filesize, 1, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(table1), filesize, 1, 1, 2, 1);
 	gtk_widget_set_hexpand(filesize, TRUE);
 	gtk_widget_set_halign(filesize, GTK_ALIGN_FILL);
 
@@ -339,11 +339,13 @@ static MimeViewer *image_viewer_create(void)
 	gtk_widget_show(label5);
 	gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
 	gtk_grid_attach(GTK_GRID(table1), label5, 0, 2, 2, 1);
+	gtk_widget_set_hexpand(label5, TRUE);
+	gtk_widget_set_halign(label5, GTK_ALIGN_FILL);
 
 	content_type = gtk_label_new("");
 	gtk_widget_show(content_type);
 	gtk_label_set_xalign(GTK_LABEL(content_type), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), content_type, 1, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(table1), content_type, 1, 2, 2, 1);
 	gtk_widget_set_hexpand(content_type, TRUE);
 	gtk_widget_set_halign(content_type, GTK_ALIGN_FILL);
 
@@ -357,7 +359,7 @@ static MimeViewer *image_viewer_create(void)
 	error_msg = gtk_label_new("");
 	gtk_widget_show(error_msg);
 	gtk_label_set_xalign(GTK_LABEL(error_msg), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), error_msg, 1, 3, 1, 1);
+	gtk_grid_attach(GTK_GRID(table1), error_msg, 1, 3, 2, 1);
 	gtk_widget_set_hexpand(error_msg, TRUE);
 	gtk_widget_set_halign(error_msg, GTK_ALIGN_FILL);
 
@@ -365,6 +367,8 @@ static MimeViewer *image_viewer_create(void)
 	gtk_widget_show(load_button);
 	gtk_widget_set_size_request(GTK_WIDGET(load_button), 6, -1);
 	gtk_grid_attach(GTK_GRID(table1), load_button, 0, 4, 1, 1);
+	gtk_widget_set_hexpand(load_button, FALSE);
+	gtk_widget_set_halign(load_button, GTK_ALIGN_FILL);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);
