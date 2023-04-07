@@ -5418,8 +5418,8 @@ gint compose_send(Compose *compose)
 		}
 	} else {
 		if (errstr) {
-			alertpanel_error_log(_("%s\nUse \"Send queued messages\" from "
-				   "the main window to retry."), errstr);
+			alertpanel_error_log(_("%s\nYou can try to \"Send\" again "
+				"or queue the message with \"Send later\""), errstr);
 			g_free(errstr);
 		} else {
 			alertpanel_error_log(_("The message was queued but could not be "
