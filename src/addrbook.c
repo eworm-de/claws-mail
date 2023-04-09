@@ -51,7 +51,9 @@
 
 #define ID_TIME_OFFSET            998000000
 
+#ifdef DEBUG_ADDRBOOK
 static void addrbook_print_book		( AddressBookFile *book, FILE *stream );
+#endif
 
 /**
  * Create new address book
