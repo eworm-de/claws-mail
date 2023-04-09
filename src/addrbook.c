@@ -215,6 +215,7 @@ void addrbook_free_book(AddressBookFile *book)
 	g_free(book);
 }
 
+#ifdef DEBUG_ADDRBOOK
 /**
  * Print address book header.
  * \param book   Address book.
@@ -231,7 +232,6 @@ static void addrbook_print_book(AddressBookFile *book, FILE *stream)
 	addrcache_print(book->addressCache, stream);
 }
 
-#ifdef DEBUG_ADDRBOOK
 /**
  * Dump entire address book traversing folders.
  * \param book   Address book.
