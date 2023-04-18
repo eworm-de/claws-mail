@@ -608,6 +608,7 @@ gchar *escape_internal_quotes(gchar *str, gchar quote_chr)
 	if (str == NULL || *str == '\0')
 		return str;
 
+	g_strstrip(str);
 	/* search for unescaped quote_chr */
 	p = str;
 	if (*p == quote_chr)
