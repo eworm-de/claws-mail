@@ -9,6 +9,7 @@
 #include <cstring>
 #include <algorithm>
 #include <sstream>
+#include <cstdint>
 #include "os_types.h"
 #include "types.h"
 #include "background.h"

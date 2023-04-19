@@ -2,6 +2,7 @@
 #define NUM_CVT_H
 
 #include <string>
+#include <cstdint>
 #include "os_types.h"
 
 namespace litehtml
