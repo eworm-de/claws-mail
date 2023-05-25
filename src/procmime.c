@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1403,7 +1403,9 @@ static struct TypeTable mime_type_table[] = {
 	{"image", MIMETYPE_IMAGE},
 	{"audio", MIMETYPE_AUDIO},
 	{"video", MIMETYPE_VIDEO},
+	{"font",  MIMETYPE_FONT},
 	{"model", MIMETYPE_MODEL},
+	{"chemical", MIMETYPE_CHEMICAL},
 	{"application", MIMETYPE_APPLICATION},
 	{"message", MIMETYPE_MESSAGE},
 	{"multipart", MIMETYPE_MULTIPART},
