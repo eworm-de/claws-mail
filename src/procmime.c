@@ -2176,7 +2176,9 @@ static gchar *typenames[] = {
     "application",
     "message",
     "multipart",
+    "font",
     "model",
+    "chemical",
     "unknown",
 };
 
