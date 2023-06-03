@@ -509,7 +509,7 @@ static void load_content_cb(WebKitURISchemeRequest *request, gpointer viewer)
 		}
 	}
 
-	error = g_error_new(0, 0, _("Couldn't save the part of multipart message: %s"), image);
+	error = g_error_new(G_FILE_ERROR, 0, _("Couldn't save the part of multipart message: %s"), image);
 	webkit_uri_scheme_request_finish_error(request, error);
 	g_error_free(error);
 	g_free(image);
