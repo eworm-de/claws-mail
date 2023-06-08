@@ -912,7 +912,56 @@ gchar *procheader_get_fromname(const gchar *str)
 	return name;
 }
 
-static gint procheader_scan_date_string(const gchar *str,
+static gint procheader_remove_comment_in_date_string(gchar *o_str)
+{
+	gchar str[strlen(o_str)+1];
+	int i, j = 0;
+	int in_comment_nest_level = 0;
+	gboolean flag_escape_backslash = FALSE;
+
+	for (i=0; i < strlen(o_str); i++) {
+		switch (o_str[i]) {
+		case '(':
+			in_comment_nest_level++;
+			if (in_comment_nest_level > 16) {
+				str[j] = '\0';
+				return TRUE;
+			}
+			continue;
+		case '\\':
+			if (in_comment_nest_level > 0) {
+				flag_escape_backslash = TRUE;
+				continue;
+			}
+			break;
+		case ')':
+			if (flag_escape_backslash == TRUE) {
+				flag_escape_backslash = FALSE;
+				continue;
+			}
+			in_comment_nest_level--;
+			if (in_comment_nest_level < 0) {
+				str[j] = '\0';
+				return TRUE;
+			}
+			continue;
+		default:
+			if (in_comment_nest_level > 0) {
+				if (flag_escape_backslash == TRUE)
+					flag_escape_backslash = FALSE;
+				continue;
+			}
+			break;
+		}
+		str[j++] = o_str[i];
+	}
+	str[j] = '\0';
+	strcpy(o_str, str);
+	return TRUE;
+}
+
+
+static gint procheader_scan_date_string(const gchar *o_str,
 					gchar *weekday, gint *day,
 					gchar *month, gint *year,
 					gint *hh, gint *mm, gint *ss,
@@ -924,9 +973,13 @@ static gint procheader_scan_date_string(const gchar *str,
 	gint zone1 = 0, zone2 = 0;
 	gchar offset_sign, zonestr[7];
 	gchar sep1;
+	gchar str[strlen(o_str)+1];
 
-	if (str == NULL)
+	if (o_str == NULL)
 		return -1;
+	strcpy(str, o_str);
+	if (strchr(str, '(') != NULL)
+		procheader_remove_comment_in_date_string(str);
 
 	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %6s",
 			weekday, day, month, year, hh, mm, ss, zone);

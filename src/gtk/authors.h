@@ -303,6 +303,7 @@ static char *CONTRIBS_LIST[] = {
 "TOGAWA",
 "Tajiri",
 "Takahashi",
+"Sakaguchi Takayuki",
 "Tanaka",
 "Shimamoto \"Neko\" Tatsuya",
 "Timo Teräs",
