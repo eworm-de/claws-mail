@@ -973,10 +973,12 @@ static gint procheader_scan_date_string(const gchar *o_str,
 	gint zone1 = 0, zone2 = 0;
 	gchar offset_sign, zonestr[7];
 	gchar sep1;
-	gchar str[strlen(o_str)+1];
 
 	if (o_str == NULL)
 		return -1;
+
+	gchar str[strlen(o_str)+1];
+
 	strcpy(str, o_str);
 	if (strchr(str, '(') != NULL)
 		procheader_remove_comment_in_date_string(str);
