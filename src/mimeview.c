@@ -102,7 +102,8 @@ static gboolean mimeview_scrolled	(GtkWidget	*widget,
 					 GdkEventScroll	*event,
 					 MimeView	*mimeview);
 
-static void mimeview_save_all		(MimeView	*mimeview);
+static void mimeview_save_all		(MimeView	*mimeview,
+					 gboolean	 attachments_only);
 #ifndef G_OS_WIN32
 static void mimeview_open_part_with	(MimeView	*mimeview,
 					 MimeInfo	*partinfo,
@@ -203,7 +204,12 @@ static void mimeview_save_as_cb(GtkAction *action, gpointer data)
 
 static void mimeview_save_all_cb(GtkAction *action, gpointer data)
 {
-	mimeview_save_all((MimeView *)data);
+	mimeview_save_all((MimeView *)data, FALSE);
+}
+
+static void mimeview_save_all_attachments_cb(GtkAction *action, gpointer data)
+{
+	mimeview_save_all((MimeView *)data, TRUE);
 }
 
 static void mimeview_select_next_part_cb(GtkAction *action, gpointer data)
@@ -227,6 +233,7 @@ static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView/DisplayAsText", NULL, N_("_Display as text"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
 	{ "MimeView/SaveAs", NULL, N_("_Save as..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
 	{ "MimeView/SaveAll", NULL, N_("Save _all..."), NULL, "Save all parts", G_CALLBACK(mimeview_save_all_cb) },
+	{ "MimeView/SaveAllAttachments", NULL, N_("Save all attachments..."), NULL, "Save all attachments", G_CALLBACK(mimeview_save_all_attachments_cb) },
 	{ "MimeView/NextPart", NULL, N_("Next part"), NULL, "Next part", G_CALLBACK(mimeview_select_next_part_cb) },
 	{ "MimeView/PrevPart", NULL, N_("Previous part"), NULL, "Previous part", G_CALLBACK(mimeview_select_prev_part_cb) }
 };
@@ -447,6 +454,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			GTK_UI_MANAGER_MENUITEM);
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "SaveAll", "MimeView/SaveAll",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "SaveAllAttachments", "MimeView/SaveAllAttachments",
 			GTK_UI_MANAGER_MENUITEM);
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "NextPart", "MimeView/NextPart",
@@ -1888,7 +1898,7 @@ static void mimeview_save_all_info(gint errors, gint total)
  * Menu callback: Save all attached files
  * \param mimeview Current display
  */
-static void mimeview_save_all(MimeView *mimeview)
+static void mimeview_save_all(MimeView *mimeview, gboolean attachments_only)
 {
 	MimeInfo *partinfo;
 	gchar *dirname;
@@ -1933,10 +1943,14 @@ static void mimeview_save_all(MimeView *mimeview)
 	}
 
 	while (partinfo != NULL) {
-		if (partinfo->type != MIMETYPE_MESSAGE &&
-		    partinfo->type != MIMETYPE_MULTIPART &&
-		    (partinfo->disposition != DISPOSITIONTYPE_INLINE
-		     || get_real_part_name(partinfo) != NULL)) {
+		if (!attachments_only &&
+		    (partinfo->type != MIMETYPE_MESSAGE &&
+		     partinfo->type != MIMETYPE_MULTIPART &&
+		     (partinfo->disposition != DISPOSITIONTYPE_INLINE ||
+		      get_real_part_name(partinfo) != NULL)) ||
+		     attachments_only &&
+		     (partinfo->disposition == DISPOSITIONTYPE_ATTACHMENT &&
+		      get_real_part_name(partinfo) != NULL)) {
 			gchar *filename = mimeview_get_filename_for_part(
 				partinfo, dirname, number++);
 
