@@ -4131,7 +4131,7 @@ static void register_send_page(void)
 	static gchar *path[3];
 
 	path[0] = _("Account");
-	path[1] = C_("Preferences menu item", "Send");
+	path[1] = (gchar *) C_("Preferences menu item", "Send");
 	path[2] = NULL;
         
 	send_page.page.path = path;
