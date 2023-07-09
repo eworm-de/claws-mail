@@ -912,6 +912,18 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_SCRAM_SHA1:
 		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		break;
+	case IMAP_AUTH_SCRAM_SHA224:
+		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-224");
+		break;
+	case IMAP_AUTH_SCRAM_SHA256:
+		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-256");
+		break;
+	case IMAP_AUTH_SCRAM_SHA384:
+		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-384");
+		break;
+	case IMAP_AUTH_SCRAM_SHA512:
+		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-512");
+		break;
 	case IMAP_AUTH_PLAIN:
 		ok = imap_cmd_login(session, user, pass, "PLAIN");
 		break;
@@ -935,6 +947,10 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				"\t CRAM-MD5 %d\n"
 				"\t DIGEST-MD5 %d\n"
 				"\t SCRAM-SHA-1 %d\n"
+				"\t SCRAM-SHA-224 %d\n"
+				"\t SCRAM-SHA-256 %d\n"
+				"\t SCRAM-SHA-384 %d\n"
+				"\t SCRAM-SHA-512 %d\n"
 				"\t PLAIN %d\n"
 #ifdef USE_GNUTLS
 				"\t OAUTH2 %d\n"
@@ -945,6 +961,10 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			imap_has_capability(session, "CRAM-MD5"),
 			imap_has_capability(session, "DIGEST-MD5"),
 			imap_has_capability(session, "SCRAM-SHA-1"),
+			imap_has_capability(session, "SCRAM-SHA-224"),
+			imap_has_capability(session, "SCRAM-SHA-256"),
+			imap_has_capability(session, "SCRAM-SHA-384"),
+			imap_has_capability(session, "SCRAM-SHA-512"),
 			imap_has_capability(session, "PLAIN"),
 #ifdef USE_GNUTLS
 			imap_has_capability(session, "XOAUTH2"),
@@ -955,6 +975,14 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "CRAM-MD5");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "DIGEST-MD5"))
 			ok = imap_cmd_login(session, user, pass, "DIGEST-MD5");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-512"))
+			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-512");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-384"))
+			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-384");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-256"))
+			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-256");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-224"))
+			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-224");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-1"))
 			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "PLAIN"))
@@ -988,6 +1016,30 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 
 		if (type == IMAP_AUTH_SCRAM_SHA1) {
 			ext_info = _("\n\nSCRAM-SHA-1 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "SCRAM SASL plugin is installed.");
+		}
+
+		if (type == IMAP_AUTH_SCRAM_SHA224) {
+			ext_info = _("\n\nSCRAM-SHA-224 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "SCRAM SASL plugin is installed.");
+		}
+
+		if (type == IMAP_AUTH_SCRAM_SHA256) {
+			ext_info = _("\n\nSCRAM-SHA-256 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "SCRAM SASL plugin is installed.");
+		}
+
+		if (type == IMAP_AUTH_SCRAM_SHA384) {
+			ext_info = _("\n\nSCRAM-SHA-384 logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "SCRAM SASL plugin is installed.");
+		}
+
+		if (type == IMAP_AUTH_SCRAM_SHA512) {
+			ext_info = _("\n\nSCRAM-SHA-512 logins only work if libetpan has been "
 				     "compiled with SASL support and the "
 				     "SCRAM SASL plugin is installed.");
 		}

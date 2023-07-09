@@ -992,7 +992,7 @@ static void login_run(struct etpan_thread_op * op)
 			param->type, param->server, NULL, NULL,
 			param->login, param->login,
 			param->password, NULL);
-	else if (!strcmp(param->type, "SCRAM-SHA-1"))
+	else if (!strncmp(param->type, "SCRAM-SHA-", 10))
 		/* 7th argument has to be NULL here, to stop libetpan sending the
 		 * a= attribute in its initial SCRAM-SHA-1 message to server. At least
 		 * Dovecot 2.2 doesn't seem to like that, and will not authenticate
