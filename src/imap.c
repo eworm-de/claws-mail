@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -795,7 +795,6 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 			     const gchar *path)
 {
 	folder_remote_folder_init((Folder *)folder, name, path);
-	IMAP_FOLDER(folder)->max_set_size = IMAP_SET_MAX_COUNT;
 	IMAP_FOLDER(folder)->search_charset_supported = TRUE;
 	IMAP_FOLDER(folder)->search_charset = g_strdup(conv_get_locale_charset_str_no_utf8());
 }
@@ -1251,6 +1250,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 
 	imap_init(folder);
+	IMAP_FOLDER(folder)->max_set_size = account->imap_batch_size;
 	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP server: %s:%d..."),
 				folder->account->account_name, folder->account->recv_server,
 				port);

@@ -176,6 +176,7 @@ static char *CONTRIBS_LIST[] = {
 "Marc Hoper",
 "Michihide Hotta",
 "Shawn Houston",
+"Charles Huber",
 "Michael Hughes",
 "Richard Hughes",
 "Arthur Huillet",

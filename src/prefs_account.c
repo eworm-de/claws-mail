@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,6 +185,7 @@ typedef struct ReceivePage
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
+	GtkWidget *imap_batch_size_spinbtn;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *maxarticle_label;
@@ -608,6 +609,10 @@ static PrefParam receive_param[] = {
 	{"low_bandwidth", "FALSE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
 	 &receive_page.low_bandwidth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_batch_size", "500", &tmp_ac_prefs.imap_batch_size, P_INT,
+	 &receive_page.imap_batch_size_spinbtn,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"autochk_use_default", "TRUE", &tmp_ac_prefs.autochk_use_default, P_BOOL,
 		&receive_page.autochk_use_default_checkbtn,
@@ -1567,6 +1572,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *imapdir_entry;
 	GtkWidget *subsonly_checkbtn;
 	GtkWidget *low_bandwidth_checkbtn;
+	GtkWidget *imap_batch_size_spinbtn;
 	GtkWidget *local_frame;
 	GtkWidget *local_vbox;
 	GtkWidget *local_hbox;
@@ -1838,6 +1844,19 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
+	label = gtk_label_new(_("Batch size"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
+
+	imap_batch_size_spinbtn = gtk_spin_button_new_with_range(0, 1000000, 1);
+	gtk_widget_set_size_request(imap_batch_size_spinbtn, 64, -1);
+	gtk_widget_show (imap_batch_size_spinbtn);
+	gtk_box_pack_start(GTK_BOX(hbox1), imap_batch_size_spinbtn, FALSE, FALSE, 0);
+
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
+
 	/* Auto-checking */
 	vbox4 = gtkut_get_options_frame(vbox1, &frame, _("Automatic checking"));
 
@@ -1932,6 +1951,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->imapdir_entry		= imapdir_entry;
 	page->subsonly_checkbtn		= subsonly_checkbtn;
 	page->low_bandwidth_checkbtn	= low_bandwidth_checkbtn;
+	page->imap_batch_size_spinbtn	= imap_batch_size_spinbtn;
 	page->local_frame		= local_frame;
 	page->local_inbox_label	= local_inbox_label;
 	page->local_inbox_entry	= local_inbox_entry;
@@ -5480,6 +5500,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_batch_size_spinbtn);
 		break;
 	case A_LOCAL:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -5563,6 +5584,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_batch_size_spinbtn);
 		break;
 	case A_IMAP4:
 #ifndef HAVE_LIBETPAN
@@ -5655,6 +5677,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive_page.imapdir_entry);
 		gtk_widget_show(receive_page.subsonly_checkbtn);
 		gtk_widget_show(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_show(receive_page.imap_batch_size_spinbtn);
 		break;
 	case A_NONE:
 		gtk_widget_show(send_page.msgid_checkbtn);
@@ -5736,6 +5759,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_batch_size_spinbtn);
 		break;
 	case A_POP3:
 		/* continue to default: */
@@ -5824,6 +5848,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
+		gtk_widget_hide(receive_page.imap_batch_size_spinbtn);
 		break;
 	}
 

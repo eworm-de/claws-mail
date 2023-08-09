@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 DINH Viet Hoa and the Claws Mail team
+ * Copyright (C) 2005-2023 the Claws Mail team and DINH Viet Hoa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
 
 #include <libetpan/libetpan.h>
 #include "folder.h"
-
-#define IMAP_SET_MAX_COUNT 500
 
 typedef enum
 {
