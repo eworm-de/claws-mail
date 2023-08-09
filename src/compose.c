@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10899,13 +10899,6 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 		if (contents == NULL)
 			return;
 
-                glong len = g_utf8_strlen(contents, -1);
-                if (len > MAX_ALLOCA_MEM_SIZE) {
-                        alertpanel_error(_("Size of pasted text exceeds limit (%dKiB) for paste.\n"
-					   "Attach as file instead."),
-					 (MAX_ALLOCA_MEM_SIZE / 1024));
-                        return;
-                }
 		/* we shouldn't delete the selection when middle-click-pasting, or we
 		 * can't mid-click-paste our own selection */
 		if (clip != GDK_SELECTION_PRIMARY) {
