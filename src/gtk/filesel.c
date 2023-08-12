@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,11 +83,9 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
 	gchar * action_btn = (open == TRUE) ? _("_Open"):_("_Save");
-	GtkWidget *chooser = gtk_file_chooser_dialog_new
+	GtkFileChooserNative *chooser = gtk_file_chooser_native_new
 				(title, NULL, action, 
-				_("_Cancel"), GTK_RESPONSE_CANCEL,
-				action_btn, GTK_RESPONSE_ACCEPT, 
-				NULL);
+				action_btn, _("_Cancel"));
 
 	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(chooser), FALSE);
 
@@ -101,8 +99,8 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	if (action == GTK_FILE_CHOOSER_ACTION_OPEN) {
 		GtkImage *preview;
 		preview = GTK_IMAGE(gtk_image_new ());
-		gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(chooser), GTK_WIDGET(preview));
-		g_signal_connect (chooser, "update-preview",
+		gtk_file_chooser_set_preview_widget(GTK_FILE_CHOOSER(chooser), GTK_WIDGET(preview));
+		g_signal_connect(chooser, "update-preview",
 			    G_CALLBACK (update_preview_cb), preview);
 
 	}
@@ -111,10 +109,10 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
 	}
 
-	manage_window_set_transient (GTK_WINDOW(chooser));
+	manage_window_set_transient(GTK_WINDOW(chooser));
 	gtk_window_set_modal(GTK_WINDOW(chooser), TRUE);
 
-	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER(chooser), multiple_files);
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(chooser), multiple_files);
 
 	if (path && strlen(path) > 0) {
 		char *filename = NULL;
@@ -154,11 +152,10 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		g_free(tmp);
 	}
 
-	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
-		slist = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (chooser));
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) 
+		slist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER (chooser));
 	
-	manage_window_focus_out(chooser, NULL, NULL);
-	gtk_widget_destroy (chooser);
+	g_object_unref(chooser);
 
 	slist_orig = slist;
 	

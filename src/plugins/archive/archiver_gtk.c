@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2023 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -932,18 +932,17 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 
 static void filesel_cb(GtkWidget *widget, gpointer data)
 {
-	GtkWidget *dialog;
+	GtkFileChooserNative *dialog;
 	gchar* file;
 	gint newpos = 0;
 	struct ArchivePage* page = (struct ArchivePage *) data;
 
-	dialog = gtk_file_chooser_dialog_new(
+	dialog = gtk_file_chooser_native_new(
 		_("Select file name for archive [suffix should reflect archive like .tgz]"),
 			NULL,
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			_("_Cancel"), GTK_RESPONSE_CANCEL,
-			_("_Apply"), GTK_RESPONSE_APPLY,
-			NULL);
+			_("_Apply"),
+			_("_Cancel"));
 
 	if (archiver_prefs.save_folder)
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
@@ -951,7 +950,7 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 	else
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
 						    get_home_dir());
-	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_APPLY) {
+	if (gtk_native_dialog_run (GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		if (file) {
 			gtk_editable_delete_text(GTK_EDITABLE(page->file), 0, -1);
@@ -962,7 +961,7 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 			page->force_overwrite = TRUE;
 		}
 	}
-	gtk_widget_destroy(dialog);
+	g_object_unref(dialog);
 	debug_print("Name for archive: %s\n",
 				gtk_entry_get_text(GTK_ENTRY(page->file)));
 }

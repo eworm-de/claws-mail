@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2021 the Claws Mail Team
+ * Copyright (C) 2003-2023 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,20 +79,20 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 
 static void clamd_folder_cb(GtkWidget *widget, gpointer data)
 {
-	GtkWidget *dialog;
+	GtkFileChooserNative *dialog;
 	gchar* file;
 	gint newpos = 0;
 	struct ClamAvPage *page = (struct ClamAvPage *) data;
 
-	dialog = gtk_file_chooser_dialog_new(
+	dialog = gtk_file_chooser_native_new(
 					"Select file with clamd configuration [clamd.conf]",
 					NULL,
 					GTK_FILE_CHOOSER_ACTION_OPEN,
-					_("_Cancel"), GTK_RESPONSE_CANCEL,
-					_("_Apply"), GTK_RESPONSE_APPLY,
-					NULL);
+					_("_Apply"),
+					_("_Cancel"));
+
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/etc");
-	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_APPLY) {
+	if (gtk_native_dialog_run (GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		debug_print("New clamd.conf: %s\n", file);
 		if (file) {
@@ -101,7 +101,7 @@ static void clamd_folder_cb(GtkWidget *widget, gpointer data)
 			g_free(file);
 		}
 	}
-	gtk_widget_destroy(dialog);
+	g_object_unref(dialog);
 }
 
 static void check_permission(gchar* folder) {
