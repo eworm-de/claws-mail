@@ -4560,7 +4560,9 @@ static gint imap_cmd_expunge(IMAPSession *session)
 		return -1;
 	}
 
+	statusbar_print_all(_("Expunging deleted messages..."));
 	r = imap_threaded_expunge(session->folder);
+	statusbar_pop_all();
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), NULL, r);
 		return r;
