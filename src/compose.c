@@ -2578,11 +2578,11 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose_colorize_signature(compose);
 
-	
 	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Add", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", FALSE);
 
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/SendLater", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/Save", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/AttachFile", FALSE);
@@ -2593,6 +2593,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/ShowRuler", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/Actions", FALSE);
 	
+	if (compose->toolbar->sendl_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sendl_btn, FALSE);
 	if (compose->toolbar->draft_btn)
 		gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
 	if (compose->toolbar->insert_btn)
@@ -10156,7 +10158,8 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	gint attach_nr_selected;
 	GtkTreePath *path;
 	
-	if (!event) return FALSE;
+	if (!event || compose->redirect_filename != NULL)
+		return FALSE;
 
 	if (event->button == 3) {
 		attach_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
