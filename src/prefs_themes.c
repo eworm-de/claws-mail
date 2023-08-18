@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2022 the Claws Mail team
+ * Copyright (C) 2003-2023 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1362,8 +1362,7 @@ static void prefs_themes_save(PrefsPage *page)
 				&& scaling_ppi != prefs_common.pixmap_scaling_ppi)) {
 		/* same theme, different scaling options */
 		debug_print("Updating theme scaling\n");
-		stock_pixmap_invalidate_all_icons();
-		main_window_reflect_prefs_all_real(TRUE);
+		main_window_reflect_prefs_all_real(FALSE);
 		compose_reflect_prefs_pixmap_theme();
 		addrcompl_reflect_prefs_pixmap_theme();
 	}

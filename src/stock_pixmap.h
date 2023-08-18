@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -250,7 +250,6 @@ gint stock_pixbuf_gdk		(StockPixmap icon, GdkPixbuf **pixbuf);
 
 GList *stock_pixmap_themes_list_new	(void);
 void stock_pixmap_themes_list_free	(GList *list);
-void stock_pixmap_invalidate_all_icons	(void);
 gchar *stock_pixmap_get_name         (StockPixmap icon);
 StockPixmap stock_pixmap_get_icon    (gchar *file);
 GtkWidget *stock_pixmap_widget_with_overlay (StockPixmap	 icon,
