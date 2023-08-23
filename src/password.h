@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2016 Claws Mail team
+ * Copyright (C) 2016-2023 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef __PASSWORD_H
@@ -50,7 +49,11 @@ void primary_passphrase_change(const gchar *oldp, const gchar *newp);
  * returns a newly allocated string for the encrypt/decrypt result.
  * This is for compatibility with with the rest of password-related
  * functions.*/
+#ifdef PASSWORD_CRYPTO_OLD
 gchar *password_encrypt_old(const gchar *password);
+#endif
+/* Decryption is still needed for supporting migration of old
+ * configurations to newer encryption mechanisms. */
 gchar *password_decrypt_old(const gchar *password);
 
 #ifdef PASSWORD_CRYPTO_GNUTLS
