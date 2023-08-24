@@ -1152,9 +1152,10 @@ AC_ARG_ENABLE(libravatar-plugin,
 		[  --disable-libravatar-plugin     Do not build libravatar  plugin],
 		[enable_libravatar_plugin=$enableval], [enable_libravatar_plugin=auto])
 
+dnl disabled by default
 AC_ARG_ENABLE(litehtml_viewer-plugin,
-		[  --disable-litehtml_viewer-plugin       Do not build litehtml_viewer plugin],
-		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=auto])
+		[  --enable-litehtml_viewer-plugin       Build litehtml_viewer plugin],
+		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=no])
 
 AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
@@ -1725,7 +1726,7 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
         if test x"$dependencies_missing" = x; then
                 PLUGINS="$PLUGINS litehtml_viewer"
                 AC_MSG_RESULT(yes)
-        elif test x"$enable_litehtml_viewer_plugin" = xauto; then
+        elif test x"$enable_litehtml_viewer_plugin" = xyes; then
                 AC_MSG_RESULT(no)
                 AC_MSG_WARN("Plugin litehtml_viewer will not be built; missing $dependencies_missing")
                 enable_litehtml_viewer_plugin=no
