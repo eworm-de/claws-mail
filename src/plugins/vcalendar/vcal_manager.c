@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2023 the Claws Mail team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1330,12 +1329,10 @@ static gchar *write_headers_ical(PrefsAccount 	*account,
 	memset(date, 0, sizeof(date));
 	
 	prop = icalcomponent_get_first_property(ievent, ICAL_SUMMARY_PROPERTY);
-	if (prop) {
-		summary = g_strdup(icalproperty_get_summary(prop));
-		icalproperty_free(prop);
-	} else {
-		summary = g_strdup("");
-	}
+	summary = g_strdup(icalproperty_get_summary(prop));
+	icalproperty_free(prop);
+	if (!summary)
+		summary = g_strdup(_("[no summary]"));
 	
 	while (strchr(summary, '\n'))
 		*(strchr(summary, '\n')) = ' ';

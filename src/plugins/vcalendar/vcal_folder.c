@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 Colin Leroy <colin@colino.net> and
- * the Claws Mail team
+ * Copyright (C) 1999-2023 the Claws Mail team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1470,14 +1469,13 @@ gchar* get_item_event_list_for_date(FolderItem *item, EventTime date)
 			if (days != date)
 				continue;
 			prop = icalcomponent_get_first_property((icalcomponent *)fdata->event, ICAL_SUMMARY_PROPERTY);
-			if (prop) {
-				if (!g_utf8_validate(icalproperty_get_summary(prop), -1, NULL))
-					summary = conv_codeset_strdup(icalproperty_get_summary(prop), 
+			summary = g_strdup(icalproperty_get_summary(prop));
+			if (summary) {
+				if (!g_utf8_validate(summary, -1, NULL))
+					summary = conv_codeset_strdup(summary, 
 						conv_get_locale_charset_str(), CS_UTF_8);
-				else
-					summary = g_strdup(icalproperty_get_summary(prop));
 			} else
-				summary = g_strdup("-");
+				summary = g_strdup(_("[no summary]"));
 
 			strs = g_slist_prepend(strs, summary);
 		}
