@@ -662,6 +662,7 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, OAUTH2Data->expiry_str, FALSE);
 		//Some providers issue replacement refresh tokens with each access token. Re-store whether replaced or not. 
 		passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH, OAUTH2Data->refresh_token, FALSE);
+		passwd_store_write_config();
 		log_message(LOG_PROTOCOL, _("OAuth2 access and refresh token updated\n"));  
 	}
 

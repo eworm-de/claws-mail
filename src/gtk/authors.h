@@ -109,6 +109,7 @@ static char *CONTRIBS_LIST[] = {
 "Anton Butanaev",
 "Henrik Carlqvist",
 "Luca Cavalli",
+"Gianni Ceccarelli",
 "David Chalmers",
 "Wei-Lun Chao",
 "Guillaume Chazarain",
