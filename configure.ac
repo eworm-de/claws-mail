@@ -1152,9 +1152,8 @@ AC_ARG_ENABLE(libravatar-plugin,
 		[  --disable-libravatar-plugin     Do not build libravatar  plugin],
 		[enable_libravatar_plugin=$enableval], [enable_libravatar_plugin=auto])
 
-dnl disabled by default
 AC_ARG_ENABLE(litehtml_viewer-plugin,
-		[  --disable-litehtml_viewer-plugin       Do not Build litehtml_viewer plugin],
+		[  --disable-litehtml_viewer-plugin       Do not build litehtml_viewer plugin],
 		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=auto])
 
 AC_ARG_ENABLE(mailmbox-plugin,
