@@ -1154,8 +1154,8 @@ AC_ARG_ENABLE(libravatar-plugin,
 
 dnl disabled by default
 AC_ARG_ENABLE(litehtml_viewer-plugin,
-		[  --enable-litehtml_viewer-plugin       Build litehtml_viewer plugin],
-		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=no])
+		[  --disable-litehtml_viewer-plugin       Do not Build litehtml_viewer plugin],
+		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=auto])
 
 AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
@@ -1309,7 +1309,7 @@ AC_SUBST(FONTCONFIG_CFLAGS)
 AC_SUBST(FONTCONFIG_LIBS)
 
 dnl gumbo **********************************************************************
-PKG_CHECK_MODULES(LIBGUMBO, gumbo >= 0.10, HAVE_LIBGUMBO=yes, HAVE_LIBGUMBO=no)
+PKG_CHECK_MODULES(LIBGUMBO, gumbo >= 0.12, HAVE_LIBGUMBO=yes, HAVE_LIBGUMBO=no)
 AC_SUBST(LIBGUMBO_CFLAGS)
 AC_SUBST(LIBGUMBO_LIBS)
 
