@@ -1725,7 +1725,7 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
         if test x"$dependencies_missing" = x; then
                 PLUGINS="$PLUGINS litehtml_viewer"
                 AC_MSG_RESULT(yes)
-        elif test x"$enable_litehtml_viewer_plugin" = xyes; then
+        elif test x"$enable_litehtml_viewer_plugin" = xauto; then
                 AC_MSG_RESULT(no)
                 AC_MSG_WARN("Plugin litehtml_viewer will not be built; missing $dependencies_missing")
                 enable_litehtml_viewer_plugin=no
