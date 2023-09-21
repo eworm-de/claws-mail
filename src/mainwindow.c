@@ -1,19 +1,19 @@
 /*
-   Claws Mail -- a GTK based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Claws Mail -- a GTK based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -2949,6 +2949,8 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	if (mainwin->lock_count == 0 && !claws_is_starting())
 		UPDATE_STATE(M_UNLOCKED);
 	if (selection != SUMMARY_NONE && selection != SUMMARY_SELECTED_NONE)
+		UPDATE_STATE(M_MSG_SELECTED);
+	if (item && item->total_msgs > 0)
 		UPDATE_STATE(M_MSG_EXIST);
 	if (item && item->path && folder_item_parent(item) && !item->no_select) {
 		UPDATE_STATE(M_EXEC);
@@ -3150,16 +3152,16 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SET_SENSITIVE("Menu/View/HideReadThreads", M_HIDE_READ_THREADS, M_SUMMARY_ISLIST, M_NOT_DRAFT);
 	SET_SENSITIVE("Menu/View/HideReadMessages", M_HIDE_READ_MSG, M_SUMMARY_ISLIST, M_NOT_DRAFT);
 	SET_SENSITIVE("Menu/View/HideDelMessages", M_SUMMARY_ISLIST, M_NOT_DRAFT);
-	SET_SENSITIVE("Menu/View/Goto/Prev", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/Next", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/PrevUnread", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/NextUnread", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/PrevNew", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/NextNew", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/PrevMarked", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/NextMarked", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/PrevLabeled", M_MSG_EXIST);
-	SET_SENSITIVE("Menu/View/Goto/NextLabeled", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/Prev", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/Next", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/PrevUnread", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/NextUnread", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/PrevNew", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/NextNew", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/PrevMarked", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/NextMarked", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/PrevLabeled", M_MSG_SELECTED);
+	SET_SENSITIVE("Menu/View/Goto/NextLabeled", M_MSG_SELECTED);
 	SET_SENSITIVE("Menu/View/Goto/ParentMessage", M_SINGLE_TARGET_EXIST);
 	SET_SENSITIVE("Menu/View/Goto/NextPart", M_SINGLE_TARGET_EXIST);
 	SET_SENSITIVE("Menu/View/Goto/PrevPart", M_SINGLE_TARGET_EXIST);
