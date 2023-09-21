@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2023 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -447,6 +447,7 @@ static gchar *search_descr_strings[] = {
 	"tagged",N_("messages which have tag(s)"),
 	"T",	 N_("marked messages"),
 	"U",	 N_("unread messages"),
+	"v H V", N_("messages which contain V in header H"),
 	"x S",	 N_("messages which contain S in References header"),
 	"X \"cmd args\"", N_("messages returning 0 when passed to command - %F is message file"),
 	"y S",	 N_("messages which contain S in X-Label header"),

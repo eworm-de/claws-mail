@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2012-2014 the Claws Mail team
+ * Copyright (C) 2012-2023 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -130,11 +129,68 @@ void advsearch_abort(AdvancedSearch *search)
 	search->search_aborted = TRUE;
 }
 
+
+static void advsearch_extract_param(GString *matcherstr, gchar **cmd_start_, gchar **cmd_end_, gboolean quotes, gboolean qualifier, gboolean casesens, gboolean regex)
+{
+	gchar *cmd_start, *cmd_end;
+	gchar term_char, save_char;
+
+	cmd_start = *cmd_start_;
+	cmd_end   = *cmd_end_;
+
+	/* extract a parameter, allow quotes */
+	while (*cmd_end && isspace((guchar)*cmd_end))
+		cmd_end++;
+
+	cmd_start = cmd_end;
+	if (*cmd_start == '"') {
+		term_char = '"';
+		cmd_end++;
+	}
+	else
+		term_char = ' ';
+
+	/* extract actual parameter */
+	while ((*cmd_end) && (*cmd_end != term_char))
+		cmd_end++;
+
+	if (*cmd_end == '"')
+		cmd_end++;
+
+	save_char = *cmd_end;
+	*cmd_end = '\0';
+
+	if (qualifier) {
+		if (casesens)
+			g_string_append(matcherstr, regex ? "regexp " : "match ");
+		else
+			g_string_append(matcherstr, regex ? "regexpcase " : "matchcase ");
+	}
+
+	/* do we need to add quotes ? */
+	if (quotes && term_char != '"')
+		g_string_append(matcherstr, "\"");
+
+	/* copy actual parameter */
+	g_string_append(matcherstr, cmd_start);
+
+	/* do we need to add quotes ? */
+	if (quotes && term_char != '"')
+		g_string_append(matcherstr, "\"");
+
+	/* restore original character */
+	*cmd_end = save_char;
+
+	*cmd_end_   = cmd_end;
+	*cmd_start_ = cmd_start;
+	return;
+}
+
 gchar *advsearch_expand_search_string(const gchar *search_string)
 {
 	int i = 0;
-	gchar term_char, save_char;
 	gchar *cmd_start, *cmd_end;
+	gchar save_char;
 	GString *matcherstr;
 	gchar *returnstr = NULL;
 	gchar *copy_str;
@@ -190,6 +246,7 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "x",	"references",			1,	TRUE,	TRUE  },
 		{ "X",  "test",				1,	FALSE,  FALSE },
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
+		{ "v",	"header",			2,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
 		{ "p",	"partial",			0,	FALSE, 	FALSE },
@@ -258,49 +315,13 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 				if (cmds[i].numparams == 0)
 					break;
 
-				/* extract a parameter, allow quotes */
-				while (*cmd_end && isspace((guchar)*cmd_end))
-					cmd_end++;
-
-				cmd_start = cmd_end;
-				if (*cmd_start == '"') {
-					term_char = '"';
-					cmd_end++;
+				/* extract a first parameter before the final matched one */
+				if (cmds[i].numparams == 2)
+				{
+					advsearch_extract_param(matcherstr, &cmd_start, &cmd_end, cmds[i].quotes, FALSE, casesens, regex);
+					g_string_append(matcherstr, " ");
 				}
-				else
-					term_char = ' ';
-
-				/* extract actual parameter */
-				while ((*cmd_end) && (*cmd_end != term_char))
-					cmd_end++;
-
-				if (*cmd_end == '"')
-					cmd_end++;
-
-				save_char = *cmd_end;
-				*cmd_end = '\0';
-
-				if (cmds[i].qualifier) {
-					if (casesens)
-						g_string_append(matcherstr, regex ? "regexp " : "match ");
-					else
-						g_string_append(matcherstr, regex ? "regexpcase " : "matchcase ");
-				}
-
-				/* do we need to add quotes ? */
-				if (cmds[i].quotes && term_char != '"')
-					g_string_append(matcherstr, "\"");
-
-				/* copy actual parameter */
-				g_string_append(matcherstr, cmd_start);
-
-				/* do we need to add quotes ? */
-				if (cmds[i].quotes && term_char != '"')
-					g_string_append(matcherstr, "\"");
-
-				/* restore original character */
-				*cmd_end = save_char;
-
+				advsearch_extract_param(matcherstr, &cmd_start, &cmd_end, cmds[i].quotes, cmds[i].qualifier, casesens, regex);
 				break;
 			}
 		}
