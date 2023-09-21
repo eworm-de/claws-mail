@@ -401,57 +401,68 @@ https://www.claws-mail.org/plugins.php
     powerful patterns for message selections. Mutt users will
     immediately recognise most of the available patterns:
 
-    Pattern  Parameter  Selects
-    ----------------------------------------------------
-    a                   all messages
-    ag       #          messages whose age is greater than #
-    al       #          messages whose age is lower than #
-    b        S          messages which contain S in the message body
-    B        S          messages which contain S in the whole message
-    c        S          messages carbon-copied to S
-    C        S          message is either to: or cc: to S
-    D                   deleted messages
-    e        S          messages which contain S in the Sender field
-    E        S          true if execute "S" succeeds
-    f        S          messages originating from user S
-    F                   forwarded messages
-    h        S          messages which contain S in any header name or value
-    H        S          messages which contain S in the value of any header
-    i        S          messages which contain S in Message-Id header
-    I        S          messages which contain S in inreplyto header
-    k	     #		messages which are marked with color #
-    L                   locked messages
-    n        S          messages which are in newsgroup S
-    N                   new messages
-    O                   old messages
-    r                   messages which have been replied to
-    R                   read messages
-    s        S          messages which contain S in subject
-    se       #          messages whose score is equal to #
-    sg       #          messages whose score is greater than #
-    sl       #          messages whose score is lower than #
-    Se       #          messages whose size is equal to #
-    Sg       #          messages whose size is greater than #
-    Ss       #          messages whose size is smaller than #
-    t        S          messages which have been sent to S
-    tg       S		messages with tags containing S
-    tagged		messages which are tagged
-    T                   marked messages
-    U                   unread messages
-    x        S          messages which contain S in References header
-    x        "cmd args" messages returning 0 when passed to command
-			- %F is message file
-    y        S          messages which contain S in X-Label header
+    Pattern Parameter             Selects
+    --------------------------------------------------------------------------
+    a                             all messages
+    ag      #                     messages whose age is greater than # days
+    al      #                     messages whose age is lower than # days
+    agh     #                     messages whose age is greather than # hours
+    alh     #                     messages whose age is lower than # hours
+    b       S                     messages which contain S in the message body
+    B       S                     messages which contain S in the whole message
+    c       S                     messages carbon-copied to S
+    C       S                     message is either To: or Cc: to S
+    D                             deleted messages
+    da      "YYYY-MM-dd HH:mm:ss" messages whose date is after requested date
+                                  (time is optional)
+    db      "YYYY-MM-dd HH:mm:ss" messages whose date is before requested date
+                                  (time is optional)
+    e       S                     messages which contain S in the Sender field
+    E       S                     true if execute "S" succeeds
+    f       S                     messages originating from user S
+    F                             forwarded messages
+    h       S                     messages which contain S in any header name
+                                  or value
+    H       S                     messages which contain S in the value of
+                                  any header
+    ha                            messages which have attachments
+    i       S                     messages which contain S in Message-Id header
+    I       S                     messages which contain S in In-Reply-To
+                                  header
+    k        #                    messages which are marked with color #
+    L                             locked messages
+    n       S                     messages which are in newsgroup S
+    N                             new messages
+    O                             old messages
+    p                             incomplete messages (not entirely downloaded)
+    r                             messages which have been replied to
+    R                             read messages
+    s       S                     messages which contain S in subject
+    se      #                     messages whose score is equal to # points
+    sg      #                     messages whose score is greater than # points
+    sl      #                     messages whose score is lower than # points
+    Se      #                     messages whose size is equal to # bytes
+    Sg      #                     messages whose size is greater than # bytes
+    Ss      #                     messages whose size is smaller than # bytes
+    t       S                     messages which have been sent to S
+    tg      S                     messages with tags contain S
+    tagged                        messages which have tag(s)
+    T                             marked messages
+    U                             unread messages
+    v       H V                   messages which contain V in header H
+    x       S                     messages which contain S in References header
+    x       "cmd args"            messages returning 0 when passed to command
+                                  - %F is message file
 
-    &	     logical AND operator
-    |        logical OR operator
-    ! or ~   logical NOT operator
-    %        case sensitive search
+    &                             logical AND operator
+    |                             logical OR operator
+    ! or ~                        logical NOT operator
+    %                             case sensitive search
+    #                             match using regular expressions instead of
+                                  substring search
 
-    all filtering expressions are allowed
-
-    # means number
-    S means regexp string
+    all filtering expressions are allowed, but cannot be mixed
+    through logical operators with the expressions above
 
     It is possible to use logical operators AND (&), OR (|) and
     NOT (! or ~). Case sensitive search is achieved with %.
