@@ -450,7 +450,6 @@ static gchar *search_descr_strings[] = {
 	"v H V", N_("messages which contain V in header H"),
 	"x S",	 N_("messages which contain S in References header"),
 	"X \"cmd args\"", N_("messages returning 0 when passed to command - %F is message file"),
-	"y S",	 N_("messages which contain S in X-Label header"),
 	"",	 "" ,
 	"&amp;",	 N_("logical AND operator"),
 	"|",	 N_("logical OR operator"),

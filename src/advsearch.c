@@ -245,7 +245,6 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "U",	"unread",			0,	FALSE,	FALSE },
 		{ "x",	"references",			1,	TRUE,	TRUE  },
 		{ "X",  "test",				1,	FALSE,  FALSE },
-		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "v",	"header",			2,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
