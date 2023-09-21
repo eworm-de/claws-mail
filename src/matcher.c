@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2014 by the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2023 by the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1548,10 +1547,10 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 					else
 						match = MATCH_ONE;
 				} else {
-					/* further call to matcherprop_match_one_header() can't match
-					   and it irrelevant, so: don't alter the match result */
-					procheader_header_free(header);
-					continue;
+					if (!header)
+						continue;
+					/* matching one address header exactly, is that the right one?
+					   further call to matcherprop_match_one_header() will tell us */
 				}
 				procheader_header_free(header);
 			}
