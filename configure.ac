@@ -1309,6 +1309,11 @@ AC_SUBST(FONTCONFIG_LIBS)
 
 dnl gumbo **********************************************************************
 PKG_CHECK_MODULES(LIBGUMBO, gumbo >= 0.12, HAVE_LIBGUMBO=yes, HAVE_LIBGUMBO=no)
+if test x"$HAVE_LIBGUMBO" = xno; then
+	if test x"$enable_litehtml_viewer_plugin" = xyes; then
+		PKG_CHECK_MODULES(LIBGUMBO, gumbo >= 0.10, HAVE_LIBGUMBO=yes, HAVE_LIBGUMBO=no)
+	fi
+fi
 AC_SUBST(LIBGUMBO_CFLAGS)
 AC_SUBST(LIBGUMBO_LIBS)
 
