@@ -1,13 +1,14 @@
 #include "html.h"
 #include "table.h"
-#include "html_tag.h"
+#include "element.h"
+#include "render_item.h"
 
-void litehtml::table_grid::add_cell(element::ptr& el)
+void litehtml::table_grid::add_cell(const std::shared_ptr<render_item>& el)
 {
 	table_cell cell;
 	cell.el = el;
-	cell.colspan	= t_atoi(el->get_attr(_t("colspan"), _t("1")));
-	cell.rowspan	= t_atoi(el->get_attr(_t("rowspan"), _t("1")));
+	cell.colspan	= atoi(el->src_el()->get_attr("colspan", "1"));
+	cell.rowspan	= atoi(el->src_el()->get_attr("rowspan", "1"));
 	cell.borders	= el->get_borders();
 
 	while( is_rowspanned( (int) m_cells.size() - 1, (int) m_cells.back().size() ) )
@@ -24,13 +25,12 @@ void litehtml::table_grid::add_cell(element::ptr& el)
 }
 
 
-void litehtml::table_grid::begin_row(element::ptr& row)
+void litehtml::table_grid::begin_row(const std::shared_ptr<render_item>& row)
 {
 	std::vector<table_cell> r;
 	m_cells.push_back(r);
 	
 	m_rows.push_back(table_row(0, row));
-
 }
 
 
@@ -56,16 +56,16 @@ void litehtml::table_grid::finish()
 {
 	m_rows_count	= (int) m_cells.size();
 	m_cols_count	= 0;
-	for(int i = 0; i < (int) m_cells.size(); i++)
+	for(auto& cell : m_cells)
 	{
-		m_cols_count = std::max(m_cols_count, (int) m_cells[i].size());
+		m_cols_count = std::max(m_cols_count, (int) cell.size());
 	}
-	for(int i = 0; i < (int) m_cells.size(); i++)
+	for(auto& cell : m_cells)
 	{
-		for(int j = (int) m_cells[i].size(); j < m_cols_count; j++)
+		for(int j = (int) cell.size(); j < m_cols_count; j++)
 		{
 			table_cell empty_cell;
-			m_cells[i].push_back(empty_cell);
+			cell.push_back(empty_cell);
 		}
 	}
 
@@ -117,9 +117,9 @@ void litehtml::table_grid::finish()
 
 			if(cell(col, row)->el && cell(col, row)->colspan <= 1)
 			{
-				if (!cell(col, row)->el->get_css_width().is_predefined() && m_columns[col].css_width.is_predefined())
+				if (!cell(col, row)->el->src_el()->css().get_width().is_predefined() && m_columns[col].css_width.is_predefined())
 				{
-					m_columns[col].css_width = cell(col, row)->el->get_css_width();
+					m_columns[col].css_width = cell(col, row)->el->src_el()->css().get_width();
 				}
 			}
 		}
@@ -129,9 +129,9 @@ void litehtml::table_grid::finish()
 	{
 		for(int row = 0; row < m_rows_count; row++)
 		{
-			if(cell(col, row)->el)
+			if(cell(col, row)->el && cell(col, row)->colspan == 1)
 			{
-				cell(col, row)->el->set_css_width(m_columns[col].css_width);
+				cell(col, row)->el->src_el()->css_w().set_width(m_columns[col].css_width);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ litehtml::table_cell* litehtml::table_grid::cell( int t_col, int t_row )
 	{
 		return &m_cells[t_row][t_col];
 	}
-	return 0;
+	return nullptr;
 }
 
 void litehtml::table_grid::distribute_max_width( int width, int start, int end )
@@ -243,25 +243,25 @@ void litehtml::table_grid::distribute_width( int width, int start, int end )
 		if(!distribute_columns.empty() || step == 2)
 		{
 			int cols_width = 0;
-			for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); col++)
+			for(const auto& column : distribute_columns)
 			{
-				cols_width += (*col)->max_width - (*col)->min_width;
+				cols_width += column->max_width - column->min_width;
 			}
 
 			if(cols_width)
 			{
 				int add = width / (int) distribute_columns.size();
-				for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); col++)
+				for(const auto& column : distribute_columns)
 				{
-					add = round_f( (float) width * ((float) ((*col)->max_width - (*col)->min_width) / (float) cols_width) );
-					if((*col)->width + add >= (*col)->min_width)
+					add = round_f( (float) width * ((float) (column->max_width - column->min_width) / (float) cols_width) );
+					if(column->width + add >= column->min_width)
 					{
-						(*col)->width	+= add;
+                        column->width	+= add;
 						added_width		+= add;
 					} else
 					{
-						added_width	+= ((*col)->width - (*col)->min_width) * (add / abs(add));
-						(*col)->width = (*col)->min_width;
+						added_width	+= (column->width - column->min_width) * (add / abs(add));
+                        column->width = column->min_width;
 					}
 				}
 				if(added_width < width && step)
@@ -359,7 +359,7 @@ int litehtml::table_grid::calc_table_width(int block_width, bool is_auto, int& m
 				fixed_width += m_columns[col].width;
 			}
 		}
-		float scale = (float) (100.0 / percent);
+		auto scale = (float) (100.0 / percent);
 		cur_width = 0;
 		for(int col = 0; col < m_cols_count; col++)
 		{
@@ -375,6 +375,34 @@ int litehtml::table_grid::calc_table_width(int block_width, bool is_auto, int& m
 			}
 			cur_width += m_columns[col].width;
 		}
+		// If the table is still too wide shrink columns with % widths
+		if(cur_width > block_width)
+		{
+			while(true)
+			{
+				bool shrunk = false;
+				for(int col = 0; col < m_cols_count; col++)
+				{
+					if(!m_columns[col].css_width.is_predefined() && m_columns[col].css_width.units() == css_units_percentage)
+					{
+						if(m_columns[col].width > m_columns[col].min_width)
+						{
+							m_columns[col].width--;
+							cur_width--;
+							shrunk = true;
+							if(cur_width == block_width)
+							{
+								break;
+							}
+						}
+					}
+				}
+				if(cur_width == block_width || !shrunk)
+				{
+					break;
+				}
+			}
+		}
 	}
 	return cur_width;
 }
@@ -388,7 +416,7 @@ void litehtml::table_grid::clear()
 	m_rows.clear();
 }
 
-void litehtml::table_grid::calc_horizontal_positions( margins& table_borders, border_collapse bc, int bdr_space_x)
+void litehtml::table_grid::calc_horizontal_positions( const margins& table_borders, border_collapse bc, int bdr_space_x)
 {
 	if(bc == border_collapse_separate)
 	{
@@ -420,7 +448,7 @@ void litehtml::table_grid::calc_horizontal_positions( margins& table_borders, bo
 	}
 }
 
-void litehtml::table_grid::calc_vertical_positions( margins& table_borders, border_collapse bc, int bdr_space_y )
+void litehtml::table_grid::calc_vertical_positions( const margins& table_borders, border_collapse bc, int bdr_space_y )
 {
 	if(bc == border_collapse_separate)
 	{
@@ -563,4 +591,19 @@ int& litehtml::table_column_accessor_min_width::get( table_column& col )
 int& litehtml::table_column_accessor_width::get( table_column& col )
 {
 	return col.width;
+}
+
+litehtml::table_row::table_row(int h, const std::shared_ptr<render_item>& row)
+{
+    min_height		= 0;
+    height			= h;
+    el_row			= row;
+    border_bottom	= 0;
+    border_top		= 0;
+    top				= 0;
+    bottom			= 0;
+    if (row)
+    {
+        css_height = row->src_el()->css().get_height();
+    }
 }

@@ -7,14 +7,14 @@ namespace litehtml
 {
 	class el_script : public element
 	{
-		tstring m_text;
+		string m_text;
 	public:
-		el_script(const std::shared_ptr<litehtml::document>& doc);
-		virtual ~el_script();
+		explicit el_script(const std::shared_ptr<document>& doc);
 
-		virtual void			parse_attributes() override;
-		virtual bool			appendChild(const ptr &el) override;
-		virtual const tchar_t*	get_tagName() const override;
+		void parse_attributes() override;
+		bool appendChild(const ptr &el) override;
+		string_id tag() const override;
+		const char*	get_tagName() const override;
 	};
 }
 

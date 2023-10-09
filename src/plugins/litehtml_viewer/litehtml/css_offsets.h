@@ -12,10 +12,7 @@ namespace litehtml
 		css_length	right;
 		css_length	bottom;
 
-		css_offsets()
-		{
-
-		}
+		css_offsets() = default;
 
 		css_offsets(const css_offsets& val)
 		{
@@ -32,6 +29,14 @@ namespace litehtml
 			right	= val.right;
 			bottom	= val.bottom;
 			return *this;
+		}
+
+		string to_string() const
+		{
+			return	"left: " + left.to_string() +
+					", top: " + top.to_string() +
+					", right: " + right.to_string() +
+					", bottom: " + bottom.to_string();
 		}
 	};
 }

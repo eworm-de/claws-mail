@@ -1,8 +1,14 @@
 #ifndef LH_TABLE_H
 #define LH_TABLE_H
 
+#include <vector>
+#include <memory>
+#include "css_length.h"
+
 namespace litehtml
 {
+    class render_item;
+
 	struct table_row
 	{
 		typedef std::vector<table_row>	vector;
@@ -10,7 +16,7 @@ namespace litehtml
 		int				height;
 		int				border_top;
 		int				border_bottom;
-		element::ptr	el_row;
+        std::shared_ptr<render_item>	el_row;
 		int				top;
 		int				bottom;
 		css_length		css_height;
@@ -28,20 +34,7 @@ namespace litehtml
 			css_height.predef(0);
 		}
 
-		table_row(int h, element::ptr& row)
-		{
-			min_height		= 0;
-			height			= h;
-			el_row			= row;
-			border_bottom	= 0;
-			border_top		= 0;
-			top				= 0;
-			bottom			= 0;
-			if (row)
-			{
-				css_height = row->get_css_height();
-			}
-		}
+		table_row(int h, const std::shared_ptr<render_item>& row);
 
 		table_row(const table_row& val)
 		{
@@ -55,7 +48,7 @@ namespace litehtml
 			el_row = val.el_row;
 		}
 
-		table_row(table_row&& val)
+		table_row(table_row&& val) noexcept
 		{
 			min_height = val.min_height;
 			top = val.top;
@@ -122,29 +115,32 @@ namespace litehtml
 	{
 	public:
 		virtual int& get(table_column& col) = 0;
+
+	protected:
+		~table_column_accessor() = default;
 	};
 
-	class table_column_accessor_max_width : public table_column_accessor
+	class table_column_accessor_max_width final : public table_column_accessor
 	{
 	public:
-		virtual int& get(table_column& col);
+		int& get(table_column& col) override;
 	};
 
-	class table_column_accessor_min_width : public table_column_accessor
+	class table_column_accessor_min_width final : public table_column_accessor
 	{
 	public:
-		virtual int& get(table_column& col);
+		int& get(table_column& col) override;
 	};
 
-	class table_column_accessor_width : public table_column_accessor
+	class table_column_accessor_width final : public table_column_accessor
 	{
 	public:
-		virtual int& get(table_column& col);
+		int& get(table_column& col) override;
 	};
 
 	struct table_cell
 	{
-		element::ptr	el;
+        std::shared_ptr<render_item>	el;
 		int				colspan;
 		int				rowspan;
 		int				min_width;
@@ -182,8 +178,8 @@ namespace litehtml
 			borders			= val.borders;
 		}
 
-		table_cell(const table_cell&& val)
-		{
+		table_cell(table_cell&& val) noexcept
+        {
 			el = std::move(val.el);
 			colspan = val.colspan;
 			rowspan = val.rowspan;
@@ -207,33 +203,40 @@ namespace litehtml
 		rows					m_cells;
 		table_column::vector	m_columns;
 		table_row::vector		m_rows;
+		std::vector<std::shared_ptr<render_item>> m_captions;
+		int						m_captions_height;
 	public:
 
 		table_grid()
 		{
 			m_rows_count	= 0;
 			m_cols_count	= 0;
+			m_captions_height = 0;
 		}
 
 		void			clear();
-		void			begin_row(element::ptr& row);
-		void			add_cell(element::ptr& el);
+		void			begin_row(const std::shared_ptr<render_item>& row);
+		void			add_cell(const std::shared_ptr<render_item>& el);
 		bool			is_rowspanned(int r, int c);
 		void			finish();
 		table_cell*		cell(int t_col, int t_row);
 		table_column&	column(int c)	{ return m_columns[c];	}
 		table_row&		row(int r)		{ return m_rows[r];		}
+        std::vector<std::shared_ptr<render_item>>& captions()		{ return m_captions; }
 
-		int				rows_count()	{ return m_rows_count;	}
-		int				cols_count()	{ return m_cols_count;	}
+		int				rows_count() const	{ return m_rows_count;	}
+		int				cols_count() const	{ return m_cols_count; }
+
+		void			captions_height(int height) { m_captions_height = height; }
+		int				captions_height() const { return m_captions_height; }
 
 		void			distribute_max_width(int width, int start, int end);
 		void			distribute_min_width(int width, int start, int end);
 		void			distribute_width(int width, int start, int end);
 		void			distribute_width(int width, int start, int end, table_column_accessor* acc);
 		int				calc_table_width(int block_width, bool is_auto, int& min_table_width, int& max_table_width);
-		void			calc_horizontal_positions(margins& table_borders, border_collapse bc, int bdr_space_x);
-		void			calc_vertical_positions(margins& table_borders, border_collapse bc, int bdr_space_y);
+		void			calc_horizontal_positions(const margins& table_borders, border_collapse bc, int bdr_space_x);
+		void			calc_vertical_positions(const margins& table_borders, border_collapse bc, int bdr_space_y);
 		void			calc_rows_height(int blockHeight, int borderSpacingY);
 	};
 }
