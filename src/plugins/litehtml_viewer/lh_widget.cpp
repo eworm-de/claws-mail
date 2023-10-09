@@ -41,10 +41,6 @@ extern "C" {
 const gchar *prefs_common_get_uri_cmd(void);
 }
 
-char master_css[] = {
-#include "css.inc"
-};
-
 static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data);
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
@@ -102,7 +98,6 @@ lh_widget::lh_widget()
 
 	m_html = NULL;
 	m_rendered_width = 0;
-	m_context.load_master_stylesheet(master_css);
 
 	m_font_name = NULL;
 	m_font_size = 0;
@@ -162,8 +157,7 @@ void lh_widget::on_anchor_click(const char *url, const litehtml::element::ptr& e
 
 void lh_widget::import_css(litehtml::string& text, const litehtml::string& url, litehtml::string& baseurl)
 {
-	debug_print("lh_widget import_css\n");
-	baseurl = master_css;
+	debug_print("lh_widget import_css. url=\"%s\" baseurl=\"%s\"\n", url.c_str(), baseurl.c_str());
 }
 
 void lh_widget::get_client_rect(litehtml::position& client) const
@@ -190,7 +184,7 @@ void lh_widget::open_html(const gchar *contents)
 	update_font();
 
 	lh_widget_statusbar_push("Loading HTML part ...");
-	m_html = litehtml::document::createFromString(contents, this, &m_context);
+	m_html = litehtml::document::createFromString(contents, this);
 	m_rendered_width = 0;
 	if (m_html != NULL) {
 		debug_print("lh_widget::open_html created document\n");

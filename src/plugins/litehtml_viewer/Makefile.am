@@ -6,7 +6,6 @@
 include $(srcdir)/../win_plugin.mk
 
 SUBDIRS = litehtml
-EXTRA_DIST = css.inc
 
 IFLAGS = \
 	-I$(top_builddir)/src \
