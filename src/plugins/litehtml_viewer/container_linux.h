@@ -15,18 +15,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef LH_CONTAINER_LINUX_H
+#define LH_CONTAINER_LINUX_H
 
-#include <vector>
-#include <list>
-#include <string>
 #include <sys/time.h>
 
+#include "litehtml/litehtml.h"
 #include <cairo.h>
 #include <gtk/gtk.h>
-#include <fontconfig/fontconfig.h>
-
-#include "litehtml/litehtml.h"
+#include <pango/pangocairo.h>
 
 struct cairo_clip_box
 {
@@ -34,7 +31,7 @@ struct cairo_clip_box
 	litehtml::position	box;
 	litehtml::border_radiuses radius;
 
-	cairo_clip_box(const litehtml::position& vBox, litehtml::border_radiuses vRad)
+	cairo_clip_box(const litehtml::position& vBox, const litehtml::border_radiuses& vRad)
 	{
 		box = vBox;
 		radius = vRad;
@@ -53,63 +50,87 @@ struct cairo_clip_box
 	}
 };
 
+struct cairo_font
+{
+    PangoFontDescription* font;
+	int size;
+	bool underline;
+	bool strikeout;
+    int ascent;
+    int descent;
+    int underline_thickness;
+    int underline_position;
+    int strikethrough_thickness;
+    int strikethrough_position;
+};
+
 class container_linux :	public litehtml::document_container
 {
 	typedef std::pair<GdkPixbuf*, struct timeval> img_cache_entry;
-	typedef std::map<litehtml::tstring, img_cache_entry> images_map;
+	typedef std::map<litehtml::string, img_cache_entry> images_map;
 
 protected:
 	cairo_surface_t*			m_temp_surface;
 	cairo_t*					m_temp_cr;
 	images_map					m_images;
+    cairo_clip_box::vector		m_clips;
 	GRecMutex					m_images_lock;
-	cairo_clip_box::vector				m_clips;
-
 public:
-	container_linux(void);
-	virtual ~container_linux(void);
+	container_linux();
+	virtual ~container_linux();
 
-	virtual int						pt_to_px(int pt) override;
-	virtual void 						load_image(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, bool redraw_on_ready) override;
-	virtual void						get_image_size(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, litehtml::size& sz) override;
-	virtual void						draw_background(litehtml::uint_ptr hdc, const litehtml::background_paint& bg) override;
-	virtual void						draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root) override;
-	virtual void 						draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker) override;
-	virtual std::shared_ptr<litehtml::element>	create_element(const litehtml::tchar_t *tag_name,
-																 const litehtml::string_map &attributes,
-																 const std::shared_ptr<litehtml::document> &doc) override;
-	virtual void						get_media_features(litehtml::media_features& media) const override;
-	virtual void						get_language(litehtml::tstring& language, litehtml::tstring & culture) const override;
-	virtual void 						link(const std::shared_ptr<litehtml::document> &ptr, const litehtml::element::ptr& el) override;
+	litehtml::uint_ptr create_font(const char* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm) override;
+	void delete_font(litehtml::uint_ptr hFont) override;
+	int text_width(const char* text, litehtml::uint_ptr hFont) override;
+	void draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) override;
+	int pt_to_px(int pt) const override;
+	int get_default_font_size() const override;
+	const char*	get_default_font_name() const override;
+	void load_image(const char* src, const char* baseurl, bool redraw_on_ready) override;
+	void get_image_size(const char* src, const char* baseurl, litehtml::size& sz) override;
+	void draw_background(litehtml::uint_ptr hdc, const std::vector<litehtml::background_paint>& bg) override;
+	void draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root) override;
+	void draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker) override;
+	std::shared_ptr<litehtml::element>	create_element(const char *tag_name,
+														 const litehtml::string_map &attributes,
+														 const std::shared_ptr<litehtml::document> &doc) override;
+	void get_media_features(litehtml::media_features& media) const override;
+	void get_language(litehtml::string& language, litehtml::string & culture) const override;
+	void link(const std::shared_ptr<litehtml::document> &ptr, const litehtml::element::ptr& el) override;
 
 
-	virtual	void						transform_text(litehtml::tstring& text, litehtml::text_transform tt) override;
-	virtual void						set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius, bool valid_x, bool valid_y) override;
-	virtual void						del_clip() override;
+	void transform_text(litehtml::string& text, litehtml::text_transform tt) override;
+	void set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius) override;
+	void del_clip() override;
 
-	virtual void						make_url( const litehtml::tchar_t* url, const litehtml::tchar_t* basepath, litehtml::tstring& out );
+	virtual void make_url( const char* url, const char* basepath, litehtml::string& out );
+	virtual Glib::RefPtr<Gdk::Pixbuf>	get_image(const char* url, bool redraw_on_ready) = 0;
 
-	void								clear_images();
+	void clear_images();
 
 	/* Trim down images cache to less than desired_size [bytes],
 	 * starting from oldest stored. */
-	gint								clear_images(gsize desired_size);
+	gint clear_images(gsize desired_size);
 
-	void								update_image_cache(const gchar *url, GdkPixbuf *image);
-	virtual void						rerender() = 0;
-	virtual GdkPixbuf *get_local_image(const litehtml::tstring url) const = 0;
+	void update_image_cache(const gchar *url, GdkPixbuf *image);
+	virtual void rerender() = 0;
+	virtual GdkPixbuf *get_local_image(const litehtml::string url) const = 0;
 
 protected:
-	virtual void						draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);
-	virtual void						fill_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color);
-	virtual void						rounded_rectangle( cairo_t* cr, const litehtml::position &pos, const litehtml::border_radiuses &radius );
-	void								apply_clip(cairo_t* cr);
-	void								set_color(cairo_t* cr, litehtml::web_color color)	{ cairo_set_source_rgba(cr, color.red / 255.0, color.green / 255.0, color.blue / 255.0, color.alpha / 255.0); }
+	virtual void draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);
+	virtual void fill_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color);
+	virtual void rounded_rectangle( cairo_t* cr, const litehtml::position &pos, const litehtml::border_radiuses &radius );
 
 private:
-	void								add_path_arc(cairo_t* cr, double x, double y, double rx, double ry, double a1, double a2, bool neg);
-	void								draw_pixbuf(cairo_t* cr, const GdkPixbuf *bmp, int x, int y, int cx, int cy);
-	cairo_surface_t*					surface_from_pixbuf(const GdkPixbuf *bmp);
+	void apply_clip(cairo_t* cr);
+
+	static void add_path_arc(cairo_t* cr, double x, double y, double rx, double ry, double a1, double a2, bool neg);
+	static void set_color(cairo_t* cr, const litehtml::web_color& color)	{ cairo_set_source_rgba(cr, color.red / 255.0, color.green / 255.0, color.blue / 255.0, color.alpha / 255.0); }
+	static cairo_surface_t* surface_from_pixbuf(const GdkPixbuf *bmp);
+	static void draw_pixbuf(cairo_t* cr, const GdkPixbuf *bmp, int x, int y, int cx, int cy);
+
 	void lock_images_cache(void);
 	void unlock_images_cache(void);
 };
+
+#endif
