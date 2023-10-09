@@ -25,7 +25,7 @@
 
 #include "lh_widget.h"
 
-litehtml::uint_ptr lh_widget::create_font( const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm )
+litehtml::uint_ptr lh_widget::create_font( const char *faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm )
 {
 	PangoFontDescription *desc =
 		pango_font_description_from_string(faceName);
@@ -78,7 +78,7 @@ void lh_widget::delete_font( litehtml::uint_ptr hFont )
 	}
 }
 
-int lh_widget::text_width( const litehtml::tchar_t* text, litehtml::uint_ptr hFont )
+int lh_widget::text_width( const char *text, litehtml::uint_ptr hFont )
 {
 	pango_font *fnt = (pango_font *) hFont;
 	PangoContext *context = gtk_widget_get_pango_context(m_drawing_area);
@@ -96,7 +96,7 @@ int lh_widget::text_width( const litehtml::tchar_t* text, litehtml::uint_ptr hFo
 	return rect.width;
 }
 
-void lh_widget::draw_text( litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos )
+void lh_widget::draw_text( litehtml::uint_ptr hdc, const char *text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos )
 {
 	pango_font *fnt = (pango_font *)hFont;
 	cairo_t *cr = (cairo_t *)hdc;

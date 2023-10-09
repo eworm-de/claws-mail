@@ -26,9 +26,9 @@
 #include "container_linux.h"
 #include "http.h"
 
-typedef std::pair<litehtml::tstring, struct timeval> lru_entry;
+typedef std::pair<litehtml::string, struct timeval> lru_entry;
 
-static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
+static GdkPixbuf *lh_get_image(const char *url)
 {
 	GError *error = NULL;
 	GdkPixbuf *pixbuf = NULL;

@@ -40,42 +40,42 @@ class lh_widget : public container_linux
 		GtkWidget *get_widget() const;
 
 		/* Methods that litehtml calls */
-		void set_caption(const litehtml::tchar_t* caption);
-		void set_base_url(const litehtml::tchar_t* base_url);
-		void on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el);
-		void set_cursor(const litehtml::tchar_t* cursor);
-		void import_css(litehtml::tstring& text, const litehtml::tstring& url, litehtml::tstring& baseurl);
+		void set_caption(const char *caption);
+		void set_base_url(const char *base_url);
+		void on_anchor_click(const char *url, const litehtml::element::ptr& el);
+		void set_cursor(const char *cursor);
+		void import_css(litehtml::string& text, const litehtml::string& url, litehtml::string& baseurl);
 		void get_client_rect(litehtml::position& client) const;
-		inline const litehtml::tchar_t *get_default_font_name() const { return m_font_name; };
+		inline const char *get_default_font_name() const { return m_font_name; };
 
 		inline int get_default_font_size() const { return m_font_size; };
-		litehtml::uint_ptr create_font(const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm);
+		litehtml::uint_ptr create_font(const char *faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm);
 		void delete_font(litehtml::uint_ptr hFont);
-		int text_width(const litehtml::tchar_t* text, litehtml::uint_ptr hFont);
-		void draw_text(litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos);
+		int text_width(const char *text, litehtml::uint_ptr hFont);
+		void draw_text(litehtml::uint_ptr hdc, const char *text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos);
 
 		void draw(cairo_t *cr);
 		void rerender();
 		void redraw();
 		void open_html(const gchar *contents);
 		void clear();
-		void update_cursor(const litehtml::tchar_t* cursor);
+		void update_cursor(const char *cursor);
 		void update_font();
 		void print();
 
-		const litehtml::tchar_t *get_href_at(litehtml::element::ptr element) const;
-		const litehtml::tchar_t *get_href_at(const gint x, const gint y) const;
-		void popup_context_menu(const litehtml::tchar_t *url, GdkEventButton *event);
-		const litehtml::tstring fullurl(const litehtml::tchar_t *url) const;
+		const char *get_href_at(litehtml::element::ptr element) const;
+		const char *get_href_at(const gint x, const gint y) const;
+		void popup_context_menu(const char *url, GdkEventButton *event);
+		const litehtml::string fullurl(const char *url) const;
 
 		void set_partinfo(MimeInfo *partinfo);
-		GdkPixbuf *get_local_image(const litehtml::tstring url) const;
+		GdkPixbuf *get_local_image(const litehtml::string url) const;
 
 		void set_cairo_context(cairo_t *cr);
 
 		litehtml::document::ptr m_html;
-		litehtml::tstring m_clicked_url;
-		litehtml::tstring m_base_url;
+		litehtml::string m_clicked_url;
+		litehtml::string m_base_url;
 
 	private:
 		gint m_rendered_width;
@@ -90,7 +90,7 @@ class lh_widget : public container_linux
 		MimeInfo *m_partinfo;
 		cairo_t *m_cairo_context;
 
-		litehtml::tchar_t *m_font_name;
+		char *m_font_name;
 		int m_font_size;
 		std::atomic<bool> m_force_render;
 		std::atomic<bool> m_blank;

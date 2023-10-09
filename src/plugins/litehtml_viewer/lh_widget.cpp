@@ -134,13 +134,13 @@ GtkWidget *lh_widget::get_widget() const
 	return m_scrolled_window;
 }
 
-void lh_widget::set_caption(const litehtml::tchar_t* caption)
+void lh_widget::set_caption(const char *caption)
 {
 	debug_print("lh_widget set_caption\n");
 	return;
 }
 
-void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
+void lh_widget::set_base_url(const char *base_url)
 {
 	debug_print("lh_widget set_base_url '%s'\n",
 			(base_url ? base_url : "(null)"));
@@ -152,7 +152,7 @@ void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
 	return;
 }
 
-void lh_widget::on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el)
+void lh_widget::on_anchor_click(const char *url, const litehtml::element::ptr& el)
 {
 	debug_print("lh_widget on_anchor_click. url -> %s\n", url);
 
@@ -160,7 +160,7 @@ void lh_widget::on_anchor_click(const litehtml::tchar_t* url, const litehtml::el
 	return;
 }
 
-void lh_widget::import_css(litehtml::tstring& text, const litehtml::tstring& url, litehtml::tstring& baseurl)
+void lh_widget::import_css(litehtml::string& text, const litehtml::string& url, litehtml::string& baseurl)
 {
 	debug_print("lh_widget import_css\n");
 	baseurl = master_css;
@@ -310,7 +310,7 @@ void lh_widget::clear()
 	m_clicked_url.clear();
 }
 
-void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
+void lh_widget::set_cursor(const char *cursor)
 {
 	litehtml::element::ptr over_el = m_html->over_element();
 
@@ -326,10 +326,10 @@ void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 	}
 }
 
-void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
+void lh_widget::update_cursor(const char *cursor)
 {
 	GdkCursorType cursType = GDK_ARROW;
-	const litehtml::tchar_t *href = get_href_at(m_over_element);
+	const char *href = get_href_at(m_over_element);
 
 	/* If there is a href, and litehtml is okay with showing a pointer
 	 * cursor ("pointer" or "auto"), set it, otherwise keep the
@@ -354,7 +354,7 @@ void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 	}
 }
 
-const litehtml::tchar_t *lh_widget::get_href_at(litehtml::element::ptr element) const
+const char *lh_widget::get_href_at(litehtml::element::ptr element) const
 {
 	litehtml::element::ptr el;
 
@@ -378,10 +378,10 @@ const litehtml::tchar_t *lh_widget::get_href_at(litehtml::element::ptr element) 
 
 	/* At this point, over_el is pointing at an anchor tag, so let's
 	 * grab its href attribute. */
-	return el->get_attr(_t("href"));
+	return el->get_attr("href");
 }
 
-const litehtml::tchar_t *lh_widget::get_href_at(const gint x, const gint y) const
+const char *lh_widget::get_href_at(const gint x, const gint y) const
 {
 	litehtml::element::ptr over_el, el;
 
@@ -401,7 +401,7 @@ void lh_widget::print()
     gtk_widget_realize(GTK_WIDGET(m_drawing_area));
 }
 
-void lh_widget::popup_context_menu(const litehtml::tchar_t *url,
+void lh_widget::popup_context_menu(const char *url,
 		GdkEventButton *event)
 {
 	cm_return_if_fail(url != NULL);
@@ -432,12 +432,12 @@ void lh_widget::update_font()
 	debug_print("Font set to '%s', size %d\n", m_font_name, m_font_size);
 }
 
-const litehtml::tstring lh_widget::fullurl(const litehtml::tchar_t *url) const
+const litehtml::string lh_widget::fullurl(const char *url) const
 {
 	if (*url == '#' && !m_base_url.empty())
 		return m_base_url + url;
 
-	return _t(url);
+	return url;
 }
 
 void lh_widget::set_partinfo(MimeInfo *partinfo)
@@ -445,7 +445,7 @@ void lh_widget::set_partinfo(MimeInfo *partinfo)
 	m_partinfo = partinfo;
 }
 
-GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
+GdkPixbuf *lh_widget::get_local_image(const litehtml::string url) const
 {
 	GdkPixbuf *pixbuf;
 	const gchar *name;
@@ -518,7 +518,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 
 	/* Right-click */
 	if (event->button == 3) {
-		const litehtml::tchar_t *url = w->get_href_at((gint)event->x, (gint)event->y);
+		const char *url = w->get_href_at((gint)event->x, (gint)event->y);
 
 		if (url != NULL)
 			w->popup_context_menu(url, event);
