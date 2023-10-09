@@ -69,7 +69,6 @@ litehtml_viewer_la_SOURCES = \
 	lh_viewer.h \
 	lh_widget.cpp \
 	lh_widget.h \
-	lh_widget_text.cpp \
 	lh_widget_wrapped.h \
 	plugin.c
 

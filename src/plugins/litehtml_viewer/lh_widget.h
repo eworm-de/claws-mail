@@ -49,10 +49,6 @@ class lh_widget : public container_linux
 		inline const char *get_default_font_name() const { return m_font_name; };
 
 		inline int get_default_font_size() const { return m_font_size; };
-		litehtml::uint_ptr create_font(const char *faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm);
-		void delete_font(litehtml::uint_ptr hFont);
-		int text_width(const char *text, litehtml::uint_ptr hFont);
-		void draw_text(litehtml::uint_ptr hdc, const char *text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos);
 
 		void draw(cairo_t *cr);
 		void rerender();
