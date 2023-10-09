@@ -84,8 +84,8 @@ public:
 	int text_width(const char* text, litehtml::uint_ptr hFont) override;
 	void draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) override;
 	int pt_to_px(int pt) const override;
-	int get_default_font_size() const override;
-	const char*	get_default_font_name() const override;
+	//int get_default_font_size() const override;
+	//const char*	get_default_font_name() const override;
 	void load_image(const char* src, const char* baseurl, bool redraw_on_ready) override;
 	void get_image_size(const char* src, const char* baseurl, litehtml::size& sz) override;
 	void draw_background(litehtml::uint_ptr hdc, const std::vector<litehtml::background_paint>& bg) override;
