@@ -375,20 +375,6 @@ const char *lh_widget::get_href_at(litehtml::element::ptr element) const
 	return el->get_attr("href");
 }
 
-const char *lh_widget::get_href_at(const gint x, const gint y) const
-{
-	litehtml::element::ptr over_el, el;
-
-	if (m_html == NULL)
-		return NULL;
-
-	over_el = m_html->root()->get_element_by_point(x, y, x, y);
-	if (over_el == NULL)
-		return NULL;
-
-	return get_href_at(over_el);
-}
-
 void lh_widget::print()
 {
     debug_print("lh_widget print\n");
@@ -512,7 +498,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 
 	/* Right-click */
 	if (event->button == 3) {
-		const char *url = w->get_href_at((gint)event->x, (gint)event->y);
+		const char *url = w->get_href_at(w->m_html->over_element());
 
 		if (url != NULL)
 			w->popup_context_menu(url, event);

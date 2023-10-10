@@ -60,7 +60,6 @@ class lh_widget : public container_linux
 		void print();
 
 		const char *get_href_at(litehtml::element::ptr element) const;
-		const char *get_href_at(const gint x, const gint y) const;
 		void popup_context_menu(const char *url, GdkEventButton *event);
 		const litehtml::string fullurl(const char *url) const;
 
