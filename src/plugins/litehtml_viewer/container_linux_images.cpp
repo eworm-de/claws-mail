@@ -20,13 +20,10 @@
 #include "claws-features.h"
 #endif
 
-#include <set>
 #include "common/utils.h"
 
-#include "container_linux.h"
+#include "container_linux_images.h"
 #include "http.h"
-
-typedef std::pair<litehtml::string, struct timeval> lru_entry;
 
 static GdkPixbuf *lh_get_image(const char *url)
 {
@@ -59,12 +56,7 @@ theend:
 	return pixbuf;
 }
 
-struct FetchCtx {
-	container_linux *container;
-	gchar *url;
-};
-
-static void get_image_threaded(GTask *task, gpointer source, gpointer task_data, GCancellable *cancellable)
+void get_image_threaded(GTask *task, gpointer source, gpointer task_data, GCancellable *cancellable)
 {
 	struct FetchCtx *ctx = (struct FetchCtx *)task_data;
 	GdkPixbuf *pixbuf = lh_get_image(ctx->url);
@@ -72,7 +64,7 @@ static void get_image_threaded(GTask *task, gpointer source, gpointer task_data,
 	g_task_return_pointer(task, pixbuf, NULL);
 }
 
-static void get_image_callback(GObject *source, GAsyncResult *res, gpointer user_data)
+void get_image_callback(GObject *source, GAsyncResult *res, gpointer user_data)
 {
 	GdkPixbuf *pixbuf;
 	struct FetchCtx *ctx = (struct FetchCtx *)user_data;

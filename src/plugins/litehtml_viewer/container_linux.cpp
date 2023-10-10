@@ -21,6 +21,7 @@
 #endif
 
 #include "container_linux.h"
+#include "container_linux_images.h"
 
 #include <cmath>
 #include "lh_prefs.h"
@@ -411,18 +412,18 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const std::vector
 			switch(bg.repeat)
 			{
 			case litehtml::background_repeat_no_repeat:
-				draw_pixbuf(cr, bgbmp, bg.position_x, bg.position_y, bgbmp->get_width(), bgbmp->get_height());
+				draw_pixbuf(cr, bgbmp, bg.position_x, bg.position_y, gdk_pixbuf_get_width(bgbmp), gdk_pixbuf_get_height(bgbmp));
 				break;
 
 			case litehtml::background_repeat_repeat_x:
 				cairo_set_source(cr, pattern);
-				cairo_rectangle(cr, bg.clip_box.left(), bg.position_y, bg.clip_box.width, bgbmp->get_height());
+				cairo_rectangle(cr, bg.clip_box.left(), bg.position_y, bg.clip_box.width, gdk_pixbuf_get_height(bgbmp));
 				cairo_fill(cr);
 				break;
 
 			case litehtml::background_repeat_repeat_y:
 				cairo_set_source(cr, pattern);
-				cairo_rectangle(cr, bg.position_x, bg.clip_box.top(), bgbmp->get_width(), bg.clip_box.height);
+				cairo_rectangle(cr, bg.position_x, bg.clip_box.top(), gdk_pixbuf_get_width(bgbmp), bg.clip_box.height);
 				cairo_fill(cr);
 				break;
 

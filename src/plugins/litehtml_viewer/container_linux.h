@@ -104,7 +104,6 @@ public:
 	void del_clip() override;
 
 	virtual void make_url( const char* url, const char* basepath, litehtml::string& out );
-	virtual Glib::RefPtr<Gdk::Pixbuf>	get_image(const char* url, bool redraw_on_ready) = 0;
 
 	void clear_images();
 
