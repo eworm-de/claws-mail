@@ -76,13 +76,14 @@ liblitehtml_la_SOURCES = \
 	el_title.h \
 	el_tr.cpp \
 	el_tr.h \
+	formatting_context.cpp \
+	formatting_context.h \
 	html.cpp \
 	html.h \
 	html_tag.cpp \
 	html_tag.h \
 	iterators.cpp \
 	iterators.h \
-	LICENSE \
 	line_box.cpp \
 	line_box.h \
 	litehtml.h \
@@ -93,16 +94,22 @@ liblitehtml_la_SOURCES = \
 	num_cvt.cpp \
 	num_cvt.h \
 	os_types.h \
-	README.md \
 	render_block_context.cpp \
+	render_block_context.h \
 	render_block.cpp \
+	render_block.h \
 	render_flex.cpp \
+	render_flex.h \
 	render_image.cpp \
+	render_image.h \
 	render_inline_context.cpp \
+	render_inline_context.h \
 	render_inline.cpp \
+	render_inline.h \
 	render_item.cpp \
 	render_item.h \
 	render_table.cpp \
+	render_table.h \
 	string_id.cpp \
 	string_id.h \
 	strtod.cpp \

@@ -44,6 +44,8 @@ std::map<string_id, string> style::m_valid_values =
 	{ _align_items_, flex_align_items_strings },
 	{ _align_content_, flex_align_content_strings },
 	{ _align_self_, flex_align_self_strings },
+
+	{ _caption_side_, caption_side_strings },
 };
 
 void style::parse(const string& txt, const string& baseurl, document_container* container)
@@ -129,6 +131,8 @@ void style::add_property(string_id name, const string& val, const string& baseur
 	case _align_items_:
 	case _align_content_:
 	case _align_self_:
+
+	case _caption_side_:
 
 		idx = value_index(val, m_valid_values[name]);
 		if (idx >= 0)
@@ -238,7 +242,7 @@ void style::add_property(string_id name, const string& val, const string& baseur
 				add_parsed_property(_border_top_width_,		width);
 				add_parsed_property(_border_bottom_width_,	width);
 			}
-			else
+			else if (web_color::is_color(token, container))
 			{
 				web_color _color = web_color::from_string(token, container);
 				property_value color(_color, important);
@@ -271,7 +275,7 @@ void style::add_property(string_id name, const string& val, const string& baseur
 				property_value width(parse_border_width(token), important);
 				add_parsed_property(_id(_s(name) + "-width"), width);
 			}
-			else
+			else if (web_color::is_color(token, container))
 			{
 				web_color color = web_color::from_string(token, container);
 				add_parsed_property(_id(_s(name) + "-color"), property_value(color, important));
@@ -334,11 +338,12 @@ void style::add_property(string_id name, const string& val, const string& baseur
 	case _border_bottom_color_:
 	case _border_left_color_:
 	case _border_right_color_:
-	{
-		web_color color = web_color::from_string(val, container);
-		add_parsed_property(name, property_value(color, important));
+		if (web_color::is_color(val, container))
+		{
+			web_color color = web_color::from_string(val, container);
+			add_parsed_property(name, property_value(color, important));
+		}
 		break;
-	}
 
 	// Parse border radius shorthand properties 
 	case _border_bottom_left_radius_:
