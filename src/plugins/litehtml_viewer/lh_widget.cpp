@@ -306,7 +306,7 @@ void lh_widget::clear()
 
 void lh_widget::set_cursor(const char *cursor)
 {
-	litehtml::element::ptr over_el = m_html->over_element();
+	litehtml::element::const_ptr over_el = m_html->get_over_element();
 
 	if (m_showing_url &&
 			(over_el == NULL || over_el != m_over_element)) {
@@ -348,9 +348,9 @@ void lh_widget::update_cursor(const char *cursor)
 	}
 }
 
-const char *lh_widget::get_href_at(litehtml::element::ptr element) const
+const char *lh_widget::get_href_at(litehtml::element::const_ptr element)
 {
-	litehtml::element::ptr el;
+	litehtml::element::const_ptr el;
 
 	if (element == NULL)
 		return NULL;
@@ -498,7 +498,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 
 	/* Right-click */
 	if (event->button == 3) {
-		const char *url = w->get_href_at(w->m_html->over_element());
+		const char *url = w->get_href_at(w->m_html->get_over_element());
 
 		if (url != NULL)
 			w->popup_context_menu(url, event);

@@ -59,7 +59,7 @@ class lh_widget : public container_linux
 		void update_font();
 		void print();
 
-		const char *get_href_at(litehtml::element::ptr element) const;
+		const char *get_href_at(litehtml::element::const_ptr element);
 		void popup_context_menu(const char *url, GdkEventButton *event);
 		const litehtml::string fullurl(const char *url) const;
 
@@ -79,7 +79,7 @@ class lh_widget : public container_linux
 		GtkWidget *m_viewport;
 		GtkWidget *m_context_menu;
 		gint m_height;
-		litehtml::element::ptr m_over_element;
+		litehtml::element::const_ptr m_over_element;
 		gboolean m_showing_url;
 		MimeInfo *m_partinfo;
 		cairo_t *m_cairo_context;
