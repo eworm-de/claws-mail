@@ -495,17 +495,10 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 	gchar      *theme_str;
 	gchar      *alert_title = NULL;
 	AlertValue  val = 0;
-	gchar      *tmp = NULL;
 
 	theme_str = tdata->displayed;
 
-	tmp = g_path_get_basename(theme_str);
-	if (IS_SYSTEM_THEME(theme_str)) {
-		alert_title = g_strdup_printf(_("Remove system theme '%s'"), tmp);
-	} else {
-		alert_title = g_strdup_printf(_("Remove theme '%s'"), tmp);
-	}
-	g_free(tmp);
+	alert_title = g_strdup_printf(_("Remove theme '%s'"), g_path_get_basename(theme_str));
 
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
@@ -572,26 +565,9 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		}
 	}
 
-	val = alertpanel(alert_title,
-			 _("Do you want to install theme for all users?"),
-			 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST);
-	g_free(alert_title);
-	switch (val) {
-	case G_ALERTALTERNATE:
-		cinfo->dest = stock_pixmap_get_system_theme_dir_for_theme(
-					themename);
-		break;
-	case G_ALERTDEFAULT:
-		break;
-	default:
-		goto end_inst;
-	}
-
-	if (cinfo->dest == NULL) {
-		cinfo->dest = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S,
-					  themename, NULL);
-	}
+	cinfo->dest = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S,
+				  themename, NULL);
 	if (TRUE == is_dir_exist(cinfo->dest)) {
 		AlertValue val = alertpanel_full(_("Theme exists"),
 				_("A theme with the same name is\n"
@@ -829,10 +805,11 @@ static void prefs_themes_checkbtn_scaling_auto_toggled_cb(GtkWidget *widget, gpo
 static void prefs_themes_update_buttons(const ThemesData *tdata)
 {
 	ThemesPage *theme = tdata->page;
-	gboolean    can_rem, can_use;
+	gboolean    can_rem;
 
-	can_use = !IS_CURRENT_THEME(tdata->displayed);
-	can_rem = can_use && !IS_INTERNAL_THEME(tdata->displayed);
+	can_rem = !IS_CURRENT_THEME(tdata->displayed) &&
+		  !IS_INTERNAL_THEME(tdata->displayed) &&
+		  !IS_SYSTEM_THEME(tdata->displayed);
 
 	if (theme->btn_remove != NULL)
 		gtk_widget_set_sensitive(theme->btn_remove, can_rem);
