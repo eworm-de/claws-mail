@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2014-2019 Charles Lehner and the Claws Mail team
+ * Copyright (C) 2014-2023 the Claws Mail team and Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -395,10 +395,7 @@ void addrmerge_merge(
 
 	/* Test for read only */
 	if( ds->interface->readOnly ) {
-		alertpanel(_("Merge addresses"),
-			   _("This address data is read-only and cannot be deleted."),
-			   "window-close", _("_Close"), NULL, NULL, NULL, NULL,
-			   ALERTFOCUS_FIRST );
+		alertpanel_warning(_("This address data is read-only and cannot be deleted."));
 		return;
 	}
 
