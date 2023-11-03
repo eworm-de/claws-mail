@@ -16,7 +16,7 @@ perl_la_SOURCES = \
 	perl_gtk.c perl_gtk.h
 
 perl_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 perl_la_LIBADD = \
 	$(PERL_LDFLAGS) \

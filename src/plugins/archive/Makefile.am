@@ -19,7 +19,7 @@ archive_la_SOURCES = \
 		  archiver_prefs.h
 
 archive_la_LDFLAGS = \
-		-avoid-version -module \
+		-avoid-version -module -z noexecstack \
 		$(GTK_LIBS) \
 		$(LIBARCHIVE_LIBS)
 

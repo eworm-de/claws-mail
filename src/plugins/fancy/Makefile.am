@@ -21,7 +21,7 @@ endif
 
 fancy_la_LDFLAGS = \
 	$(plugin_ldflags) \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 EXTRA_fancy_la_DEPENDENCIES = $(plugin_extra_deps)
 

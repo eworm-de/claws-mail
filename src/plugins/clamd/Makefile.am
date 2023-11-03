@@ -16,7 +16,7 @@ clamd_la_SOURCES = \
 	clamav_plugin.h
 
 clamd_la_LDFLAGS = \
-	-avoid-version -module \
+	-avoid-version -module -z noexecstack \
 	$(GTK_LIBS) \
 	-L$(top_builddir)/src/plugins/clamd/libclamd
 

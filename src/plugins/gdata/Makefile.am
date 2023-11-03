@@ -18,7 +18,7 @@ gdata_la_SOURCES = \
 	cm_gdata_prefs.h
 
 gdata_la_LDFLAGS = \
-	-avoid-version -module \
+	-avoid-version -module -z noexecstack \
 	$(GTK_LIBS) \
 	$(GDATA_LIBS)
 

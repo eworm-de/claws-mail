@@ -30,7 +30,7 @@ endif
 
 litehtml_viewer_la_LDFLAGS = \
 	$(plugin_ldflags) \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 EXTRA_litehtml_viewer_la_DEPENDENCIES = $(plugin_extra_deps) \
 	litehtml/liblitehtml.la

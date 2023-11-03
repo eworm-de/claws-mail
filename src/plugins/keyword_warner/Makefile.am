@@ -20,7 +20,7 @@ endif
 
 keyword_warner_la_LDFLAGS = \
 	$(plugin_ldflags) \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 EXTRA_keyword_warner_la_DEPENDENCIES = $(plugin_extra_deps)
 

@@ -13,7 +13,7 @@ newmail_la_SOURCES = \
 	newmail.c
 
 newmail_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 newmail_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \

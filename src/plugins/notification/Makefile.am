@@ -30,7 +30,7 @@ endif
 
 notification_la_LDFLAGS = \
 	$(plugin_ldflags) \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 EXTRA_notification_la_DEPENDENCIES = $(plugin_extra_deps) \
 	$(hotkey_lib_path)

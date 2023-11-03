@@ -13,7 +13,7 @@ acpi_notifier_la_SOURCES = \
 	acpi_notifier.c
 
 acpi_notifier_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 acpi_notifier_la_LIBADD = \
 	$(GTK_LIBS)

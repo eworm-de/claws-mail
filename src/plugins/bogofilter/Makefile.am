@@ -14,7 +14,7 @@ bogofilter_la_SOURCES = \
 	bogofilter_gtk.c 
 
 bogofilter_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail

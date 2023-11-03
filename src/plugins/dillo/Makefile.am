@@ -15,7 +15,7 @@ dillo_la_SOURCES = \
 	 dillo_prefs.h
 
 dillo_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module -z noexecstack
 
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
