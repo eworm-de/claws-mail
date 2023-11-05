@@ -110,9 +110,6 @@ src/plugins/fancy/fancy_prefs.c
 src/plugins/fancy/fancy_viewer.c
 src/plugins/fetchinfo/fetchinfo_plugin.c
 src/plugins/fetchinfo/fetchinfo_plugin_gtk.c
-src/plugins/gdata/cm_gdata_contacts.c
-src/plugins/gdata/cm_gdata_prefs.c
-src/plugins/gdata/gdata_plugin.c
 src/plugins/keyword_warner/keyword_warner.c
 src/plugins/keyword_warner/keyword_warner_prefs.c
 src/plugins/libravatar/libravatar.c

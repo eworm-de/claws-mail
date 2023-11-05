@@ -153,17 +153,7 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
-	<term>GData</term>
-	<listitem>
-	  <para>
-	Provides an interface to Google services using the gdata library.
-	Currently, the only implemented functionality is to include Google
-	Contacts in the Tab-address completion.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
+     <varlistentry>
 	<term>Keyword Warner</term>
 	<listitem>
 	  <para>

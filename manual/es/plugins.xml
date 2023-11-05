@@ -163,17 +163,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GData</term>
-	<listitem>
-	  <para>
-	Proporciona un interface para los servicios de Google usando la
-	biblioteca gdata. La única funcionalidad implmementada actualmente
-	es incluir los contactos de Google en la función de auto-completar
-	direcciones con el tabulador.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Aviso de palabras clave</term>
 	<listitem>
 	  <para>

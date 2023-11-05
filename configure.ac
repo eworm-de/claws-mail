@@ -1140,10 +1140,6 @@ AC_ARG_ENABLE(fetchinfo-plugin,
 		[  --disable-fetchinfo-plugin      Do not build fetchinfo plugin],
 		[enable_fetchinfo_plugin=$enableval], [enable_fetchinfo_plugin=auto])
 
-AC_ARG_ENABLE(gdata-plugin,
-		[  --disable-gdata-plugin          Do not build gdata plugin],
-		[enable_gdata_plugin=$enableval], [enable_gdata_plugin=auto])
-
 AC_ARG_ENABLE(keyword_warner-plugin,
 		[  --disable-keyword_warner-plugin   Do not build keyword_warner plugin],
 		[enable_keyword_warner_plugin=$enableval], [enable_keyword_warner_plugin=auto])
@@ -1235,7 +1231,6 @@ dnl either yes or no, and do the AC_SUBST calls.
 
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
-dnl Gdata:		libgdata
 dnl Litehtml		a C++ compiler, >=glib-2.36, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
@@ -1291,11 +1286,6 @@ AC_CHECK_LIB([archive], [archive_read_new],
 		       AC_SUBST(ARCHIVE_LIBS,$ARCHIVE_CFLAGS),
 		       HAVE_ARCHIVE=no
 		       )
-
-dnl libgdata *******************************************************************
-PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.2, HAVE_GDATA=yes, HAVE_GDATA=no)
-AC_SUBST(GDATA_CFLAGS)
-AC_SUBST(GDATA_LIBS)
 
 dnl cairo **********************************************************************
 PKG_CHECK_MODULES(CAIRO, cairo >= 1.12.0, HAVE_CAIRO=yes, HAVE_CAIRO=no)
@@ -1642,31 +1632,6 @@ if test x"$enable_fetchinfo_plugin" != xno; then
 	AC_MSG_RESULT(yes)
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS fetchinfo"
-	AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING([whether to build gdata plugin])
-if test x"$enable_gdata_plugin" != xno; then
-	dependencies_missing=""
-
-	if test x"$HAVE_GDATA" = xno; then
-		dependencies_missing="libgdata $dependencies_missing"
-	fi
-
-	if test x"$dependencies_missing" = x; then
-		PLUGINS="$PLUGINS gdata"
-		AC_MSG_RESULT(yes)
-	elif test x"$enable_gdata_plugin" = xauto; then
-		AC_MSG_RESULT(no)
-		AC_MSG_WARN("Plugin gdata will not be built; missing $dependencies_missing")
-		enable_gdata_plugin=no
-		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS gdata"
-	else
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR("Plugin gdata cannot be built; missing $dependencies_missing")
-	fi
-else
-	DISABLED_PLUGINS="$DISABLED_PLUGINS gdata"
 	AC_MSG_RESULT(no)
 fi
 
@@ -2161,7 +2126,6 @@ AM_CONDITIONAL(BUILD_DEMO_PLUGIN,		test x"$enable_demo_plugin" != xno)
 AM_CONDITIONAL(BUILD_DILLO_PLUGIN,		test x"$enable_dillo_plugin" != xno)
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN,		test x"$enable_fancy_plugin" != xno)
 AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN,		test x"$enable_fetchinfo_plugin" != xno)
-AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
 AM_CONDITIONAL(BUILD_KEYWORD_WARNER_PLUGIN,	test x"$enable_keyword_warner_plugin" != xno)
 AM_CONDITIONAL(BUILD_LIBRAVATAR_PLUGIN,		test x"$enable_libravatar_plugin" != xno)
 AM_CONDITIONAL(BUILD_LITEHTML_VIEWER_PLUGIN,	test x"$enable_litehtml_viewer_plugin" != xno)
@@ -2219,7 +2183,6 @@ src/plugins/fancy/Makefile
 src/plugins/fancy/version.rc
 src/plugins/fetchinfo/Makefile
 src/plugins/fetchinfo/version.rc
-src/plugins/gdata/Makefile
 src/plugins/keyword_warner/Makefile
 src/plugins/keyword_warner/version.rc
 src/plugins/litehtml_viewer/Makefile

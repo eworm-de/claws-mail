@@ -48,9 +48,6 @@ D-Bus (>= 0.60)
 Enchant (and dictionaries) (>= 1.0.0)
     for spell-checker support
     https://abiword.github.io/enchant/
-GData (>= 0.6.4)
-    for GData plugin support
-    https://wiki.gnome.org/action/show/Projects/libgdata
 GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
     for GnuPG and S/MIME plugin support
     https://www.gnupg.org/

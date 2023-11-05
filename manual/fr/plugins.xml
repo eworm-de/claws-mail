@@ -157,16 +157,6 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>GData</term>
-        <listitem>
-          <para>
-	Fournit une interface vers les services Google via la bibliothèque gdata.
-	Pour l'instant, la seule fonctionnalité implémentée est d'inclure les
-	contacts Google dans la complétion d'adresses.
-	  </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Keyword Warner</term>
 	<listitem>
 	  <para>

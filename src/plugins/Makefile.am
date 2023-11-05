@@ -18,7 +18,6 @@ SUBDIRS = \
 	dillo \
 	fancy \
 	fetchinfo \
-	gdata \
 	keyword_warner \
 	litehtml_viewer \
 	libravatar \
