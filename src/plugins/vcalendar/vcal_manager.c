@@ -536,10 +536,23 @@ static void get_rfc822_date_from_time_t(gchar *buf, gint len, time_t t)
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 #else
 	GDateTime *dt = g_date_time_new_from_unix_local(t);
-	gchar *buf2 = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
+	if (dt == NULL) {
+		g_warning("failed getting date/time");
+		g_snprintf(buf, len, "(NULL)");
+		return;
+	}
+
+	gchar *ret = g_date_time_format(dt, "%a, %e %b %Y %T %z");
 	g_date_time_unref(dt);
-	strncpy(buf, buf2, len);
-	g_free(buf2);
+
+	if (ret == NULL) {
+		g_warning("failed formatting date/time");
+		g_snprintf(buf, len, "(NULL)");
+		return;
+	}
+
+	g_snprintf(buf, len, ret);
+	g_free(ret);
 #endif
 }
 
