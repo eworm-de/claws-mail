@@ -6175,7 +6175,7 @@ static void prefs_account_oauth2_listener(GTask *task, gpointer source, gpointer
 					"</title><meta charset=\"utf-8\"></head><body><h1>", title,
 					"</h1><p>", body, "</p></body></html>", NULL);
 			reply = g_strdup_printf(
-					"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: %lu\r\n\r\n%s",
+					"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: %" G_GSIZE_FORMAT "\r\n\r\n%s",
 					strlen(reply_message), reply_message);
 			g_free(reply_message);
 			write(client_sock, reply, strlen(reply));
