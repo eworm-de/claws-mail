@@ -506,7 +506,6 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gint i = 0;
-	gchar *ret;
 	GString *siginfo;
 	gpgme_signature_t sig = NULL;
 
@@ -635,9 +634,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		gpgme_key_unref(key);
 	}
 bail:
-	ret = siginfo->str;
-	g_string_free(siginfo, FALSE);
-	return ret;
+	return g_string_free(siginfo, FALSE);
 }
 
 gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)

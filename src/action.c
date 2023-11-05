@@ -363,9 +363,7 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 		return NULL;
 	}
 
-	p = cmd->str;
-	g_string_free(cmd, FALSE);
-	return p;
+	return g_string_free(cmd, FALSE);
 }
 
 static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)

@@ -404,8 +404,7 @@ static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncRes
         g_string_append(str, "/base/");
         g_string_append(str, id+off+strlen("/full/"));
         g_string_append_c(str, '\0');
-        contacts_group_id = str->str;
-        g_string_free(str, FALSE);
+        contacts_group_id = g_string_free(str, FALSE);
       }
       else
         contacts_group_id = g_strdup(id);

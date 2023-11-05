@@ -157,9 +157,8 @@ gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 		p = eword_end_p + 2;
 	}
 	
-	out_str = outbuf->str;
 	out_len = outbuf->len;
-	g_string_free(outbuf, FALSE);
+	out_str = g_string_free(outbuf, FALSE);
 
 	return g_realloc(out_str, out_len + 1);
 }

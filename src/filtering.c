@@ -990,7 +990,6 @@ gchar *filteringaction_to_string(FilteringAction *action)
 	gchar * quoted_dest;
 	gchar * quoted_header;
 	GString *dest = g_string_new("");
-	gchar *deststr = NULL;
 
 	command_str = get_matchparser_tab_str(action->type);
 
@@ -1056,9 +1055,7 @@ gchar *filteringaction_to_string(FilteringAction *action)
 		g_string_free(dest, TRUE);
 		return NULL;
 	}
-	deststr = dest->str;
-	g_string_free(dest, FALSE);
-	return deststr;
+	return g_string_free(dest, FALSE);
 }
 
 gchar * filteringaction_list_to_string(GSList * action_list)

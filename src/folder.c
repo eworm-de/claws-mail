@@ -1187,7 +1187,6 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 	guint new, unread, total;
 	GString *str;
 	gint i;
-	gchar *ret;
 
 	new = unread = total = 0;
 
@@ -1222,10 +1221,7 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 	else
 		g_string_append_printf(str, "%d %d %d\n", new, unread, total);
 
-	ret = str->str;
-	g_string_free(str, FALSE);
- 
-	return ret;
+	return g_string_free(str, FALSE);
 }
 
 void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, 

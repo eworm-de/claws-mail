@@ -4570,8 +4570,7 @@ void prefs_account_write_config_all(GList *account_list)
         
 		str = g_string_sized_new(32);
 		g_hash_table_foreach(tmp_ac_prefs.privacy_prefs, create_privacy_prefs, str);
-		privacy_prefs = str->str;		    
-		g_string_free(str, FALSE);
+		privacy_prefs = g_string_free(str, FALSE);
 
 		WRITE_PARAM(basic_param)
 		WRITE_PARAM(receive_param)

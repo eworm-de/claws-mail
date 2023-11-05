@@ -2474,7 +2474,6 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	GString *str;
-	gchar *ret;
 
 	str = g_string_new(NULL);
 
@@ -2512,10 +2511,7 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
 		g_string_append(str, "\r\n");
 	}
 
-	ret = str->str;
-	g_string_free(str, FALSE);
-
-	return ret;
+	return g_string_free(str, FALSE);
 }
 
 /*
@@ -4453,7 +4449,6 @@ static gchar *canonical_list_to_file(GSList *list)
 	GString *result = g_string_new(NULL);
 	GSList *pathlist = g_slist_reverse(g_slist_copy(list));
 	GSList *cur;
-	gchar *str;
 
 #ifndef G_OS_WIN32
 	result = g_string_append(result, G_DIR_SEPARATOR_S);
@@ -4476,10 +4471,7 @@ static gchar *canonical_list_to_file(GSList *list)
 	}
 	g_slist_free(pathlist);
 
-	str = result->str;
-	g_string_free(result, FALSE);
-
-	return str;
+	return g_string_free(result, FALSE);
 }
 
 static GSList *cm_split_path(const gchar *filename, int depth)
