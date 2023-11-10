@@ -3982,9 +3982,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 					"");
 	}
 
-	if (((prefs_common.bold_unread && MSG_IS_UNREAD(flags)) ||
+	if ((((prefs_common.bold_unread && MSG_IS_UNREAD(flags)) ||
 	     (prefs_common.bold_marked && MSG_IS_MARKED(flags))) &&
-	    !MSG_IS_IGNORE_THREAD(flags) ||
+	    !MSG_IS_IGNORE_THREAD(flags)) ||
 	    (!GTK_CMCTREE_ROW(row)->expanded &&
 	      GTK_CMCTREE_ROW(row)->children &&
 	      summary_have_unread_children(summaryview, row)))
