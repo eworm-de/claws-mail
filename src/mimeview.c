@@ -1943,14 +1943,14 @@ static void mimeview_save_all(MimeView *mimeview, gboolean attachments_only)
 	}
 
 	while (partinfo != NULL) {
-		if (!attachments_only &&
+		if ((!attachments_only &&
 		    (partinfo->type != MIMETYPE_MESSAGE &&
 		     partinfo->type != MIMETYPE_MULTIPART &&
 		     (partinfo->disposition != DISPOSITIONTYPE_INLINE ||
-		      get_real_part_name(partinfo) != NULL)) ||
-		     attachments_only &&
+		      get_real_part_name(partinfo) != NULL))) ||
+		    (attachments_only &&
 		     (partinfo->disposition == DISPOSITIONTYPE_ATTACHMENT &&
-		      get_real_part_name(partinfo) != NULL)) {
+		      get_real_part_name(partinfo) != NULL))) {
 			gchar *filename = mimeview_get_filename_for_part(
 				partinfo, dirname, number++);
 
