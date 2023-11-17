@@ -9643,7 +9643,7 @@ static void compose_exec_ext_editor(Compose *compose)
 		return;
 	}
 
-	if (compose_get_ext_editor_uses_socket()) {
+	if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 #ifndef G_OS_WIN32
 		/* Only allow one socket */
 		if (compose->exteditor_socket != NULL) {
@@ -9670,10 +9670,11 @@ static void compose_exec_ext_editor(Compose *compose)
 		g_free(tmp);
 		return;
 #endif /* G_OS_WIN32 */
-	}
+	} else
+		debug_print("Socket communication with an external editor is only available on X11.\n");
 
 	if (compose_get_ext_editor_cmd_valid()) {
-		if (compose_get_ext_editor_uses_socket()) {
+		if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 #ifndef G_OS_WIN32
 			p = g_strdup(prefs_common_get_ext_editor_cmd());
 			s = strstr(p, "%w");
@@ -9775,7 +9776,7 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = INVALID_PID;
 	compose->exteditor_tag     = -1;
-	if (compose->exteditor_socket) {
+	if (compose->exteditor_socket && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 		gtk_widget_destroy(compose->exteditor_socket);
 		compose->exteditor_socket = NULL;
 	}
@@ -9886,7 +9887,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 			ext_editor_menu_entries[i], sensitive);
 	}
 
-	if (compose_get_ext_editor_uses_socket()) {
+	if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 		if (sensitive) {
 			if (compose->exteditor_socket)
 				gtk_widget_hide(compose->exteditor_socket);
