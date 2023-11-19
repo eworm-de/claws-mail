@@ -375,11 +375,11 @@ static void compose_set_ext_editor_sensitive	(Compose	*compose,
 						 gboolean	 sensitive);
 static gboolean compose_get_ext_editor_cmd_valid();
 static gboolean compose_get_ext_editor_uses_socket();
-#ifndef G_OS_WIN32
+#ifdef GDK_WINDOWING_X11
 static gboolean compose_ext_editor_plug_removed_cb
 						(GtkSocket      *socket,
 						 Compose        *compose);
-#endif /* G_OS_WIN32 */
+#endif /* GDK_WINDOWING_X11 */
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
@@ -9623,11 +9623,11 @@ static gboolean compose_can_autosave(Compose *compose)
 static void compose_exec_ext_editor(Compose *compose)
 {
 	gchar *tmp;
-#ifndef G_OS_WIN32
+#ifdef GDK_WINDOWING_X11
 	GtkWidget *socket;
 	Window socket_wid = 0;
 	gchar *p, *s;
-#endif /* G_OS_WIN32 */
+#endif /* GDK_WINDOWING_X11 */
 	GPid pid;
 	GError *error = NULL;
 	gchar *cmd = NULL;
@@ -9643,39 +9643,43 @@ static void compose_exec_ext_editor(Compose *compose)
 		return;
 	}
 
-	if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
-#ifndef G_OS_WIN32
-		/* Only allow one socket */
-		if (compose->exteditor_socket != NULL) {
-			if (gtk_widget_is_focus(compose->exteditor_socket)) {
-				/* Move the focus off of the socket */
-				gtk_widget_child_focus(compose->window, GTK_DIR_TAB_BACKWARD);
+#ifdef GDK_WINDOWING_X11
+	if (compose_get_ext_editor_uses_socket()) {
+		if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+			/* Only allow one socket */
+			if (compose->exteditor_socket != NULL) {
+				if (gtk_widget_is_focus(compose->exteditor_socket)) {
+					/* Move the focus off of the socket */
+					gtk_widget_child_focus(compose->window, GTK_DIR_TAB_BACKWARD);
+				}
+				g_free(tmp);
+				return;
 			}
-			g_free(tmp);
-			return;
-		}
-		/* Create the receiving GtkSocket */
-		socket = gtk_socket_new ();
-		g_signal_connect (G_OBJECT(socket), "plug-removed",
-			          G_CALLBACK(compose_ext_editor_plug_removed_cb),
-				  compose);
-		gtk_box_pack_start(GTK_BOX(compose->edit_vbox), socket, TRUE, TRUE, 0);
-		gtk_widget_set_size_request(socket, prefs_common.compose_width, -1);
-		/* Realize the socket so that we can use its ID */
-		gtk_widget_realize(socket);
-		socket_wid = gtk_socket_get_id(GTK_SOCKET (socket));
-		compose->exteditor_socket = socket;
+			/* Create the receiving GtkSocket */
+			socket = gtk_socket_new ();
+			g_signal_connect (G_OBJECT(socket), "plug-removed",
+						  G_CALLBACK(compose_ext_editor_plug_removed_cb),
+					  compose);
+			gtk_box_pack_start(GTK_BOX(compose->edit_vbox), socket, TRUE, TRUE, 0);
+			gtk_widget_set_size_request(socket, prefs_common.compose_width, -1);
+			/* Realize the socket so that we can use its ID */
+			gtk_widget_realize(socket);
+			socket_wid = gtk_socket_get_id(GTK_SOCKET (socket));
+			compose->exteditor_socket = socket;
+		} else
+			debug_print("Socket communication with an external editor is only available on X11.\n");
+	}
 #else
-		alertpanel_error(_("Socket communication with an external editor is not available on Windows."));
+	if (compose_get_ext_editor_uses_socket()) {
+		alertpanel_error(_("Socket communication with an external editor is only available on X11."));
 		g_free(tmp);
 		return;
-#endif /* G_OS_WIN32 */
-	} else
-		debug_print("Socket communication with an external editor is only available on X11.\n");
+	}
+#endif /* GDK_WINDOWING_X11 */
 
 	if (compose_get_ext_editor_cmd_valid()) {
+#ifdef GDK_WINDOWING_X11
 		if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
-#ifndef G_OS_WIN32
 			p = g_strdup(prefs_common_get_ext_editor_cmd());
 			s = strstr(p, "%w");
 			s[1] = 'u';
@@ -9684,10 +9688,12 @@ static void compose_exec_ext_editor(Compose *compose)
 			else
 				cmd = g_strdup_printf(p, socket_wid, tmp);
 			g_free(p);
-#endif /* G_OS_WIN32 */
 		} else {
 			cmd = g_strdup_printf(prefs_common_get_ext_editor_cmd(), tmp);
 		}
+#else
+		cmd = g_strdup_printf(prefs_common_get_ext_editor_cmd(), tmp);
+#endif /* GDK_WINDOWING_X11 */
 	} else {
 		if (prefs_common_get_ext_editor_cmd())
 			g_warning("external editor command-line is invalid: '%s'",
@@ -9776,10 +9782,12 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = INVALID_PID;
 	compose->exteditor_tag     = -1;
+#ifdef GDK_WINDOWING_X11
 	if (compose->exteditor_socket && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 		gtk_widget_destroy(compose->exteditor_socket);
 		compose->exteditor_socket = NULL;
 	}
+#endif /* GDK_WINDOWING_X11 */
 
 }
 
@@ -9887,6 +9895,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 			ext_editor_menu_entries[i], sensitive);
 	}
 
+#ifdef GDK_WINDOWING_X11
 	if (compose_get_ext_editor_uses_socket() && GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 		if (sensitive) {
 			if (compose->exteditor_socket)
@@ -9910,6 +9919,9 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	} else {
 		gtk_widget_set_sensitive(compose->text,                   sensitive);
 	}
+#else
+	gtk_widget_set_sensitive(compose->text, sensitive);
+#endif /* GDK_WINDOWING_X11 */
 	if (compose->toolbar->send_btn)
 		gtk_widget_set_sensitive(compose->toolbar->send_btn,      sensitive);
 	if (compose->toolbar->sendl_btn)
@@ -9934,14 +9946,14 @@ static gboolean compose_get_ext_editor_uses_socket()
 	        strstr(prefs_common_get_ext_editor_cmd(), "%w"));
 }
 
-#ifndef G_OS_WIN32
+#ifdef GDK_WINDOWING_X11
 static gboolean compose_ext_editor_plug_removed_cb(GtkSocket *socket, Compose *compose)
 {
 	compose->exteditor_socket = NULL;
 	/* returning FALSE allows destruction of the socket */
 	return FALSE;
 }
-#endif /* G_OS_WIN32 */
+#endif /* GDK_WINDOWING_X11 */
 
 /**
  * compose_undo_state_changed:

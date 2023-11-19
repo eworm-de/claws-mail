@@ -125,10 +125,15 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 		g_free(viewer->filename);
 	}
 
+#ifdef GDK_WINDOWING_X11
 	if (!GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 		debug_print("dillo viewer only works on X11\n");
 		return;
 	}
+#else
+	debug_print("dillo viewer only works on X11\n");
+	return;
+#endif
 
 	viewer->filename = procmime_get_tmp_file_name(partinfo);
 	

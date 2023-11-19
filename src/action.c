@@ -30,6 +30,9 @@
 #ifdef GDK_WINDOWING_X11
 #  include <gdk/gdkx.h>
 #endif /* GDK_WINDOWING_X11 */
+#ifdef GDK_WINDOWING_QUARTZ
+#  include <gdk/gdkquartz.h>
+#endif /* GDK_WINDOWING_QUARTZ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
