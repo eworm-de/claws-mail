@@ -2,7 +2,7 @@ Claws Mail - a GTK lightweight and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright (C) 1999-2022 The Claws Mail Team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2023 The Claws Mail Team and Hiroyuki Yamamoto
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -140,11 +140,6 @@ All plugin preferences can be found under
     some download information: UIDL, Claws Mail account name, POP server, 
     user ID and retrieval time. These headers can be used later for more 
     elaborate filtering or processing rules.
-
-  o GData
-    Includes your Gmail account contacts in the list generated for 
-    Tab-address completion on compose window, using the GData library.
-    Gdata library is available from https://live.gnome.org/libgdata/.
 
   o Keyword Warner
     Shows a warning when sending or queueing a message and a reference
@@ -607,12 +602,14 @@ https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 GTK 3 Version
 -------------
+2023-11-20	4.2.0
 2022-10-20	4.1.1
 2022-04-03	4.1.0
 2021-07-10	4.0.0
 
 GTK 2 Version
 -------------
+2023-11-20	3.20.0
 2022-10-20	3.19.1
 2022-04-03	3.19.0
 2021-07-10	3.18.0

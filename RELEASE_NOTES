@@ -1,4 +1,4 @@
-20th October 2022                                    Claws Mail 4.1.1
+20th November 2023                                   Claws Mail 4.2.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,52 +9,87 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Marked messages in the Message List can now be displayed with bold
-  text by setting the hidden preference "bold_marked".
+* An easy way to open any folder on start-up has been added:
+  Right-click a folder and choose 'Open on start-up'.
+  This can also be configured on the 'Folder list' tab of the
+  /Configuration/Preferences/Display/Summaries page.
 
-* The confirmation dialogue when saving all the attachments of a
-  message can now be disabled.
+* Spam statistics have been added to the session statistics.
 
-* The Message List tooltip for the From column now shows name and
-  address.
+* It is now possible to save message attachments only, without the
+  other message parts.
 
-* OAuth2: various fixes and improvements.
+* QuickSearch: support for a "v H V" search expression has been added
+  and the 'y S' expression has been removed ('v X-Label S' can be
+  used instead).
 
-* The user manuals have been updated.
+* font/* and chemical/* MIME types are now recognised.
 
-* Updated translations: Brazilian Portuguese, Catalan, Czech, Dutch,
-  French, Polish, Russian, Slovak, Spanish, Swedish, Traditional
-  Chinese, Turkish.
+* The image viewer now works correctly when not auto-loading images.
 
-* Build system: GLib version 2.50 or greater is required; autoconf
-  version 2.69 or greater is required; pkgconfig support for GPGME
-  and libgpg-error has been added; GnuTLS is required for OAuth2;
-  OAuth2 support can be removed with --disable-oauth2.
+* Icon Themes: it is no longer possible to install or remove system
+  themes.
+
+* IMAP: Support for SCRAM-SHA-{224,256,384,512} authentication
+  mechanisms has been added.
+
+* IMAP: The statusbar now shows that expunge is happening.
+
+* The GData plugin has been removed.
+
+* The Fancy plugin no longer requires libsoup or libsoup-gnome.
+
+* The LiteHTML Viewer plugin has been synchronised with litehtml 0.7.
+
+* The LiteHTML viewer plugin will now only be built automatically if
+  libgumbo 0.12 or newer is available. Building with libgumbo 0.10
+  must be explicitly requested using --enable-litehtml_viewer-plugin.
+
+* For extra debug output use --enable-more-addressbook-debug and
+  --enable-more-ldap-debug.
+
+* Added translation: Portuguese  
+
+* Updated translations: Brazilian Portuguese, Catalan, Czech, French,
+  Polish, Russian, Slovak, Spanish, Swedish, Traditional Chinese,
+  Turkish.
 
 * bug fixes:
-	• bug 4547, '--enable-tests makes compilation fail'
-	• bug 4583, 'Compose window 'Discard message' dialog is
-		     displayed even though draft is already saved'
-	• bug 4584, 'Compose window causing Claws to terminate
-		     unexpectedly'
-	• bug 4589, 'Edit Group Details panel wording unclear.'
-	• bug 4615, 'Compilation fails with --disable-gnutls'
-	• bug 4620, 'German translation of Content-Transfer-Encoding
-		     adds unwanted colon'
-	• bug 4628, 'typos in the README file'
-	• bug 4630, 'Fancy loads remote images when remote content
-		     is disabled'
-	• bug 4636, 'Handle non-ascii characters in server response'
-	• AddressKeeper plugin: not saving addresses.
-	• Perl plugin: building with perl v5.35.2 or greater.
-	• AttRemover plugin: filenames would not be shown and corrupt
-	  the output
-	• OAuth2: Use the user-configured timeout
-	• 'save all' dialogues' logic.
-	• Make custom headers compliant with RFC 2822 § 3.6.
-	• correctly set modified flag after auto-save
-	• NNTP account's SMTP server wasn't used
-	• building with older GLibs
+	* bug 4491, 'address autocompletion list does not expand in
+		     height with the number of matches'
+	* bug 4618, 'Rate limit by remote breaks queued/marked
+		     actions (Delete/Move)'
+	* bug 4631, 'Embedding external editor crashes Claws-Mail on
+		     Wayland'
+	* bug 4637, 'Segmentation fault when using SUMMARY is empty'
+	* bug 4645, 'fails to check for perl-ExtUtils::Embed'
+	* bug 4648, 'fails to build with gcc 13'
+	* bug 4658, 'Headers unfolded incorrectly in message view'
+	* bug 4664, 'OAUTH2 overwrites passwords even for plaintext
+		     logins'
+	* bug 4666, 'fancy plugin doesn't build with
+		     libwebkit2gtk-4.1'
+	* bug 4670, 'To/CC incorrectly escaped with a trailing
+		     backslash'
+	* bug 4679, 'The correct date header is interpreted
+		     incorrectly to display strange date.'
+	* bug 4693, 'Hang and crash when enable disable SVG Rendering
+		     prefs'
+	* when starting with msgview hidden, toggling msgview to show
+	  it would use incorrect height
+	* update quicksearch history list when changing type 
+	* wrong message which is shown when mail can't be sent
+	* when redirecting, disable queueing
+	* arbitrary paste restriction
+	* when queueing or drafting a msg with an attachment which no
+	  longer exists, use the correct label on the button of the
+	  warning dialogue
+	* using a custom header in found_in_addressbook match
+	  expressions
+	* URIs may contain the '$' dollar sign
+	* OAuth2, Update on-disk tokens as well when in-memory tokens
+	  are updated
+	* Microsoft POP3 OAuth2 protocol
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
