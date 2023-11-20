@@ -61,6 +61,7 @@ litehtml_viewer_la_SOURCES = \
 	container_linux.cpp \
 	container_linux.h \
 	container_linux_images.cpp \
+	container_linux_images.h \
 	http.cpp \
 	http.h \
 	lh_prefs.c \
