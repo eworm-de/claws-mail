@@ -2265,9 +2265,10 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 				g_chmod(filename, S_IRUSR|S_IWUSR);
  		} else {
 			g_warning("MIME viewer command-line is invalid: '%s'", cmd);
+			cmd = NULL;
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
  		}
-		if (execute_command_line(buf, TRUE, NULL) != 0) {
+		if (cmd != NULL && execute_command_line(buf, TRUE, NULL) != 0) {
 			if (!prefs_common.save_parts_readwrite)
 				g_chmod(filename, S_IRUSR|S_IWUSR);
 			mimeview_open_part_with(mimeview, partinfo, FALSE);
