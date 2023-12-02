@@ -35,22 +35,20 @@ static GdkPixbuf *lh_get_image(const char *url)
 
 	if (error || !image) {
 		if (error) {
-			g_warning("lh_get_image: Could not create pixbuf for '%s': %s",
+			g_warning("lh_get_image: Could not load URL for '%s': %s",
 				url, error->message);
 			g_clear_error(&error);
 		}
-		goto theend;
+	} else {
+		pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
+		if (error) {
+			g_warning("lh_get_image: Could not create pixbuf for '%s': %s",
+				url, error->message);
+			pixbuf = NULL;
+			g_clear_error(&error);
+		}
 	}
 
-	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
-	if (error) {
-		g_warning("lh_get_image: Could not create pixbuf for '%s': %s",
-			url, error->message);
-		pixbuf = NULL;
-		g_clear_error(&error);
-	}
-
-theend:
 	delete http_loader;
 
 	return pixbuf;
