@@ -434,7 +434,7 @@ static GtkActionEntry summary_popup_entries[] =
 	{"SummaryViewPopup/ForwardAtt",           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
 	{"SummaryViewPopup/Redirect",             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REDIRECT */
 	{"SummaryViewPopup/Marks",                NULL, N_("_Marks"), NULL, NULL, NULL },
-	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
+	{"SummaryViewPopup/ColorLabels",          NULL, N_("Color la_bels"), NULL, NULL, NULL },
 	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	{"SummaryViewPopup/CreateFilterRule",     NULL, N_("Create _filter rule"), NULL, NULL, NULL },
 #ifndef GENERIC_UMPC
@@ -726,7 +726,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Marks", "SummaryViewPopup/Marks", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabel", "SummaryViewPopup/ColorLabel", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabels", "SummaryViewPopup/ColorLabels", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Tags", "SummaryViewPopup/Tags", GTK_UI_MANAGER_MENU)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
@@ -1855,7 +1855,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Unlock", M_TARGET_EXIST);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabels", M_TARGET_EXIST);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
 
 #ifndef GENERIC_UMPC
@@ -6249,7 +6249,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	gint i;
 	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/ColorLabel");
+	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/ColorLabels");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);

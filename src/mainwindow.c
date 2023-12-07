@@ -722,7 +722,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Marks/Lock",                       NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
 	{"Message/Marks/Unlock",                     NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
 
-	{"Message/ColorLabel",                       NULL, N_("Color la_bel"), NULL, NULL, NULL },
+	{"Message/ColorLabels",                      NULL, N_("Color la_bels"), NULL, NULL, NULL },
 	{"Message/Tags",                             NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	/*{"Message/---",                            NULL, "---", NULL, NULL, NULL },*/
 
@@ -1158,7 +1158,7 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	gint i;
 	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/ColorLabel");
+	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/ColorLabels");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_item_cb),
 			   mainwin);
@@ -1204,8 +1204,6 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		g_free(accel_path);
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
-
-
 	}
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
@@ -1781,7 +1779,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator5", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Lock", "Message/Marks/Lock", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Unlock", "Message/Marks/Unlock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabel", "Message/ColorLabel", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabels", "Message/ColorLabels", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Tags", "Message/Tags", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator5", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 
@@ -3198,7 +3196,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SET_SENSITIVE("Menu/Message/Marks/UnignoreThread", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Marks/Lock", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Marks/Unlock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/Message/ColorLabel", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/ColorLabels", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Tags", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Reedit", M_HAVE_ACCOUNT, M_ALLOW_REEDIT);
 	SET_SENSITIVE("Menu/Message/CheckSignature", M_SINGLE_TARGET_EXIST);
