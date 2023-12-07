@@ -433,7 +433,7 @@ static GtkActionEntry summary_popup_entries[] =
 	{"SummaryViewPopup/Forward",              NULL, N_("_Forward"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
 	{"SummaryViewPopup/ForwardAtt",           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
 	{"SummaryViewPopup/Redirect",             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REDIRECT */
-	{"SummaryViewPopup/Mark",                 NULL, N_("_Mark"), NULL, NULL, NULL },
+	{"SummaryViewPopup/Marks",                NULL, N_("_Marks"), NULL, NULL, NULL },
 	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
 	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	{"SummaryViewPopup/CreateFilterRule",     NULL, N_("Create _filter rule"), NULL, NULL, NULL },
@@ -725,7 +725,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Delete", "Message/Delete", GTK_UI_MANAGER_MENUITEM)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Mark", "SummaryViewPopup/Mark", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Marks", "SummaryViewPopup/Marks", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabel", "SummaryViewPopup/ColorLabel", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Tags", "SummaryViewPopup/Tags", GTK_UI_MANAGER_MENU)
 
@@ -752,22 +752,22 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "MailingList", "SummaryViewPopup/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - mark */
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator4", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Mark", "Message/Marks/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Unmark", "Message/Marks/Unmark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator1", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkRead", "Message/Marks/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkUnread", "Message/Marks/MarkUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator2", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "IgnoreThread", "Message/Marks/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "UnignoreThread", "Message/Marks/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "WatchThread", "Message/Marks/WatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "UnwatchThread", "Message/Marks/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator3", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkSpam", "Message/Marks/MarkSpam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkHam", "Message/Marks/MarkHam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator4", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Lock", "Message/Marks/Lock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Unlock", "Message/Marks/Unlock", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - colorlabel and tags are dynamic */
 	/* submenus - createfilterrule */
@@ -1842,19 +1842,19 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	SET_SENSITIVE("Menus/SummaryViewPopup/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
 #endif
 
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Mark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Unmark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkRead", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkUnread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/IgnoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/UnignoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/WatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/UnwatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Lock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Unlock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
 	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
 
