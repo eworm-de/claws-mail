@@ -776,9 +776,9 @@
 	<listitem>
 	  <para>
     Controls the number of messages remembered for navigation with the
-    "Previous message" and "Next message" options. These options are
-    available within the "Go to" submenu of main window's "View" menu.
-    Default value is 50.
+    "Previous opened message" and "Next opened message" options. These
+    options are available within the "Go to" submenu of main window's
+    "View" menu. Default value is 50.
 	  </para>
 	</listitem>
       </varlistentry>
