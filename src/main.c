@@ -1236,6 +1236,13 @@ int main(int argc, char *argv[])
 	g_free(userrc);
 
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
+
+	if (copy_file(userrc, userrc, TRUE) < 0) {
+		g_warning("can't copy message %s to %s.bak",
+			  userrc, userrc);
+				return -1;
+	}
+
 	gtk_accel_map_load (userrc);
 	g_free(userrc);
 
