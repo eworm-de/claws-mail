@@ -1322,7 +1322,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 						      summaryview->displayed);
 	}
 
-	/* process the Mark if any */
+	/* process the marks if any */
 	if (!is_refresh &&
 			(summaryview->mainwin->lock_count == 0 &&
 			 (summaryview->moved > 0 || summaryview->copied > 0))) {
