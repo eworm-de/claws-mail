@@ -1330,7 +1330,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 		gboolean changed = FALSE;
 
 		val = alertpanel(_("Process mark"),
-				 _("Some Mark are left. Process them?"),
+				 _("Some marks are left. Process them?"),
 				 NULL, _("_No"), NULL, _("_Yes"), NULL, _("_Cancel"),
 				 ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE == val) {
