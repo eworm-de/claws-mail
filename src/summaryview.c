@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ static GdkPixbuf *clipgpgsignedxpm;
 static void summary_free_msginfo_func	(GtkCMCTree		*ctree,
 					 GtkCMCTreeNode		*node,
 					 gpointer		 data);
-static void summary_set_marks_func	(GtkCMCTree		*ctree,
+static void summary_set_Mark_func	(GtkCMCTree		*ctree,
 					 GtkCMCTreeNode		*node,
 					 gpointer		 data);
 
@@ -171,7 +171,7 @@ static void summary_display_msg_full	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row,
 					 gboolean		 new_window,
 					 gboolean		 all_headers);
-static void summary_set_row_marks	(SummaryView		*summaryview,
+static void summary_set_row_Mark	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row);
 
 static gboolean summary_set_row_tag	(SummaryView 		*summaryview, 
@@ -433,8 +433,8 @@ static GtkActionEntry summary_popup_entries[] =
 	{"SummaryViewPopup/Forward",              NULL, N_("_Forward"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
 	{"SummaryViewPopup/ForwardAtt",           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
 	{"SummaryViewPopup/Redirect",             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REDIRECT */
-	{"SummaryViewPopup/Marks",                NULL, N_("_Marks"), NULL, NULL, NULL },
-	{"SummaryViewPopup/ColorLabels",          NULL, N_("Color la_bels"), NULL, NULL, NULL },
+	{"SummaryViewPopup/Mark",                 NULL, NC_("Menu Item", "_Mark"), NULL, NULL, NULL },
+	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
 	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	{"SummaryViewPopup/CreateFilterRule",     NULL, N_("Create _filter rule"), NULL, NULL, NULL },
 #ifndef GENERIC_UMPC
@@ -725,8 +725,8 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Delete", "Message/Delete", GTK_UI_MANAGER_MENUITEM)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Marks", "SummaryViewPopup/Marks", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabels", "SummaryViewPopup/ColorLabels", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Mark", "SummaryViewPopup/Mark", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ColorLabel", "SummaryViewPopup/ColorLabel", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Tags", "SummaryViewPopup/Tags", GTK_UI_MANAGER_MENU)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
@@ -752,25 +752,25 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "MailingList", "SummaryViewPopup/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - mark */
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Mark", "Message/Marks/Mark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Unmark", "Message/Marks/Unmark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator1", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkRead", "Message/Marks/MarkRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkUnread", "Message/Marks/MarkUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator2", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkAllRead", "Message/Marks/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkAllUnread", "Message/Marks/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator3", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "IgnoreThread", "Message/Marks/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "UnignoreThread", "Message/Marks/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "WatchThread", "Message/Marks/WatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "UnwatchThread", "Message/Marks/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator4", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkSpam", "Message/Marks/MarkSpam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "MarkHam", "Message/Marks/MarkHam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Separator5", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Lock", "Message/Marks/Lock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Marks", "Unlock", "Message/Marks/Unlock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkAllUnread", "Message/Mark/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator4", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator5", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - colorlabel and tags are dynamic */
 	/* submenus - createfilterrule */
@@ -1322,7 +1322,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 						      summaryview->displayed);
 	}
 
-	/* process the marks if any */
+	/* process the Mark if any */
 	if (!is_refresh &&
 			(summaryview->mainwin->lock_count == 0 &&
 			 (summaryview->moved > 0 || summaryview->copied > 0))) {
@@ -1330,7 +1330,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 		gboolean changed = FALSE;
 
 		val = alertpanel(_("Process mark"),
-				 _("Some marks are left. Process them?"),
+				 _("Some Mark are left. Process them?"),
 				 NULL, _("_No"), NULL, _("_Yes"), NULL, _("_Cancel"),
 				 ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE == val) {
@@ -1845,22 +1845,22 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	SET_SENSITIVE("Menus/SummaryViewPopup/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
 #endif
 
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Mark", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Unmark", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkRead", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkUnread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkAllRead", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkAllUnread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/IgnoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/UnignoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/WatchThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/UnwatchThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Lock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/Unlock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menus/SummaryViewPopup/Marks/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabels", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkAllRead", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkAllUnread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
 
 #ifndef GENERIC_UMPC
@@ -2591,7 +2591,7 @@ static void summary_free_msginfo_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 		procmsg_msginfo_free(&msginfo);
 }
 
-static void summary_set_marks_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
+static void summary_set_Mark_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				   gpointer data)
 {
 	SummaryView *summaryview = data;
@@ -2606,7 +2606,7 @@ static void summary_set_marks_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 
 	summaryview->total_size += msginfo->size;
 
-	summary_set_row_marks(summaryview, node);
+	summary_set_row_Mark(summaryview, node);
 }
 
 static void summary_update_status(SummaryView *summaryview)
@@ -2886,7 +2886,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			label = gtk_image_new_from_pixbuf(markxpm);
 			gtk_widget_show(label);
 			gtk_cmclist_set_column_widget(clist, pos, label);
-			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, _("Mark"));
+			gtk_sctree_set_column_tooltip(GTK_SCTREE(clist), pos, C_("Column Header", "_Mark"));
 			continue;
 		} else if (type == S_COL_LOCKED) {
 			label = gtk_image_new_from_pixbuf(lockedxpm);
@@ -3233,7 +3233,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 #undef SET_TEXT
 
 	GTKUT_CTREE_NODE_SET_ROW_DATA(cnode, msginfo);
-	summary_set_marks_func(ctree, cnode, summaryview);
+	summary_set_Mark_func(ctree, cnode, summaryview);
 
 	if (msgid && msgid[0] != '\0')
 		g_hash_table_insert(msgid_table, (gchar *)msgid, cnode);
@@ -3319,7 +3319,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
-			summary_set_marks_func(ctree, node, summaryview);
+			summary_set_Mark_func(ctree, node, summaryview);
 
 			if (msginfo->msgid && msginfo->msgid[0] != '\0')
 				g_hash_table_insert(msgid_table,
@@ -3367,7 +3367,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		while (node) {
 			GtkCMCTreeNode *next = GTK_CMCTREE_NODE_NEXT(node);
 			if (GTK_CMCTREE_ROW(node)->children)
-				summary_set_row_marks(summaryview, node);
+				summary_set_row_Mark(summaryview, node);
 			node = next;
 		}
 		END_TIMING();
@@ -3702,7 +3702,7 @@ static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 		summary_msginfo_unset_flags
 			(msginfo, MSG_NEW | MSG_UNREAD, 0);
-		summary_set_row_marks(summaryview, row);
+		summary_set_row_Mark(summaryview, row);
 		summary_status_show(summaryview);
 	}
 }
@@ -3942,7 +3942,7 @@ static gboolean summary_have_unread_children(SummaryView *summaryview,
 	return FALSE;
 }
 
-static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
+static void summary_set_row_Mark(SummaryView *summaryview, GtkCMCTreeNode *row)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkStyle *style = NULL;
@@ -4087,7 +4087,7 @@ static void summary_mark_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	summary_msginfo_change_flags(msginfo, MSG_MARKED, 0, MSG_DELETED, 
 		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %s/%d is marked\n", msginfo->folder->path, msginfo->msgnum);
 }
 
@@ -4110,7 +4110,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 	summary_msginfo_change_flags(msginfo, MSG_LOCKED, 0, MSG_DELETED, 
 		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
 	
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is locked\n", msginfo->msgnum);
 }
 
@@ -4125,7 +4125,7 @@ static void summary_unlock_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 		return;
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	summary_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is unlocked\n", msginfo->msgnum);
 }
 
@@ -4160,7 +4160,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		return;
 
 	summary_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is marked as read\n",
 		msginfo->msgnum);
 }
@@ -4178,7 +4178,7 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 		return;
 
 	summary_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is marked as unread\n",
 		msginfo->msgnum);
 }
@@ -4309,7 +4309,7 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 		node = gtkut_ctree_node_next(ctree, node)) {
 		if (!GTK_CMCTREE_ROW(node)->expanded)
-			summary_set_row_marks(summaryview, node);
+			summary_set_row_Mark(summaryview, node);
 	}
 	END_LONG_OPERATION(summaryview);
 
@@ -4355,7 +4355,7 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 		node = gtkut_ctree_node_next(ctree, node)) {
 		if (!GTK_CMCTREE_ROW(node)->expanded)
-			summary_set_row_marks(summaryview, node);
+			summary_set_row_Mark(summaryview, node);
 	}
 	END_LONG_OPERATION(summaryview);
 
@@ -4404,7 +4404,7 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 			}
 			summaryview->display_msg = prefs_common.always_show_msg;
 	
-			summary_set_row_marks(summaryview, row);
+			summary_set_row_Mark(summaryview, row);
 		}
 	} else {
 		log_error(LOG_PROTOCOL, _("An error happened while learning.\n"));
@@ -4502,7 +4502,7 @@ static void summary_delete_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 
 	if (!prefs_common.immediate_exec && 
 	    !folder_has_parent_of_type(summaryview->folder_item, F_TRASH)) {
-		summary_set_row_marks(summaryview, row);
+		summary_set_row_Mark(summaryview, row);
 	}
 	debug_print("Message %s/%d is set to delete\n",
 		    msginfo->folder->path, msginfo->msgnum);
@@ -4653,7 +4653,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCMCTreeNode *row)
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	summary_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, 
 		MSG_MOVE | MSG_COPY | MSG_MOVE_DONE);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 
 	debug_print("Message %s/%d is unmarked\n",
 		    msginfo->folder->path, msginfo->msgnum);
@@ -4705,7 +4705,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCMCTreeNode *row,
 	}
 	
 	if (!prefs_common.immediate_exec) {
-		summary_set_row_marks(summaryview, row);
+		summary_set_row_Mark(summaryview, row);
 	}
 
 	debug_print("Message %d is set to move to %s\n",
@@ -4812,7 +4812,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCMCTreeNode *row,
 		summary_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE);
 	}
 	if (!prefs_common.immediate_exec) {
-		summary_set_row_marks(summaryview, row);
+		summary_set_row_Mark(summaryview, row);
 	}
 
 	debug_print("Message %d is set to copy to %s\n",
@@ -5413,7 +5413,7 @@ static void summary_execute_copy_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 			g_slist_prepend(summaryview->mlist, msginfo);
 
 		summary_msginfo_unset_flags(msginfo, 0, MSG_COPY);
-		summary_set_row_marks(summaryview, node);
+		summary_set_row_Mark(summaryview, node);
 	}
 }
 
@@ -5708,7 +5708,7 @@ void summary_expand_threads(SummaryView *summaryview)
 	while (node) {
 		if (GTK_CMCTREE_ROW(node)->children) {
 			gtk_cmctree_expand(ctree, node);
-			summary_set_row_marks(summaryview, node);
+			summary_set_row_Mark(summaryview, node);
 		}
 		node = GTK_CMCTREE_NODE_NEXT(node);
 	}
@@ -5747,7 +5747,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	while (node) {
 		if (GTK_CMCTREE_ROW(node)->children) {
 			gtk_cmctree_collapse(ctree, node);
-			summary_set_row_marks(summaryview, node);
+			summary_set_row_Mark(summaryview, node);
 		}
 		node = GTK_CMCTREE_ROW(node)->sibling;
 	}
@@ -6046,7 +6046,7 @@ static void summary_set_row_colorlabel(SummaryView *summaryview, GtkCMCTreeNode 
 
 	summary_msginfo_change_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0, 
 					MSG_CLABEL_FLAG_MASK, 0);
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 }
 
 void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
@@ -6129,7 +6129,7 @@ static gboolean summary_set_row_tag(SummaryView *summaryview, GtkCMCTreeNode *ro
 		g_free(tags_str);
 	}
 
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	if (row == summaryview->displayed) {
 		return TRUE;
 	}
@@ -6254,7 +6254,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview, gboolean re
 	gint i;
 	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/ColorLabels");
+	label_menuitem = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menus/SummaryViewPopup/ColorLabel");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);
@@ -7195,12 +7195,12 @@ void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 static void summary_tree_expanded(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				  SummaryView *summaryview)
 {
-	summary_set_row_marks(summaryview, node);
+	summary_set_row_Mark(summaryview, node);
 	if (prefs_common.bold_unread) {
 		while (node) {
 			GtkCMCTreeNode *next = GTK_CMCTREE_NODE_NEXT(node);
 			if (GTK_CMCTREE_ROW(node)->children)
-				summary_set_row_marks(summaryview, node);
+				summary_set_row_Mark(summaryview, node);
 			node = next;
 		}
 	}
@@ -7210,7 +7210,7 @@ static void summary_tree_collapsed(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				   SummaryView *summaryview)
 {
 	gtk_sctree_select(GTK_SCTREE(ctree), node);
-	summary_set_row_marks(summaryview, node);
+	summary_set_row_Mark(summaryview, node);
 }
 
 static void summary_unselected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
@@ -7424,7 +7424,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 		while (node) {
 			GtkCMCTreeNode *next = GTK_CMCTREE_NODE_NEXT(node);
 			if (GTK_CMCTREE_ROW(node)->children)
-				summary_set_row_marks(summaryview, node);
+				summary_set_row_Mark(summaryview, node);
 			node = next;
 		}
 	}
@@ -7957,7 +7957,7 @@ static void summary_ignore_thread_func_set_row(GtkCMCTree *ctree, GtkCMCTreeNode
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
 	cm_return_if_fail(msginfo);
 
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d update in row view\n", msginfo->msgnum);
 }
 
@@ -7993,7 +7993,7 @@ static void summary_unignore_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 
 	summary_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is marked as unignore thread\n",
 	    msginfo->msgnum);
 }
@@ -8055,7 +8055,7 @@ static void summary_watch_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, gp
 
 	summary_msginfo_change_flags(msginfo, MSG_WATCH_THREAD, 0, MSG_IGNORE_THREAD, 0);
 
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is marked as watch thread\n",
 	    msginfo->msgnum);
 }
@@ -8087,7 +8087,7 @@ static void summary_unwatch_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, 
 
 	summary_msginfo_unset_flags(msginfo, MSG_WATCH_THREAD, 0);
 
-	summary_set_row_marks(summaryview, row);
+	summary_set_row_Mark(summaryview, row);
 	debug_print("Message %d is marked as unwatch thread\n",
 	    msginfo->msgnum);
 }
@@ -8374,7 +8374,7 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 				msginfo_update->msginfo);
 
 		if (node) 
-			summary_set_row_marks(summaryview, node);
+			summary_set_row_Mark(summaryview, node);
 	}
 
 	return FALSE;

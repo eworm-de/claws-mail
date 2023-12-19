@@ -697,32 +697,31 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/DeleteThread",                     NULL, N_("Delete t_hread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
 	{"Message/CancelNews",                       NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
 	/* separation */
- 	
-	{"Message/Marks",                            NULL, N_("_Marks"), NULL, NULL, NULL },
-	{"Message/Marks/Mark",                       NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
-	{"Message/Marks/Unmark",                     NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
-	{"Message/Marks/---",                        NULL, "---", NULL, NULL, NULL },
+	{"Message/Mark",                             NULL, NC_("Menu Item", "_Mark"), NULL, NULL, NULL },
+	{"Message/Mark/Mark",                        NULL, NC_("Sub-Menu Item", "_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
+	{"Message/Mark/Unmark",                      NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
+	{"Message/Mark/---",                         NULL, "---", NULL, NULL, NULL },
 
-	{"Message/Marks/MarkRead",                   NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
-	{"Message/Marks/MarkUnread",                 NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
+	{"Message/Mark/MarkRead",                    NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
+	{"Message/Mark/MarkUnread",                  NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
 	/* separation */
-	{"Message/Marks/MarkAllRead",                NULL, N_("Mark all read in folder"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
-	{"Message/Marks/MarkAllUnread",              NULL, N_("Mark all unread in folder"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
+	{"Message/Mark/MarkAllRead",                 NULL, N_("Mark all read in folder"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"Message/Mark/MarkAllUnread",               NULL, N_("Mark all unread in folder"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
 	/* separation */
-	{"Message/Marks/IgnoreThread",               NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
-	{"Message/Marks/UnignoreThread",             NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
-	{"Message/Marks/WatchThread",                NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
-	{"Message/Marks/UnwatchThread",              NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
-	/* separation */
-
-	{"Message/Marks/MarkSpam",                   NULL, N_("Mark as _spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
-	{"Message/Marks/MarkHam",                    NULL, N_("Mark as _ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	{"Message/Mark/IgnoreThread",                NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
+	{"Message/Mark/UnignoreThread",              NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
+	{"Message/Mark/WatchThread",                 NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
+	{"Message/Mark/UnwatchThread",               NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
 	/* separation */
 
-	{"Message/Marks/Lock",                       NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
-	{"Message/Marks/Unlock",                     NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
+	{"Message/Mark/MarkSpam",                    NULL, N_("Mark as _spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
+	{"Message/Mark/MarkHam",                     NULL, N_("Mark as _ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	/* separation */
 
-	{"Message/ColorLabels",                      NULL, N_("Color la_bels"), NULL, NULL, NULL },
+	{"Message/Mark/Lock",                        NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
+	{"Message/Mark/Unlock",                      NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
+
+	{"Message/ColorLabel",                       NULL, N_("Color la_bel"), NULL, NULL, NULL },
 	{"Message/Tags",                             NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	/*{"Message/---",                            NULL, "---", NULL, NULL, NULL },*/
 
@@ -1158,7 +1157,7 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	gint i;
 	gchar *accel_path = NULL;
 
-	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/ColorLabels");
+	label_menuitem = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/ColorLabel");
 	g_signal_connect(G_OBJECT(label_menuitem), "activate",
 			 G_CALLBACK(mainwindow_colorlabel_menu_item_activate_item_cb),
 			   mainwin);
@@ -1204,6 +1203,8 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 		g_free(accel_path);
 		g_signal_connect (gtk_ui_manager_get_accel_group(mainwin->ui_manager), 
 			"accel-changed", G_CALLBACK (mainwin_accel_changed_cb), item);
+
+
 	}
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
@@ -1759,27 +1760,27 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "CancelNews", "Message/CancelNews", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Marks", "Message/Marks", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Mark", "Message/Marks/Mark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Unmark", "Message/Marks/Unmark", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator1", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkRead", "Message/Marks/MarkRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkUnread", "Message/Marks/MarkUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator2", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkAllRead", "Message/Marks/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkAllUnread", "Message/Marks/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator3", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "IgnoreThread", "Message/Marks/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "UnignoreThread", "Message/Marks/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "WatchThread", "Message/Marks/WatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "UnwatchThread", "Message/Marks/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator4", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkSpam", "Message/Marks/MarkSpam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "MarkHam", "Message/Marks/MarkHam", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Separator5", "Message/Marks/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Lock", "Message/Marks/Lock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Marks", "Unlock", "Message/Marks/Unlock", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabels", "Message/ColorLabels", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Mark", "Message/Mark", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllUnread", "Message/Mark/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "WatchThread", "Message/Mark/WatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnwatchThread", "Message/Mark/UnwatchThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator4", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkSpam", "Message/Mark/MarkSpam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkHam", "Message/Mark/MarkHam", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator5", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Lock", "Message/Mark/Lock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Unlock", "Message/Mark/Unlock", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "ColorLabel", "Message/ColorLabel", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Tags", "Message/Tags", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator5", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 
@@ -3189,14 +3190,14 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SET_SENSITIVE("Menu/Message/TrashThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	SET_SENSITIVE("Menu/Message/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	SET_SENSITIVE("Menu/Message/CancelNews", M_TARGET_EXIST, M_ALLOW_DELETE, M_NEWS);
-	SET_SENSITIVE("Menu/Message/Marks", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	SET_SENSITIVE("Menu/Message/Marks/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menu/Message/Marks/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	SET_SENSITIVE("Menu/Message/Marks/IgnoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/Message/Marks/UnignoreThread", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/Message/Marks/Lock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/Message/Marks/Unlock", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/Message/ColorLabels", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menu/Message/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menu/Message/Mark/IgnoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/UnignoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/Lock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/Unlock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/ColorLabel", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Tags", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/Message/Reedit", M_HAVE_ACCOUNT, M_ALLOW_REEDIT);
 	SET_SENSITIVE("Menu/Message/CheckSignature", M_SINGLE_TARGET_EXIST);
