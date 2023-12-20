@@ -1240,8 +1240,6 @@ int main(int argc, char *argv[])
 	if (copy_file(userrc, userrc, TRUE) < 0) {
 		g_warning("can't copy message %s to %s.bak",
 			  userrc, userrc);
-		g_free(userrc);		
-		return -1;
 	}
 
 	gtk_accel_map_load (userrc);
