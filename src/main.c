@@ -1238,7 +1238,7 @@ int main(int argc, char *argv[])
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 
 	if (copy_file(userrc, userrc, TRUE) < 0) {
-		g_warning("can't copy message %s to %s.bak",
+		g_warning("can't copy %s to %s.bak",
 			  userrc, userrc);
 	}
 
