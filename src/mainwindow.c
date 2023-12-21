@@ -2784,13 +2784,8 @@ void main_window_get_size(MainWindow *mainwin)
 		return;
 	}
 
-	if (prefs_common.mainwin_fullscreen) {
-		debug_print("mainwin in full screen state. "
-			    "Keeping original settings\n");
-	}
-
 	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->summaryview), &allocation);
-	if (allocation.width > 1 && allocation.height > 1 && !prefs_common.mainwin_fullscreen) {
+	if (allocation.width > 1 && allocation.height > 1) {
 		prefs_common.summaryview_width = allocation.width;
 
 		if (messageview_is_visible(mainwin->messageview))
@@ -2800,23 +2795,20 @@ void main_window_get_size(MainWindow *mainwin)
 	}
 
 	gtk_window_get_size(GTK_WINDOW(mainwin->window), &allocation.width, &allocation.height);
-	if (allocation.width > 1 && allocation.height > 1 &&
-	    !prefs_common.mainwin_maximised && !prefs_common.mainwin_fullscreen) {
+	if (allocation.width > 1 && allocation.height > 1) {
 		prefs_common.mainview_height = allocation.height;
 		prefs_common.mainwin_width   = allocation.width;
 		prefs_common.mainwin_height  = allocation.height;
 	}
 
 	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->folderview), &allocation);
-	if (allocation.width > 1 && allocation.height > 1 &&
-	    !prefs_common.mainwin_fullscreen) {
+	if (allocation.width > 1 && allocation.height > 1) {
 		prefs_common.folderview_width  = allocation.width;
 		prefs_common.folderview_height = allocation.height;
 	}
 	
 	gtk_widget_get_allocation(GTK_WIDGET_PTR(mainwin->messageview), &allocation);
-	if (allocation.width > 1 && allocation.height > 1 &&
-	    !prefs_common.mainwin_fullscreen) {
+	if (allocation.width > 1 && allocation.height > 1) {
 		prefs_common.msgview_width = allocation.width;
 		prefs_common.msgview_height = allocation.height;
 	}
