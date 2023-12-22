@@ -248,7 +248,7 @@ static GtkActionEntry msgview_entries[] =
 	{"View/Goto/PrevLabeled",                    NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
 	{"View/Goto/NextLabeled",                    NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
 	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevHistory",                    NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
+	{"View/Goto/PrevHistory",                    NULL, N_("Previously opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
 	{"View/Goto/NextHistory",                    NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
 	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/ParentMessage",                  NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
