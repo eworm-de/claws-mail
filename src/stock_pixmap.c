@@ -538,6 +538,26 @@ GtkWidget *stock_pixmap_widget(StockPixmap icon)
  */
 void render_scaled_proportionally(RsvgHandle *handle, cairo_t *cr, int width, int height)
 {
+#if LIBRSVG_CHECK_VERSION(2, 46, 0)
+	if (cairo_status(cr) == CAIRO_STATUS_SUCCESS) {
+		const RsvgRectangle viewport = {
+			.x = 0,
+			.y = 0,
+			.width = width,
+			.height = height,
+		};
+		GError *err = NULL;
+
+		cairo_rectangle(cr, 0, 0, width, height);
+		cairo_clip(cr);
+
+		rsvg_handle_render_document(handle, cr, &viewport, &err);
+		if (err != NULL) {
+			g_warning("unable to render SVG document (%d): %s", err->code, err->message);
+			g_error_free(err);
+		}
+	}
+#else
 	RsvgDimensionData dimensions;
 	double x_factor, y_factor;
 	double scale_factor;
@@ -552,6 +572,7 @@ void render_scaled_proportionally(RsvgHandle *handle, cairo_t *cr, int width, in
 	cairo_scale(cr, scale_factor, scale_factor);
 
 	rsvg_handle_render_cairo(handle, cr);
+#endif
 }
 
 /*
@@ -670,11 +691,19 @@ GdkPixbuf *pixbuf_from_svg_like_icon(char *filename, GError **error, StockPixmap
 			height = (int) floor(factor * height);
 		}
 	} else { /* render using SVG size */
+#if LIBRSVG_CHECK_VERSION(2, 46, 0)
+		double svg_width, svg_height;
+
+		rsvg_handle_get_intrinsic_size_in_pixels(handle, &svg_width, &svg_height);
+		width = (int) svg_width;
+		height = (int) svg_height;
+#else
 		RsvgDimensionData dimension;
 
 		rsvg_handle_get_dimensions (handle, &dimension);
 		width = dimension.width;
 		height = dimension.height;
+#endif
 	}
 
 	/* create drawing context */
