@@ -691,7 +691,7 @@ GdkPixbuf *pixbuf_from_svg_like_icon(char *filename, GError **error, StockPixmap
 			height = (int) floor(factor * height);
 		}
 	} else { /* render using SVG size */
-#if LIBRSVG_CHECK_VERSION(2, 46, 0)
+#if LIBRSVG_CHECK_VERSION(2, 52, 0)
 		double svg_width, svg_height;
 
 		rsvg_handle_get_intrinsic_size_in_pixels(handle, &svg_width, &svg_height);
