@@ -11544,7 +11544,8 @@ static void compose_toggle_sign_cb(GtkToggleAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 
 	compose->use_signing = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_sign_btn), compose->use_signing);
+	if (compose->toolbar->privacy_sign_btn != NULL)
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_sign_btn), compose->use_signing);
 }
 
 static void compose_toggle_encrypt_cb(GtkToggleAction *action, gpointer data)
@@ -11552,7 +11553,8 @@ static void compose_toggle_encrypt_cb(GtkToggleAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 
 	compose->use_encryption = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_encrypt_btn), compose->use_encryption);
+	if (compose->toolbar->privacy_encrypt_btn != NULL)
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_encrypt_btn), compose->use_encryption);
 }
 
 static void compose_activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
