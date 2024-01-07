@@ -1256,6 +1256,7 @@ static gint ssl_read(gnutls_session_t ssl, gchar *buf, gint len)
 	}
 
 	while (1) {
+		errno = 0;
 		r = gnutls_record_recv(ssl, buf, len);
 		if (r > 0)
 			return r;
@@ -1273,7 +1274,10 @@ static gint ssl_read(gnutls_session_t ssl, gchar *buf, gint len)
 		case GNUTLS_E_INTERRUPTED:
 			errno = EAGAIN;
 			return -1;
-
+		case GNUTLS_E_PREMATURE_TERMINATION:
+			if (errno == 0)
+				return 0;
+			/* fall through */
 		default:
 			debug_print("Unexpected TLS read result %d\n", r);
 			errno = EIO;
