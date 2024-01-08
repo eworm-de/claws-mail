@@ -130,6 +130,7 @@ static gchar *OAUTH2CodeMarker[5][2] = {
 static gint oauth2_post_request (gchar *buf, gchar *host, gchar *resource, gchar *header, gchar *body);
 static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token);
 static gint oauth2_filter_access (gchar *json, gchar *access_token, gint *expiry);
+static gint oauth2_contact_server (SockInfo *sock, gchar *request, gchar *response);
 
 
 static gint oauth2_post_request (gchar *buf, gchar *host, gchar *resource, gchar *header, gchar *body)
@@ -214,47 +215,6 @@ static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar
 	return token;
 }
 
-static gchar *oauth2_contact_server(SockInfo *sock, const gchar *request)
-{
-	gboolean got_some_data, timeout;
-	gint ret;
-	char buf[1024];
-	GString *response = g_string_sized_new(sizeof(buf));
-	time_t end_time = time(NULL);
-
-	end_time += prefs_common_get_prefs()->io_timeout_secs;
-
-	if (!response)
-		return NULL;
-
-	if (sock_write(sock, request, strlen(request)) < 0) {
-		log_message(LOG_PROTOCOL, _("OAuth2 socket write error\n"));
-		return NULL;
-	}
-
-	do {
-		ret = sock_read(sock, buf, sizeof(buf) - 1);
-		got_some_data = ret > 0;
-		timeout = time(NULL) > end_time;
-
-		if (timeout)
-			break;
-
-		if (ret < 0 && errno == EAGAIN)
-			continue;
-
-		if (!got_some_data)
-			break;
-
-		buf[ret] = '\0';
-		g_string_append_len(response, buf, ret);
-	} while (ret);
-
-	if (timeout)
-		log_message(LOG_PROTOCOL, _("OAuth2 socket timeout error\n"));
-
-	return g_string_free(response, !got_some_data || timeout);
-}
 int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const gchar *authcode)
 {
 	gchar *request;
@@ -307,6 +267,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	refresh_token = g_malloc(OAUTH2BUFSIZE+1);	
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
+	response = g_malloc0(OAUTH2BUFSIZE+1);
 
 	if(OAUTH2Data->custom_client_id)
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
@@ -370,9 +331,9 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 
         debug_print("Complete body: %s\n", body);
 	oauth2_post_request (request, OAUTH2info[i][OA2_BASE_URL], OAUTH2info[i][OA2_ACCESS_RESOURCE], header, body);
-	response = oauth2_contact_server (sock, request);
+	ret = oauth2_contact_server (sock, request, response);
 
-	if(response && oauth2_filter_access (response, access_token, &expiry) == 0){
+	if(oauth2_filter_access (response, access_token, &expiry) == 0){
 	  OAUTH2Data->access_token = g_strdup(access_token);
 	  OAUTH2Data->expiry = expiry;
 	  OAUTH2Data->expiry_str = g_strdup_printf ("%i", expiry);
@@ -384,7 +345,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  ret = 1;
 	}
 
-	if(response && oauth2_filter_refresh (response, refresh_token) == 0){
+	if(oauth2_filter_refresh (response, refresh_token) == 0){
 	  OAUTH2Data->refresh_token = g_strdup(refresh_token);
 	  log_message(LOG_PROTOCOL, _("OAuth2 refresh token obtained\n"));
 	}else{
@@ -447,6 +408,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	refresh_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
+	response = g_malloc(OAUTH2BUFSIZE+1);
 
 	if(OAUTH2Data->custom_client_id)
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
@@ -505,9 +467,9 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	}
 
 	oauth2_post_request (request, OAUTH2info[i][OA2_BASE_URL], OAUTH2info[i][OA2_REFRESH_RESOURCE], header, body);
-	response = oauth2_contact_server (sock, request);
+	ret = oauth2_contact_server (sock, request, response);
 
-	if(response && oauth2_filter_access (response, access_token, &expiry) == 0){
+	if(oauth2_filter_access (response, access_token, &expiry) == 0){
 	  OAUTH2Data->access_token = g_strdup(access_token);
 	  OAUTH2Data->expiry = expiry;
 	  OAUTH2Data->expiry_str = g_strdup_printf ("%i", expiry);
@@ -519,7 +481,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	  ret = 1;
 	}
 
-	if (response && oauth2_filter_refresh (response, refresh_token) == 0) {
+	if (oauth2_filter_refresh (response, refresh_token) == 0) {
 		OAUTH2Data->refresh_token = g_strdup(refresh_token);
 		log_message(LOG_PROTOCOL, _("OAuth2 replacement refresh token provided\n"));
 	} else
@@ -539,6 +501,47 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	g_free(refresh_token);
 
 	return (ret);
+}
+
+static gint oauth2_contact_server (SockInfo *sock, gchar *request, gchar *response)
+{
+	gint ret;
+	gchar *token;
+	gint toread = OAUTH2BUFSIZE;	
+	time_t startplus = time(NULL);
+	gchar *tmp;
+
+	gint timeout_secs = prefs_common_get_prefs()->io_timeout_secs;
+	startplus += timeout_secs;
+	
+	if (sock_write (sock, request, strlen(request)) < 0) {
+	  log_message(LOG_PROTOCOL, _("OAuth2 socket write error\n"));
+	  return (1);
+	}
+	
+	token = g_strconcat ("", NULL);
+	do {
+	  
+	  ret = sock_read  (sock, response, OAUTH2BUFSIZE);
+	  if (ret < 0 && errno == EAGAIN)
+	    continue;
+	  if (ret < 0) 
+	    break;
+	  if (ret == 0)
+	    break;
+	  
+	  toread -= ret;
+	  tmp = g_strconcat(token, response, NULL);
+	  g_free(token);
+	  token = tmp;
+	} while ((toread > 0) && (time(NULL) < startplus)); 
+	
+	if(time(NULL) >= startplus)
+	  log_message(LOG_PROTOCOL, _("OAuth2 socket timeout error\n"));
+	
+	g_free(token);
+	
+	return (0);
 }
 
 gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar *custom_client_id)
