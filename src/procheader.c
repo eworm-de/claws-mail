@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,7 +275,7 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 
 	headers = g_ptr_array_new();
 
-	while (procheader_get_one_field(&buf, fp, NULL) != -1) {
+	while (procheader_get_one_field_asis(&buf, fp) != -1) {
 		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 		g_free(buf);
