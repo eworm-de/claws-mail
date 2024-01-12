@@ -494,6 +494,11 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 		return FALSE;
 	}
 
+	if (cert_size_a != cert_size_b) {
+		debug_print("sizes differ: %"G_GSIZE_FORMAT" != %"G_GSIZE_FORMAT"\n", cert_size_a, cert_size_b);
+		return FALSE;
+	}
+
 	output_a = g_malloc(cert_size_a);
 	output_b = g_malloc(cert_size_b);
 	if ((r = gnutls_x509_crt_export(cert_a->x509_cert, GNUTLS_X509_FMT_DER, output_a, &cert_size_a)) < 0) {
@@ -504,12 +509,6 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 	}
 	if ((r = gnutls_x509_crt_export(cert_b->x509_cert, GNUTLS_X509_FMT_DER, output_b, &cert_size_b)) < 0) {
 		g_warning("couldn't gnutls_x509_crt_export b %s", gnutls_strerror(r));
-		g_free(output_a);
-		g_free(output_b);
-		return FALSE;
-	}
-	if (cert_size_a != cert_size_b) {
-		debug_print("sizes differ: %"G_GSIZE_FORMAT" != %"G_GSIZE_FORMAT"\n", cert_size_a, cert_size_b);
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
