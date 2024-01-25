@@ -35,19 +35,6 @@
 #include "string_match.h"
 #include "utils.h"
 
-int string_match_precompile (gchar *rexp, regex_t *preg, int cflags)
-{
-	int problem = 0;
-
-	cm_return_val_if_fail(rexp, -1);
-	cm_return_val_if_fail(*rexp, -1);
-
-	problem = regcomp(preg, rexp, cflags);  
-	
-	return problem;
-}
-
-
 gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg)
 {
 	regmatch_t match;

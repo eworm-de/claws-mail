@@ -1849,8 +1849,7 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 
 	preg = g_new0(regex_t, 1);
 
-	err = string_match_precompile(simplify_subject_regexp, 
-				      preg, REG_EXTENDED);
+	err = regcomp(preg, simplify_subject_regexp, REG_EXTENDED);
 	if (err) {
 		regerror(err, preg, buf, BUFFSIZE);
 		g_free(preg);

@@ -26,12 +26,6 @@
 #include <regex.h>
 #include <glib.h>
 
-/* Precompile the preg buffer for the rexp regexp string. See regex man for the
- * meaning of cflags.  
- */
-
-int string_match_precompile (gchar *rexp, regex_t *preg, int cflags);
-
 /* remove from txt the substrings matching the regexp in the precompiled preg buffer.  
  * The result is stored in the preallocated buf buffer which maximal length
  * is buflen.
