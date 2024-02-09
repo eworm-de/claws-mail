@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -597,7 +597,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const 
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
-		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
+		debug_print("Couldn't initialize GPG context, %s\n", gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		return FALSE;
 	}
@@ -736,7 +736,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	kset = g_malloc(sizeof(gpgme_key_t)*(i+1));
 	memset(kset, 0, sizeof(gpgme_key_t)*(i+1));
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
-		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
+		debug_print("Couldn't initialize GPG context, %s\n", gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		g_free(kset);
 		g_free(fprs);
@@ -801,7 +801,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgenc);
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
-		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
+		debug_print("Couldn't initialize GPG context, %s\n", gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		for (gint x = 0; x < i; x++)
 			gpgme_key_unref(kset[x]);

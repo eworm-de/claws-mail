@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2002-2024 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,11 +43,6 @@
 #include "exporthtml.h"
 #include "xmlprops.h"
 #include "file-utils.h"
-
-#ifdef MKDIR_TAKES_ONE_ARG
-#undef mkdir
-#define mkdir(a,b) mkdir(a)
-#endif
 
 #define DFL_DIR_CLAWS_OUT  "claws-mail-out"
 #define DFL_FILE_CLAWS_OUT "addressbook.html"
@@ -1043,7 +1038,7 @@ gboolean exporthtml_create_dir( ExportHtmlCtl *ctl ) {
 	gboolean retVal = FALSE;
 
 	ctl->rcCreate = 0;
-	if( mkdir( ctl->dirOutput, S_IRWXU ) == 0 ) {
+	if( g_mkdir( ctl->dirOutput, S_IRWXU ) == 0 ) {
 		retVal = TRUE;
 	}
 	else {

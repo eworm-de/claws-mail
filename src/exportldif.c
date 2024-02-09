@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2024 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,6 @@
 #include "ldif.h"
 #include "file-utils.h"
 
-
-#ifdef MKDIR_TAKES_ONE_ARG
-#undef mkdir
-#define mkdir(a,b) mkdir(a)
-#endif
 
 #define DFL_DIR_CLAWS_OUT  "claws-mail-out"
 #define DFL_FILE_CLAWS_OUT "addressbook.ldif"
@@ -586,7 +581,7 @@ gboolean exportldif_create_dir( ExportLdifCtl *ctl ) {
 	gboolean retVal = FALSE;
 
 	ctl->rcCreate = 0;
-	if( mkdir( ctl->dirOutput, S_IRWXU ) == 0 ) {
+	if( g_mkdir( ctl->dirOutput, S_IRWXU ) == 0 ) {
 		retVal = TRUE;
 	}
 	else {

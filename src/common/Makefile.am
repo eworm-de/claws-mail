@@ -1,4 +1,4 @@
-# Copyright 1999-2014 the Claws Mail team.
+# Copyright 1999-2024 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
@@ -87,7 +87,6 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	unmime.h
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/intl \
 	$(GLIB_CFLAGS) \
 	$(VALGRIND_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \

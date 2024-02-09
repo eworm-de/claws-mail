@@ -236,14 +236,6 @@ AM_ICONV
 dnl floor and ceil are  in -lm
 LIBS="$LIBS -lm"
 
-dnl
-dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
-dnl
-syl_save_LIBS=$LIBS
-LIBS="$LIBS $GTK_LIBS"
-AC_CHECK_FUNCS(bind_textdomain_codeset)
-LIBS=$syl_save_LIBS
-
 dnl for gettext
 ALL_LINGUAS="ca cs da de el_GR en_GB es fi fr hu id_ID it ja nb nl pl pt_BR pt_PT ro ru sk sv tr zh_TW"
 GETTEXT_PACKAGE=claws-mail
@@ -427,9 +419,6 @@ if test $ac_cv_dirent_d_type = yes; then
 		  Define if `struct dirent' has `d_type' member.)
 fi
 
-# Check whether mkdir does not take the permission argument.
-AX_FUNC_MKDIR
-
 dnl Checks for header files.
 AC_HEADER_DIRENT
 
@@ -453,11 +442,7 @@ AC_CHECK_SIZEOF(unsigned long, 4)
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr strcasestr \
-	       uname flock lockf inet_aton inet_addr \
-	       fchmod mkstemp truncate getuid regcomp)
-
-AC_CHECK_FUNCS(fgets_unlocked fgetc_unlocked fputs_unlocked fputc_unlocked fread_unlocked fwrite_unlocked feof_unlocked ferror_unlocked fmemopen)
+AC_CHECK_FUNCS(fchmod fgets_unlocked flock lockf strcasestr)
 
 dnl *****************
 dnl ** common code **
@@ -473,12 +458,6 @@ AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 PKG_CHECK_MODULES(GDK_PIXBUF, [gdk-pixbuf-2.0 >= 2.26])
-
-dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
-syl_save_LIBS=$LIBS
-LIBS="$LIBS $GTK_LIBS"
-AC_CHECK_FUNCS(bind_textdomain_codeset)
-LIBS=$syl_save_LIBS
 
 dnl check for IPv6 option
 dnl automated checks for IPv6 support.
