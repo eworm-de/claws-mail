@@ -1105,15 +1105,18 @@ static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data
 gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar *tags_file, MsgCache *cache)
 {
 	struct write_fps write_fps;
-	gchar *new_cache, *new_mark, *new_tags;
+	gchar *new_cache = NULL, *new_mark = NULL, *new_tags = NULL;
 	int w_err = 0, wrote = 0;
 
 	START_TIMING("");
 	cm_return_val_if_fail(cache != NULL, -1);
 
-	new_cache = g_strconcat(cache_file, ".new", NULL);
-	new_mark  = g_strconcat(mark_file, ".new", NULL);
-	new_tags  = g_strconcat(tags_file, ".new", NULL);
+	if (cache_file)
+		new_cache = g_strconcat(cache_file, ".new", NULL);
+	if (mark_file)
+		new_mark  = g_strconcat(mark_file, ".new", NULL);
+	if (tags_file)
+		new_tags  = g_strconcat(tags_file, ".new", NULL);
 
 	write_fps.error = 0;
 	write_fps.cache_size = 0;
