@@ -86,6 +86,10 @@
 	  <row><entry><option>x</option></entry><entry>Execute</entry></row>
 	  <row><entry><option>Shift+Ctrl+l</option></entry><entry>Open log window</entry></row>
 	  <row><entry><option>Ctrl+F12</option></entry><entry>Toggles menu bar visibility</entry></row>
+	  <row><entry><option>Ctrl+&lt;wheel-&uarr;&gt;</option></entry>
+		<entry>When focused on message view, increases displayed font size.</entry></row>
+	  <row><entry><option>Ctrl+&lt;wheel-&darr;&gt;</option></entry>
+		<entry>When focused on message view, decreases displayed font size.</entry></row>
         </tbody>
       </tgroup>
     </informaltable>
