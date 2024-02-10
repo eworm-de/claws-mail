@@ -3098,7 +3098,7 @@ SensitiveCondMask main_window_get_mask(SensitiveCond cond, ...)
 	value = 0;
 
 	va_start(args, cond); 
-	for (i = (gint) cond; i >= 0; i = va_arg(args, gint))
+	for (i = (gint) cond; i >= 0 && i < M_MAX_RESERVED; i = va_arg(args, gint))
 		value |= SensitiveCond_table[i];
 	va_end(args);
 
