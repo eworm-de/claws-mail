@@ -361,8 +361,8 @@ static void xml_pop_tag(XMLFile *file)
 
 	tag = (XMLTag *)file->tag_stack->data;
 
-	xml_free_tag(tag);
 	file->tag_stack = g_list_remove(file->tag_stack, tag);
+	xml_free_tag(tag);
 	file->level--;
 }
 

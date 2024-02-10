@@ -597,8 +597,8 @@ void mimeview_destroy(MimeView *mimeview)
 	mimeview_free_mimeinfo(mimeview);
 	gtk_tree_path_free(mimeview->opened);
 	g_free(mimeview->file);
-	g_free(mimeview);
 	mimeviews = g_slist_remove(mimeviews, mimeview);
+	g_free(mimeview);
 }
 
 MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
