@@ -214,6 +214,19 @@
         <entry><option>Ctrl+F12</option></entry>
         <entry>Conmuta la visibilidad de la barra de menú</entry>
       </row>
+	  <row>
+		<entry><option>Ctrl+&lt;rueda-&uarr;&gt;</option></entry>
+		<entry>
+		Incrementa el tamaño de la fuente mostrada en la vista de
+		mensaje.
+		</entry>
+	  </row>
+	  <row><entry><option>Ctrl+&lt;rueda-&darr;&gt;</option></entry>
+		<entry>
+		Decrementa el tamaño de la fuente mostrada en la vista de
+		mensaje.
+		</entry>
+	  </row>
         </tbody>
       </tgroup>
     </informaltable>
