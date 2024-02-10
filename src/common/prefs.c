@@ -265,7 +265,7 @@ gboolean prefs_rc_is_readonly(const gchar * rcfile)
  *
  *\param	pfile Preferences file struct
  *
- *\return	0 on success, -1 on failure
+ *\return	0 on success, -1 on failure and pfile is freed.
  */
 gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 {

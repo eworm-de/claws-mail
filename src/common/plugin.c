@@ -595,16 +595,17 @@ void plugin_load_all(const gchar *type)
 	gchar buf[BUFFSIZE];
 	PrefFile *pfile;
 	gchar *error = NULL, *block;
+	gint failed = 0;
 
 	plugin_types = g_slist_append(plugin_types, g_strdup(type));
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
 	block = g_strconcat(PLUGINS_BLOCK_PREFIX, type, NULL);
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
-	    (prefs_set_block_label(pfile, block) < 0)) {
+	    ((failed = prefs_set_block_label(pfile, block)) < 0)) {
 		g_free(rcpath);
 		g_free(block);
-		if (pfile)
+		if (!failed)
 			prefs_file_close(pfile);
 		return;
 	}
