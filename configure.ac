@@ -520,6 +520,7 @@ fi
 
 PKG_CHECK_MODULES(NETTLE, nettle)
 AC_SUBST(NETTLE_LIBS)
+AC_SUBST(NETTLE_CFLAGS)
 
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
