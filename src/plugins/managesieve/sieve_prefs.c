@@ -477,8 +477,8 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	guchar tls_type, auth, auth_type;
 	gsize len;
 	gint num;
-#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
-	/* Non-GNU sscanf() does not understand the %ms format, so we
+#if defined(G_OS_WIN32) || defined(__DragonFly__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__FreeBSD__)
+	/* Some libc variants lack support for the ISO C extension %ms, so we
 	 * have to do the allocation of target buffer ourselves before
 	 * calling sscanf(), and copy the host string to config->host.
 	 */
@@ -503,13 +503,13 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 
 	enc_userid[0] = '\0';
 	enc_passwd[0] = '\0';
-#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(G_OS_WIN32) || defined(__DragonFly__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__FreeBSD__)
 	if ((num = sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
 #else
 	if ((num = sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
 #endif
 			&enable, &use_host,
-#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(G_OS_WIN32) || defined(__DragonFly__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__FreeBSD__)
 			tmphost,
 #else
 			&config->host,
@@ -539,7 +539,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	config->auth = auth;
 	config->auth_type = auth_type;
 
-#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(G_OS_WIN32) || defined(__DragonFly__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__FreeBSD__)
 	config->host = g_strndup(tmphost, 255);
 #endif
 
