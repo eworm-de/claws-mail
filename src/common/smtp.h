@@ -103,7 +103,7 @@ struct _SMTPSession
 	guchar *send_data;
 	guint send_data_len;
 
-	gint max_message_size;
+	guint max_message_size;
 
 	SMTPAuthType avail_auth_type;
 	SMTPAuthType forced_auth_type;

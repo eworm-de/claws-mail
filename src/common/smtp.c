@@ -98,8 +98,6 @@ Session *smtp_session_new(void *prefs_account)
 	session->send_data                 = NULL;
 	session->send_data_len             = 0;
 
-	session->max_message_size          = -1;
-
 	session->avail_auth_type           = 0;
 	session->forced_auth_type          = 0;
 	session->auth_type                 = 0;
