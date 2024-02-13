@@ -648,7 +648,6 @@ static void button_press_intercept_cb(GtkTextView *gtktext,
 static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 {
 	GtkAspeller	*gtkaspeller = NULL;
-	GtkAspeller	*tmp;
 	Dictionary	*dict;
 
 	cm_return_val_if_fail(gtkaspellcheckers, NULL);
@@ -662,11 +661,6 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 	cm_return_val_if_fail(dictionary->fullname, NULL);
 
 	dict = dictionary_dup(dictionary);
-
-	tmp = g_new0(GtkAspeller, 1);
-	tmp->dictionary = dict;
-
-	g_free(tmp);
 
 	if ((gtkaspeller = gtkaspeller_real_new(dict)) != NULL) {
 		gtkaspellcheckers->checkers = g_slist_append(
