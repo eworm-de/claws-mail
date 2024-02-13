@@ -136,6 +136,7 @@ static gint oauth2_post_request (gchar *buf, gchar *host, gchar *resource, gchar
 {
        gint len;
   
+       debug_print("Complete body: %s\n", body);
        len = strlen(body);
        if (header[0])
 	 return snprintf(buf, OAUTH2BUFSIZE, "POST %s HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: text/html,application/json\r\nContent-Length: %i\r\nHost: %s\r\nConnection: close\r\nUser-Agent: ClawsMail\r\n%s\r\n\r\n%s", resource, len, host, header, body);
@@ -371,7 +372,6 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  header = g_strconcat ("", NULL);
 	}
 
-	debug_print("Complete body: %s\n", body);
 	oauth2_post_request (request, OAUTH2info[i][OA2_BASE_URL], OAUTH2info[i][OA2_ACCESS_RESOURCE], header, body);
 	response = oauth2_contact_server (sock, request);
 	debug_print("Response from server: %s\n", response);
