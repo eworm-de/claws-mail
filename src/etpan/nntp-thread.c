@@ -29,9 +29,6 @@
 #include "news.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#if (defined(__DragonFly__) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__CYGWIN__))
-#include <sys/socket.h>
-#endif
 #include <fcntl.h>
 #ifndef G_OS_WIN32
 #include <sys/mman.h>
