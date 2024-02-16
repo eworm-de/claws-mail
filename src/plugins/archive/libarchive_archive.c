@@ -33,6 +33,9 @@
 #	include "mainwindow.h"
 #   include "folder.h"
 #endif
+#ifdef DEBUG_ARCHIVE
+#include "procmsg.h"
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,7 +47,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <libgen.h>
 
 #define READ_BLOCK_SIZE 10240
@@ -382,9 +384,9 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 	struct archive_entry* entry;
 	int res = ARCHIVE_OK;
 	gchar* buf = NULL;
-	const char* result == NULL;
+	const char* result = NULL;
 
-	g_return_val_if_fail(archive_name != NULL, ARCHIVE_FATAL);
+	g_return_val_if_fail(archive_name != NULL, NULL);
 
 	fprintf(stdout, "%s: extracting\n", archive_name);
 	in = archive_read_new();
@@ -666,29 +668,32 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #ifdef DEBUG_ARCHIVE
 void archive_scan_folder(const char* dir) {
 	GStatBuf st;
-	DIR* root;
-	struct dirent* ent;
+	GDir* root;
+	const gchar* ent;
 	gchar cwd[PATH_MAX];
 	gchar path[PATH_MAX];
-	
+	GError *error = NULL;
+
 	getcwd(cwd, PATH_MAX);
 
 	if (g_stat(dir, &st) == -1)
 		return;
 	if (! S_ISDIR(st.st_mode))
 		return;
-	if (!(root = opendir(dir)))
+	if (!(root = g_dir_open(dir, 0, &error))) {
+		debug_print("opening '%s' failed: %d (%s)\n", dir, error->code, error->message);
 		return;
+	}
 	chdir(dir);
 
-	while ((ent = readdir(root)) != NULL) {
-		if (strcmp(".", ent->d_name) == 0 || strcmp("..", ent->d_name) == 0)
+	while ((ent = g_dir_read_name(root)) != NULL) {
+		if (strcmp(".", ent) == 0 || strcmp("..", ent) == 0)
 			continue;
-		if (g_stat(ent->d_name, &st) == -1) {
-			FILE_OP_ERROR(filename, "g_stat");
+		if (g_stat(ent, &st) == -1) {
+			FILE_OP_ERROR(ent, "g_stat");
 			continue;
 		}
-		sprintf(path, "%s/%s", dir, ent->d_name);
+		sprintf(path, "%s/%s", dir, ent);
 		if (S_ISREG(st.st_mode) || S_ISLNK(st.st_mode)) {
 			archive_add_file(path);
 		}
@@ -697,7 +702,7 @@ void archive_scan_folder(const char* dir) {
 		}
 	}
 	chdir(cwd);
-	closedir(root);
+	g_dir_close(root);
 }
 
 int main(int argc, char** argv) {
@@ -743,7 +748,7 @@ int main(int argc, char** argv) {
 	
 	while (*argv) {
 		archive_scan_folder(*argv++);
-		res = archive_create(archive, file_list);
+		res = archive_create(archive, file_list, GZIP, TAR);
 		if (res != ARCHIVE_OK) {
 			fprintf(stderr, "%s: Creating archive failed\n", archive);
 			return EXIT_FAILURE;
