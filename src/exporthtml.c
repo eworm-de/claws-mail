@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -31,7 +30,6 @@
 #endif
 
 #include <sys/stat.h>
-#include <dirent.h>
 #include <errno.h>
 #include <time.h>
 #include <string.h>

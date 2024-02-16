@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2022 The Claws Mail team
+ * Copyright (C) 2001-2024 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <string.h>
-#include <dirent.h>
 #include <sys/stat.h>
 
 #include "template.h"

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 The Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <dirent.h>
 #include <time.h>
 #if HAVE_ALLOCA_H
 #  include <alloca.h>
@@ -428,7 +427,6 @@ gboolean is_relative_filename   (const gchar *file);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
 gboolean is_file_entry_regular(const gchar *file);
-gboolean dirent_is_regular_file	(struct dirent	*d);
 
 #define is_file_exist(file)		file_exist(file, FALSE)
 #define is_file_or_fifo_exist(file)	file_exist(file, TRUE)

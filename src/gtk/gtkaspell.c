@@ -45,7 +45,6 @@
 #include <sys/time.h>
 #include <fcntl.h>
 #include <time.h>
-#include <dirent.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@
 #include "messageview.h"
 
 #include <gtk/gtk.h>
-#include <dirent.h>
 
 #ifdef USE_PTHREAD
 #include <pthread.h>

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 The Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,6 @@
 #if HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
 #endif
-#include <dirent.h>
 #include <time.h>
 #include <regex.h>
 
@@ -2092,18 +2091,6 @@ gboolean is_file_entry_regular(const gchar *file)
 		return FALSE;
 
 	return g_file_test(file, G_FILE_TEST_IS_REGULAR);
-}
-
-gboolean dirent_is_regular_file(struct dirent *d)
-{
-#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
-	if (d->d_type == DT_REG)
-		return TRUE;
-	else if (d->d_type != DT_UNKNOWN)
-		return FALSE;
-#endif
-
-	return g_file_test(d->d_name, G_FILE_TEST_IS_REGULAR);
 }
 
 gint change_dir(const gchar *dir)

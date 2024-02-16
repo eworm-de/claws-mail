@@ -412,20 +412,7 @@ if test "$ac_cv_va_opt" = yes; then
 	AC_DEFINE([HAVE_VA_OPT], [1], [Define if __VA_OPT__ macro works])
 fi
 
-dnl Check for d_type member in struct dirent
-AC_MSG_CHECKING([whether struct dirent has d_type member])
-AC_CACHE_VAL(ac_cv_dirent_d_type,[
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <dirent.h>]], [[struct dirent d; d.d_type = DT_REG;]])],[ac_cv_dirent_d_type=yes],[ac_cv_dirent_d_type=no])
-])
-AC_MSG_RESULT($ac_cv_dirent_d_type)
-if test $ac_cv_dirent_d_type = yes; then
-	AC_DEFINE(HAVE_DIRENT_D_TYPE, 1,
-		  Define if `struct dirent' has `d_type' member.)
-fi
-
 dnl Checks for header files.
-AC_HEADER_DIRENT
-
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
