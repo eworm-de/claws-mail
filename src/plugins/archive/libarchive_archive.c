@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2024 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include "libarchive_archive.h"
 
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 #	include "archiver.h"
 #	include "utils.h"
 #	include "mainwindow.h"
@@ -58,7 +58,7 @@ static GSList* msg_trash_list = NULL;
 static GSList* file_list = NULL;
 static gboolean stop_action = FALSE;
 
-#ifdef _TEST
+#ifdef DEBUG_ARCHIVE
 static int permissions = 0;
 #endif
 
@@ -311,7 +311,7 @@ static gchar* get_full_path(struct file_info* file) {
 	return path;
 }
 
-#ifdef _TEST
+#ifdef DEBUG_ARCHIVE
 static gchar* strip_leading_slash(gchar* path) {
 	gchar* stripped = path;
 	gchar* result = NULL;
@@ -356,7 +356,7 @@ void archive_add_file(gchar* path) {
 
 	g_return_if_fail(path != NULL);
 
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 	debug_print("add %s to list\n", path);
 #endif
 	filename = g_strrstr_len(path, strlen(path), "/");
@@ -375,7 +375,7 @@ GSList* archive_get_file_list() {
 	return file_list;
 }
 
-#ifdef _TEST
+#ifdef DEBUG_ARCHIVE
 const gchar* archive_extract(const char* archive_name, int flags) {
 	struct archive* in;
 	struct archive* out;
@@ -453,7 +453,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			COMPRESS_METHOD method, ARCHIVE_FORMAT format) {
 	struct archive* arch;
 
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 	gint num = 0;
 	gint total = g_slist_length (files);
 #endif
@@ -571,7 +571,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		struct file_info* file;
 		gchar* filename = NULL;
 
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 		set_progress_print_all(num++, total, 30);
 #endif
 		file = (struct file_info *) files->data;
@@ -581,7 +581,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		/* libarchive will crash if instructed to add archive to it self */
 		if (g_utf8_collate(archive_name, filename) == 0) {
 			g_warning("%s: not dumping to '%s'", archive_name, filename);
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 			debug_print("%s: not dumping to '%s'\n", archive_name, filename);
 #endif
 		}
@@ -594,7 +594,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			int fd;
 			gchar* msg = NULL;
 
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 			debug_print("Adding: %s\n", filename);
 			msg = g_strdup_printf("%s", filename);
 			set_progress_file_label(msg);
@@ -649,7 +649,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		g_free(filename);
 		files = g_slist_next(files);
 	}
-#ifndef _TEST
+#ifndef DEBUG_ARCHIVE
 	if (stop_action)
 		unlink(archive_name);
 	stop_action = FALSE;
@@ -663,7 +663,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	return NULL;
 }
 
-#ifdef _TEST
+#ifdef DEBUG_ARCHIVE
 void archive_scan_folder(const char* dir) {
 	GStatBuf st;
 	DIR* root;

@@ -333,6 +333,10 @@ AC_ARG_ENABLE(more-ldap-debug,
         [  --enable-more-ldap-debug        Build with additional LDAP debug calls],
         [enable_more_ldap_debug=$enableval], [enable_more_ldap_debug=no])
 
+AC_ARG_ENABLE(more-archive-debug,
+        [  --enable-more-archive-debug     Build with additional debug calls in archive plugin],
+        [enable_more_archive_debug=$enableval], [enable_more_archive_debug=no])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -1058,6 +1062,15 @@ if test x$enable_more_ldap_debug = xyes; then
 	more_debug_output_modules="$more_debug_output_modules LDAP"
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG_LDAP, 1, [Define if you want additional LDAP debug calls])
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to build archive plugin with more debug calls])
+if test x$enable_more_archive_debug = xyes; then
+	more_debug_output_modules="$more_debug_output_modules ArchivePlugin"
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG_ARCHIVE, 1, [Define if you want additional archive plugin debug calls])
 else
 	AC_MSG_RESULT(no)
 fi
