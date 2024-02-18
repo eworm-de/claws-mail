@@ -994,7 +994,7 @@ void set_progress_print_all(guint fraction, guint total, guint step) {
 	}
 }
 
-void archiver_gtk_show() {
+void archiver_gtk_show(void) {
 	GtkWidget* dialog;
 	GtkWidget* frame;
 	GtkWidget* vbox1;
