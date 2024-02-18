@@ -111,10 +111,8 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 	system->free_privacydata(privacydata);
 }
 
-void privacy_free_signature_data(gpointer data)
+void privacy_free_signature_data(SignatureData *sig_data)
 {
-	SignatureData *sig_data = (SignatureData *)data;
-
 	cm_return_if_fail(sig_data != NULL);
 
 	g_free(sig_data->info_short);

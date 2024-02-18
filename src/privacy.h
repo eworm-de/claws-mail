@@ -54,7 +54,7 @@ void privacy_register_system			(PrivacySystem *system);
 void privacy_unregister_system			(PrivacySystem *system);
 
 void privacy_free_privacydata			(PrivacyData *);
-void privacy_free_signature_data		(gpointer);
+void privacy_free_signature_data		(SignatureData *sig_data);
 void privacy_free_sig_check_task_result	(gpointer);
 
 void privacy_msginfo_get_signed_state		(MsgInfo *, gchar **system);
