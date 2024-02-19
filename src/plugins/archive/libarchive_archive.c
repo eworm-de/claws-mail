@@ -244,7 +244,7 @@ static void archive_free_file_info(struct file_info* file) {
 	file = NULL;
 }
 
-void stop_archiving() {
+void stop_archiving(void) {
 	debug_print("stop action set to true\n");
 	stop_action = TRUE;
 }

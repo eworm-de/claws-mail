@@ -55,6 +55,6 @@ void archiver_gtk_show(void);
 void archiver_gtk_done(struct ArchivePage* page, GtkWidget* widget);
 void set_progress_file_label(const gchar* file);
 void set_progress_print_all(guint fraction, guint total, guint step);
-void stop_archiving();
+void stop_archiving(void);
 
 #endif
