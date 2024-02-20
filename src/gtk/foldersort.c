@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2022 the Claws Mail Team
+ * Copyright (C) 2004-2024 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,7 +289,7 @@ void foldersort_open()
 
 	/* Create the view widget */
 	folderlist = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
+
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(folderlist), TRUE);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(folderlist), TRUE);
 	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(folderlist));
@@ -379,6 +379,6 @@ void foldersort_open()
 		gtk_tree_selection_select_iter(selector, &iter);
 		set_selected(dialog);
 	}
-
+	g_object_unref(store);
 	inc_lock();
 }

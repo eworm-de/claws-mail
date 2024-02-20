@@ -1,11 +1,9 @@
 /*
  * att_remover -- for Claws Mail
- *
- * Copyright (C) 2005-2022 Colin Leroy <colin@colino.net>
- * 	 and the Claws Mail Team
+ * Copyright (C) 2005-2024 the Claws Mail Team and Colin Leroy
  *
  * Claws Mail is a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2024 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,11 +352,11 @@ static void remove_attachments_dialog(AttRemover *attremover)
 				  G_TYPE_BOOLEAN,
 				  -1));
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
-	g_object_unref(model);	
 	gtk_tree_view_set_rules_hint(list_view, prefs_common_get_prefs()->use_stripes_everywhere);
 	
 	renderer = gtk_cell_renderer_toggle_new();
 	g_signal_connect(renderer, "toggled", G_CALLBACK(remove_toggled_cb), model);
+	g_object_unref(model);	
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Remove"),
 		renderer,

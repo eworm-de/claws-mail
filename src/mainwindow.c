@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3849,10 +3849,9 @@ void main_window_destroy_all(void)
 		mainwin->summaryview->mainwin = NULL;
 		mainwin->messageview->mainwin = NULL;
 
-		g_free(mainwin->toolbar);
-		g_free(mainwin);
-		
+		g_free(mainwin->toolbar);		
 		mainwin_list = g_list_remove(mainwin_list, mainwin);
+		g_free(mainwin);
 	}
 	g_list_free(mainwin_list);
 	mainwin_list = NULL;

@@ -1,6 +1,6 @@
 /* 
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1009,7 +1009,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			claws_fclose(fp);
 			claws_unlink(tmpfile);
 		}
-		if (claws_safe_fclose(fp) == EOF) {
+		if (fp != NULL && claws_safe_fclose(fp) == EOF) {
 			FILE_OP_ERROR(tmpfile, "claws_fclose");
 			claws_unlink(tmpfile);
 			g_free(tmpfile);

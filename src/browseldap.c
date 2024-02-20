@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2022 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2024 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -274,7 +274,6 @@ static void browse_create( void ) {
 			-1);
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(view), FALSE);
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
@@ -294,6 +293,7 @@ static void browse_create( void ) {
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
 			COL_NAME, GTK_SORT_ASCENDING);
+	g_object_unref(store);
 
 	gtk_container_add( GTK_CONTAINER(tree_win), view );
 
