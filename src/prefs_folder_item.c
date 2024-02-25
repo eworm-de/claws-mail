@@ -1852,6 +1852,7 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 	err = regcomp(preg, simplify_subject_regexp, REG_EXTENDED);
 	if (err) {
 		regerror(err, preg, buf, BUFFSIZE);
+		regfree(preg);
 		g_free(preg);
 		preg = NULL;
 	}

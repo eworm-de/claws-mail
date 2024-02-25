@@ -8305,6 +8305,7 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 	if (err) {
 		regerror(err, preg, buf, BUFFSIZE);
 		alertpanel_error(_("Regular expression (regexp) error:\n%s"), buf);
+		regfree(preg);
 		g_free(preg);
 		preg = NULL;
 	}
