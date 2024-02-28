@@ -311,20 +311,15 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
 			      gint matchtype, const gchar *expr,
 			      int value)
 {
-	MatcherProp *prop;
+	MatcherProp *prop = g_new0(MatcherProp, 1);
 
- 	prop = g_new0(MatcherProp, 1);
 	prop->criteria = criteria;
-	prop->header = header != NULL ? g_strdup(header) : NULL;
-
-	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
-
 	prop->matchtype = matchtype;
-	prop->preg = NULL;
-	prop->casefold_expr = NULL;
 	prop->value = value;
-	prop->error = 0;
-
+	if (header)
+		prop->header = g_strdup(header);
+	if (expr)
+	    prop->expr = g_strdup(expr);
 	return prop;
 }
 
@@ -358,14 +353,15 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 	MatcherProp *prop = g_new0(MatcherProp, 1);
 	
 	prop->criteria = src->criteria;
-	prop->header = src->header ? g_strdup(src->header) : NULL;
-	prop->expr = src->expr ? g_strdup(src->expr) : NULL;
 	prop->matchtype = src->matchtype;
-	
-	prop->preg = NULL; /* will be re-evaluated */
-	prop->casefold_expr = src->casefold_expr ? g_strdup(src->casefold_expr) : NULL;
 	prop->value = src->value;
 	prop->error = src->error;	
+	if (src->header)
+		prop->header = g_strdup(src->header);
+	if (src->expr)
+		prop->expr = g_strdup(src->expr);
+	if (src->casefold_expr)
+		prop->casefold_expr = g_strdup(src->casefold_expr);
 	return prop;		
 }
 
