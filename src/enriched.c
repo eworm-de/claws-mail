@@ -86,7 +86,11 @@ gchar *ertf_parse(ERTFParser *parser)
 	while (*parser->bufp != '\0') {
 		switch (*parser->bufp) {
 			case '<':
-				if (parser->str->len == 0)
+				if (parser->bufp[1]=='<') {
+					ertf_append_char(parser,'<');
+					parser->bufp+=2;
+				}
+				else if (parser->str->len == 0)
 					ertf_parse_tag(parser);
 				else
 					return parser->str->str;
