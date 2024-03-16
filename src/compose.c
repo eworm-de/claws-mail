@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1753,6 +1753,16 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	else
 		mode = COMPOSE_FORWARD;
 	compose = compose_create(account, msginfo->folder, mode, batch);
+
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RemoveReferences", TRUE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/RemoveReferences", TRUE);
+
+	if (compose_parse_header(compose, msginfo) < 0) {
+		compose->updating = FALSE;
+		compose_destroy(compose);
+		return NULL;
+	}
+
 	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->updating = TRUE;
@@ -3009,7 +3019,10 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 				compose->folder->stype ==  F_DRAFT)
 			compose->msgid = g_strdup(msginfo->msgid);
 	} else {
-		if (msginfo->msgid && *msginfo->msgid)
+		if (msginfo->msgid && *msginfo->msgid &&
+		    (compose->mode != COMPOSE_FORWARD &&
+		     compose->mode != COMPOSE_FORWARD_INLINE &&
+		     compose->mode != COMPOSE_FORWARD_AS_ATTACH))
 			compose->inreplyto = g_strdup(msginfo->msgid);
 
 		if (!compose->references) {
