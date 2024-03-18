@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,12 +115,9 @@
 
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"
 #define DEFAULT_INC_PROGRAM	"inc"
-/* #define DEFAULT_INC_PATH	"/usr/bin/imget" */
-/* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t -i"
 #define DEFAULT_BROWSER_CMD	"firefox '%s'"
 #define DEFAULT_EDITOR_CMD	"gedit '%s'"
-#define DEFAULT_MIME_CMD	"metamail -d -b -x -c %s '%s'"
 #define DEFAULT_IMAGE_VIEWER_CMD "display '%s'"
 #define DEFAULT_AUDIO_PLAYER_CMD "play '%s'"
 
