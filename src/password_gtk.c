@@ -109,7 +109,7 @@ void primary_passphrase_change_dialog()
 	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
 	GtkWidget *vbox, *hbox;
-	GtkWidget *icon, *table, *label;
+	GtkWidget *icon, *table, *label, *sep;
 	GtkWidget *msg_title;
 	GtkWidget *entry_old, *entry_new1, *entry_new2;
 	GtkWidget *ok_button, *cancel_button;
@@ -182,7 +182,9 @@ void primary_passphrase_change_dialog()
 	gtk_widget_set_halign(entry_old, GTK_ALIGN_FILL);
 
 	/* Separator */
-	gtk_grid_attach(GTK_GRID(table), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 1, 1, 1);
+	sep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	g_object_set (sep, "margin", 8, NULL);
+	gtk_grid_attach(GTK_GRID(table), sep, 0, 1, 2, 1);
 
 	/* New passphrase */
 	label = gtk_label_new(_("New passphrase:"));
