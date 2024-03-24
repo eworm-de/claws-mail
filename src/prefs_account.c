@@ -2287,6 +2287,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu, "Google/Gmail", OAUTH2AUTH_GOOGLE);
 	COMBOBOX_ADD (menu, "MS Outlook", OAUTH2AUTH_OUTLOOK);
 	COMBOBOX_ADD (menu, "MS Exchange", OAUTH2AUTH_EXCHANGE);
+	COMBOBOX_ADD (menu, "MS 365 GCC High", OAUTH2AUTH_MICROSOFT_GCCHIGH);
 	COMBOBOX_ADD (menu, "Yahoo", OAUTH2AUTH_YAHOO);
 
 	protocol_optmenu = g_new(struct BasicProtocol, 1);

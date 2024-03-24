@@ -48,7 +48,7 @@
 //Yahoo requires token requests to send POST header Authorization: Basic
 //where the password is Base64 encoding of client_id:client_secret
 
-static gchar *OAUTH2info[4][17]={
+static gchar *OAUTH2info[5][17]={
   {"accounts.google.com",
    "",
    ".",
@@ -100,7 +100,24 @@ static gchar *OAUTH2info[4][17]={
    "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
    "query",
    ""},
-  {"api.login.yahoo.com",
+   {"login.microsoftonline.us",
+   "",
+   "",
+   "http://127.0.0.1:8888",
+   "/common/oauth2/v2.0/authorize",
+   "/common/oauth2/v2.0/token",
+   "/common/oauth2/v2.0/token",
+   "code",
+   "offline_access https://outlook.office365.us/IMAP.AccessAsUser.All https://outlook.office365.us/POP.AccessAsUser.All https://outlook.office365.us/SMTP.Send",
+   "authorization_code",
+   "refresh_token",
+   "common",
+   "",
+   "offline",
+   "offline_access https://outlook.office365.us/IMAP.AccessAsUser.All https://outlook.office365.us/POP.AccessAsUser.All https://outlook.office365.us/SMTP.Send",
+   "query",
+   ""},
+ {"api.login.yahoo.com",
    "",
    ".",
    "oob",
@@ -119,10 +136,11 @@ static gchar *OAUTH2info[4][17]={
    "1"}
 };
 
-static gchar *OAUTH2CodeMarker[5][2] = {
+static gchar *OAUTH2CodeMarker[6][2] = {
     {"",""},
     {"code=","&scope="},
     {"code="," HTTP"},
+    {"code=","&session_state="},
     {"code=","&session_state="},
     {"yahoo_begin_mark","yahoo_end_mark"} /* Not used since token avalable to user to copy in browser window */
 };

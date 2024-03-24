@@ -245,7 +245,8 @@ static gint pop3_getauth_oauth2_send(Pop3Session *session)
 {
 	gint oauth2_provider = session->ac_prefs->oauth2_provider;
 	return (  oauth2_provider == OAUTH2AUTH_OUTLOOK ||
-		  oauth2_provider == OAUTH2AUTH_EXCHANGE
+		  oauth2_provider == OAUTH2AUTH_EXCHANGE ||
+		  oauth2_provider == OAUTH2AUTH_MICROSOFT_GCCHIGH
 		? pop3_getauth_oauth2_send_microsoft_1(session)
 		: pop3_getauth_oauth2_send_generic(session)
 		);
