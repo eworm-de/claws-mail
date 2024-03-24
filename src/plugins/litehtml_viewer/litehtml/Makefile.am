@@ -76,6 +76,10 @@ liblitehtml_la_SOURCES = \
 	el_title.h \
 	el_tr.cpp \
 	el_tr.h \
+	flex_item.cpp \
+	flex_item.h \
+	flex_line.cpp \
+	flex_line.h \
 	formatting_context.cpp \
 	formatting_context.h \
 	html.cpp \
@@ -104,7 +108,6 @@ liblitehtml_la_SOURCES = \
 	render_image.h \
 	render_inline_context.cpp \
 	render_inline_context.h \
-	render_inline.cpp \
 	render_inline.h \
 	render_item.cpp \
 	render_item.h \

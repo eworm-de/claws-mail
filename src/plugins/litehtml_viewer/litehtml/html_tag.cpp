@@ -367,6 +367,11 @@ int litehtml::html_tag::get_enum_property(string_id name, bool inherited, int de
 	return get_property_impl<int, prop_type_enum_item, &property_value::m_enum_item>(name, inherited, default_value, css_properties_member_offset);
 }
 
+int litehtml::html_tag::get_int_property(string_id name, bool inherited, int default_value, uint_ptr css_properties_member_offset) const
+{
+	return get_property_impl<int, prop_type_enum_item, &property_value::m_enum_item>(name, inherited, default_value, css_properties_member_offset);
+}
+
 litehtml::css_length litehtml::html_tag::get_length_property(string_id name, bool inherited, css_length default_value, uint_ptr css_properties_member_offset) const
 {
 	return get_property_impl<css_length, prop_type_length, &property_value::m_length>(name, inherited, default_value, css_properties_member_offset);
@@ -1548,9 +1553,33 @@ litehtml::element::ptr litehtml::html_tag::get_element_after(const style& style,
 	return nullptr;
 }
 
+
+void litehtml::html_tag::handle_counter_properties()
+{
+	const auto& reset_property = m_style.get_property(string_id::_counter_reset_);
+	if (reset_property.m_type == prop_type_string_vector) {
+		auto reset_function = [&](const string_id&name_id, const int value) {
+			reset_counter(name_id, value);
+		};
+		parse_counter_tokens(reset_property.m_string_vector, 0, reset_function);
+		return;
+	}
+
+	const auto& inc_property = m_style.get_property(string_id::_counter_increment_);
+	if (inc_property.m_type == prop_type_string_vector) {
+		auto inc_function = [&](const string_id&name_id, const int value) {
+			increment_counter(name_id, value);
+		};
+		parse_counter_tokens(inc_property.m_string_vector, 1, inc_function);
+		return;
+	}
+}
+
+
 void litehtml::html_tag::add_style(const style& style)
 {
 	m_style.combine(style);
+	handle_counter_properties();
 }
 
 void litehtml::html_tag::refresh_styles()
