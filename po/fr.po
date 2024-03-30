@@ -6071,7 +6071,7 @@ msgstr "erreur de la commande « APPEND »"
 
 #: src/imap.c:665
 msgid "NOOP error"
-msgstr "erreur NOOP"
+msgstr "erreur de la commande « NOOP »"
 
 #: src/imap.c:668
 msgid "LOGOUT error"
