@@ -624,7 +624,7 @@ static void prefs_other_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync));
 
-	prefs_keybind_preset_changed(page->keys_preset_combo);
+	prefs_keybind_preset_changed(GTK_COMBO_BOX(page->keys_preset_combo));
 
 #ifndef PASSWORD_CRYPTO_OLD
 	/* If we're disabling use of primary passphrase, we need to reencrypt
