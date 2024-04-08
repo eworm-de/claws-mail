@@ -608,6 +608,8 @@ static GtkActionEntry compose_popup_entries[] =
 	{"Compose/Properties", NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
 };
 
+/* make sure to keep the key bindings in the tables below in sync with the default_menurc[] in prefs_other.c
+   as well as with tables in messageview.c */
 static GtkActionEntry compose_entries[] =
 {
 	{"Menu",                          NULL, "Menu", NULL, NULL, NULL },
@@ -658,7 +660,7 @@ static GtkActionEntry compose_entries[] =
 	{"Edit/Advanced/BackWord",        NULL, N_("Move a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD*/
 	{"Edit/Advanced/ForwWord",        NULL, N_("Move a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD*/
 	{"Edit/Advanced/BegLine",         NULL, N_("Move to beginning of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE*/
-	{"Edit/Advanced/EndLine",         NULL, N_("Move to end of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE*/
+	{"Edit/Advanced/EndLine",         NULL, N_("Move to end of line"), "<control>E", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE*/
 	{"Edit/Advanced/PrevLine",        NULL, N_("Move to previous line"), "<control>P", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE*/
 	{"Edit/Advanced/NextLine",        NULL, N_("Move to next line"), "<control>N", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE*/
 	{"Edit/Advanced/DelBackChar",     NULL, N_("Delete a character backward"), "<control>H", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER*/
@@ -712,7 +714,7 @@ static GtkActionEntry compose_entries[] =
 	{"Options/Encoding/Thai",         NULL, N_("Thai"), NULL, NULL, NULL },
 
 /* Tools menu */
-	{"Tools/AddressBook",             NULL, N_("_Address book"), NULL, NULL, G_CALLBACK(compose_address_cb) }, 
+	{"Tools/AddressBook",             NULL, N_("_Address book"), "<shift><control>A", NULL, G_CALLBACK(compose_address_cb) }, 
 
 	{"Tools/Template",                NULL, N_("_Template"), NULL, NULL, NULL },
 	{"Tools/Template/PlaceHolder",    NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },

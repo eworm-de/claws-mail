@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2022 the Claws Mail team and Colin Leroy
+ * Copyright (C) 2005-2024 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,8 @@ typedef struct _OtherPage
 
 	GtkWidget *window;
 
+	GtkWidget *keys_preset_combo;
+	GtkWidget *keys_preset_hbox;
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
@@ -71,126 +73,11 @@ typedef struct _OtherPage
 #endif
 } OtherPage;
 
-static struct KeybindDialog {
-	GtkWidget *window;
-	GtkWidget *combo;
-} keybind;
-
-static void prefs_keybind_select		(void);
-static gint prefs_keybind_deleted		(GtkWidget	*widget,
-						 GdkEventAny	*event,
-						 gpointer	 data);
-static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
-static void prefs_keybind_cancel		(void);
-static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 #ifndef PASSWORD_CRYPTO_OLD
 static void prefs_change_primary_passphrase(GtkButton *button, gpointer data);
 static void prefs_use_passphrase_toggled(GtkToggleButton *button, gpointer data);
 #endif
 
-
-static void prefs_keybind_select(void)
-{
-	GtkWidget *window;
-	GtkWidget *vbox1;
-	GtkWidget *hbox1;
-	GtkWidget *label;
-	GtkWidget *combo;
-	GtkWidget *confirm_area;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-
-	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_other");
-	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_set_title (GTK_WINDOW (window), 
-				_("Choose preset keyboard shortcuts"));
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
-	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
-	manage_window_set_transient (GTK_WINDOW (window));
-
-	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
-	gtk_container_add (GTK_CONTAINER (window), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
-
-	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	label = gtk_label_new
-		(_("Select preset keyboard shortcuts:"));
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-
-	combo = combobox_text_new(FALSE,
-			       _("Default"),
-			       "Mew / Wanderlust",
-			       "Mutt",
-			       NULL);
-	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
-
-	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-/*
-	label = gtk_label_new
-		(_("You can also modify each menu shortcut by pressing\n"
-		   "any key(s) when focusing the mouse pointer on the item."));
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtkut_widget_set_small_font_size (label);
-*/
-	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	gtkut_stock_button_set_create (&confirm_area, &cancel_btn,NULL,  _("_Cancel"),
-				       &ok_btn, NULL, _("_OK"),
-				       NULL, NULL, NULL);
-	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_focus (ok_btn);
-
-	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	g_signal_connect (G_OBJECT (window), "delete_event",
-			  G_CALLBACK (prefs_keybind_deleted), NULL);
-	g_signal_connect (G_OBJECT (window), "key_press_event",
-			  G_CALLBACK (prefs_keybind_key_pressed), NULL);
-	g_signal_connect (G_OBJECT (ok_btn), "clicked",
-			  G_CALLBACK (prefs_keybind_apply_clicked),
-			  NULL);
-	g_signal_connect (G_OBJECT (cancel_btn), "clicked",
-			  G_CALLBACK (prefs_keybind_cancel),
-			  NULL);
-
-	gtk_widget_show_all(window);
-
-	keybind.window = window;
-	keybind.combo = combo;
-}
-
-static gboolean prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
-					  gpointer data)
-{
-	if (event && event->keyval == GDK_KEY_Escape)
-		prefs_keybind_cancel();
-	return FALSE;
-}
-
-static gint prefs_keybind_deleted(GtkWidget *widget, GdkEventAny *event,
-				  gpointer data)
-{
-	prefs_keybind_cancel();
-	return TRUE;
-}
-
-static void prefs_keybind_cancel(void)
-{
-	gtk_widget_destroy(keybind.window);
-	keybind.window = NULL;
-	keybind.combo = NULL;
-}
-  
 struct KeyBind {
 	const gchar *accel_path;
 	const gchar *accel_key;
@@ -215,20 +102,22 @@ static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
 	}
 }
 
-static void prefs_keybind_apply_clicked(GtkWidget *widget)
+static void prefs_keybind_preset_changed(GtkComboBox *widget)
 {
 	gchar *text;
 	struct KeyBind *menurc;
 	gint n_menurc;
 
+	/* make sure to keep the table below in sync with the ones in mainwindow.c, messageview.c */
 	static struct KeyBind default_menurc[] = {
 		/* main */
 		{"<Actions>/Menu/File/EmptyTrashes",			"<shift>D"},
 		{"<Actions>/Menu/File/SaveAs",				"<control>S"},
+		{"<Actions>/Menu/File/SavePartAs",			"Y"},
 		{"<Actions>/Menu/File/Print",				"<control>P"},
-		{"<Actions>/Menu/File/OfflineMode",			"<control>W"},
-		{"<Actions>/Menu/File/SynchroniseFolders",		"<control><shift>S"},
+		{"<Actions>/Menu/File/SynchroniseFolders",		"<shift><control>S"},
 		{"<Actions>/Menu/File/Exit",				"<control>Q"},
+		{"<Actions>/Menu/File/OfflineMode",			"<control>W"},
 
 		{"<Actions>/Menu/Edit/Copy",				"<control>C"},
 		{"<Actions>/Menu/Edit/SelectAll",			"<control>A"},
@@ -236,20 +125,32 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Edit/SearchFolder",			"<shift><control>F"},
 		{"<Actions>/Menu/Edit/QuickSearch",			"slash"},
 
+		{"<Actions>/Menu/View/ShowHide/MenuBar",		"<control>F12"},
 		{"<Actions>/Menu/View/ShowHide/MessageView",		"V"},
 		{"<Actions>/Menu/View/ThreadView",			"<control>T"},
+		{"<Actions>/Menu/View/FullScreen",			"F11"},
+		{"<Actions>/Menu/View/AllHeaders",			"<control>H"},
+		{"<Actions>/Menu/View/Quotes/CollapseAll",		"<shift><control>Q"},
+
 		{"<Actions>/Menu/View/Goto/Prev",			"P"},
 		{"<Actions>/Menu/View/Goto/Next",			"N"},
 		{"<Actions>/Menu/View/Goto/PrevUnread",			"<shift>P"},
 		{"<Actions>/Menu/View/Goto/NextUnread",			"<shift>N"},
+		{"<Actions>/Menu/View/Goto/PrevHistory",		"<alt>Left"},
+		{"<Actions>/Menu/View/Goto/NextHistory",		"<alt>Right"},
+		{"<Actions>/Menu/View/Goto/ParentMessage",		"<control>Up"},
+		{"<Actions>/Menu/View/Goto/NextUnreadFolder",		"<shift>G"},
 		{"<Actions>/Menu/View/Goto/Folder",			"G"},
+		{"<Actions>/Menu/View/Goto/NextPart",			"A"},
+		{"<Actions>/Menu/View/Goto/PrevPart",			"Z"},
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
 		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
-		{"<Actions>/Menu/View/AllHeaders",			"<control>H"},
+		{"<Actions>/Menu/View/Part/AsText",			"T"},
+		{"<Actions>/Menu/View/Part/Open",			"L"},
+		{"<Actions>/Menu/View/Part/OpenWith",			"O"},
 		{"<Actions>/Menu/View/UpdateSummary",			"<control><alt>U"},
 
-		{"<Actions>/Menu/Message/Receive/CurrentAccount",
-									"<control>I"},
+		{"<Actions>/Menu/Message/Receive/CurrentAccount",	"<control>I"},
 		{"<Actions>/Menu/Message/Receive/AllAccounts",		"<shift><control>I"},
 		{"<Actions>/Menu/Message/ComposeEmail",			"<control>M"},
 		{"<Actions>/Menu/Message/Reply",			"<control>R"},
@@ -266,8 +167,11 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Message/Mark/MarkRead",		""},
 
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
+		{"<Actions>/Menu/Tools/ListUrls",			"<shift><control>U"}, 
 		{"<Actions>/Menu/Tools/Execute",			"X"},
+		{"<Actions>/Menu/Tools/Expunge",			"<control>E"}, 
 		{"<Actions>/Menu/Tools/NetworkLog",			"<shift><control>L"},
+
 		/* compose */
 		{"<Actions>/Menu/Message/Send",				"<control>Return"},
 		{"<Actions>/Menu/Message/SendLater",			"<shift><control>S"},
@@ -300,7 +204,6 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Edit/WrapAllLines",			"<control><alt>L"},
 		{"<Actions>/Menu/Edit/AutoWrap",			"<shift><control>L"},
 		{"<Actions>/Menu/Edit/ExtEditor",			"<shift><control>X"},
-		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
 	};
 
 	static struct KeyBind mew_wl_menurc[] = {
@@ -348,6 +251,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
 		{"<Actions>/Menu/Tools/Execute",			"X"},
 		{"<Actions>/Menu/Tools/NetworkLog",			"<shift><control>L"},
+
 		/* compose */
 		{"<Actions>/Menu/Message/Close",			"<alt>W"},
 		{"<Actions>/Menu/Edit/SelectAll",			""},
@@ -395,13 +299,14 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Message/Copy",				"<shift>C"}, /* copy-message */
 		{"<Actions>/Menu/Message/Trash",			"D"}, /* delete-message */
 		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>F"}, /* flag-message */
-		{"<Actions>/Menu/Message/Mark/Unmark",			"<control><shift>F"}, /* - */
+		{"<Actions>/Menu/Message/Mark/Unmark",			"<shift><control>F"}, /* - */
 		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>N"}, /* toggle-new */
 		{"<Actions>/Menu/Message/Mark/MarkRead",		"<control>R"}, /* read-thread */
 
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"}, /* - */
 		{"<Actions>/Menu/Tools/Execute",			"dollar"}, /* sync-mailbox */
 		{"<Actions>/Menu/Tools/NetworkLog",			"<shift><control>L"}, /* - */
+
 		/* compose */
 		{"<Actions>/Menu/Message/Close",			"<alt>W"}, /* - */
 		{"<Actions>/Menu/Edit/Advanced/BackWord",		"<alt>B"}, /* - */
@@ -411,7 +316,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Edit/Advanced/DelForwWord",		"<alt>D"}, /* - */
 	};
 
-	text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(keybind.combo));
+	text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 
 	if (!strcmp(text, _("Default"))) {
 		menurc = default_menurc;
@@ -429,10 +334,6 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	g_free(text);
 
 	prefs_keybind_apply(menurc, n_menurc);
-
-	gtk_widget_destroy(keybind.window);
-	keybind.window = NULL;
-	keybind.combo = NULL;
 }
 
 static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -456,7 +357,9 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
 	GtkWidget *checkbtn_gtk_enable_accels;
-	GtkWidget *button_keybind;
+	GtkWidget *keys_preset_hbox;
+	GtkWidget *keys_preset_label;
+	GtkWidget *keys_preset_combo;
 
 	GtkWidget *label_iotimeout;
 	GtkWidget *spinbtn_iotimeout;
@@ -515,16 +418,24 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_enable_accels,
 			_("Enable keyboard shortcuts"));
 
-	button_keybind = gtk_button_new_with_label(
-				_(" Choose preset keyboard shortcuts... "));
-	gtk_widget_show (button_keybind);
-	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_keys), hbox1, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_keybind), "clicked",
-			  G_CALLBACK (prefs_keybind_select), NULL);
+	keys_preset_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_widget_show (keys_preset_hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_keys), keys_preset_hbox, FALSE, FALSE, 0);
 
+	keys_preset_label = gtk_label_new
+		(_("Select preset keyboard shortcuts:"));
+	gtk_box_pack_start (GTK_BOX (keys_preset_hbox), keys_preset_label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (keys_preset_label), GTK_JUSTIFY_LEFT);
+
+	keys_preset_combo = combobox_text_new(FALSE,
+			       _("Current"),
+			       _("Default"),
+			       "Mew / Wanderlust",
+			       "Mutt",
+			       NULL);
+	gtk_box_pack_start (GTK_BOX (keys_preset_hbox), keys_preset_combo, FALSE, FALSE, 0);
+	gtk_widget_show_all(frame_keys);
+	SET_TOGGLE_SENSITIVITY (checkbtn_gtk_enable_accels, keys_preset_hbox);
 
 	vbox_metadata = gtkut_get_options_frame(vbox1, &frame_metadata, _("Metadata handling"));
 	metadata_label = gtk_label_new(_("Safer mode asks the OS to write metadata to disk directly;\n"
@@ -624,7 +535,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
 			  G_CALLBACK (prefs_change_primary_passphrase), NULL);
 #endif
-	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, button_keybind);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
@@ -638,6 +548,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.warn_queued_on_exit);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_enable_accels),
 		prefs_common.gtk_enable_accels);
+	gtk_widget_set_sensitive(keys_preset_hbox, prefs_common.gtk_enable_accels);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
@@ -658,6 +569,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.use_primary_passphrase);
 #endif
 
+	prefs_other->keys_preset_hbox = keys_preset_hbox;
+	prefs_other->keys_preset_combo = keys_preset_combo;
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	prefs_other->checkbtn_confonexit = checkbtn_confonexit;
 	prefs_other->checkbtn_cleanonexit = checkbtn_cleanonexit;
@@ -712,6 +625,8 @@ static void prefs_other_save(PrefsPage *_page)
 	prefs_common.real_time_sync = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync));
+
+	prefs_keybind_preset_changed(page->keys_preset_combo);
 
 #ifndef PASSWORD_CRYPTO_OLD
 	/* If we're disabling use of primary passphrase, we need to reencrypt

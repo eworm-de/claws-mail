@@ -508,6 +508,7 @@ static void 	mw_compose_news_cb			(GtkAction *gaction, gpointer data)
 	compose_news_cb(data, 0, NULL);
 }
 
+/* make sure to keep the tables below in sync with the default_menurc[] in prefs_other.c */
 static GtkActionEntry mainwin_entries[] =
 {
 	{"Menu",                        NULL, "Menu", NULL, NULL, NULL },
@@ -542,7 +543,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"File/PageSetup",              NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
 	{"File/Print",                  NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
 	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
-	{"File/SynchroniseFolders",     NULL, N_("Synchronise folders"), "<control><shift>S", NULL, G_CALLBACK(sync_cb) }, 
+	{"File/SynchroniseFolders",     NULL, N_("Synchronise folders"), "<shift><control>S", NULL, G_CALLBACK(sync_cb) }, 
 	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
 	{"File/Exit",                   NULL, N_("E_xit"), "<control>Q", NULL, G_CALLBACK(app_exit_cb) }, 
 
@@ -664,7 +665,7 @@ static GtkActionEntry mainwin_entries[] =
 
 	{"Message/Reply",                                NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY */
 	{"Message/ReplyTo",                              NULL, N_("Repl_y to"), NULL, NULL, NULL }, 
-	{"Message/ReplyTo/All",                          NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/All",                          NULL, N_("_All"), "<shift><control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
 	{"Message/ReplyTo/Sender",                       NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
 	{"Message/ReplyTo/List",                         NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
 	{"Message/FollowupReply",                        NULL, N_("Follow-up and reply to"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FOLLOWUP_AND_REPLY_TO */
@@ -732,7 +733,7 @@ static GtkActionEntry mainwin_entries[] =
 
 /* Tools menu */
 
-	{"Tools/AddressBook",                        NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
+	{"Tools/AddressBook",                        NULL, N_("_Address book"), "<shift><control>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
 	{"Tools/AddSenderToAB",                      NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
 
 	{"Tools/CollectAddresses",                   NULL, N_("C_ollect addresses"), NULL, NULL, NULL }, 
@@ -759,7 +760,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/CreateProcessingRule/BySender",      NULL, N_("By S_ender"), NULL, NULL, G_CALLBACK(create_processing_cb) },
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
-	{"Tools/ListUrls",                           NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
+	{"Tools/ListUrls",                           NULL, N_("List _URLs..."), "<shift><control>U", NULL, G_CALLBACK(open_urls_cb) }, 
 
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/Actions",                            NULL, N_("Actio_ns"), NULL, NULL, NULL },
@@ -833,7 +834,7 @@ static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"View/HideDelMessages",                 NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages), FALSE }, /* toggle */
 	{"View/FullScreen",                      NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb), FALSE }, /* toggle */
 	{"View/AllHeaders",                      NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb), FALSE }, /* toggle */
-	{"View/Quotes/CollapseAll",              NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 1 toggle */
+	{"View/Quotes/CollapseAll",              NULL, N_("_Collapse all"), "<shift><control>Q", NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 1 toggle */
 	{"View/Quotes/Collapse2",                NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 2 toggle */
 	{"View/Quotes/Collapse3",                NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 3 toggle */
 };
