@@ -75,7 +75,6 @@ typedef struct _OtherPage
 
 #ifndef PASSWORD_CRYPTO_OLD
 static void prefs_change_primary_passphrase(GtkButton *button, gpointer data);
-static void prefs_use_passphrase_toggled(GtkToggleButton *button, gpointer data);
 #endif
 
 struct KeyBind {
@@ -530,8 +529,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox_passphrase), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_change_passphrase,
 			FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (checkbtn_use_passphrase), "toggled",
-				G_CALLBACK (prefs_use_passphrase_toggled), button_change_passphrase);
+	SET_TOGGLE_SENSITIVITY (checkbtn_use_passphrase, button_change_passphrase);
 	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
 			  G_CALLBACK (prefs_change_primary_passphrase), NULL);
 #endif
@@ -729,14 +727,5 @@ void prefs_change_primary_passphrase(GtkButton *button, gpointer data)
 {
 	/* Call the passphrase change dialog */
 	primary_passphrase_change_dialog();
-}
-
-void prefs_use_passphrase_toggled(GtkToggleButton *chkbtn, gpointer data)
-{
-	GtkWidget *button = GTK_WIDGET(data);
-	gboolean active = gtk_toggle_button_get_active(chkbtn);
-
-	if (!active)
-		gtk_widget_set_sensitive(button, active);
 }
 #endif
