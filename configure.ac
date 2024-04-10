@@ -212,7 +212,7 @@ fi
 pthread_name=
 case "$target" in
 *-darwin*)
-	AM_CFLAGS="$AM_CFLAGS -no-cpp-precomp -fno-common"
+	AM_CFLAGS="$AM_CFLAGS -fno-common"
 	;;
 *-*-mingw*)
 	# Note that we need to link to pthread in all cases. This
