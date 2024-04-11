@@ -156,11 +156,6 @@
 static gboolean went_offline_nm;
 #endif
 
-
-#ifdef HAVE_DBUS_GLIB
-static DBusGProxy *awn_proxy = NULL;
-#endif
-
 gchar *prog_version;
 #if (defined HAVE_LIBSM || defined CRASH_DIALOG)
 gchar *argv0;
@@ -933,106 +928,6 @@ static void main_dump_features_list(gboolean show_debug_only)
 #endif
 }
 
-#ifdef HAVE_DBUS_GLIB
-static gulong dbus_item_hook_id = HOOK_NONE;
-static gulong dbus_folder_hook_id = HOOK_NONE;
-
-static void uninstall_dbus_status_handler(void)
-{
-	if(awn_proxy)
-		g_object_unref(awn_proxy);
-	awn_proxy = NULL;
-	if (dbus_item_hook_id != HOOK_NONE)
-		hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, dbus_item_hook_id);
-	if (dbus_folder_hook_id != HOOK_NONE)
-		hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, dbus_folder_hook_id);
-}
-
-static void dbus_update(FolderItem *removed_item)
-{
-	guint new, unread, unreadmarked, marked, total;
-	guint replied, forwarded, locked, ignored, watched;
-	gchar *buf;
-	GError *error = NULL;
-
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
-				&replied, &forwarded, &locked, &ignored,
-				&watched);
-	if (removed_item) {
-		total -= removed_item->total_msgs;
-		new -= removed_item->new_msgs;
-		unread -= removed_item->unread_msgs;
-	}
-
-	if (new > 0) {
-		buf = g_strdup_printf("%d", new);
-		dbus_g_proxy_call(awn_proxy, "SetInfoByName", &error,
-			G_TYPE_STRING, "claws-mail",
-			G_TYPE_STRING, buf,
-			G_TYPE_INVALID, G_TYPE_INVALID);
-		g_free(buf);
-		
-	} else {
-		dbus_g_proxy_call(awn_proxy, "UnsetInfoByName", &error, G_TYPE_STRING,
-			"claws-mail", G_TYPE_INVALID, G_TYPE_INVALID);
-	}
-	if (error) {
-		debug_print("%s\n", error->message);
-		g_error_free(error);
-	}
-}
-
-static gboolean dbus_status_update_folder_hook(gpointer source, gpointer data)
-{
-	FolderUpdateData *hookdata;
-	hookdata = source;
-	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
-		dbus_update(hookdata->item);
-	else
-		dbus_update(NULL);
-
-	return FALSE;
-}
-
-static gboolean dbus_status_update_item_hook(gpointer source, gpointer data)
-{
-	dbus_update(NULL);
-
-	return FALSE;
-}
-
-static void install_dbus_status_handler(void)
-{
-	GError *tmp_error = NULL;
-	DBusGConnection *connection = dbus_g_bus_get(DBUS_BUS_SESSION, &tmp_error);
-	
-	if(!connection) {
-		/* If calling code doesn't do error checking, at least print some debug */
-		debug_print("Failed to open connection to session bus: %s\n",
-				 tmp_error->message);
-		g_error_free(tmp_error);
-		return;
-	}
-	awn_proxy = dbus_g_proxy_new_for_name(connection,
-			"com.google.code.Awn",
-			"/com/google/code/Awn",
-			"com.google.code.Awn");
-	dbus_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, dbus_status_update_item_hook, NULL);
-	if (dbus_item_hook_id == HOOK_NONE) {
-		g_warning("failed to register folder item update hook");
-		uninstall_dbus_status_handler();
-		return;
-	}
-
-	dbus_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, dbus_status_update_folder_hook, NULL);
-	if (dbus_folder_hook_id == HOOK_NONE) {
-		g_warning("failed to register folder update hook");
-		uninstall_dbus_status_handler();
-		return;
-	}
-}
-#endif
-
 static void reset_statistics(void)
 {
 	/* (re-)initialize session statistics */
@@ -1160,7 +1055,6 @@ int main(int argc, char *argv[])
 				NULL,NULL);
 		}
 #endif
-		install_dbus_status_handler();
 	}
 #endif
 
@@ -1679,7 +1573,6 @@ int main(int argc, char *argv[])
 		g_object_unref(nm_proxy);
 #endif
 #ifdef HAVE_DBUS_GLIB
-	uninstall_dbus_status_handler();
 	if(connection)
 		dbus_g_connection_unref(connection);
 #endif
