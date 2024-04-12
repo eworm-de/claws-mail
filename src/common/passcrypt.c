@@ -61,7 +61,7 @@ crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 {
 	char des_key[8];
 	
-	strncpy(des_key, PASSCRYPT_KEY, 8);
+	memcpy(des_key, PASSCRYPT_KEY, 8);
 	des_setparity(des_key);
 	if (decrypt)
 		ecb_crypt(des_key, buf, len, DES_DECRYPT);
