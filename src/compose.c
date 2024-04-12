@@ -188,9 +188,6 @@ typedef enum {
     NO_FIELD_PRESENT
 } MailField;
 
-#define B64_LINE_SIZE		57
-#define B64_BUFFSIZE		77
-
 #define MAX_REFERENCES_LEN	999
 
 #define COMPOSE_DRAFT_TIMEOUT_UNSET -1

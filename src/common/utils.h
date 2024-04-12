@@ -54,6 +54,9 @@
   #define HOST_NAME_MAX 256
 #endif
 
+/* Handling Base64 content in procmime and prefs_customheader */
+#define B64_LINE_SIZE 57
+
 #ifdef G_OS_WIN32
 
 #define fsync _commit

@@ -544,8 +544,6 @@ static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 
 }
 
-#define B64_LINE_SIZE		57
-#define B64_BUFFSIZE		77
 static void prefs_custom_header_val_from_file_cb(void)
 {
 	gchar *filename = NULL;

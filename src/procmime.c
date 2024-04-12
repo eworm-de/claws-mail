@@ -509,9 +509,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	return TRUE;
 }
 
-#define B64_LINE_SIZE		57
-#define B64_BUFFSIZE		77
-
 gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 {
 	FILE *infp = NULL, *outfp;
