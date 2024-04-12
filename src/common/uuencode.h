@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
+
+#ifndef __UUENCODE_H__
+#define __UUENCODE_H__
 
 int fromuutobits(char *, const char *);
 
-#define X_UUENCODE_END_LINE '`'
-#define UUENCODE_END_LINE ' '
+#endif /* __UUENCODE_H__ */
