@@ -709,7 +709,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	SockConnectData *conn_data = (SockConnectData *)data;
 	gint fd;
 	gint val;
-	guint len;
+	socklen_t len;
 	SockInfo *sockinfo;
 
 	if (conn_data->io_tag == 0 && conn_data->channel == NULL)
@@ -722,7 +722,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	g_io_channel_unref(source);
 
 	len = sizeof(val);
-	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&val, &len) < 0) {
+	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &val, &len) < 0) {
 		perror("getsockopt");
 		close(fd);
 		sock_connect_address_list_async(conn_data);
