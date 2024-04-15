@@ -1199,8 +1199,7 @@ static GtkWidget *prefs_template_list_view_create(void)
 			 G_CALLBACK(prefs_template_list_popup_menu), list_view);
 	g_signal_connect(G_OBJECT(list_view), "button-press-event",
 			G_CALLBACK(prefs_template_list_btn_pressed), list_view);
-	
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
+
 	gtk_tree_view_set_reorderable(list_view, TRUE);
 
 	selector = gtk_tree_view_get_selection(list_view);

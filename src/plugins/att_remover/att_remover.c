@@ -352,8 +352,7 @@ static void remove_attachments_dialog(AttRemover *attremover)
 				  G_TYPE_BOOLEAN,
 				  -1));
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
-	gtk_tree_view_set_rules_hint(list_view, prefs_common_get_prefs()->use_stripes_everywhere);
-	
+
 	renderer = gtk_cell_renderer_toggle_new();
 	g_signal_connect(renderer, "toggled", G_CALLBACK(remove_toggled_cb), model);
 	g_object_unref(model);	

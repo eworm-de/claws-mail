@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2022 Holger Berndt <hb@claws-mail.org>
+ * Copyright (C) 2007-2024 Holger Berndt <hb@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -436,7 +436,6 @@ static GtkWidget* create_email_view(GtkListStore *store)
 	GtkCellRenderer *renderer;
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), prefs_common.use_stripes_everywhere);
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
 	        -1,
@@ -456,7 +455,6 @@ static GtkWidget* create_detail_view(GtkListStore *store)
 	GList *walk;
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), prefs_common.use_stripes_everywhere);
 	renderer = gtk_cell_renderer_text_new();
 
 	/* col 1 */

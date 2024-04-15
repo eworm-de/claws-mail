@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #include "claws-features.h"
@@ -149,9 +150,7 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 	
  	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model),
                                              0, GTK_SORT_ASCENDING);
-	g_object_unref(model);	
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
-	
+	g_object_unref(model);
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 

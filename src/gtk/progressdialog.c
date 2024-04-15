@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -116,8 +115,6 @@ ProgressDialog *progress_dialog_create(void)
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(G_OBJECT(store));
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), TRUE);
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview),
-				     prefs_common.use_stripes_everywhere);
 	gtk_widget_show(treeview);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), treeview);
 	gtk_widget_set_size_request(treeview, -1, 120);

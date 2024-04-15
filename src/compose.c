@@ -7505,8 +7505,6 @@ static GtkWidget *compose_create_attach(Compose *compose)
 			 COL_NAME, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(attach_clist), column);
 
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(attach_clist),
-				     prefs_common.use_stripes_everywhere);
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(attach_clist));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 

@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  *
- * Copyright (C) 2000-2021 the Claws Mail team and Alfons Hoogervorst
+ * Copyright (C) 2000-2024 the Claws Mail team and Alfons Hoogervorst
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1771,7 +1770,6 @@ static GtkWidget *addr_compl_list_view_create(CompletionWindow *window)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);
 
-	gtk_tree_view_set_rules_hint(list_view, prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_headers_visible(list_view, FALSE);
 
 	selector = gtk_tree_view_get_selection(list_view);

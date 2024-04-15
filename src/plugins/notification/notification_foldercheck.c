@@ -1,6 +1,6 @@
 
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2022 Holger Berndt and the Claws Mail Team
+ * Copyright (C) 2005-2024 Holger Berndt and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -525,8 +525,6 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(entry->treeview), FALSE);
   gtk_tree_view_set_search_column(GTK_TREE_VIEW(entry->treeview),
 				  FOLDERCHECK_FOLDERNAME);
-  gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(entry->treeview),
-				  prefs_common_get_prefs()->use_stripes_everywhere);
   gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(entry->treeview), FALSE);
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(entry->treeview));
