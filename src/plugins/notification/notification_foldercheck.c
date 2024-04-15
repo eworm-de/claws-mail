@@ -44,7 +44,6 @@
 #include "common/prefs.h"
 #include "common/xml.h"
 #include "common/hooks.h"
-#include "prefs_common.h"
 
 /* local includes */
 #include "notification_foldercheck.h"

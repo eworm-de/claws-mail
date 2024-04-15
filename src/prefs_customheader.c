@@ -35,7 +35,6 @@
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_customheader.h"
-#include "prefs_common.h"
 #include "prefs_account.h"
 #include "mainwindow.h"
 #include "foldersel.h"

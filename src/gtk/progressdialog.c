@@ -28,7 +28,6 @@
 #include "progressdialog.h"
 #include "gtkutils.h"
 #include "utils.h"
-#include "prefs_common.h"
 
 enum {
 	PROGRESS_IMAGE,

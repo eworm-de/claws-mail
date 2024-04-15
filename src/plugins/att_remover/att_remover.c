@@ -43,7 +43,6 @@
 #include "menu.h"
 #include "claws.h"
 #include "plugin.h"
-#include "prefs_common.h"
 #include "defs.h"
 #include "prefs_gtk.h"
 
