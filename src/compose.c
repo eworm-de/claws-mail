@@ -11004,13 +11004,16 @@ int attach_image(Compose *compose, GtkSelectionData *data, const gchar *subtype)
 
 	if ((fp = claws_fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "claws_fopen");
+		g_free(file);
 		return -1;
 	}
 
 	if (claws_fwrite(contents, 1, len, fp) != len) {
 		FILE_OP_ERROR(file, "claws_fwrite");
 		claws_fclose(fp);
-		claws_unlink(file);
+		if (claws_unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
+		g_free(file);
 		return -1;
 	}
 
@@ -11018,7 +11021,9 @@ int attach_image(Compose *compose, GtkSelectionData *data, const gchar *subtype)
 
 	if (r == EOF) {
 		FILE_OP_ERROR(file, "claws_fclose");
-		claws_unlink(file);
+		if (claws_unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
+		g_free(file);
 		return -1;
 	}
 
