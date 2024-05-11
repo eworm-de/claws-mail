@@ -3938,7 +3938,7 @@ static void import_mbox_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	/* only notify if import has failed */
-	if (import_mbox(mainwin->summaryview->folder_item) == -1) {
+	if (import_mbox(mainwin->summaryview->folder_item, NULL) == -1) {
 		alertpanel_error(_("Mbox import has failed."));
 	}
 }
@@ -5575,4 +5575,15 @@ static void goto_prev_part_cb(GtkAction *action, gpointer data)
 	if (mainwin->messageview 
 	&&  mainwin->messageview->mimeview)
 		mimeview_select_prev_part(mainwin->messageview->mimeview);
+}
+
+void mainwindow_import_mbox(const gchar* mbox_file)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	strcrlftrunc((gchar *) mbox_file);
+	/* only notify if import has failed */
+	if (import_mbox(mainwin->summaryview->folder_item, mbox_file) == -1) {
+		alertpanel_error(_("Mbox import has failed."));
+	}
 }

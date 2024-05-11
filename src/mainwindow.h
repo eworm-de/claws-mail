@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- *  Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,5 +226,7 @@ void mainwindow_reset_paned		      (GtkPaned *paned);
 
 void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModifierType modifier,
 				  GClosure *closure, GtkMenuItem *item);
+
+void mainwindow_import_mbox(const gchar* mbox_file);
 
 #endif /* __MAINWINDOW_H__ */
