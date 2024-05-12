@@ -459,7 +459,6 @@ static gboolean exportldif_fmt_person(
 			ldif_write_value(
 				stream, LDIF_TAG_LASTNAME, sn );
 			g_free(sn);
-			sn = NULL;
 			ldif_write_value(
 				stream, LDIF_TAG_FIRSTNAME, person->firstName );
 
@@ -469,7 +468,6 @@ static gboolean exportldif_fmt_person(
 				displayName = g_strdup(person->nickName);
 			ldif_write_value(stream, LDIF_TAG_NICKNAME, displayName);
 			g_free(displayName);
-			displayName = NULL;
 
 			/* Format E-Mail */
 			exportldif_fmt_email( person, stream );
