@@ -786,8 +786,8 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 #endif
 
 	if (tmpfp == NULL) {
-		g_free(tmpfile);
 		FILE_OP_ERROR(tmpfile, "open");
+		g_free(tmpfile);
 		return TRUE;
 	}
 
