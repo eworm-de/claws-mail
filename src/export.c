@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 	utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 
 	if (!utf8mbox || !*utf8mbox) {
-		alertpanel_error(_("Target mbox filename can't be left empty."));
+		alertpanel_error(_("Mbox file can't be left empty."));
 		gtk_widget_grab_focus(file_entry);
 		return;
 	}
