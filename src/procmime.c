@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -273,18 +273,15 @@ const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *na
 		strretchomp(lastline);						\
 		llen = strlen(lastline);					\
 		if (lastline[llen-1] == ' ' && !account_sigsep_matchlist_str_found(lastline, "%s") &&	\
-		    !(llen == 2 && lastline[1] == ' ' && strchr(prefs_common.quote_chars, lastline[0]))) {					\
+		    !(llen == 2 && lastline[1] == ' ' && strchr(prefs_common.quote_chars, lastline[0]))) { \
 			/* this is flowed */					\
 			if (delsp)						\
 				lastline[llen-1] = '\0';			\
-			if (claws_fputs(lastline, outfp) == EOF)			\
-				err = TRUE;					\
-		} else {							\
-			if (claws_fputs(lastline, outfp) == EOF)			\
-				err = TRUE;					\
-			if (claws_fputs("\n", outfp) == EOF)				\
-				err = TRUE;					\
 		}								\
+		if (claws_fputs(lastline, outfp) == EOF)			\
+			err = TRUE;						\
+		if (claws_fputs("\n", outfp) == EOF)				\
+			err = TRUE;						\
 	} 									\
 	strcpy(lastline, buf);							\
 }
