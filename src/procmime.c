@@ -438,8 +438,9 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 					err = TRUE;
 			}
 		}
-		if (tmpfp != outfp)
+		if (tmpfp != outfp) {
 			claws_fclose(tmpfp);
+		}
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
@@ -758,7 +759,6 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	gchar buf[BUFFSIZE];
 	gchar *str;
 	gboolean scan_ret = FALSE;
-	gchar *tmpfile = NULL;
 	int r;
 
 	cm_return_val_if_fail(mimeinfo != NULL, TRUE);
@@ -767,27 +767,15 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	if (!procmime_decode_content(mimeinfo))
 		return TRUE;
 
-#if HAVE_FMEMOPEN
-	tmpfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
-#else
-	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL) {
-		g_warning("no filename");
-		return TRUE;
-	}
-
-	tmpfp = claws_fopen(tmpfile, "w+");
-#endif
+	tmpfp = my_tmpfile();
 
 	if (tmpfp == NULL) {
-		FILE_OP_ERROR(tmpfile, "open");
-		g_free(tmpfile);
+		FILE_OP_ERROR("tmpfile", "open");
 		return TRUE;
 	}
 
 	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo)) < 0) {
 		g_warning("procmime_get_part_to_stream error %d", r);
-		g_free(tmpfile);
 		return TRUE;
 	}
 
@@ -853,11 +841,6 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 
 	claws_fclose(tmpfp);
 
-#if !HAVE_FMEMOPEN
-	claws_unlink(tmpfile);
-	g_free(tmpfile);
-#endif
-
 	return scan_ret;
 }
 
@@ -893,31 +876,13 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 {
 	FILE *outfp;
-#if !HAVE_FMEMOPEN
-	gchar *tmpfile = NULL;
-#endif
 
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (!procmime_decode_content(mimeinfo))
 		return NULL;
 
-#if HAVE_FMEMOPEN
-	outfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
-#else
-	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL) {
-		g_warning("no filename");
-		return NULL;
-	}
-
-	outfp = claws_fopen(tmpfile, "w+");
-
-	if (tmpfile != NULL) {
-		g_unlink(tmpfile);
-		g_free(tmpfile);
-	}
-#endif
+	outfp = my_tmpfile();
 
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
 		return NULL;
