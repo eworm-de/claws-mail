@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,11 @@
 
 #define HOOK_NONE 0
 
-typedef gboolean (*SylpheedHookFunction)	(gpointer source,
+typedef gboolean (*ClawsMailHookFunction)	(gpointer source,
 						 gpointer userdata);
 
 gulong hooks_register_hook	(const gchar		*hooklist_name,
-				 SylpheedHookFunction	 hook_func,
+				 ClawsMailHookFunction	 hook_func,
 				 gpointer		 userdata);
 void hooks_unregister_hook	(const gchar		*hooklist_name,
 				 gulong			 hook_id);

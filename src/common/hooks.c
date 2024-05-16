@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ static GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 }
 
 gulong hooks_register_hook(const gchar *hooklist_name,
-			  SylpheedHookFunction hook_func,
+			  ClawsMailHookFunction hook_func,
 			  gpointer userdata)
 {
 	GHookList *hooklist;
