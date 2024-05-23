@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2022 the Claws Mail team
+ * Copyright (C) 2022-2024 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +40,16 @@ static gboolean web_page_send_request_cb(WebKitWebPage *web_page,
 		return TRUE;
 #if GLIB_CHECK_VERSION(2,66,0)
 	if (strcmp(scheme, "cid") == 0 ||
+	    strcmp(scheme, "mid") == 0 ||
 	    strcmp(scheme, "file") == 0 ||
+	    strcmp(scheme, "data") == 0 ||
 	    strcmp(scheme, "about") == 0)
  		is_remote = FALSE;
 #else
 	if (g_ascii_strcasecmp(scheme, "cid") == 0 ||
+		g_ascii_strcasecmp(scheme, "mid") == 0 ||
 		g_ascii_strcasecmp(scheme, "file") == 0 ||
+		g_ascii_strcasecmp(scheme, "data") == 0 ||
 		g_ascii_strcasecmp(scheme, "about") == 0)
 		is_remote = FALSE;
 	g_free(scheme);
