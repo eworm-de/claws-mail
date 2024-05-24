@@ -11062,7 +11062,7 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 			GdkAtom atom = targets[i];
 			gchar *atom_type = gdk_atom_name(atom);
 
-			if (atom_type != NULL && index(atom_type, '/')) {
+			if (atom_type != NULL && strchr(atom_type, '/')) {
 				GtkSelectionData *data = gtk_clipboard_wait_for_contents(
 						clipboard, atom);
 				debug_print("got contents of type %s\n", atom_type);
