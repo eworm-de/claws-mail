@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,6 +205,7 @@ struct _PrefsCommon
 	gchar *compose_body_format;
 	gboolean show_compose_margin;
 	gboolean type_any_header;
+	gboolean notify_pasted_attachments;
 
 	/* Quote */
 	gboolean reply_with_quote;

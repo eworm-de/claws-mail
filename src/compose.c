@@ -10975,11 +10975,21 @@ static void attach_uri_list(Compose *compose, GtkSelectionData *data)
 		g_free(utf8_filename);
 	}
 	if (list) {
+		AlertValue val;
 		compose_changed_cb(NULL, compose);
-		alertpanel_notice(ngettext(
-			"The following file has been attached: \n%s",
-			"The following files have been attached: \n%s", att), warn_files);
+		if (prefs_common.notify_pasted_attachments) {
+			gchar *msg;
+
+			msg = g_strdup_printf(ngettext("The following file has been attached: \n%s",
+						"The following files have been attached: \n%s", att), warn_files);
+			val = alertpanel_full(_("Notice"), msg,
+						NULL, _("_Close"), NULL, NULL, NULL, NULL,
+						ALERTFOCUS_FIRST, TRUE, NULL, ALERT_NOTICE);
+			g_free(msg);
+		}
 		g_free(warn_files);
+		if (val & G_ALERTDISABLE)
+			prefs_common.notify_pasted_attachments = FALSE;
 	}
 	list_free_strings_full(list);
 }
