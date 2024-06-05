@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,7 +278,6 @@ static void alertpanel_create(const gchar *title,
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_default_size (GTK_WINDOW(window), 450, 200);
 	
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	g_signal_connect(G_OBJECT(window), "delete_event",
@@ -289,6 +288,7 @@ static void alertpanel_create(const gchar *title,
 			 (gpointer)G_ALERTCANCEL);
 
 	content_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+	gtk_widget_set_size_request(GTK_WIDGET(content_area), 450, 100);
 	gtk_container_add (GTK_CONTAINER(window), content_area);
 	/* for title icon, label and message */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
