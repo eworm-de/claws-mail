@@ -10975,7 +10975,7 @@ static void attach_uri_list(Compose *compose, GtkSelectionData *data)
 		g_free(utf8_filename);
 	}
 	if (list) {
-		AlertValue val;
+		AlertValue val = 0;
 		compose_changed_cb(NULL, compose);
 		if (prefs_common.notify_pasted_attachments) {
 			gchar *msg;
