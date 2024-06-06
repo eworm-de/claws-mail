@@ -3790,6 +3790,10 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		compose->autowrap = prev_autowrap;
 		if (compose->autowrap)
 			compose_wrap_all(compose);
+	} else {
+		gchar *filename = g_path_get_basename(file);
+		debug_print("Can't insert file '%s' (invalid character)\n", filename);
+		g_free(filename);
 	}
 
 	g_string_free(file_contents, TRUE);
