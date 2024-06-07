@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2023,6 +2023,8 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_msgid_with_addr,
 			   _("Send account mail address in Message-ID"));
+
+	SET_TOGGLE_SENSITIVITY (msgid_checkbtn, checkbtn_msgid_with_addr);
 
 	PACK_CHECK_BUTTON (vbox2, xmailer_checkbtn,
 			   _("Add user agent header"));
