@@ -4160,7 +4160,7 @@ msgstr ""
 #: src/folderview.c:876 src/summaryview.c:4274
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr ""
-"Voulez-vous vraiment marquer comme non lus tous les messages de ce dossier ?"
+"Voulez-vous vraiment marquer comme lus tous les messages de ce dossier ?"
 
 #: src/folderview.c:879 src/summaryview.c:4319
 msgid "Mark all as unread"
