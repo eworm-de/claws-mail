@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2023111900, Last Updated Sun Nov 19 07:07:02 2023 UTC */
+	/* Version 2024060900, Last Updated Sun Jun  9 07:07:01 2024 UTC */
 	"aaa",
 	"aarp",
 	"abb",
@@ -93,7 +93,6 @@ static const gchar *toplvl_domains [] = {
 	"author",
 	"auto",
 	"autos",
-	"avianca",
 	"aw",
 	"aws",
 	"ax",
@@ -104,7 +103,6 @@ static const gchar *toplvl_domains [] = {
 	"baby",
 	"baidu",
 	"banamex",
-	"bananarepublic",
 	"band",
 	"bank",
 	"bar",
@@ -269,7 +267,6 @@ static const gchar *toplvl_domains [] = {
 	"college",
 	"cologne",
 	"com",
-	"comcast",
 	"commbank",
 	"community",
 	"company",
@@ -520,7 +517,6 @@ static const gchar *toplvl_domains [] = {
 	"gs",
 	"gt",
 	"gu",
-	"guardian",
 	"gucci",
 	"guge",
 	"guide",
@@ -863,7 +859,6 @@ static const gchar *toplvl_domains [] = {
 	"okinawa",
 	"olayan",
 	"olayangroup",
-	"oldnavy",
 	"ollo",
 	"om",
 	"omega",
@@ -1024,7 +1019,6 @@ static const gchar *toplvl_domains [] = {
 	"sbi",
 	"sbs",
 	"sc",
-	"sca",
 	"scb",
 	"schaeffler",
 	"schmidt",
@@ -1242,7 +1236,6 @@ static const gchar *toplvl_domains [] = {
 	"vlaanderen",
 	"vn",
 	"vodka",
-	"volkswagen",
 	"volvo",
 	"vote",
 	"voting",
@@ -1286,7 +1279,6 @@ static const gchar *toplvl_domains [] = {
 	"wtf",
 	"xbox",
 	"xerox",
-	"xfinity",
 	"xihuan",
 	"xin",
 	"xxx",
