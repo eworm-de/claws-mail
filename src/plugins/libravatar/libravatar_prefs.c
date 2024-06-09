@@ -142,18 +142,22 @@ static GtkWidget *labeled_spinner_box(gchar *label, GtkWidget *spinner, gchar *u
 static gchar *avatar_stats_label_markup(AvatarCacheStats *stats)
 {
 	if (stats == NULL)
-		return g_strdup(g_strconcat("<span color=\"red\">",
-			_("Error reading cache stats"), "</span>", NULL));
+		return g_markup_printf_escaped("<span color=\"red\">%s</span>",
+			_("Error reading cache stats"));
 
-	if (stats->errors > 0)
-		return g_markup_printf_escaped(g_strconcat("<span color=\"red\">",
-			_("Using %s in %d files, %d "
-			"directories, %d others and %d errors"), "</span>", NULL),
+	if (stats->errors > 0) {
+		gchar *label_text = g_strdup_printf(_("Using %s in %d files, %d "
+			"directories, %d others and %d errors"),
 			to_human_readable((goffset) stats->bytes),
 			stats->files,
 			stats->dirs,
 			stats->others,
 			stats->errors);
+		gchar *label = g_markup_printf_escaped("<span color=\"red\">%s</span>",
+			label_text);
+		g_free(label_text);
+		return label;
+	}
 
 	return g_strdup_printf(
 		_("Using %s in %d files, %d directories and %d others"),
