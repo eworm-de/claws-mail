@@ -248,6 +248,7 @@ static gchar *oauth2_contact_server(SockInfo *sock, const gchar *request)
 
 	if (sock_write(sock, request, strlen(request)) < 0) {
 		log_message(LOG_PROTOCOL, _("OAuth2 socket write error\n"));
+		g_string_free(response, TRUE);
 		return NULL;
 	}
 
