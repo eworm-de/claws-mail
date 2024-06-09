@@ -2720,14 +2720,14 @@ static void summary_status_show(SummaryView *summaryview)
 		del = g_strdup("");
 	if (summaryview->moved)
 		mv = g_strdup_printf(_("%s%d moved"),
-				     summaryview->deleted ? _(", ") : "",
+				     summaryview->deleted ? ", " : "",
 				     summaryview->moved);
 	else
 		mv = g_strdup("");
 	if (summaryview->copied)
 		cp = g_strdup_printf(_("%s%d copied"),
 				     summaryview->deleted ||
-				     summaryview->moved ? _(", ") : "",
+				     summaryview->moved ? ", " : "",
 				     summaryview->copied);
 	else
 		cp = g_strdup("");
