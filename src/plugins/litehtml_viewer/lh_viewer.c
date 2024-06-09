@@ -65,6 +65,7 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 		utf8 = g_convert(string, -1, "utf-8", charset, NULL, &length, &error);
 		if (error) {
 			g_warning("LH: failed mimepart conversion to UTF-8: %s", error->message);
+			g_free(utf8);
 			g_free(string);
 			g_error_free(error);
 			return;
