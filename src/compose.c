@@ -11002,6 +11002,7 @@ int attach_image(Compose *compose, GtkSelectionData *data, const gchar *subtype)
 {
 	FILE *fp;
 	const guchar *contents;
+	gchar *tmpf;
 	gchar *file;
 	gchar *type;
 	size_t len;
@@ -11012,7 +11013,9 @@ int attach_image(Compose *compose, GtkSelectionData *data, const gchar *subtype)
 	contents = gtk_selection_data_get_data(data);
 	len = gtk_selection_data_get_length(data);
 
-	file = g_strconcat(get_tmp_file(), "-image.", subtype, NULL);
+	tmpf = get_tmp_file();
+	file = g_strconcat(tmpf, "-image.", subtype, NULL);
+	g_free(tmpf);
 
 	debug_print("writing image to %s\n", file);
 
