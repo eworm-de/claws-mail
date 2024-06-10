@@ -1,4 +1,4 @@
-20th November 2023                                   Claws Mail 4.2.0
+10th June 2024                                       Claws Mail 4.3.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,87 +9,113 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* An easy way to open any folder on start-up has been added:
-  Right-click a folder and choose 'Open on start-up'.
-  This can also be configured on the 'Folder list' tab of the
-  /Configuration/Preferences/Display/Summaries page.
+* Compose window: when the focus is in the message text, copied files
+  can be pasted as attachments using /Edit/paste or Ctrl+V.
+  (The context menu's Paste will still insert the list of files into
+  the message body.)
 
-* Spam statistics have been added to the session statistics.
+* '/Mark/Mark all read in folder' and 'Mark/Mark all unread in
+  folder' have been re-added to the Message List context menu.
 
-* It is now possible to save message attachments only, without the
-  other message parts.
+* It is now possible to use '/Tools/Remove references' when
+  forwarding mail.
 
-* QuickSearch: support for a "v H V" search expression has been added
-  and the 'y S' expression has been removed ('v X-Label S' can be
-  used instead).
+* Keyboard shortcuts: The "Choose preset keyboard shortcuts" selector
+  has been integrated into the main preferences page.
+  When 'Current' is the selected preset, Apply/OK will keep the
+  existing settings.
+    
+* An MBOX file can now be imported from the command line using
+  `claws-mail --import-mbox %f` where %f is the full path to the
+  MBOX file.
 
-* font/* and chemical/* MIME types are now recognised.
+* OAUTH2 support for Microsoft 365 GCC High has been added.
 
-* The image viewer now works correctly when not auto-loading images.
+* LiteHTML Viewer plugin: Updated to LiteHTML 0.9.
 
-* Icon Themes: it is no longer possible to install or remove system
-  themes.
+* The menurc file is now backed-up on startup.
 
-* IMAP: Support for SCRAM-SHA-{224,256,384,512} authentication
-  mechanisms has been added.
+* Removed support for the obsolete Avant Window Navigator.
+    
+* Various code cleanups.
 
-* IMAP: The statusbar now shows that expunge is happening.
+* The manual has been updated.
 
-* The GData plugin has been removed.
+* New translation: Albanian.  
 
-* The Fancy plugin no longer requires libsoup or libsoup-gnome.
-
-* The LiteHTML Viewer plugin has been synchronised with litehtml 0.7.
-
-* The LiteHTML viewer plugin will now only be built automatically if
-  libgumbo 0.12 or newer is available. Building with libgumbo 0.10
-  must be explicitly requested using --enable-litehtml_viewer-plugin.
-
-* For extra debug output use --enable-more-addressbook-debug and
-  --enable-more-ldap-debug.
-
-* Added translation: Portuguese  
-
-* Updated translations: Brazilian Portuguese, Catalan, Czech, French,
-  Polish, Russian, Slovak, Spanish, Swedish, Traditional Chinese,
-  Turkish.
+* Updated translations: Catalan, Czech, French, Hungarian, Indonesian,
+  Polish, Romanian, Slovak, Spanish, Swedish, Turkish.
 
 * bug fixes:
-	* bug 4491, 'address autocompletion list does not expand in
-		     height with the number of matches'
-	* bug 4618, 'Rate limit by remote breaks queued/marked
-		     actions (Delete/Move)'
-	* bug 4631, 'Embedding external editor crashes Claws-Mail on
-		     Wayland'
-	* bug 4637, 'Segmentation fault when using SUMMARY is empty'
-	* bug 4645, 'fails to check for perl-ExtUtils::Embed'
-	* bug 4648, 'fails to build with gcc 13'
-	* bug 4658, 'Headers unfolded incorrectly in message view'
-	* bug 4664, 'OAUTH2 overwrites passwords even for plaintext
-		     logins'
-	* bug 4666, 'fancy plugin doesn't build with
-		     libwebkit2gtk-4.1'
-	* bug 4670, 'To/CC incorrectly escaped with a trailing
-		     backslash'
-	* bug 4679, 'The correct date header is interpreted
-		     incorrectly to display strange date.'
-	* bug 4693, 'Hang and crash when enable disable SVG Rendering
-		     prefs'
-	* when starting with msgview hidden, toggling msgview to show
-	  it would use incorrect height
-	* update quicksearch history list when changing type 
-	* wrong message which is shown when mail can't be sent
-	* when redirecting, disable queueing
-	* arbitrary paste restriction
-	* when queueing or drafting a msg with an attachment which no
-	  longer exists, use the correct label on the button of the
-	  warning dialogue
-	* using a custom header in found_in_addressbook match
-	  expressions
-	* URIs may contain the '$' dollar sign
-	* OAuth2, Update on-disk tokens as well when in-memory tokens
-	  are updated
-	* Microsoft POP3 OAuth2 protocol
+	* bug 4668, 'Sometimes, at program start, message list takes
+		     all the vertical space'
+	* bug 4720, 'matcher: release regex_t in
+		     matcherprop_string_match'
+	* bug 4724, 'set proper availability status to sign/encrypt
+		     toolbar buttons'
+	* bug 4725, 'oauth2: remove trailing zero from transmit
+		     buffer in oauth2_contact_server'
+	* bug 4728, 'socket: handle GNUTLS_E_PREMATURE_TERMINATION in
+		     ssl_read'
+	* bug 4730, 'oauth2: fix string handling in
+		     oauth2_contact_server'
+	* bug 4733, 'Line breaks lost in headers'
+	* bug 4734, 'ssl_certificate: remove unhelpful warnings from
+		     certificate check'
+	* bug 4746, 'matcher: remove incorrect condition in
+		     matcherprop_free'
+	* bug 4747, 'matcher: simplify matcherprop_new'
+	* bug 4749, 'release regex_t in
+		     summary_compile_simplify_regexp'
+	* bug 4750, 'remove regcomp wrapper and call regcomp
+		     directly'
+	* bug 4752, 'Adjust incorrect debug_printf call in pgp
+		     plugins'
+	* bug 4754, 'text/enriched literal less-than sign sequence
+		     handled incorrectly
+	* bug 4757, 'remove AX_FUNC_MKDIR'
+	* bug 4758, 'remove unused check for bind_textdomain_codeset'
+	* bug 4759, 'remove unused function checks from
+		     AC_CHECK_FUNCS'
+	* bug 4760, 'use correct type for move_bar_id'
+	* bug 4762, 'oauth2: preserve an existing refresh token'
+	* bug 4765, 'only store smtp auth if authorization method is
+		     OAUTH2'
+	* bug 4766, 'preserve the expiry value of SMTP auth type is
+		     not OAUTH2'
+	* bug 4768, 'Adjust logic while evaluating enable_avatars'
+	* bug 4770, 'remove intl from list of include directories'
+	* bug 4773, 'remove obsolescent AC_C_CONST'
+	* bug 4780, 'use proper prototype for two archiver functions'
+	* bug 4781, 'use correct prototype for
+		     privacy_free_signature_data'
+	* bug 4782, 'use correct prototype for stop_archiving'
+	* bug 4786, 'remove type confusion in getsockopt call in
+		     sock_connect_async_cb'
+	* bug 4787, 'Use correct function for memory transfer in
+		     crypt_cfb_buf'
+	* bug 4788, '"Change primary passphrase" disabled status
+		     handling'
+	* bug 4790, 'widget spacing in "Changing primary passphrase"
+		     dialog'
+	* bug 4791, 'remove obsolete glib version check'
+	* bug 4795, 'Please remove -no-cpp-precomp flag for Apple'
+	* bug 4796, 'URL with wide character doesn't work'
+	* bug 4798, 'Quoting wrong when format=flowed and
+		     respect_flowed_format is set'
+	* CIDs 1220325, 1491306 and 1491315, 'Explicit null
+	  dereferenced (FORWARD_NULL)'
+	* CIDs 1491064, 1491074, 1491211, 1491105, 1491139, 1491164,
+	  1491166, 1491168, 1491169, 1491178, 1491232, 1491242,
+	  1492281 and 1591844 'Use after free (USE_AFTER_FREE)'
+	* CID 1491137 'Out-of-bounds access (OVERRUN)'
+	* CID 1591952 values overwritten before being used
+	* CID 1596594 (CHECKED_RETURN)
+	* CID 1596595 'Resource leak'
+	* errors caused by invalid MIME viewer command-line
+	* building on non-X11 systems
+	* Use CFLAGS provided by nettle.pc
+	* Fancy plugin, recognise mid and data embedded images
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
