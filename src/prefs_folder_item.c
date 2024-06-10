@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,7 +322,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	COMBOBOX_ADD (folder_type_menu, _("Normal"),  F_NORMAL);
 	COMBOBOX_ADD (folder_type_menu, _("Inbox"),  F_INBOX);
-	COMBOBOX_ADD (folder_type_menu, _("Outbox"),  F_OUTBOX);
+	COMBOBOX_ADD (folder_type_menu, _("Sent"),  F_OUTBOX);
 	COMBOBOX_ADD (folder_type_menu, _("Drafts"),  F_DRAFT);
 	COMBOBOX_ADD (folder_type_menu, _("Queue"),  F_QUEUE);
 	COMBOBOX_ADD (folder_type_menu, _("Trash"),  F_TRASH);
