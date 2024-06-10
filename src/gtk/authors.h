@@ -55,6 +55,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[ro] Cristian Secară <liste@secarica.ro>",
 "[ru] Mikhail Kurinnoi <viewizard@viewizard.com>",
 "[sk] Slavko <slavino@slavino.sk>",
+"[sq] Besnik Bleta <besnik@programeshqip.org>",
 "[sv] Andreas Rönnquist <gusnan@openmailbox.org>",
 "[tr] Numan Demirdöğen <if.gnu.linux@gmail.com>",
 "[zh_TW] Mark Chang <mark.cyj@gmail.com>",

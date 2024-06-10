@@ -112,6 +112,10 @@ my %lang = (
 		'out' => 1, 'name' => 'Slovak',
 		'last' => 'Slavko <slavino@slavino.sk>',
 	},
+	'sq.po' => {
+		'out' => 1, 'name' => 'Albanian',
+		'last' => 'Besnik Bleta	<besnik@programeshqip.org>',
+	},
 	'sv.po' => {
 		'out' => 1, 'name' => 'Swedish',
 		'last' => 'Andreas Rönnquist <gusnan@openmailbox.org>',
