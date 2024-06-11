@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail Team
+ * Copyright (C) 1999-2024 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -363,7 +363,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					   "a message. The probable cause of the error "
 					   "is an unreachable spamd daemon. Please make "
 					   "sure spamd is running and accessible.");
-		if (!prefs_common_get_prefs()->no_recv_err_panel) {
+		if (prefs_common_get_prefs()->show_recv_err_dialog) {
 			if (!warned_error) {
 				alertpanel_error("%s", msg);
 			}

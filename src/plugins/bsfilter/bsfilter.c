@@ -376,7 +376,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			msg =  g_strdup_printf(_("The Bsfilter plugin couldn't filter "
 					   "a message. The command `%s` couldn't be run."), 
 					   bs_exec);
-		if (!prefs_common_get_prefs()->no_recv_err_panel) {
+		if (prefs_common_get_prefs()->show_recv_err_dialog) {
 			if (!warned_error) {
 				alertpanel_error("%s", msg);
 			}

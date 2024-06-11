@@ -1060,7 +1060,7 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 		} 
 #endif
 		if (time(NULL) - last_login_err > 10) {
-			if (!prefs_common.no_recv_err_panel) {
+			if (prefs_common.show_recv_err_dialog) {
 				alertpanel_error_log(_("Connection to %s failed: "
 					"login refused.%s"),
 					server, ext_info);
@@ -1314,7 +1314,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 			imap_handle_error(NULL, account->recv_server, r);
 
-		if(!prefs_common.no_recv_err_panel) {
+		if(prefs_common.show_recv_err_dialog) {
 			alertpanel_error_log(_("Can't connect to IMAP server: %s:%d"),
 					 account->recv_server, port);
 		} else {
@@ -1421,7 +1421,7 @@ try_again:
 			}
 			goto try_again;
 		} else {
-			if (prefs_common.no_recv_err_panel) {
+			if (!prefs_common.show_recv_err_dialog) {
 				log_error(LOG_PROTOCOL, _("Couldn't login to IMAP server %s.\n"), account->recv_server);
 				mainwindow_show_error();
 			} else

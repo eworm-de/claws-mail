@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2017 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 2003-2024 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,8 +121,8 @@ static gboolean scan_func(GNode *node, gpointer data)
 							name, NULL);
 						g_free(name);
 						g_warning("%s", msg);
-						debug_print("no_recv: %d\n", prefs_common_get_prefs()->no_recv_err_panel);
-						if (prefs_common_get_prefs()->no_recv_err_panel) {
+						debug_print("show_recv_err: %d\n", prefs_common_get_prefs()->show_recv_err_dialog);
+						if (!prefs_common_get_prefs()->show_recv_err_dialog) {
 						    statusbar_print_all("%s", msg);
 						}
 						else {

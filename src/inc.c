@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -746,7 +746,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 		
 		if (pop3_session->error_val == PS_AUTHFAIL) {
-			if(!prefs_common.no_recv_err_panel) {
+			if(prefs_common.show_recv_err_dialog) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window))
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -925,7 +925,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			    prefs_common.io_timeout_secs * 1000);
 	
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
-		if(!prefs_common.no_recv_err_panel) {
+		if(prefs_common.show_recv_err_dialog) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -1232,7 +1232,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 	switch (istate) {
 	case INC_CONNECT_ERROR:
 		fatal_error = TRUE;
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d failed."),
 					  SESSION(session)->server, 
@@ -1241,7 +1241,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 	case INC_ERROR:
 		log_msg = _("Error occurred while processing mail.");
 		fatal_error = TRUE;
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		if (session->error_msg)
 			err_msg = g_strdup_printf
@@ -1262,7 +1262,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_SOCKET_ERROR:
 		log_msg = _("Socket error.");
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		err_msg = g_strdup_printf(_("Socket error on connection to %s:%d."),
 					  SESSION(session)->server, 
@@ -1270,7 +1270,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_EOF:
 		log_msg = _("Connection closed by the remote host.");
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d closed by the remote host."), 
 					  SESSION(session)->server, 
@@ -1278,7 +1278,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		break;
 	case INC_LOCKED:
 		log_msg = _("Mailbox is locked.");
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		if (session->error_msg)
 			err_msg = g_strdup_printf(_("Mailbox is locked:\n%s"),
@@ -1289,7 +1289,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 	case INC_AUTH_FAILED:
 		log_msg = _("Authentication failed.");
 		fatal_error = TRUE;
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		if (session->error_msg)
 			err_msg = g_strdup_printf
@@ -1301,7 +1301,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		log_msg = _("Session timed out. You may be able to "
 			    "recover by increasing the timeout value in "
 			    "Preferences/Other/Miscellaneous.");
-		if (prefs_common.no_recv_err_panel)
+		if (!prefs_common.show_recv_err_dialog)
 			break;
 		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 
 					  SESSION(session)->server, 
@@ -1317,7 +1317,7 @@ static void inc_put_error(IncState istate, Pop3Session *session)
 		else
 			log_warning(LOG_PROTOCOL, "%s\n", log_msg);
 	}
-	if (prefs_common.no_recv_err_panel && fatal_error)
+	if (!prefs_common.show_recv_err_dialog && fatal_error)
 		mainwindow_show_error();
 
 	if (err_msg) {
