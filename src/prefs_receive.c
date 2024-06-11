@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2016 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2024 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ typedef struct _ReceivePage
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *hbox_newmail_notify;
 	GtkWidget *optmenu_recvdialog;
-	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_show_recv_err_dialog;
 	GtkWidget *checkbtn_close_recv_dialog;
 } ReceivePage;
 
@@ -134,7 +134,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkWidget *optmenu_recvdialog;
-	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_show_recv_err_dialog;
 	GtkWidget *checkbtn_close_recv_dialog;
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -240,8 +240,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
 			   _("Close receive dialog when finished"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
-			   _("Don't popup error dialog on receive error"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_show_recv_err_dialog,
+			   _("Show error dialog on receive error"));
 
  	vbox2 = gtkut_get_options_frame(vbox1, &frame, 
 					_("After receiving new mail"));
@@ -297,8 +297,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.autochk_newmail);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_incext),
 		prefs_common.use_extinc);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_no_recv_err_panel),
-		prefs_common.no_recv_err_panel);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_show_recv_err_dialog),
+		prefs_common.show_recv_err_dialog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_close_recv_dialog),
 		prefs_common.close_recv_dialog);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_chkonstartup),
@@ -335,7 +335,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_receive->hbox_newmail_notify = hbox_newmail_notify;
 
 	prefs_receive->optmenu_recvdialog = optmenu_recvdialog;
-	prefs_receive->checkbtn_no_recv_err_panel = checkbtn_no_recv_err_panel;
+	prefs_receive->checkbtn_show_recv_err_dialog = checkbtn_show_recv_err_dialog;
 	prefs_receive->checkbtn_close_recv_dialog = checkbtn_close_recv_dialog;
 	prefs_receive->page.widget = vbox1;
 
@@ -363,8 +363,8 @@ static void prefs_receive_save(PrefsPage *_page)
 
 	prefs_common.use_extinc = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_incext));
-	prefs_common.no_recv_err_panel = gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(page->checkbtn_no_recv_err_panel));
+	prefs_common.show_recv_err_dialog = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_show_recv_err_dialog));
 	prefs_common.close_recv_dialog = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_close_recv_dialog));
 	prefs_common.chk_on_startup = gtk_toggle_button_get_active(

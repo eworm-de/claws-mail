@@ -34,7 +34,7 @@
 #include "prefs_msg_colors.h"
 #include "prefs_summary_open.h"
 
-#define CLAWS_CONFIG_VERSION 4
+#define CLAWS_CONFIG_VERSION 5
 
 typedef struct _PrefsCommon	PrefsCommon;
 
@@ -163,6 +163,7 @@ struct _PrefsCommon
 	gint receivewin_height;
 	gboolean close_recv_dialog;
 	gboolean no_recv_err_panel;
+	gboolean show_recv_err_dialog;
 
 	/* Send */
 	gboolean savemsg;

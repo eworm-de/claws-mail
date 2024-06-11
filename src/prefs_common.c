@@ -183,6 +183,8 @@ static PrefParam param[] = {
 	{"receivewin_height", "-1", &prefs_common.receivewin_height, P_INT,
 	 NULL, NULL, NULL},
 	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
+	 P_BOOL, NULL, NULL, NULL}, /* deprecated */
+	{"show_receive_error_dialog", "TRUE", &prefs_common.show_recv_err_dialog,
 	 P_BOOL, NULL, NULL, NULL},
 	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
 	 P_BOOL, NULL, NULL, NULL},
