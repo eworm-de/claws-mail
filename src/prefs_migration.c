@@ -84,7 +84,7 @@ static void _update_config_common(gint version)
 			prefs_common.autochk_itv *= 60;
 
 			break;
-		case 5:
+		case 4:
 			if (prefs_common.no_recv_err_panel)
 				prefs_common.show_recv_err_dialog = FALSE;
 			else
