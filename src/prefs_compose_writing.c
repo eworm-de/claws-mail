@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2021 the Claws Mail Team and Colin Leroy <colin@colino.net>
+ * Copyright (C) 2005-2024 the Claws Mail Team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_warn_large_insert;
 	GtkWidget *spinbtn_warn_large_insert_size;
 	GtkWidget *optmenu_dnd_insert_or_attach;
+	GtkWidget *checkbtn_warn_pasted_attachments;
 } WritingPage;
 
 static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -111,6 +112,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *hbox_dnd_insert_or_attach;
 	GtkWidget *label_dnd_insert_or_attach;
 	GtkWidget *optmenu_dnd_insert_or_attach;
+	GtkWidget *checkbtn_warn_pasted_attachments;
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	gchar *text;
@@ -247,6 +249,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			label_dnd_insert_or_attach, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_dnd_insert_or_attach),
 			optmenu_dnd_insert_or_attach, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(vbox1, checkbtn_warn_pasted_attachments, _("Warn when pasting files as attachments"));
 	
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
@@ -277,6 +281,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	prefs_writing->checkbtn_default_reply_list = checkbtn_default_reply_list;
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
+	prefs_writing->checkbtn_warn_pasted_attachments = checkbtn_warn_pasted_attachments;
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
@@ -304,6 +309,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		prefs_common.reedit_account_autosel);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_reply_with_quote),
 			prefs_common.reply_with_quote);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_warn_pasted_attachments),
+			prefs_common.notify_pasted_attachments);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_default_reply_list),
 		prefs_common.default_reply_list);
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_dnd_insert_or_attach),
@@ -348,6 +355,9 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 	
 	prefs_common.compose_dnd_mode = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_dnd_insert_or_attach));
+	
+	prefs_common.notify_pasted_attachments =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_warn_pasted_attachments));
 }
 
 static void prefs_compose_writing_destroy_widget(PrefsPage *_page)
