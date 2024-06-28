@@ -940,7 +940,7 @@ static PrefParam ssl_param[] = {
 	{"out_ssl_client_cert_pass", "", &tmp_ac_prefs.out_ssl_client_cert_pass, P_PASSWORD,
 	 NULL, NULL, NULL},
 
-	{"ssl_certs_auto_accept", "0", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
+	{"ssl_certs_auto_accept", "1", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
