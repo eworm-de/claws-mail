@@ -383,7 +383,6 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 	struct archive* out;
 	struct archive_entry* entry;
 	int res = ARCHIVE_OK;
-	gchar* buf = NULL;
 	const char* result = NULL;
 
 	g_return_val_if_fail(archive_name != NULL, NULL);
@@ -427,7 +426,7 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 					if (res == ARCHIVE_EOF)
 						res = ARCHIVE_OK;
 					if (res != ARCHIVE_OK) {
-						gchar *e = archive_error_string(in);
+						const gchar *e = archive_error_string(in);
 						g_warning("%s: %s", archive_name, e? e: "unknown error");
 						result = e;
 					}
@@ -594,7 +593,6 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			GError* err = NULL;
 			GStatBuf st;
 			int fd;
-			gchar* msg = NULL;
 
 #ifndef DEBUG_ARCHIVE
 			debug_print("Adding: %s\n", filename);
@@ -715,7 +713,7 @@ int main(int argc, char** argv) {
 	gchar cwd[PATH_MAX];
 	gboolean remove = FALSE;
 	const char *p = NULL;
-	int res;
+	const gchar* res;
 
 	getcwd(cwd, PATH_MAX);
 
@@ -749,8 +747,8 @@ int main(int argc, char** argv) {
 	while (*argv) {
 		archive_scan_folder(*argv++);
 		res = archive_create(archive, file_list, GZIP, TAR);
-		if (res != ARCHIVE_OK) {
-			fprintf(stderr, "%s: Creating archive failed\n", archive);
+		if (res != NULL) {
+			fprintf(stderr, "%s: Creating archive failed [%s]\n", archive, res);
 			return EXIT_FAILURE;
 		}
 	}
@@ -770,7 +768,8 @@ int main(int argc, char** argv) {
 		fprintf(stdout, "Executing: %s\n", buf);
 		system(buf);
 	}
-	archive_free_list(file_list);
+	if (file_list != NULL)
+		g_slist_free(file_list);
 	return EXIT_SUCCESS;
 }
 #endif
