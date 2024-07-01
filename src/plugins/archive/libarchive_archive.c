@@ -595,6 +595,8 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			int fd;
 
 #ifndef DEBUG_ARCHIVE
+			gchar* msg = NULL;
+
 			debug_print("Adding: %s\n", filename);
 			msg = g_strdup_printf("%s", filename);
 			set_progress_file_label(msg);
