@@ -67,7 +67,7 @@ struct LibravatarPrefsPage
 struct LibravatarPrefsPage libravatarprefs_page;
 
 static PrefParam param[] = {
-	{ "base_url", "http://cdn.libravatar.org/avatar",
+	{ "base_url", "https://seccdn.libravatar.org/avatar",
 	  &libravatarprefs.base_url,
           P_STRING, NULL, NULL, NULL },
 	{ "cache_interval", "24",
