@@ -1357,7 +1357,7 @@ gboolean procheader_header_is_internal(const gchar *hdr_name)
 	const gchar *internal_hdrs[] = {
 		"AF:", "NF:", "PS:", "SRH:", "SFN:", "DSR:", "MID:", "CFG:",
 		"PT:", "S:", "RQ:", "SSV:", "NSV:", "SSH:", "R:", "MAID:",
-		"SCF:", "RMID:", "FMID:", "NAID:",
+		"SCF:", "RRCPT:", "RMID:", "FMID:", "NAID:",
 		"X-Claws-Account-Id:",
 		"X-Claws-Sign:",
 		"X-Claws-Encrypt:",
