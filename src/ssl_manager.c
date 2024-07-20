@@ -215,7 +215,7 @@ void ssl_manager_create(void)
 	g_signal_connect(G_OBJECT(view_btn), "clicked",
 			 G_CALLBACK(ssl_manager_view_cb), NULL);
 
-	close_btn = gtk_button_new_with_mnemonic("_Close");
+	close_btn = gtk_button_new_with_mnemonic(_("_Close"));
 	gtk_button_set_image(GTK_BUTTON(close_btn),
 			gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
 	g_signal_connect(G_OBJECT(close_btn), "clicked",

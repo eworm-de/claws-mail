@@ -2036,7 +2036,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox, customhdr_checkbtn,
 			   _("Add user-defined header"));
 
-	customhdr_edit_btn = gtk_button_new_with_mnemonic("_Edit");
+	customhdr_edit_btn = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (customhdr_edit_btn);
 	gtk_box_pack_start (GTK_BOX (hbox), customhdr_edit_btn,
 			    FALSE, FALSE, 0);
@@ -2543,7 +2543,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_signature_browse_cb), NULL);
 
-	signature_edit_button = gtk_button_new_with_mnemonic("_Edit");
+	signature_edit_button = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (signature_edit_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), signature_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(signature_edit_button), "clicked",

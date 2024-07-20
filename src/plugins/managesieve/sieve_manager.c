@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2022 the Claws Mail team
+ * Copyright (C) 2004-2024 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -751,13 +751,13 @@ static SieveManagerPage *sieve_manager_page_new()
 	gtk_box_pack_start (GTK_BOX (vbox_allbuttons), vbox_buttons, FALSE, FALSE, 0);
 
 	/* new */
-	btn = gtk_button_new_with_mnemonic("_New");
+	btn = gtk_button_new_with_mnemonic(_("_New"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			  G_CALLBACK (filter_add), page);
 
 	/* edit */
-	btn = gtk_button_new_with_mnemonic("_Edit");
+	btn = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_edit), page);

@@ -1,5 +1,5 @@
 /* select-keys.c - GTK based key selection
- * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2024 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify        
  * it under the terms of the GNU General Public License as published by
@@ -497,7 +497,7 @@ create_dialog (struct select_keys_s *sk)
 		   		   &other_btn, NULL, _("_Other"),
 		    		   &dont_encrypt_btn, NULL, _("Do_n't encrypt"));
     
-    cancel_btn = gtk_button_new_with_mnemonic("_Cancel");
+    cancel_btn = gtk_button_new_with_mnemonic(_("_Cancel"));
     gtk_widget_set_can_default(cancel_btn, TRUE);
     gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
     gtk_widget_show(cancel_btn);

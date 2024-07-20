@@ -388,7 +388,7 @@ static void present_finder_results(GtkWindow *parent)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	edit_btn = gtk_button_new_with_mnemonic("_Edit");
+	edit_btn = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_box_pack_start(GTK_BOX(hbox), edit_btn, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive(edit_btn, FALSE);
 

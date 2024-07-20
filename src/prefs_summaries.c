@@ -424,7 +424,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
+	button_dispitem = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
@@ -518,7 +518,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
+	button_dispitem = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",

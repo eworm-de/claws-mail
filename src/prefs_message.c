@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2020 the Claws Mail Team and Colin Leroy
+ * Copyright (C) 2005-2024 the Claws Mail Team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(hbox1, checkbtn_disphdr,
 			  _("Display headers in message view"));
 
-	button_edit_disphdr = gtk_button_new_with_mnemonic("_Edit");
+	button_edit_disphdr = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (button_edit_disphdr);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_disphdr,
 			  FALSE, TRUE, 0);
