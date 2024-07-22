@@ -36,10 +36,11 @@
 #include "alertpanel.h"
 
 static gint starting_config_version = 0;
+static gboolean version_check_warning_shown = FALSE;
 
 gboolean _version_check(gint ver)
 {
-	if (ver > CLAWS_CONFIG_VERSION) {
+	if (ver > CLAWS_CONFIG_VERSION && !version_check_warning_shown) {
 		gchar *msg;
 		gchar *markup;
 		AlertValue av;
@@ -65,6 +66,8 @@ gboolean _version_check(gint ver)
 
 		if (av != G_ALERTDEFAULT)
 			return FALSE; /* abort startup */
+
+		version_check_warning_shown = TRUE;
 
 		return TRUE; /* hic sunt dracones */
 	}
