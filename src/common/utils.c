@@ -1372,7 +1372,7 @@ gint get_uri_len(const gchar *str)
 
 	if (is_uri_string(str)) {
 		for (p = str; *p != '\0'; p++) {
-			if (strchr("<>\" ", *p))
+			if (g_ascii_isspace(*p) || strchr("<>\"", *p))
 				break;
 		}
 		return p - str;
