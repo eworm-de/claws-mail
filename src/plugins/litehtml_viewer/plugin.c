@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- A GTK based, lightweight, and fast e-mail client
- * Copyright(C) 2019 the Claws Mail Team
+ * Copyright(C) 2019-2024 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include <glib/gi18n.h>
 
+#include "common/version.h"
 #include <mimeview.h>
 #include <plugin.h>
 
@@ -31,6 +32,10 @@ extern MimeViewerFactory lh_viewer_factory;
 
 gint plugin_init(gchar **error)
 {
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(4,3,0,1),
+				  VERSION_NUMERIC, _("LiteHTML viewer"), error))
+		return -1;
+
 	debug_print("LH: plugin_init\n");
 	lh_prefs_init();
 	mimeview_register_viewer_factory(&lh_viewer_factory);
@@ -52,7 +57,10 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("Viewer plugin for HTML emails, using the litehtml library (http://www.litehtml.com/).");
+	return _("This plugin renders HTML mail using the litehtml library "
+		 "(http://www.litehtml.com/).\nBy default all remote content is "
+		 "blocked. Options can be found in "
+		 "/Configuration/Preferences/Plugins/LiteHTML");
 }
 
 const gchar *plugin_type(void)
@@ -67,7 +75,7 @@ const gchar *plugin_licence(void)
 
 const gchar *plugin_version(void)
 {
-	return "0.1";
+	return VERSION;
 }
 
 struct PluginFeature *plugin_provides(void)
