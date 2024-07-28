@@ -117,7 +117,10 @@ GSList *grouplist_dialog(Folder *folder)
 
 	grouplist_dialog_set_list(NULL, TRUE);
 
-	if (ack) gtk_main();
+	if (ack) {
+		gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+		gtk_main();
+	}
 
 	manage_window_focus_out(dialog, NULL, NULL);
 	gtk_widget_hide(dialog);
