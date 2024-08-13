@@ -1320,6 +1320,9 @@ static PrefParam param[] = {
 	{"qs_press_timeout", "500", &prefs_common.qs_press_timeout, P_INT,
 	 NULL, NULL, NULL},
 
+	 {"passphrase_dialog_msg_title_switch", "FALSE", &prefs_common.passphrase_dialog_msg_title_switch,
+	  P_BOOL, NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

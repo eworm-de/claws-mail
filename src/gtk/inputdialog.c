@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,10 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 	is_pass = TRUE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 
-	return input_dialog_open(title, message, NULL, default_string, FALSE, NULL);
+	if (prefs_common.passphrase_dialog_msg_title_switch)
+		return input_dialog_open(message, title, NULL, default_string, FALSE, NULL);
+	else
+		return input_dialog_open(title, message, NULL, default_string, FALSE, NULL);
 }
 
 gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *message,
@@ -152,7 +155,14 @@ gchar *input_dialog_with_invisible_checkbtn(const gchar *title, const gchar *mes
 	is_pass = TRUE;
 	gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 
-	return input_dialog_open(title, message, checkbtn_label, default_string, (checkbtn_state? *checkbtn_state:FALSE), checkbtn_state);
+	if (prefs_common.passphrase_dialog_msg_title_switch)
+		return input_dialog_open(message, title, checkbtn_label,
+					 default_string, (checkbtn_state? *checkbtn_state:FALSE),
+					 checkbtn_state);
+	else
+		return input_dialog_open(title, message, checkbtn_label,
+					 default_string, (checkbtn_state? *checkbtn_state:FALSE),
+					 checkbtn_state);
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
@@ -224,16 +234,16 @@ gchar *input_dialog_query_password(const gchar *server, const gchar *user)
 	gchar *pass;
 
 	if (server && user)
-		message = g_strdup_printf(_("Input password for %s on %s:"),
+		message = g_strdup_printf(_("Input password for %s on %s"),
 				  user, server);
 	else if (server)
-		message = g_strdup_printf(_("Input password for %s:"),
+		message = g_strdup_printf(_("Input password for %s"),
 				  server);
 	else if (user)
-		message = g_strdup_printf(_("Input password for %s:"),
+		message = g_strdup_printf(_("Input password for %s"),
 				  user);
 	else
-		message = g_strdup_printf(_("Input password:"));
+		message = g_strdup_printf(_("Input password"));
 	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
 	g_free(message);
 
@@ -246,16 +256,16 @@ gchar *input_dialog_query_password_keep(const gchar *server, const gchar *user, 
 	gchar *pass;
 
 	if (server && user)
-		message = g_strdup_printf(_("Input password for %s on %s:"),
+		message = g_strdup_printf(_("Input password for %s on %s"),
 				  user, server);
 	else if (server)
-		message = g_strdup_printf(_("Input password for %s:"),
+		message = g_strdup_printf(_("Input password for %s"),
 				  server);
 	else if (user)
-		message = g_strdup_printf(_("Input password for %s:"),
+		message = g_strdup_printf(_("Input password for %s"),
 				  user);
 	else
-		message = g_strdup_printf(_("Input password:"));
+		message = g_strdup_printf(_("Input password"));
         if (keep) {
 		if (*keep != NULL) {
 			pass = g_strdup (*keep);

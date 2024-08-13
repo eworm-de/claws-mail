@@ -590,6 +590,8 @@ struct _PrefsCommon
 	guint primary_passphrase_pbkdf2_rounds;
 #endif
 
+	gboolean passphrase_dialog_msg_title_switch;
+
 	/* Proxy */
 	gboolean use_proxy;
 	ProxyInfo proxy_info;
@@ -603,7 +605,7 @@ extern PrefsCommon prefs_common;
 PrefsCommon *prefs_common_get_prefs(void);
 
 GList *prefs_common_read_history_from_dir_with_defaults(const gchar *dirname, const gchar *history,
-															  GList *default_list);
+							GList *default_list);
 void prefs_common_read_config	(void);
 void prefs_common_write_config	(void);
 void prefs_common_open		(void);
