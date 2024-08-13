@@ -1,6 +1,6 @@
 #!/bin/sh
 if test -d .git; then
-  git=`which git`
+  git=`command -v git`
   if test -x "$git"; then
     version=`git describe --abbrev=6 --dirty --always`
     echo "echo $version" > ./version
