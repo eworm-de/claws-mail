@@ -265,6 +265,7 @@ static char *CONTRIBS_LIST[] = {
 "Damian Poddebniak",
 "Marcel Pol",
 "Martin Pool",
+"MatN",
 "Quar",
 "Don Quijote",
 "Steve Rader",

@@ -418,6 +418,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	gchar *destfile;
 	GSList *cur;
 	MsgFileInfo *fileinfo;
+	FolderItemPrefs *prefs;
 
 	cm_return_val_if_fail(dest != NULL, -1);
 	cm_return_val_if_fail(file_list != NULL, -1);
@@ -426,6 +427,8 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		mh_get_last_num(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
+
+	prefs = dest->prefs;
 
 	for (cur = file_list; cur != NULL; cur = cur->next) {
 		fileinfo = (MsgFileInfo *)cur->data;
@@ -445,6 +448,10 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 #ifdef G_OS_UNIX
 		}
 #endif
+		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+			if (chmod(destfile, prefs->folder_chmod) < 0)
+				FILE_OP_ERROR(destfile, "chmod");
+		}
 
 		if (relation != NULL)
 			g_hash_table_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
