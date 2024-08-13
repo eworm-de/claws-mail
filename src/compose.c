@@ -5851,6 +5851,15 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	}
 	g_free(chars);
 
+	/* check for line length limit */
+	if (action == COMPOSE_WRITE_FOR_SEND &&
+	    encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
+	    check_line_length(buf, 1000, &line) < 0) {
+		debug_print("Line %d exceeds the line length limit (998 bytes), "
+			    "switching to QP transfer encoding\n", line + 1);
+		encoding = ENC_QUOTED_PRINTABLE;
+	}
+	
 	if (prefs_common.rewrite_first_from && (encoding == ENC_8BIT || encoding == ENC_7BIT)) {
 		if (!strncmp(buf, "From ", sizeof("From ")-1) ||
 		    strstr(buf, "\nFrom ") != NULL) {
@@ -5878,26 +5887,6 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	debug_print("main text: %" G_GSIZE_FORMAT " bytes encoded as %s in %d\n",
 		strlen(buf), out_codeset, encoding);
 
-	/* check for line length limit */
-	if (action == COMPOSE_WRITE_FOR_SEND &&
-	    encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
-	    check_line_length(buf, 1000, &line) < 0) {
-		AlertValue aval;
-
-		msg = g_strdup_printf
-			(_("Line %d exceeds the line length limit (998 bytes).\n"
-			   "The contents of the message might be broken on the way to the delivery.\n"
-			   "\n"
-			   "Send it anyway?"), line + 1);
-		aval = alertpanel(_("Warning"), msg, NULL, _("_Cancel"), NULL, _("_OK"),
-				  NULL, NULL, ALERTFOCUS_FIRST);
-		g_free(msg);
-		if (aval != G_ALERTALTERNATE) {
-			g_free(buf);
-			return COMPOSE_QUEUE_ERROR_NO_MSG;
-		}
-	}
-	
 	if (encoding != ENC_UNKNOWN)
 		procmime_encode_content(mimetext, encoding);
 
