@@ -5855,9 +5855,23 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	if (action == COMPOSE_WRITE_FOR_SEND &&
 	    encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
 	    check_line_length(buf, 1000, &line) < 0) {
-		debug_print("Line %d exceeds the line length limit (998 bytes), "
-			    "switching to QP transfer encoding\n", line + 1);
-		encoding = ENC_QUOTED_PRINTABLE;
+		if (encoding == ENC_8BIT) {
+			AlertValue aval;
+
+			msg = g_strdup_printf
+				(_("Line %d exceeds the line length limit (998 bytes).\n"
+				   "The contents of the message might be broken on the way "
+				   "to the recipient."), line + 1);
+			aval = alertpanel(_("Warning"), msg, NULL, _("Send safely"), NULL, _("Send as-is"),
+					NULL, NULL, ALERTFOCUS_FIRST);
+			g_free(msg);
+			if (aval != G_ALERTALTERNATE)
+				encoding = ENC_QUOTED_PRINTABLE;
+		} else {
+			debug_print("Line %d exceeds the line length limit (998 bytes), "
+				    "switching to QP transfer encoding\n", line + 1);
+			encoding = ENC_QUOTED_PRINTABLE;
+		}
 	}
 	
 	if (prefs_common.rewrite_first_from && (encoding == ENC_8BIT || encoding == ENC_7BIT)) {
