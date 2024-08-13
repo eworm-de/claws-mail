@@ -268,6 +268,7 @@ static char *CONTRIBS_LIST[] = {
 "Quar",
 "Don Quijote",
 "Steve Rader",
+"Quentin Rameau",
 "Steve Randall",
 "Jens Rantil",
 "Ravemax",
