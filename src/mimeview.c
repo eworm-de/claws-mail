@@ -1839,6 +1839,11 @@ static gint mimeview_write_part(const gchar *filename,
 		return 0;
 	}
 
+	if (prefs_common.attach_save_chmod) {
+		if (chmod(filename, prefs_common.attach_save_chmod) < 0)
+			FILE_OP_ERROR(filename, "chmod");
+	}
+
 	return 1;
 }
 

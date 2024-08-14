@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,5 +99,8 @@ FILE *str_open_as_stream	(const gchar	*str);
 gint str_write_to_file		(const gchar	*str,
 				 const gchar	*file,
 				 gboolean	 safe);
+
+gint prefs_chmod_mode		(gchar *chmod_pref);
+
 
 #endif

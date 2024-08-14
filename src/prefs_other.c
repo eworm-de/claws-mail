@@ -47,6 +47,8 @@
 #include "imap-thread.h"
 #endif
 
+#include "file-utils.h"
+
 typedef struct _OtherPage
 {
 	PrefsPage page;
@@ -65,6 +67,7 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+	GtkWidget *entry_attach_save_chmod;
 	GtkWidget *flush_metadata_faster_radiobtn;
 	GtkWidget *flush_metadata_safer_radiobtn;
 	GtkWidget *checkbtn_transhdr;
@@ -370,6 +373,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
 	GtkWidget *checkbtn_real_time_sync;
+	GtkWidget *label_attach_save_chmod;
+	GtkWidget *entry_attach_save_chmod;
 
 	GtkWidget *frame_metadata;
 	GtkWidget *vbox_metadata;
@@ -510,6 +515,32 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_real_time_sync,
 			   _("Synchronise offline folders as soon as possible"));
 
+
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label_attach_save_chmod = gtk_label_new (_("Save attachments with chmod"));
+	gtk_widget_show(label_attach_save_chmod);
+	gtk_box_pack_start(GTK_BOX (hbox1), label_attach_save_chmod, FALSE, FALSE, 0);
+
+	entry_attach_save_chmod = gtk_entry_new();
+	gtk_entry_set_width_chars(GTK_ENTRY(entry_attach_save_chmod), 5);
+	gtk_widget_set_tooltip_text(entry_attach_save_chmod,
+			_("By default attachments are saved with chmod value 600: "
+			  "readable and writeable by the user only. If this is too "
+			  "restrictive for you, set a chmod value here, otherwise leave "
+			  "blank to use the default."));
+	gtk_widget_show(entry_attach_save_chmod);
+	gtk_box_pack_start(GTK_BOX(hbox1), entry_attach_save_chmod, FALSE, FALSE, 0);
+	if (prefs_common.attach_save_chmod) {
+		gchar *buf;
+
+		buf = g_strdup_printf("%o", prefs_common.attach_save_chmod);
+		gtk_entry_set_text(GTK_ENTRY(entry_attach_save_chmod), buf);
+		g_free(buf);
+	}
+
 #ifndef PASSWORD_CRYPTO_OLD
 	vbox_passphrase = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Primary passphrase"));
 
@@ -580,6 +611,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
 	prefs_other->checkbtn_real_time_sync = checkbtn_real_time_sync;
+	prefs_other->entry_attach_save_chmod = entry_attach_save_chmod;
 	prefs_other->flush_metadata_safer_radiobtn = flush_metadata_safer_radiobtn;
 	prefs_other->flush_metadata_faster_radiobtn = flush_metadata_faster_radiobtn;
 #ifndef PASSWORD_CRYPTO_OLD
@@ -593,6 +625,7 @@ static void prefs_other_save(PrefsPage *_page)
 	OtherPage *page = (OtherPage *) _page;
 	GtkSettings *settings = gtk_settings_get_default();
 	gboolean gtk_enable_accels;
+	gchar *buf;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_addaddrbyclick));
@@ -623,6 +656,10 @@ static void prefs_other_save(PrefsPage *_page)
 	prefs_common.real_time_sync = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync));
+
+	buf = gtk_editable_get_chars(GTK_EDITABLE(page->entry_attach_save_chmod), 0, -1);
+	prefs_common.attach_save_chmod = prefs_chmod_mode(buf);
+	g_free(buf);
 
 	prefs_keybind_preset_changed(GTK_COMBO_BOX(page->keys_preset_combo));
 

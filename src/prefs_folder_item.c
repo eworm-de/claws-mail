@@ -48,6 +48,7 @@
 #include "quote_fmt.h"
 #include "combobox.h"
 #include "stock_pixmap.h"
+#include "file-utils.h"
 
 #if USE_ENCHANT
 #include "gtkaspell.h"
@@ -192,8 +193,6 @@ static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesP
 static gboolean general_save_recurse_func(GNode *node, gpointer data);
 static gboolean compose_save_recurse_func(GNode *node, gpointer data);
 static gboolean templates_save_recurse_func(GNode *node, gpointer data);
-
-static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void clean_cache_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
@@ -746,7 +745,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 		prefs->enable_folder_chmod = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_folder_chmod));
 		buf = gtk_editable_get_chars(GTK_EDITABLE(page->entry_folder_chmod), 0, -1);
-		prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
+		prefs->folder_chmod = prefs_chmod_mode(buf);
 		g_free(buf);
 	}
 
@@ -1798,21 +1797,6 @@ static void prefs_folder_item_templates_save_func(PrefsPage *page_)
 			-1, templates_save_recurse_func, page);
 
 }
-
-static gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
-{
-	gint newmode = 0;
-	gchar *tmp;
-
-	if (folder_chmod) {
-		newmode = strtol(folder_chmod, &tmp, 8);
-		if (!(*(folder_chmod) && !(*tmp)))
-			newmode = 0;
-	}
-
-	return newmode;
-}
-
 
 static void clean_cache_cb(GtkWidget *widget, gpointer data)
 {
