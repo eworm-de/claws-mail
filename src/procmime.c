@@ -2078,7 +2078,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	else
 		mimeinfo->location = NULL;
 
-	if (content_disposition != NULL) {
+	if (content_disposition != NULL && mimeinfo->type == MIMETYPE_MULTIPART) {
  		g_strchomp(content_disposition);
 		procmime_parse_content_disposition(content_disposition, mimeinfo);
 	} else
