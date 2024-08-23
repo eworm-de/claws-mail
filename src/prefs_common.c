@@ -710,7 +710,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_width", "700", &prefs_common.compose_width, P_INT,
 	 NULL, NULL, NULL},
-	{"compose_height", "500", &prefs_common.compose_height, P_INT,
+	{"compose_height", "470", &prefs_common.compose_height, P_INT,
 	 NULL, NULL, NULL},
 #endif
 	{"compose_notebook_height", "180", &prefs_common.compose_notebook_height, P_INT,
