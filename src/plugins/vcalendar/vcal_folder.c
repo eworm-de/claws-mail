@@ -805,7 +805,8 @@ GSList *vcal_get_events_list(FolderItem *item)
 								event->location, event->summary, event->description, 
 								new_start, new_end, NULL, 
 								event->tzid, event->url, event->method, 
-								event->sequence, event->type);
+								event->sequence, event->created, event->last_modified,
+								event->type);
 					g_free(uid);
 					vcal_manager_copy_attendees(event, nevent);
 					nevent->rec_occurrence = TRUE;
@@ -2294,6 +2295,8 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 	gchar *tzid = NULL;
 	gchar *recur = NULL;
 	int sequence = 0;
+	gchar *created = NULL;
+	gchar *last_modified = NULL;
 	enum icalproperty_method method = ICAL_METHOD_REQUEST;
 	enum icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
 	GSList *attendees = NULL;
@@ -2356,6 +2359,18 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 	GET_PROP(comp, prop, ICAL_SEQUENCE_PROPERTY);
 	if (prop) {
 		sequence = icalproperty_get_sequence(prop);
+		icalproperty_free(prop);
+	}
+	GET_PROP(comp, prop, ICAL_CREATED_PROPERTY);
+	if (prop) {
+		created = g_strdup(icaltime_as_ical_string(icalproperty_get_created(prop)));
+		TO_UTF8(created);
+		icalproperty_free(prop);
+	}
+	GET_PROP(comp, prop, ICAL_LASTMODIFIED_PROPERTY);
+	if (prop) {
+		last_modified = g_strdup(icaltime_as_ical_string(icalproperty_get_lastmodified(prop)));
+		TO_UTF8(last_modified);
 		icalproperty_free(prop);
 	}
 	GET_PROP(comp, prop, ICAL_METHOD_PROPERTY);
@@ -2436,13 +2451,15 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 					 location, summary, description,
 					 dtstart, dtend, recur,
 					 tzid, url,
-					 method, sequence, type);
+					 method, sequence, created, last_modified, type);
 	event->answers = attendees;
 	g_free(uid);
 	g_free(location);
 	g_free(summary);
 	g_free(dtstart);
 	g_free(dtend);
+	g_free(created);
+	g_free(last_modified);
 	g_free(org_email);
 	g_free(org_name);
 	g_free(description);

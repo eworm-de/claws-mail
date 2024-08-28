@@ -162,6 +162,8 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 			gchar *url = NULL;
 			gint method = ICAL_METHOD_REQUEST;
 			gint sequence = 1;
+			gchar *created = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL)));
+			gchar *last_modified = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL)));
 			PrefsAccount *account = NULL;
 			
 			claws_fclose(fp);
@@ -182,7 +184,7 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 			event = vcal_manager_new_event(uid,
 					org, NULL, NULL/*location*/, summary, description, 
 					dtstart, dtend, recur, tzid, url, method, sequence, 
-					ICAL_VTODO_COMPONENT);
+					created, last_modified, ICAL_VTODO_COMPONENT);
 			g_free(uid);
 			
 			/* hack to get default hours */
@@ -204,6 +206,8 @@ bail:
 			g_free(recur);
 			g_free(tzid);
 			g_free(url);
+			g_free(created);
+			g_free(last_modified);
 		}
 
 		procmsg_msginfo_free(&msginfo);

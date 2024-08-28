@@ -89,6 +89,8 @@ struct _VCalMeeting
 	GtkWidget *total_avail_msg;
 	PrefsAccount *account;
 	gboolean visible;
+	gchar     *created;
+	gchar     *last_modified;
 };
 
 struct _VCalAttendee {
@@ -1242,11 +1244,17 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	location	= get_location(meet);
 	summary		= get_summary(meet);
 	description	= get_description(meet);
-	
+
+	if (meet->created == NULL) {
+		meet->created = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL)));
+	}
+	if (meet->last_modified == NULL) {
+		meet->last_modified = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL)));
+	}
 	event = vcal_manager_new_event(uid, organizer, organizer_name, location, summary, description,
 					dtstart, dtend, NULL, tzid, NULL, meet->method, 
 					meet->sequence,
-					ICAL_VEVENT_COMPONENT);
+					meet->created, meet->last_modified, ICAL_VEVENT_COMPONENT);
 	
 	vcal_manager_update_answer(event, organizer, organizer_name, 
 				   ICAL_PARTSTAT_ACCEPTED,
@@ -1381,15 +1389,18 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	if (event) {
 		meet->uid = g_strdup(event->uid);
 		meet->sequence = event->sequence + 1;
+		meet->created = event->created ? g_strdup(event->created) : NULL;
+		meet->last_modified = NULL; /* Make sure to update modification time */
+
 		meet->method = (event->method == ICAL_METHOD_CANCEL ?
 				ICAL_METHOD_CANCEL:ICAL_METHOD_REQUEST);
 
 		gtk_entry_set_text(GTK_ENTRY(meet->location), event->location);
 		gtk_entry_set_text(GTK_ENTRY(meet->summary), event->summary);	
 		gtk_text_buffer_set_text(buffer, event->description, -1);	
-	} else 
+	} else {
 		meet->method = ICAL_METHOD_REQUEST;
-	
+	}
 	meet->save_btn		= gtk_button_new_with_label(_("Save & Send"));
 	meet->avail_btn		= gtk_button_new_with_label(_("Check availability"));
 

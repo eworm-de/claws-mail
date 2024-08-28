@@ -49,7 +49,9 @@ struct _VCalEvent
 	gchar *description;
 	GSList *answers;
 	enum icalproperty_method method;
-	gint sequence;	
+	gint sequence;
+	gchar *created;
+	gchar *last_modified;
 	gchar *url;
 	enum icalcomponent_kind type;
 	time_t postponed;
@@ -85,6 +87,8 @@ VCalEvent *vcal_manager_new_event	(const gchar 	*uid,
 					 const gchar	*url,
 					 enum icalproperty_method method,
 					 gint		 sequence,
+					 const gchar    *created,
+					 const gchar    *last_modified,
 					 enum icalcomponent_kind type);
 					 
 void vcal_manager_free_event (VCalEvent *event);

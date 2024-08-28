@@ -414,6 +414,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 		icalproperty_new_class(ICAL_CLASS_PUBLIC));
 	icalcomponent_add_property(ievent,
 		icalproperty_new_transp(ICAL_TRANSP_OPAQUE));
+
 	if (event->location && *event->location)
 		icalcomponent_add_property(ievent,
 			icalproperty_new_location(event->location));
@@ -422,10 +423,20 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 			icalproperty_new_location(""));
 	icalcomponent_add_property(ievent,
 		icalproperty_new_status(ICAL_STATUS_CONFIRMED));
-	icalcomponent_add_property(ievent,
-		icalproperty_vanew_created(icaltime_from_timet_with_zone(time(NULL), TRUE, NULL), (void*)0));
-	icalcomponent_add_property(ievent,
-		icalproperty_vanew_lastmodified(icaltime_from_timet_with_zone(time(NULL), TRUE, NULL), (void*)0));
+	if (event->created != NULL && event->created[0] != '\0') {
+		icalcomponent_add_property(ievent,
+			icalproperty_vanew_created(icaltime_from_string(event->created), (void*)0));
+	} else {
+		icalcomponent_add_property(ievent,
+			icalproperty_vanew_created(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL), (void*)0));
+	}
+	if (event->last_modified != NULL && event->last_modified[0] != '\0' && !modif) {
+		icalcomponent_add_property(ievent,
+			icalproperty_vanew_lastmodified(icaltime_from_string(event->last_modified), (void*)0));
+	} else {
+		icalcomponent_add_property(ievent,
+			icalproperty_vanew_lastmodified(icaltime_from_timet_with_zone(time(NULL), FALSE, NULL), (void*)0));
+	}
 	icalcomponent_add_property(ievent,		
                 orgprop);
 
@@ -794,6 +805,8 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 					 const gchar	*url,
 					 icalproperty_method method,
 					 gint 		 sequence,
+					 const gchar    *created,
+					 const gchar    *last_modified,
 					 icalcomponent_kind type)
 {
 	VCalEvent *event = g_new0(VCalEvent, 1);
@@ -825,6 +838,8 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 	event->tzid		= g_strdup(tzid?tzid:"");
 	event->method		= method;
 	event->sequence		= sequence;
+	event->created          = g_strdup(created?created:"");
+	event->last_modified    = g_strdup(last_modified?last_modified:"");
 	event->type		= type;
 	event->rec_occurrence		= FALSE;
 	while (strchr(event->summary, '\n'))
@@ -932,6 +947,8 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 
 	tmp = g_strdup_printf("%d", event->sequence);
 	xml_tag_add_attr(tag, xml_attr_new("sequence", tmp));
+	xml_tag_add_attr(tag, xml_attr_new("created", event->created));
+	xml_tag_add_attr(tag, xml_attr_new("last_modified", event->last_modified));
 	g_free(tmp);
 	
 	tmp = g_strdup_printf("%d", event->type);
@@ -1004,6 +1021,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	GList *list;
 	gchar *org = NULL, *location = NULL, *summary = NULL, *orgname = NULL;
 	gchar *dtstart = NULL, *dtend = NULL, *tzid = NULL;
+	gchar *created = NULL, *last_modified = NULL;
 	gchar *description = NULL, *url = NULL, *recur = NULL;
 	VCalEvent *event = NULL;
 	icalproperty_method method = ICAL_METHOD_REQUEST;
@@ -1050,6 +1068,10 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 			method = atoi(attr->value);
 		if (!strcmp(attr->name, "sequence"))
 			sequence = atoi(attr->value);
+		if (!strcmp(attr->name, "created"))
+			created = g_strdup(attr->value);
+		if (!strcmp(attr->name, "last_modified"))
+			last_modified = g_strdup(attr->value);
 		if (!strcmp(attr->name, "postponed"))
 			postponed = atoi(attr->value);
 		if (!strcmp(attr->name, "rec_occurrence"))
@@ -1058,7 +1080,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 
 	event = vcal_manager_new_event(uid, org, orgname, location, summary, description, 
 					dtstart, dtend, recur, tzid, url, method, 
-					sequence, type);
+					sequence, created, last_modified, type);
 
 	event->postponed = postponed;
 	event->rec_occurrence = rec_occurrence;
@@ -1073,6 +1095,8 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	g_free(dtend);
 	g_free(recur);
 	g_free(tzid);
+	g_free(created);
+	g_free(last_modified);
 
 	node = node->children;
 	while (node != NULL) {
