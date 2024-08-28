@@ -252,9 +252,9 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		 	         NULL, _("_Cancel"), NULL, _("_Unsubscribe"), NULL, NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
-	g_free(name);
 	if (avalue != G_ALERTALTERNATE) {
 		g_free(old_id);
+		g_free(name);
 		return;
     }
 
@@ -267,8 +267,10 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		folder_item_scan(item);
 		alertpanel_error(_("Can't remove the folder '%s'."), name);
 		g_free(old_id);
+		g_free(name);
 		return;
 	}
+	g_free(name);
 	
 	folder_write_list();
 	
