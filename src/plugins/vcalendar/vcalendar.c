@@ -674,7 +674,7 @@ static void vcalviewer_get_request_values(VCalViewer *vcalviewer, MimeInfo *mime
 
 	/* see if we have it registered and more recent */
 	saved_event = vcal_manager_load_event(vcalviewer->event->uid);
-	if (saved_event && saved_event->sequence >= vcalviewer->event->sequence) {
+	if (saved_event && saved_event->sequence > vcalviewer->event->sequence) {
 		saved_event->method = vcalviewer->event->method;
 		vcalviewer_display_event(vcalviewer, saved_event);
 		vcal_manager_free_event(saved_event);

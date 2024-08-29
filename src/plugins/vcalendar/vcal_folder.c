@@ -2197,11 +2197,18 @@ static void convert_to_utc(icalcomponent *calendar)
 {
 	icalcomponent *event;
 	icaltimezone *tz, *tzutc = icaltimezone_get_utc_timezone();
-	icalproperty *prop;
+	icalproperty *prop, *vtimezone_tz;
 	icalparameter *tzid;
+	icalcomponent *vtimezone;
 
 	cm_return_if_fail(calendar != NULL);
 
+	vtimezone = icalcomponent_get_first_component(calendar, ICAL_VTIMEZONE_COMPONENT);
+	if (vtimezone) {
+		vtimezone_tz = icalcomponent_get_first_property(vtimezone, ICAL_TZID_PROPERTY);
+	} else {
+		vtimezone_tz = NULL;
+	}
 	for (
 			event = icalcomponent_get_first_component(calendar,
 				ICAL_VEVENT_COMPONENT);
@@ -2210,34 +2217,56 @@ static void convert_to_utc(icalcomponent *calendar)
 				ICAL_VEVENT_COMPONENT)) {
 
 		/* DTSTART */
-		if ((prop = icalcomponent_get_first_property(event, ICAL_DTSTART_PROPERTY)) != NULL
-				&& (tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+		if ((prop = icalcomponent_get_first_property(event, ICAL_DTSTART_PROPERTY)) != NULL) {
 			/* Event has its DTSTART with a timezone specification, let's convert
 			 * to UTC and remove the TZID parameter. */
-
-			tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+			if ((tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+				tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+				debug_print("Got timezone from TZID parameter\n");
+			} else if (vtimezone_tz != NULL) {
+				tz = icalcomponent_get_timezone(calendar, icalproperty_get_tzid(vtimezone_tz));
+				debug_print("Got timezone from VTIMEZONE component\n");
+			} else {
+				tz = NULL;
+				debug_print("No timezone\n");
+			}
 			if (tz != NULL) {
 				debug_print("Converting DTSTART to UTC.\n");
 				icaltimetype t = icalproperty_get_dtstart(prop);
+				debug_print("Originally %s\n", icaltime_as_ical_string(t));
 				icaltimezone_convert_time(&t, tz, tzutc);
 				icalproperty_set_dtstart(prop, t);
-				icalproperty_remove_parameter_by_ref(prop, tzid);
+				debug_print("Now  %s\n", icaltime_as_ical_string(t));
+				if (tzid) {
+					icalproperty_remove_parameter_by_ref(prop, tzid);
+				}
 			}
 		}
 
 		/* DTEND */
-		if ((prop = icalcomponent_get_first_property(event, ICAL_DTEND_PROPERTY)) != NULL
-				&& (tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+		if ((prop = icalcomponent_get_first_property(event, ICAL_DTEND_PROPERTY)) != NULL) {
 			/* Event has its DTEND with a timezone specification, let's convert
 			 * to UTC and remove the TZID parameter. */
-
-			tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+			if ((tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+				tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+				debug_print("Got timezone from TZID parameter\n");
+			} else if (vtimezone_tz != NULL) {
+				tz = icalcomponent_get_timezone(calendar, icalproperty_get_tzid(vtimezone_tz));
+				debug_print("Got timezone from VTIMEZONE component\n");
+			} else {
+				tz = NULL;
+				debug_print("No timezone\n");
+			}
 			if (tz != NULL) {
 				debug_print("Converting DTEND to UTC.\n");
 				icaltimetype t = icalproperty_get_dtend(prop);
+				debug_print("Originally %s\n", icaltime_as_ical_string(t));
 				icaltimezone_convert_time(&t, tz, tzutc);
 				icalproperty_set_dtend(prop, t);
-				icalproperty_remove_parameter_by_ref(prop, tzid);
+				debug_print("Now %s\n", icaltime_as_ical_string(t));
+				if (tzid) {
+					icalproperty_remove_parameter_by_ref(prop, tzid);
+				}
 			}
 		}
 	}
