@@ -85,7 +85,8 @@ static GtkTreeStore *tree_store;
 static gboolean cancelled;
 static gboolean finished;
 
-static void foldersel_create		(const gchar *title);
+static void foldersel_create		(const gchar *title,
+					 FolderSelectionType type);
 static void foldersel_init		(void);
 
 static void foldersel_append_item	(GtkTreeStore	*store,
@@ -139,7 +140,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	root_selectable = can_sel_mailbox;
 
 	if (!window) {
-		foldersel_create(title);
+		foldersel_create(title, type);
 		foldersel_init();
 	}
 
@@ -237,7 +238,7 @@ static void foldersel_size_allocate_cb(GtkWidget *widget,
 		&prefs_common.folderselwin_width, &prefs_common.folderselwin_height);
 }
 
-static void foldersel_create(const gchar *title)
+static void foldersel_create(const gchar *title, FolderSelectionType type)
 {
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
@@ -344,7 +345,8 @@ static void foldersel_create(const gchar *title)
 
 	gtkut_stock_button_set_create(&confirm_area,
 				      &new_button,    NULL, _("_New"),
-				      &cancel_button, NULL, _("_Cancel"),
+				      &cancel_button, NULL, (type == FOLDER_SEL_SAVE?
+							    _("Don't save") : _("_Cancel")),
 				      &ok_button,     NULL, _("_OK"));
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
