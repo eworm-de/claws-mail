@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include "prefs_filtering.h"
 #include "filtering.h"
 #include "folder.h"
+#include "foldersel.h"
 #include "prefs_common.h"
 #include "account.h"
 #include "alertpanel.h"
@@ -1181,17 +1182,32 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		if (procmsg_remove_special_headers(file, tmp) !=0)
 			return -1;
 
-		folder_item_scan(outbox);
+		while (folder_item_scan(outbox) < 0) {
+			outbox = foldersel_folder_sel(NULL, FOLDER_SEL_SAVE, NULL, FALSE,
+						      _("Select folder to save message to"));
+			if (outbox == NULL) {
+				g_warning("not saving message");
+				claws_unlink(tmp);
+				return -1;
+			}
+		}
 		if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
-			g_warning("can't save message");
+			g_warning("not saving message");
 			claws_unlink(tmp);
 			return -1;
 		}
 	} else {
-		folder_item_scan(outbox);
+		while (folder_item_scan(outbox) < 0) {
+			outbox = foldersel_folder_sel(NULL, FOLDER_SEL_SAVE, NULL, FALSE,
+						      _("Select folder to save message to"));
+			if (outbox == NULL) {
+				g_warning("not saving message");
+				return -1;
+			}
+		}
 		if ((num = folder_item_add_msg
 			(outbox, file, &flag, FALSE)) < 0) {
-			g_warning("can't save message");
+			g_warning("not saving message");
 			return -1;
 		}
 	}
