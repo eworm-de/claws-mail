@@ -12,7 +12,6 @@ XGETTEXT_OPTIONS = \
   --keyword=_ --flag=_:1:pass-c-format \
   --keyword=Q_ --flag=Q_:1:pass-c-format \
   --keyword=N_ --flag=N_:1:pass-c-format \
-  --keyword=NC_:1c,2 \
   --keyword=C_:1c,2 \
   --keyword='proper_name:1,"This is a proper name. See the gettext manual, section Names."' \
   --keyword='proper_name_utf8:1,"This is a proper name. See the gettext manual, section Names."' \
@@ -53,4 +52,4 @@ EXTRA_LOCALE_CATEGORIES =
 # context.  Possible values are "yes" and "no".  Set this to yes if the
 # package uses functions taking also a message context, like pgettext(), or
 # if in $(XGETTEXT_OPTIONS) you define keywords with a context argument.
-USE_MSGCTXT = no
+USE_MSGCTXT = yes
