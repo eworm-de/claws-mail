@@ -1153,8 +1153,7 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	return 0;
 }
 
-gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
-			    gboolean is_queued)
+gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file)
 {
 	gint num;
 	MsgInfo *msginfo, *tmp_msginfo;
@@ -1169,48 +1168,35 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	cm_return_val_if_fail(outbox != NULL, -1);
 
 	outbox_path = folder_item_get_path(outbox);
-	debug_print("saving sent message to %s...\n", outbox_path);
+	debug_print("attempting to save sent message to %s...\n", outbox_path);
 	g_free(outbox_path);
 
-	/* remove queueing headers */
-	if (is_queued) {
-		gchar tmp[MAXPATHLEN + 1];
+	gchar tmp[MAXPATHLEN + 1];
 
-		g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
-			   get_rc_dir(), G_DIR_SEPARATOR, (guint) rand());
-		
-		if (procmsg_remove_special_headers(file, tmp) !=0)
-			return -1;
+	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
+		   get_rc_dir(), G_DIR_SEPARATOR, (guint) rand());
+	
+	if (procmsg_remove_special_headers(file, tmp) !=0)
+		return -1;
 
-		while (folder_item_scan(outbox) < 0) {
-			outbox = foldersel_folder_sel(NULL, FOLDER_SEL_SAVE, NULL, FALSE,
-						      _("Select folder to save message to"));
-			if (outbox == NULL) {
-				g_warning("not saving message");
-				claws_unlink(tmp);
-				return -1;
-			}
-		}
-		if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
-			g_warning("not saving message");
+	while (folder_item_scan(outbox) < 0) {
+		outbox = foldersel_folder_sel(NULL, FOLDER_SEL_SAVE, NULL, FALSE,
+				_("Select the folder where you want to save the sent message"));
+		if (outbox == NULL) {
+			g_warning("not saving sent message");
 			claws_unlink(tmp);
 			return -1;
 		}
-	} else {
-		while (folder_item_scan(outbox) < 0) {
-			outbox = foldersel_folder_sel(NULL, FOLDER_SEL_SAVE, NULL, FALSE,
-						      _("Select folder to save message to"));
-			if (outbox == NULL) {
-				g_warning("not saving message");
-				return -1;
-			}
-		}
-		if ((num = folder_item_add_msg
-			(outbox, file, &flag, FALSE)) < 0) {
-			g_warning("not saving message");
-			return -1;
-		}
 	}
+	if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
+		g_warning("not saving sent message");
+		outbox_path = folder_item_get_path(outbox);
+		alertpanel_warning(_("Could not save sent message to %s."), outbox_path);
+		claws_unlink(tmp);
+		g_free(outbox_path);
+		return -1;
+	}
+
 	msginfo = folder_item_get_msginfo(outbox, num);		/* refcnt++ */
 	tmp_msginfo = procmsg_msginfo_get_full_info(msginfo);	/* refcnt++ */ 
 	if (msginfo != NULL) {
@@ -1820,7 +1806,7 @@ send_mail:
 			}
 			if (!saved) {
 				debug_print("resaving queued mail to sent folder\n");
-				procmsg_save_to_outbox(outbox, file, TRUE);
+				procmsg_save_to_outbox(outbox, file);
 			}
 		}
 	}

@@ -5991,7 +5991,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 						if (!outbox)
 							outbox = folder_get_default_outbox();
 
-						procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
+						procmsg_save_to_outbox(outbox, tmp_enc_file);
 						claws_unlink(tmp_enc_file);
 					} else {
 						g_warning("can't open file '%s'", tmp_enc_file);
@@ -7611,7 +7611,7 @@ static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
 	gchar * path;
 
 	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE,
-			_("Select folder to save message to"));
+			_("Select the folder where you want to save the sent message"));
 	if (!dest) return;
 
 	path = folder_item_get_identifier(dest);
