@@ -698,8 +698,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/DeleteThread",                     NULL, N_("Delete t_hread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
 	{"Message/CancelNews",                       NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
 	/* separation */
-	{"Message/Mark",                             NULL, NC_("Menu Item", "_Mark"), NULL, NULL, NULL },
-	{"Message/Mark/Mark",                        NULL, NC_("Sub-Menu Item", "_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
+	{"Message/Mark",                             NULL, N_("_Mark"), NULL, NULL, NULL },
+	{"Message/Mark/Mark",                        NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
 	{"Message/Mark/Unmark",                      NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
 	{"Message/Mark/---",                         NULL, "---", NULL, NULL, NULL },
 

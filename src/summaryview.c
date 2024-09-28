@@ -433,7 +433,7 @@ static GtkActionEntry summary_popup_entries[] =
 	{"SummaryViewPopup/Forward",              NULL, N_("_Forward"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
 	{"SummaryViewPopup/ForwardAtt",           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
 	{"SummaryViewPopup/Redirect",             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REDIRECT */
-	{"SummaryViewPopup/Mark",                 NULL, NC_("Menu Item", "_Mark"), NULL, NULL, NULL },
+	{"SummaryViewPopup/Mark",                 NULL, N_("_Mark"), NULL, NULL, NULL },
 	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
 	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
 	{"SummaryViewPopup/CreateFilterRule",     NULL, N_("Create _filter rule"), NULL, NULL, NULL },
