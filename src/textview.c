@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -717,7 +717,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	|| (mimeinfo->disposition == DISPOSITIONTYPE_INLINE && 
 	    mimeinfo->type != MIMETYPE_TEXT)) {
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
-		TEXTVIEW_INSERT_LINK(buf, "sc://select_attachment", mimeinfo);
+		TEXTVIEW_INSERT_LINK(buf, "cm://select_attachment", mimeinfo);
 		gtk_text_buffer_insert(buffer, &iter, " \n", -1);
 		if (mimeinfo->type == MIMETYPE_IMAGE  &&
 		    prefs_common.inline_img ) {
@@ -752,7 +752,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			uri = g_new0(ClickableText, 1);
 			uri->uri = g_strdup("");
-			uri->filename = g_strdup("sc://select_attachment");
+			uri->filename = g_strdup("cm://select_attachment");
 			uri->data = mimeinfo;
 
 			uri->start = gtk_text_iter_get_offset(&iter);
@@ -883,7 +883,7 @@ void textview_show_error(TextView *textview)
 		      "  This is probably due to a network error.\n"
 		      "\n"
 		      "  Use "));
-	TEXTVIEW_INSERT_LINK(_("'Network Log'"), "sc://view_log", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Network Log'"), "cm://view_log", NULL);
 	TEXTVIEW_INSERT(_(" in the Tools menu for more information."));
 	textview_show_icon(textview, "dialog-error");
 }
@@ -957,7 +957,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT("\n");
 
 	TEXTVIEW_INSERT(_("     - To save, select "));
-	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "sc://save_as", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Save as...'"), "cm://save_as", NULL);
 #ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/File/SavePartAs");
@@ -968,7 +968,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT("\n");
 
 	TEXTVIEW_INSERT(_("     - To display as text, select "));
-	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "sc://display_as_text", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Display as text'"), "cm://display_as_text", NULL);
 
 #ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
@@ -980,7 +980,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT("\n");
 
 	TEXTVIEW_INSERT(_("     - To open with an external program, select "));
-	TEXTVIEW_INSERT_LINK(_("'Open'"), "sc://open", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Open'"), "cm://open", NULL);
 
 #ifndef GENERIC_UMPC
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
@@ -992,7 +992,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXTVIEW_INSERT(_("mouse button)\n"));
 #ifndef G_OS_WIN32
 	TEXTVIEW_INSERT(_("     - Or use "));
-	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "sc://open_with", NULL);
+	TEXTVIEW_INSERT_LINK(_("'Open with...'"), "cm://open_with", NULL);
 	TEXTVIEW_INSERT(_(" (Shortcut key: '"));
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/OpenWith");
 	TEXTVIEW_INSERT(shortcut);
@@ -2240,7 +2240,7 @@ static void textview_show_tags(TextView *textview)
 			cur_tag, -1,
 			"link", "header", "tags", NULL);
 		uri->end = gtk_text_iter_get_offset(&iter);
-		uri->filename = g_strdup_printf("sc://search_tags:%s", cur_tag);
+		uri->filename = g_strdup_printf("cm://search_tags:%s", cur_tag);
 		uri->data = NULL;
 		textview->uri_list =
 			g_slist_prepend(textview->uri_list, uri);
@@ -2971,18 +2971,18 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		return FALSE;
 	} else if ((event->type == (qlink ? GDK_2BUTTON_PRESS:GDK_BUTTON_PRESS) && bevent->button == 1) ||
 		bevent->button == 2 || bevent->button == 3) {
-		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "sc://", 5)) {
+		if (uri->filename && !g_ascii_strncasecmp(uri->filename, "cm://", 5)) {
 			MimeView *mimeview = 
 				(textview->messageview)?
 					textview->messageview->mimeview:NULL;
 			if (mimeview && bevent->button == 1) {
 				mimeview_handle_cmd(mimeview, uri->filename, NULL, uri->data);
 			} else if (mimeview && bevent->button == 2 && 
-				!g_ascii_strcasecmp(uri->filename, "sc://select_attachment")) {
-				mimeview_handle_cmd(mimeview, "sc://open_attachment", NULL, uri->data);
+				!g_ascii_strcasecmp(uri->filename, "cm://select_attachment")) {
+				mimeview_handle_cmd(mimeview, "cm://open_attachment", NULL, uri->data);
 			} else if (mimeview && bevent->button == 3 && 
-				!g_ascii_strcasecmp(uri->filename, "sc://select_attachment")) {
-				mimeview_handle_cmd(mimeview, "sc://menu_attachment", bevent, uri->data);
+				!g_ascii_strcasecmp(uri->filename, "cm://select_attachment")) {
+				mimeview_handle_cmd(mimeview, "cm://menu_attachment", bevent, uri->data);
 			} 
 			return TRUE;
 		} else if (qlink && bevent->button == 1) {

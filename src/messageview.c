@@ -1871,7 +1871,7 @@ static void messageview_show_partial_display_cb(NoticeView *noticeview, MessageV
 	noticeview_hide(messageview->noticeview);
 	messageview->partial_display_shown = FALSE;
 	GTK_EVENTS_FLUSH();
-	mimeview_handle_cmd(messageview->mimeview, "sc://display_as_text", NULL, NULL);
+	mimeview_handle_cmd(messageview->mimeview, "cm://display_as_text", NULL, NULL);
 	main_window_cursor_normal(mainwindow_get_mainwindow());
 }
 

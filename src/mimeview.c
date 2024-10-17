@@ -2816,28 +2816,28 @@ void mimeview_handle_cmd(MimeView *mimeview, const gchar *cmd, GdkEventButton *e
 	g_object_set_data(G_OBJECT(mimeview->popupmenu),
 			  "pop_partinfo", NULL);
 
-	if (!strcmp(cmd, "sc://view_log"))
+	if (!strcmp(cmd, "cm://view_log"))
 		log_window_show(mainwin->logwin);
-	else if (!strcmp(cmd, "sc://save_as"))
+	else if (!strcmp(cmd, "cm://save_as"))
 		mimeview_save_as(mimeview);
-	else if (!strcmp(cmd, "sc://display_as_text"))
+	else if (!strcmp(cmd, "cm://display_as_text"))
 		mimeview_display_as_text(mimeview);
 #ifndef G_OS_WIN32
-	else if (!strcmp(cmd, "sc://open_with"))
+	else if (!strcmp(cmd, "cm://open_with"))
 		mimeview_open_with(mimeview);
 #endif
-	else if (!strcmp(cmd, "sc://open"))
+	else if (!strcmp(cmd, "cm://open"))
 		mimeview_launch(mimeview, NULL);
-	else if (!strcmp(cmd, "sc://select_attachment") && data != NULL) {
+	else if (!strcmp(cmd, "cm://select_attachment") && data != NULL) {
 		icon_list_toggle_by_mime_info(mimeview, (MimeInfo *)data);
 		icon_selected(mimeview, -1, (MimeInfo *)data);
-	} else if (!strcmp(cmd, "sc://open_attachment") && data != NULL) {
+	} else if (!strcmp(cmd, "cm://open_attachment") && data != NULL) {
 		mimeview_launch(mimeview, (MimeInfo *)data);
-	} else if (!strcmp(cmd, "sc://menu_attachment") && data != NULL) {
+	} else if (!strcmp(cmd, "cm://menu_attachment") && data != NULL) {
 		mimeview->spec_part = (MimeInfo *)data;
 		part_button_pressed(mimeview, event, (MimeInfo *)data);
-	} else if (!strncmp(cmd, "sc://search_tags:", strlen("sc://search_tags:"))) {
-		const gchar *tagname = cmd + strlen("sc://search_tags:");
+	} else if (!strncmp(cmd, "cm://search_tags:", strlen("cm://search_tags:"))) {
+		const gchar *tagname = cmd + strlen("cm://search_tags:");
 		gchar *buf = g_strdup_printf("tag matchcase \"%s\"", tagname);
 		gtk_toggle_button_set_active(
 				GTK_TOGGLE_BUTTON(mimeview->messageview->mainwin->summaryview->toggle_search), 
