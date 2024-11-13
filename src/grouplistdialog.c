@@ -602,8 +602,14 @@ static gboolean button_press_cb(GtkCMCTree *ctree, GdkEventButton *button,
 	list = g_slist_find_custom(subscribed, ginfo->name,
 				   (GCompareFunc)g_ascii_strcasecmp);
 	if (list) {
+		/*
+		 * Make a copy so we can g_free() it after we remove
+		 * list from the subscribed list.  Calling g_free()
+		 * first triggers a use-after-free Coverity issue.
+		 */
+		gpointer tmpdata = list->data;
 		subscribed = g_slist_remove(subscribed, list->data);
-		g_free(list->data);
+		g_free(tmpdata);
 		gtk_cmclist_unselect_row(GTK_CMCLIST(ctree), row, 0);
 	} else {
 		subscribed = g_slist_append(subscribed, g_strdup(ginfo->name));
