@@ -618,9 +618,9 @@ static GList *ldapqry_process_single_entry(
 			listDisplay = ldapqry_add_single_value( ld, e, attribute );
 		} else {
 			GSList *attlist = ldapqry_add_single_value( ld, e, attribute );
-			UserAttribute *attrib = addritem_create_attribute();
 			const gchar *attvalue = attlist?((gchar *)attlist->data):NULL;
 			if (attvalue) {
+				UserAttribute *attrib = addritem_create_attribute();
 				addritem_attrib_set_name( attrib, attribute );
 				addritem_attrib_set_value( attrib, attvalue );
 				other_attrs = g_slist_prepend(other_attrs, attrib);
