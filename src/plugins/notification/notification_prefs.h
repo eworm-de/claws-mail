@@ -100,6 +100,9 @@ typedef struct {
   gint             trayicon_popup_timeout;
 #endif /* HAVE_LIBNOTIFY */
 #endif /* Trayicon */
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+  gboolean ayatana_indicator_enabled;
+#endif /* NOTIFICATION_AYATANA_INDICATOR */
 #ifdef NOTIFICATION_INDICATOR
   gboolean indicator_enabled;
   gboolean indicator_hide_minimized;

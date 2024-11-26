@@ -37,6 +37,7 @@
 #include "notification_plugin.h"
 #include "notification_core.h"
 #include "notification_prefs.h"
+#include "notification_ayatana_indicator.h"
 #include "notification_banner.h"
 #include "notification_lcdproc.h"
 #include "notification_trayicon.h"
@@ -162,7 +163,7 @@ static gboolean my_folder_item_update_hook(gpointer source, gpointer data)
   if (folder_has_parent_of_type(update_data->item, F_DRAFT))
       return FALSE;
 
-#if defined(NOTIFICATION_LCDPROC) || defined(NOTIFICATION_TRAYICON) || defined(NOTIFICATION_INDICATOR)
+#if defined(NOTIFICATION_LCDPROC) || defined(NOTIFICATION_TRAYICON) || defined(NOTIFICATION_AYATANA_INDICATOR) || defined(NOTIFICATION_INDICATOR)
     notification_update_msg_counts(NULL);
 #else
     if(notify_config.urgency_hint_new || notify_config.urgency_hint_unread)
@@ -326,6 +327,9 @@ gint plugin_init(gchar **error)
 
   notify_gtk_init();
 
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+  notification_ayatana_indicator_enable();
+#endif
 #ifdef NOTIFICATION_INDICATOR
   notification_indicator_setup();
 #endif
@@ -379,6 +383,9 @@ gboolean plugin_done(void)
   notification_foldercheck_write_array();
   notification_free_folder_specific_array();
 
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+  notification_ayatana_indicator_disable();
+#endif
 #ifdef NOTIFICATION_BANNER
   notification_collected_msgs_free(banner_collected_msgs);
   banner_collected_msgs = NULL;

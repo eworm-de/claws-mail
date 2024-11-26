@@ -38,6 +38,9 @@
 #ifdef HAVE_LIBCANBERRA_GTK
 # include <canberra-gtk.h>
 #endif
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+# include "notification_ayatana_indicator.h"
+#endif
 
 typedef struct {
   GSList *collected_msgs;
@@ -124,6 +127,9 @@ void notification_update_msg_counts(FolderItem *removed_item)
 #endif
 #ifdef NOTIFICATION_TRAYICON
   notification_update_trayicon();
+#endif
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+  notification_update_ayatana_indicator();
 #endif
 #ifdef NOTIFICATION_INDICATOR
   notification_update_indicator();

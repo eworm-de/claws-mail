@@ -1,4 +1,4 @@
-# Copyright 1999-2022 the Claws Mail team.
+# Copyright 1999-2024 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
@@ -40,6 +40,7 @@ notification_la_LIBADD = $(plugin_libadd) \
 	$(libnotify_LIBS) \
 	$(unity_LIBS) \
 	$(libcanberra_gtk3_LIBS) \
+	$(ayatanaappindicator_LIBS) \
 	$(hotkey_lib_path)
 
 notification_la_CPPFLAGS = \
@@ -48,12 +49,15 @@ notification_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
+	$(ayatanaappindicator_CFLAGS) \
 	$(libnotify_CFLAGS) \
 	$(unity_CFLAGS) \
 	$(libcanberra_gtk3_CFLAGS) \
 	-Wall
 
 notification_la_SOURCES = \
+	notification_ayatana_indicator.c \
+	notification_ayatana_indicator.h \
 	notification_banner.c \
 	notification_banner.h \
 	notification_command.c \

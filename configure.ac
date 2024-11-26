@@ -1213,7 +1213,7 @@ dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Litehtml		a C++ compiler, glib, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
-dnl 				   libcanberra_gtk3 hotkey
+dnl 				   libcanberra_gtk3 hotkey libayatana-appindicator3
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
 dnl PGP/Core:		libgpgme
@@ -1419,6 +1419,14 @@ if test x"$HAVE_UNITY" = xyes; then
 fi
 AC_SUBST(unity_CFLAGS)
 AC_SUBST(unity_LIBS)
+
+dnl ayatana app indicator *******************************************************
+PKG_CHECK_MODULES(ayatanaappindicator, ayatana-appindicator3-0.1, HAVE_AYATANAAPPINDICATOR=yes, HAVE_AYATANAAPPINDICATOR=no)
+if test x"$HAVE_AYATANAAPPINDICATOR" = xyes; then
+	AC_DEFINE(NOTIFICATION_AYATANA_INDICATOR, 1, [Activate support for Atayana app indicator])
+fi
+AC_SUBST(ayatanaappindicator_CFLAGS)
+AC_SUBST(ayatanaappindicator_LIBS)
 
 dnl hotkeys ********************************************************************
 PKG_CHECK_MODULES(CM_NP_HOTKEY, [gio-2.0 >= 2.15.6 gio-unix-2.0 >= 2.15.6], HAVE_HOTKEYS=yes, HAVE_HOTKEYS=no)
@@ -1738,6 +1746,11 @@ if test x"$enable_notification_plugin" != xno; then
 		notification_features="$notification_features unity/messaging-menu"
 	else
 		notification_missing_dependencies="$notification_missing_dependencies unity/messaging-menu"
+	fi
+	if test x"$HAVE_AYATANAAPPINDICATOR" = xyes; then
+		notification_features="$notification_features libayatana-appindicator3"
+	else
+		notification_missing_dependencies="$notification_missing_dependencies libayatana-appindicator3"
 	fi
 	if test x"$HAVE_LIBNOTIFY" = xyes; then
 		notification_features="$notification_features libnotify"

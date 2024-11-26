@@ -126,6 +126,7 @@ src/plugins/managesieve/sieve_manager.c
 src/plugins/managesieve/sieve_plugin.c
 src/plugins/managesieve/sieve_prefs.c
 src/plugins/newmail/newmail.c
+src/plugins/notification/notification_ayatana_indicator.c
 src/plugins/notification/notification_banner.c
 src/plugins/notification/notification_foldercheck.c
 src/plugins/notification/notification_lcdproc.c

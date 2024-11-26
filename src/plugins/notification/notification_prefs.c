@@ -43,6 +43,7 @@
 #include "notification_command.h"
 #include "notification_lcdproc.h"
 #include "notification_trayicon.h"
+#include "notification_ayatana_indicator.h"
 #include "notification_indicator.h"
 
 #ifdef GDK_WINDOWING_X11
@@ -163,6 +164,14 @@ typedef struct {
 #endif
 }NotifyTrayiconPage;
 NotifyTrayiconPage trayicon_page;
+#endif
+
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+typedef struct {
+	PrefsPage page;
+	GtkWidget *ayatana_indicator_enabled;
+}NotifyAtayanaIndicatorPage;
+NotifyAtayanaIndicatorPage ayatana_indicator_page;
 #endif
 
 #ifdef NOTIFICATION_INDICATOR
@@ -307,6 +316,10 @@ PrefParam
 #endif /* HAVE_LIBNOTIFY */
 #endif
 
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+				{	"ayatana_indicator_enabled", "FALSE", &notify_config.ayatana_indicator_enabled, P_BOOL,
+					NULL, NULL, NULL},
+#endif /* NOTIFICATION_AYATANA_INDICATOR */
 #ifdef NOTIFICATION_INDICATOR
 				{	"indicator_enabled", "FALSE", &notify_config.indicator_enabled, P_BOOL,
 					NULL, NULL, NULL},
@@ -378,6 +391,12 @@ static void notify_trayicon_popup_enable_set_sensitivity(GtkToggleButton*,
 		gpointer);
 #endif
 #endif
+
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+static void notify_create_ayatana_indicator_page(PrefsPage*, GtkWindow*, gpointer);
+static void notify_destroy_ayatana_indicator_page(PrefsPage*);
+static void notify_save_ayatana_indicator(PrefsPage*);
+#endif /* NOTIFICATION_AYATANA_INDICATOR */
 
 #ifdef NOTIFICATION_INDICATOR
 static void notify_create_indicator_page(PrefsPage*, GtkWindow*, gpointer);
@@ -519,6 +538,24 @@ void notify_gtk_init(void)
 	}
 #endif /* NOTIFICATION_TRAYICON */
 
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+	{
+		static gchar *ayatana_indicator_path[4];
+
+		ayatana_indicator_path[0] = _("Plugins");
+		ayatana_indicator_path[1] = _("Notification");
+		ayatana_indicator_path[2] = _("Atayana App Indicator");
+		ayatana_indicator_path[3] = NULL;
+
+		ayatana_indicator_page.page.path = ayatana_indicator_path;
+		ayatana_indicator_page.page.create_widget = notify_create_ayatana_indicator_page;
+		ayatana_indicator_page.page.destroy_widget = notify_destroy_ayatana_indicator_page;
+		ayatana_indicator_page.page.save_page = notify_save_ayatana_indicator;
+		ayatana_indicator_page.page.weight = 70.0;
+		prefs_gtk_register_page((PrefsPage*) &ayatana_indicator_page);
+	}
+#endif /* NOTIFICATION_AYATANA_INDICATOR */
+
 #ifdef NOTIFICATION_INDICATOR
 	{
 		static gchar *indicator_path[4];
@@ -557,6 +594,9 @@ void notify_gtk_done(void)
 #endif
 #ifdef NOTIFICATION_TRAYICON
 	prefs_gtk_unregister_page((PrefsPage*) &trayicon_page);
+#endif
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+	prefs_gtk_unregister_page((PrefsPage*) &ayatana_indicator_page);
 #endif
 #ifdef NOTIFICATION_INDICATOR
 	prefs_gtk_unregister_page((PrefsPage*) &indicator_page);
@@ -1771,6 +1811,50 @@ static void notify_trayicon_popup_enable_set_sensitivity(GtkToggleButton *bu,
 #endif /* HAVE_LIBNOTIFY */
 
 #endif /* NOTIFICATION_TRAYICON */
+
+#ifdef NOTIFICATION_AYATANA_INDICATOR
+
+static void notify_create_ayatana_indicator_page(PrefsPage *page, GtkWindow *window,
+		gpointer data)
+{
+	GtkWidget *pvbox;
+	GtkWidget *vbox;
+	GtkWidget *checkbox;
+
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
+
+	/* Enable indicator */
+	checkbox = gtk_check_button_new_with_label(_("Enable Ayatana App Indicator"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
+			notify_config.ayatana_indicator_enabled);
+	gtk_box_pack_start(GTK_BOX(pvbox), checkbox, FALSE, FALSE, 0);
+	ayatana_indicator_page.ayatana_indicator_enabled = checkbox;
+
+	/* Container vbox for greying out everything */
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
+
+	gtk_widget_show_all(pvbox);
+	ayatana_indicator_page.page.widget = pvbox;
+}
+
+static void notify_destroy_ayatana_indicator_page(PrefsPage *page)
+{
+}
+
+static void notify_save_ayatana_indicator(PrefsPage *page)
+{
+	notification_ayatana_indicator_disable();
+
+	notify_config.ayatana_indicator_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ayatana_indicator_page.ayatana_indicator_enabled));
+
+	if(notify_config.ayatana_indicator_enabled) {
+	  notification_ayatana_indicator_enable();
+	  notification_update_ayatana_indicator();
+	}
+}
+#endif /* NOTIFICATION_AYATANA_INDICATOR */
 
 #ifdef NOTIFICATION_INDICATOR
 
