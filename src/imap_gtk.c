@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2024 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -449,8 +449,11 @@ void imap_gtk_synchronise(FolderItem *item, gint days)
 		for (cur = mlist; cur != NULL; cur = cur->next) {
 			MsgInfo *msginfo = (MsgInfo *)cur->data;
 			gint age = (t - msginfo->date_t) / (60*60*24);
-			if (days == 0 || age <= days)
+			if (days == 0 || age <= days) {
 				imap_cache_msg(msginfo->folder, msginfo->msgnum);
+				folder_item_fetch_msg_full(msginfo->folder, msginfo->msgnum,
+							   TRUE, TRUE);
+			}
 			statusbar_progress_all(num++,total, 100);
 			if (num % 100 == 0)
 				GTK_EVENTS_FLUSH();

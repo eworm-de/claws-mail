@@ -2957,7 +2957,7 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 	if (folder->klass->fetch_msg_full == NULL)
 		return folder_item_fetch_msg(item, num);
 
-	if (item->prefs->offlinesync && prefs_common.real_time_sync)
+	if (item->prefs->offlinesync)
 		msgfile = folder->klass->fetch_msg_full(folder, item, num, 
 						TRUE, TRUE);
 	else
@@ -2975,7 +2975,7 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 			else
 				mimeinfo = procmime_scan_queue_file(msgfile);
 			/* check for attachments */
-			if (mimeinfo != NULL) {	
+			if (mimeinfo != NULL) {
 				g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
 				procmime_mimeinfo_free_all(&mimeinfo);
 
