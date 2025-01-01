@@ -650,7 +650,7 @@ static PrefParam send_param[] = {
 	 &send_page.msgid_with_addr_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	 {"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
+	 {"use_smtp_auth", "TRUE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
 	 &send_page.smtp_auth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
@@ -873,27 +873,27 @@ static PrefParam privacy_param[] = {
 
 static PrefParam ssl_param[] = {
 #ifdef USE_GNUTLS
-	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
+	{"ssl_pop", "1", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 &ssl_page.pop_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 
-	{"ssl_imap", "0", &tmp_ac_prefs.ssl_imap, P_ENUM,
+	{"ssl_imap", "1", &tmp_ac_prefs.ssl_imap, P_ENUM,
 	 &ssl_page.imap_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 
-	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
+	{"ssl_nntp", "1", &tmp_ac_prefs.ssl_nntp, P_ENUM,
 	 &ssl_page.nntp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 
-	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	{"ssl_smtp", "1", &tmp_ac_prefs.ssl_smtp, P_ENUM,
 	 &ssl_page.smtp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 
-	{"ssl_certs_auto_accept", "0", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
+	{"ssl_certs_auto_accept", "1", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
 	 &ssl_page.ssl_certs_auto_accept_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
