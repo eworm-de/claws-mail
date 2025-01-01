@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3582,6 +3582,11 @@ static gint prefs_basic_apply(void)
 
 	if (*gtk_entry_get_text(GTK_ENTRY(basic_page.acname_entry)) == '\0') {
 		alertpanel_error(_("Account name is not entered."));
+		return -1;
+	}
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.acname_entry)), '/') != NULL &&
+	    protocol == A_IMAP4) {
+		alertpanel_error(_("Account name cannot contain '/'."));
 		return -1;
 	}
 	if (*gtk_entry_get_text(GTK_ENTRY(basic_page.addr_entry)) == '\0') {
