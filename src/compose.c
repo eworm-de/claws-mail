@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9758,8 +9758,8 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	GError *error = NULL;
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
-	GtkTextIter start, end;
-	gchar *chars;
+	GtkTextIter iter;
+	gboolean modified = TRUE;
 
 #if GLIB_CHECK_VERSION(2,70,0)
 	if (!g_spawn_check_wait_status(exit_status, &error)) {
@@ -9776,7 +9776,6 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 
 	gtk_text_buffer_set_text(buffer, "", -1);
 	compose_insert_file(compose, compose->exteditor_file);
-	compose_changed_cb(NULL, compose);
 
 	/* Check if we should save the draft or not */
 	if (compose_can_autosave(compose))
@@ -9785,13 +9784,10 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	if (claws_unlink(compose->exteditor_file) < 0)
 		FILE_OP_ERROR(compose->exteditor_file, "unlink");
 
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
-	gtk_text_buffer_get_start_iter(buffer, &start);
-	gtk_text_buffer_get_end_iter(buffer, &end);
-	chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-	if (chars && strlen(chars) > 0)
-		compose->modified = TRUE;
-	g_free(chars);
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+
+	while (!gtk_text_iter_is_end(&iter) && modified)
+		modified = compose_beautify_paragraph(compose, &iter, TRUE);
 
 	compose_set_ext_editor_sensitive(compose, TRUE);
 
