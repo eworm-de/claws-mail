@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2922,6 +2922,9 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
 			MimeInfo *mimeinfo;
 
+			item->cache_dirty = TRUE;
+			item->mark_dirty = TRUE;
+			item->tags_dirty = TRUE;
 			if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) && 
 			    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
 				mimeinfo = procmime_scan_file(msgfile);
@@ -2969,6 +2972,9 @@ gchar *folder_item_fetch_msg_full(FolderItem *item, gint num, gboolean headers,
 		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
 			MimeInfo *mimeinfo;
 
+			item->cache_dirty = TRUE;
+			item->mark_dirty = TRUE;
+			item->tags_dirty = TRUE;
 			if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 			    !folder_has_parent_of_type(msginfo->folder, F_DRAFT))
 				mimeinfo = procmime_scan_file(msgfile);
