@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4202,7 +4202,7 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
-			NULL, _("_Cancel"), NULL, _("_Synchronise"), NULL, NULL,
+			NULL, _("_No"), NULL, _("_Synchronise"), NULL, NULL,
 			ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 		return;
 	
