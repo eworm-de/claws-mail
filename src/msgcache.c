@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2025 the Claws Mail team & Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1185,7 +1185,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		write_fps.tags_fp = NULL;
 	}
 
-	debug_print("\tWriting message cache to %s and %s...\n", new_cache, new_mark);
+	if (write_fps.cache_fp || write_fps.mark_fp)
+		debug_print("\tWriting message cache to %s and %s...\n", new_cache, new_mark);
 
 	if (write_fps.cache_fp && change_file_mode_rw(write_fps.cache_fp, new_cache) < 0)
 		FILE_OP_ERROR(new_cache, "chmod");

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2273,7 +2273,6 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	static gboolean can_select = TRUE;	/* exclusive lock */
 	gboolean opened;
 	FolderItem *item;
-	gchar *buf;
 	int res = 0;
 	GtkCMCTreeNode *old_opened = folderview->opened;
 	START_TIMING("");
@@ -2341,13 +2340,13 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 			gdk_seat_ungrab(seat);
 	}
 
-	/* Open Folder */
-	/* TODO: wwp: avoid displaying (null) in the status bar */
-    	buf = g_strdup_printf(_("Opening folder %s..."), item->path ? 
-					item->path : "(null)");
-	debug_print("%s\n", buf);
-	STATUSBAR_PUSH(folderview->mainwin, buf);
-	g_free(buf);
+	if (item->path) {
+		gchar *buf;
+		buf = g_strdup_printf(_("Opening folder %s..."), item->path);
+		debug_print("%s\n", buf);
+		STATUSBAR_PUSH(folderview->mainwin, buf);
+		g_free(buf);
+	}
 
 	main_window_cursor_wait(folderview->mainwin);
 
