@@ -1916,8 +1916,11 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 					gchar *cache_file = g_strconcat(
 						cache_path, G_DIR_SEPARATOR_S, 
 						itos(new_uid), NULL);
-					copy_file(real_file, cache_file, TRUE);
-					debug_print("got UID %d, copied to cache: %s\n", new_uid, cache_file);
+					if (copy_file(real_file, cache_file, TRUE) < 0) {
+ 						g_warning("can't copy %s to %s.bak", real_file, cache_file);
+					} else {
+						debug_print("got UID %d, copied to cache: %s\n", new_uid, cache_file);
+					}
 					g_free(cache_file);
 				}
 				g_free(cache_path);
