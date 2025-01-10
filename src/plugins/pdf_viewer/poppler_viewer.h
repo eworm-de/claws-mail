@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Salvatore De Paolis & the Claws Mail Team
+ * Copyright (C) 1999-2025 the Claws Mail Team and Salvatore De Paolis
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,11 +129,13 @@ struct _PdfViewer
 static gchar *content_types[] =
 	{"application/pdf", 
 	 "application/postscript", 
+	 "image/x-eps",
 	 NULL};
 typedef enum {
 	TYPE_UNKNOWN,
 	TYPE_PDF,
-	TYPE_PS
+	TYPE_PS,
+	TYPE_EPS
 } FileType;
 
 enum {

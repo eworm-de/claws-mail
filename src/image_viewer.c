@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -423,7 +423,57 @@ static MimeViewer *image_viewer_create(void)
 }
 
 static gchar *content_types[] =
-	{"image/*", NULL};
+	{"image/png",
+	 "image/jpeg",
+	 "image/x-wmf",
+	 "image/x-adobe-dng",
+	 "image/x-canon-cr2",
+	 "image/x-canon-crw",
+	 "image/x-nikon-nef",
+	 "image/x-olympus-orf",
+	 "image/x-pentax-pef",
+	 "image/x-sony-arw",
+	 "image/x-epson-erf",
+	 "image/x-minolta-mrw",
+	 "image/x-fuji-raf",
+	 "application/x-navi-animation",
+	 "image/avif",
+	 "image/bmp",
+	 "image/x-bmp",
+	 "image/x-MS-bmp",
+	 "image/gif",
+	 "image/heif",
+	 "image/heic",
+	 "image/avif",
+	 "image/x-icns",
+	 "image/x-icon",
+	 "image/x-ico",
+	 "image/x-win-bitmap",
+	 "image/vnd.microsoft.icon",
+	 "application/ico",
+	 "image/ico",
+	 "image/icon",
+	 "text/ico",
+	 "image/jxl",
+	 "image/x-portable-anymap",
+	 "image/x-portable-bitmap",
+	 "image/x-portable-graymap",
+	 "image/x-portable-pixmap",
+	 "image/x-quicktime",
+	 "image/qtif",
+	 "image/x-tga",
+	 "image/tiff",
+	 "image/webp",
+	 "audio/x-riff",
+	 "image/x-xbitmap",
+	 "image/x-xpixmap",
+	 "image/svg+xml",
+	 "image/svg",
+	 "image/svg-xml",
+	 "image/vnd.adobe.svg+xml",
+	 "text/xml-svg",
+	 "image/svg+xml-compressed",
+	 NULL };
 
 MimeViewerFactory image_viewer_factory =
 {

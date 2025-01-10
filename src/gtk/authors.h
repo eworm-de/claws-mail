@@ -316,6 +316,7 @@ static char *CONTRIBS_LIST[] = {
 "Pascal Terjan",
 "Thorsten Thielen",
 "Edgar Toernig",
+"Konstantin Tokarev",
 "Masahiro Tomita",
 "Tomita",
 "Topia",

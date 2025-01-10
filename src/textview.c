@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -719,7 +719,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 		TEXTVIEW_INSERT_LINK(buf, "cm://select_attachment", mimeinfo);
 		gtk_text_buffer_insert(buffer, &iter, " \n", -1);
-		if (mimeinfo->type == MIMETYPE_IMAGE  &&
+		if (mimeinfo->type == MIMETYPE_IMAGE  && mimeinfo->subtype &&
+		    g_ascii_strcasecmp(mimeinfo->subtype, "x-eps") &&
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
 			GError *error = NULL;

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail Team and Salvatore De Paolis
+ * Copyright (C) 1999-2025 the Claws Mail Team and Salvatore De Paolis
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -758,6 +758,7 @@ static FileType pdf_viewer_mimepart_get_type(MimeInfo *partinfo)
 	if (content_type == NULL) type = TYPE_UNKNOWN;
 	else if (!strcmp(content_type, "application/pdf")) type = TYPE_PDF;
 	else if (!strcmp(content_type, "application/postscript")) type = TYPE_PS;
+	else if (!strcmp(content_type, "image/x-eps")) type = TYPE_EPS;
 	else type = TYPE_UNKNOWN;
 
 	g_free(content_type);
@@ -1315,6 +1316,12 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 			gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type),
 									viewer->icon_pixbuf);
 		} 
+		else if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_EPS) {
+			stock_pixbuf_gdk(STOCK_PIXMAP_MIME_IMAGE,
+			&viewer->icon_pixbuf);
+			gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type),
+									viewer->icon_pixbuf);
+		}
 		else if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_PDF) {
 			stock_pixbuf_gdk(STOCK_PIXMAP_MIME_PDF, 
 			&viewer->icon_pixbuf);
@@ -1334,7 +1341,8 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 
 		GTK_EVENTS_FLUSH();
 
-		if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_PS) {
+		if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_PS ||
+		    pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_EPS) {
 			gchar *cmdline = NULL, *tmp = NULL, *gspath = NULL;
 			gint result = 0;
 
