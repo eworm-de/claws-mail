@@ -120,7 +120,7 @@ typedef struct
 } GtkSHRulerPrivate;
 
 #define GTK_SHRULER_GET_PRIVATE(ruler) \
-  G_TYPE_INSTANCE_GET_PRIVATE (ruler, GTK_TYPE_SHRULER, GtkSHRulerPrivate)
+  gtk_shruler_get_instance_private((GtkSHRuler *) ruler)
 
 
 static const struct
@@ -463,9 +463,13 @@ gtk_shruler_set_unit (GtkSHRuler *ruler,
 GtkCMUnit
 gtk_shruler_get_unit (GtkSHRuler *ruler)
 {
+  GtkSHRulerPrivate *priv;
+
   g_return_val_if_fail (GTK_IS_SHRULER (ruler), 0);
 
-  return GTK_SHRULER_GET_PRIVATE (ruler)->unit;
+  priv = GTK_SHRULER_GET_PRIVATE (ruler);
+
+  return priv->unit;
 }
 
 /**
@@ -505,9 +509,13 @@ gtk_shruler_set_position (GtkSHRuler *ruler,
 gdouble
 gtk_shruler_get_position (GtkSHRuler *ruler)
 {
+  GtkSHRulerPrivate *priv;
+
   g_return_val_if_fail (GTK_IS_SHRULER (ruler), 0.0);
 
-  return GTK_SHRULER_GET_PRIVATE (ruler)->position;
+  priv = GTK_SHRULER_GET_PRIVATE (ruler);
+
+  return priv->position;
 }
 
 /**
