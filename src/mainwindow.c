@@ -3007,12 +3007,6 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	if (cur_account && cur_account->protocol != A_NONE)
 		UPDATE_STATE(M_HAVE_RETRIEVABLE_ACCOUNT);
 
-	if (mainwin->summaryview->folder_item &&
-	    (mainwin->summaryview->folder_item->folder->klass->type == F_IMAP ||
-	     mainwin->summaryview->folder_item->folder->klass->type == F_NEWS) &&
-	    any_folder_want_synchronise())
-		UPDATE_STATE(M_WANT_SYNC);
-
 	if (item && item->prefs->processing && selection != SUMMARY_NONE)
 		UPDATE_STATE(M_HAVE_PROCESSING);
 
@@ -3131,7 +3125,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SET_SENSITIVE("Menu/File/SaveAs", M_TARGET_EXIST);
 	SET_SENSITIVE("Menu/File/SavePartAs", M_SINGLE_TARGET_EXIST);
 	SET_SENSITIVE("Menu/File/Print", M_TARGET_EXIST);
-	SET_SENSITIVE("Menu/File/SynchroniseFolders", M_WANT_SYNC);
 	SET_SENSITIVE("Menu/File/Exit", M_UNLOCKED);
 
 	SET_SENSITIVE("Menu/Edit/SelectThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
