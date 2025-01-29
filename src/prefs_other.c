@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2024 the Claws Mail team and Colin Leroy
+ * Copyright (C) 2005-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,10 +163,10 @@ static void prefs_keybind_preset_changed(GtkComboBox *widget)
 		{"<Actions>/Menu/Message/Move",				"<control>O"},
 		{"<Actions>/Menu/Message/Copy",				"<shift><control>O"},
 		{"<Actions>/Menu/Message/Trash",			"<control>D"},
-		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>asterisk"},
-		{"<Actions>/Menu/Message/Mark/Unmark",			"U"},
-		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>exclam"},
-		{"<Actions>/Menu/Message/Mark/MarkRead",		""},
+		{"<Actions>/Menu/Message/Marks/Mark",			"<shift>asterisk"},
+		{"<Actions>/Menu/Message/Marks/Unmark",			"U"},
+		{"<Actions>/Menu/Message/Marks/MarkUnread",		"<shift>exclam"},
+		{"<Actions>/Menu/Message/Marks/MarkRead",		""},
 
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
 		{"<Actions>/Menu/Tools/ListUrls",			"<shift><control>U"}, 
@@ -245,10 +245,10 @@ static void prefs_keybind_preset_changed(GtkComboBox *widget)
 		{"<Actions>/Menu/Message/Move",				"O"},
 		{"<Actions>/Menu/Message/Copy",				"<shift>O"},
 		{"<Actions>/Menu/Message/Trash",			"D"},
-		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>asterisk"},
-		{"<Actions>/Menu/Message/Mark/Unmark",			"U"},
-		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>exclam"},
-		{"<Actions>/Menu/Message/Mark/MarkRead",		"<shift>R"},
+		{"<Actions>/Menu/Message/Marks/Mark",			"<shift>asterisk"},
+		{"<Actions>/Menu/Message/Marks/Unmark",			"U"},
+		{"<Actions>/Menu/Message/Marks/MarkUnread",		"<shift>exclam"},
+		{"<Actions>/Menu/Message/Marks/MarkRead",		"<shift>R"},
 
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"},
 		{"<Actions>/Menu/Tools/Execute",			"X"},
@@ -300,10 +300,10 @@ static void prefs_keybind_preset_changed(GtkComboBox *widget)
 		{"<Actions>/Menu/Message/Move",				"<control>O"}, /* - */
 		{"<Actions>/Menu/Message/Copy",				"<shift>C"}, /* copy-message */
 		{"<Actions>/Menu/Message/Trash",			"D"}, /* delete-message */
-		{"<Actions>/Menu/Message/Mark/Mark",			"<shift>F"}, /* flag-message */
-		{"<Actions>/Menu/Message/Mark/Unmark",			"<shift><control>F"}, /* - */
-		{"<Actions>/Menu/Message/Mark/MarkUnread",		"<shift>N"}, /* toggle-new */
-		{"<Actions>/Menu/Message/Mark/MarkRead",		"<control>R"}, /* read-thread */
+		{"<Actions>/Menu/Message/Marks/Mark",			"<shift>F"}, /* flag-message */
+		{"<Actions>/Menu/Message/Marks/Unmark",			"<shift><control>F"}, /* - */
+		{"<Actions>/Menu/Message/Marks/MarkUnread",		"<shift>N"}, /* toggle-new */
+		{"<Actions>/Menu/Message/Marks/MarkRead",		"<control>R"}, /* read-thread */
 
 		{"<Actions>/Menu/Tools/AddressBook",			"<shift><control>A"}, /* - */
 		{"<Actions>/Menu/Tools/Execute",			"dollar"}, /* sync-mailbox */

@@ -44,7 +44,7 @@ def add_mark_thread_read_menu_item():
         selected_messages = clawsmail.get_summaryview_selected_message_list()
         group = clawsmail.get_mainwindow_action_group()
         group.get_action("Edit/SelectThread").activate()
-        group.get_action("Message/Mark/MarkRead").activate()
+        group.get_action("Message/Marks/MarkRead").activate()
         clawsmail.summaryview_select_messages(selected_messages)
 
     global mainwindow_merge_ids

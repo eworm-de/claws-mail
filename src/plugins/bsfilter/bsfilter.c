@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 the Claws Mail team and
- * Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -369,7 +368,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			msg =  g_strdup_printf(_("The Bsfilter plugin couldn't filter "
 					   "a message. The probable cause of the "
 					   "error is that it didn't learn from any mail.\n"
-					   "Use \"/Mark/Mark as spam\" and \"/Mark/Mark as "
+					   "Use \"/Marks/Mark as spam\" and \"/Marks/Mark as "
 					   "ham\" to train Bsfilter with a few hundred "
 					   "spam and ham messages."));
 		else
@@ -622,7 +621,7 @@ const gchar *plugin_desc(void)
 	         "\n"
 		 "Before Bsfilter can recognize spam messages, you have to "
 		 "train it by marking a few hundred spam and ham messages "
-		 "with the use of \"/Mark/Mark as spam\" and \"/Mark/Mark as "
+		 "with the use of \"/Marks/Mark as spam\" and \"/Marks/Mark as "
 		 "ham\".\n"
 	         "\n"
 	         "When a message is identified as spam it can be deleted or "

@@ -6,7 +6,7 @@ def deal_with_folder(folder):
         # Get actions for selecting all messages, and marking the selection as read
         action_group = clawsmail.get_mainwindow_action_group();
         select_all_action = action_group.get_action("Edit/SelectAll")
-        mark_read_action = action_group.get_action("Message/Mark/MarkRead")
+        mark_read_action = action_group.get_action("Message/Marks/MarkRead")
 
         # Select given folder
         clawsmail.folderview_select_folder(folder)
