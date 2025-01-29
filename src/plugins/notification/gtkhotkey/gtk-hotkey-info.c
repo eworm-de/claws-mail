@@ -31,8 +31,6 @@ typedef struct {
 	GtkHotkeyListener	*listener;
 } GtkHotkeyInfoPrivate;
 
-#define GTK_HOTKEY_INFO_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_HOTKEY_TYPE_INFO, GtkHotkeyInfoPrivate))
-
 enum  {
 	GTK_HOTKEY_INFO_BOUND = 1,
 	GTK_HOTKEY_INFO_APPLICATION_ID,
@@ -84,7 +82,7 @@ gboolean
 gtk_hotkey_info_bind (GtkHotkeyInfo* self, GError **error)
 {
 	gboolean result;
-	GtkHotkeyInfoPrivate *priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	GtkHotkeyInfoPrivate *priv = gtk_hotkey_info_get_instance_private(self);
 	
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), FALSE);
 	
@@ -129,7 +127,7 @@ gboolean
 gtk_hotkey_info_unbind (GtkHotkeyInfo* self, GError **error)
 {	
 	gboolean result;
-	GtkHotkeyInfoPrivate *priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	GtkHotkeyInfoPrivate *priv = gtk_hotkey_info_get_instance_private(self);
 	
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), FALSE);
 	
@@ -168,7 +166,7 @@ gtk_hotkey_info_unbind (GtkHotkeyInfo* self, GError **error)
 gboolean
 gtk_hotkey_info_is_bound (GtkHotkeyInfo* self)
 {
-	GtkHotkeyInfoPrivate *priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	GtkHotkeyInfoPrivate *priv = gtk_hotkey_info_get_instance_private(self);
 
 	return (priv->listener != NULL);
 }
@@ -187,7 +185,7 @@ gtk_hotkey_info_get_application_id (GtkHotkeyInfo* self)
 
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), NULL);
 
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	return priv->app_id;
 }
 
@@ -205,7 +203,7 @@ gtk_hotkey_info_get_key_id (GtkHotkeyInfo* self)
 
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), NULL);
 
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	return priv->key_id;
 }
 
@@ -227,7 +225,7 @@ gtk_hotkey_info_get_app_info (GtkHotkeyInfo* self)
 
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), NULL);
 
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	return priv->app_info;
 }
 
@@ -245,7 +243,7 @@ gtk_hotkey_info_get_signature (GtkHotkeyInfo* self)
 
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (self), NULL);
 
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	return priv->signature;
 }
 
@@ -266,7 +264,7 @@ gtk_hotkey_info_get_description (GtkHotkeyInfo* self)
 
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO(self), NULL);
 
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	return priv->description;
 }
 
@@ -415,7 +413,7 @@ gtk_hotkey_info_get_property (GObject * object, guint property_id, GValue * valu
 
 	
 	self = GTK_HOTKEY_INFO (object);
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 
 	switch (property_id) {
 		case GTK_HOTKEY_INFO_BOUND:
@@ -456,7 +454,7 @@ gtk_hotkey_info_set_property (GObject * object, guint property_id, const GValue 
 	GtkHotkeyInfoPrivate	*priv;
 	
 	self = GTK_HOTKEY_INFO (object);
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	
 	switch (property_id) {
 		case GTK_HOTKEY_INFO_BOUND:
@@ -621,7 +619,7 @@ gtk_hotkey_info_class_init (GtkHotkeyInfoClass * klass)
 static void
 gtk_hotkey_info_init (GtkHotkeyInfo * self)
 {
-	GtkHotkeyInfoPrivate *priv = GTK_HOTKEY_INFO_GET_PRIVATE (self);
+	GtkHotkeyInfoPrivate *priv = gtk_hotkey_info_get_instance_private (self);
 	
 	priv->app_id = NULL;
 	priv->key_id = NULL;
@@ -636,7 +634,7 @@ gtk_hotkey_info_finalize (GObject * obj)
 	GtkHotkeyInfoPrivate	*priv;
 	
 	self = GTK_HOTKEY_INFO (obj);
-	priv = GTK_HOTKEY_INFO_GET_PRIVATE(self);
+	priv = gtk_hotkey_info_get_instance_private(self);
 	
 	if (priv->app_id)
 		g_free (priv->app_id);
