@@ -3007,7 +3007,10 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	if (cur_account && cur_account->protocol != A_NONE)
 		UPDATE_STATE(M_HAVE_RETRIEVABLE_ACCOUNT);
 
-	if (any_folder_want_synchronise())
+	if (mainwin->summaryview->folder_item &&
+	    (mainwin->summaryview->folder_item->folder->klass->type == F_IMAP ||
+	     mainwin->summaryview->folder_item->folder->klass->type == F_NEWS) &&
+	    any_folder_want_synchronise())
 		UPDATE_STATE(M_WANT_SYNC);
 
 	if (item && item->prefs->processing && selection != SUMMARY_NONE)
