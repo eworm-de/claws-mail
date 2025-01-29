@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team
- * This file Copyright (C) 2006 Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,19 +183,30 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			GTK_EVENTS_FLUSH();
 		}
 		if (val == G_ALERTDEFAULT) {
-			TEXTVIEW_INSERT(_("\n  Key ID "));
+			TEXTVIEW_INSERT("\n  ");
+			TEXTVIEW_INSERT(_("Key ID"));
+			TEXTVIEW_INSERT(" ");
 			TEXTVIEW_INSERT(sig->fpr);
-			TEXTVIEW_INSERT(":\n\n");
-			TEXTVIEW_INSERT(_("   This key is not in your keyring.\n"));
-			TEXTVIEW_INSERT(_("   It should be possible to import it "));
-			if (prefs_common_get_prefs()->work_offline)
-				TEXTVIEW_INSERT(_("when working online,\n   or "));
-			TEXTVIEW_INSERT(_("with either of the following commands: \n\n     "));
+			TEXTVIEW_INSERT(" \n\n   ");
+			TEXTVIEW_INSERT(_("This key is not in your keyring.\n"));
+			TEXTVIEW_INSERT("\n   ");
+			TEXTVIEW_INSERT(_("It should be possible to import it"));
+			TEXTVIEW_INSERT(" ");
+			if (prefs_common_get_prefs()->work_offline) {
+				TEXTVIEW_INSERT(_("when working online,"));
+				TEXTVIEW_INSERT("\n   ");
+				TEXTVIEW_INSERT(_("or"));
+				TEXTVIEW_INSERT(" ");
+			}
+			TEXTVIEW_INSERT(_("with either of the following commands:"));
+			TEXTVIEW_INSERT("\n\n     ");
 			TEXTVIEW_INSERT(cmd_ks);
-			TEXTVIEW_INSERT("\n\n");
+			TEXTVIEW_INSERT("\n\n     ");
 			TEXTVIEW_INSERT(cmd_wkd);
 		} else if (val == G_ALERTALTERNATE || val == G_ALERTOTHER) {
-			TEXTVIEW_INSERT(_("\n  Importing key ID "));
+			TEXTVIEW_INSERT("\n  ");
+			TEXTVIEW_INSERT(_("Importing key ID"));
+			TEXTVIEW_INSERT(" ");
 			TEXTVIEW_INSERT(sig->fpr);
 			TEXTVIEW_INSERT(":\n\n");
 
@@ -277,11 +287,18 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			main_window_cursor_normal(mainwindow_get_mainwindow());
 			textview_cursor_normal(textview);
 			if (imported) {
-				TEXTVIEW_INSERT(_("   This key has been imported to your keyring.\n"));
+				TEXTVIEW_INSERT("   ");
+				TEXTVIEW_INSERT(_("This key has been imported to your keyring."));
+				TEXTVIEW_INSERT("\n");
 			} else {
-				TEXTVIEW_INSERT(_("   This key couldn't be imported to your keyring.\n"));
-				TEXTVIEW_INSERT(_("   Key servers are sometimes slow.\n"));
-				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:"));
+				TEXTVIEW_INSERT("   ");
+				TEXTVIEW_INSERT(_("This key couldn't be imported to your keyring."));
+				TEXTVIEW_INSERT("\n");
+				TEXTVIEW_INSERT("   ");
+				TEXTVIEW_INSERT(_("Key servers are sometimes slow."));
+				TEXTVIEW_INSERT("\n");
+				TEXTVIEW_INSERT("   ");
+				TEXTVIEW_INSERT(_("You can try to import it manually with the command:"));
 				TEXTVIEW_INSERT("\n\n     ");
 				TEXTVIEW_INSERT(cmd_ks);
 				TEXTVIEW_INSERT("\n\n     ");    
@@ -294,7 +311,9 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		g_free(cmd_wkd);
 		g_free(from_addr);
 	} else {
-		TEXTVIEW_INSERT(_("\n  Key ID "));
+		TEXTVIEW_INSERT("\n  ");
+		TEXTVIEW_INSERT(_("Key ID"));
+		TEXTVIEW_INSERT(" ");
 
 #if defined GPGME_VERSION_NUMBER && GPGME_VERSION_NUMBER >= 0x010700
 		TEXTVIEW_INSERT(key->fpr);
@@ -302,8 +321,9 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		TEXTVIEW_INSERT(sig->fpr);
 #endif
 
-		TEXTVIEW_INSERT(":\n\n");
-		TEXTVIEW_INSERT(_("   This key is in your keyring.\n"));
+		TEXTVIEW_INSERT("\n\n   ");
+		TEXTVIEW_INSERT(_("This key is in your keyring."));
+		TEXTVIEW_INSERT("\n");
 		gpgme_key_unref(key);
 	}
 	gpgme_data_release(sigdata);
