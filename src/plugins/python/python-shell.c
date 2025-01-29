@@ -33,8 +33,7 @@
 #define MAX_HISTORY_LENGTH 20
 
 #define PARASITE_PYTHON_SHELL_GET_PRIVATE(obj) \
-    (G_TYPE_INSTANCE_GET_PRIVATE((obj), PARASITE_TYPE_PYTHON_SHELL, \
-                                 ParasitePythonShellPrivate))
+    parasite_python_shell_get_instance_private((ParasitePythonShell *) (obj))
 
 typedef struct
 {
@@ -421,7 +420,10 @@ parasite_python_shell_append_text(ParasitePythonShell *python_shell,
 void
 parasite_python_shell_focus(ParasitePythonShell *python_shell)
 {
-   gtk_widget_grab_focus(PARASITE_PYTHON_SHELL_GET_PRIVATE(python_shell)->textview);
+    ParasitePythonShellPrivate *priv =
+        PARASITE_PYTHON_SHELL_GET_PRIVATE(python_shell);
+
+    gtk_widget_grab_focus(priv->textview);
 }
 
 // vim: set et ts=4:
