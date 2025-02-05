@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1324,8 +1324,10 @@ static PrefParam param[] = {
 	{"qs_press_timeout", "500", &prefs_common.qs_press_timeout, P_INT,
 	 NULL, NULL, NULL},
 
-	 {"passphrase_dialog_msg_title_switch", "FALSE", &prefs_common.passphrase_dialog_msg_title_switch,
-	  P_BOOL, NULL, NULL, NULL},
+	{"passphrase_dialog_msg_title_switch", "FALSE", &prefs_common.passphrase_dialog_msg_title_switch,
+	 P_BOOL, NULL, NULL, NULL},
+
+	{"mh_compat_mode", "FALSE", &prefs_common.mh_compat_mode, P_BOOL, NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

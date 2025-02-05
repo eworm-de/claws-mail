@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@
 #include "timing.h"
 #include "msgcache.h"
 #include "file-utils.h"
+#include "prefs_common.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
@@ -458,7 +459,9 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		g_free(destfile);
 		dest->last_num++;
 	}
-	mh_write_sequences(dest, TRUE);
+	if (prefs_common.mh_compat_mode)
+		mh_write_sequences(dest, TRUE);
+
 	return dest->last_num;
 }
 
@@ -603,7 +606,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	}
 
 	g_free(srcpath);
-	mh_write_sequences(dest, TRUE);
+	if (prefs_common.mh_compat_mode)
+		mh_write_sequences(dest, TRUE);
 
 	if (dest->mtime == last_dest_mtime && !dest_need_scan) {
 		mh_set_mtime(folder, dest);
@@ -620,7 +624,8 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	return dest->last_num;
 err_reset_status:
 	g_free(srcpath);
-	mh_write_sequences(dest, TRUE);
+	if (prefs_common.mh_compat_mode)
+		mh_write_sequences(dest, TRUE);
 	if (total > 100) {
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();
@@ -728,7 +733,8 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 	val = remove_all_numbered_files(path);
 	g_free(path);
 
-	mh_write_sequences(item, TRUE);
+	if (prefs_common.mh_compat_mode)
+		mh_write_sequences(item, TRUE);
 
 	return val;
 }
@@ -976,8 +982,8 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	gchar *path, *real_name;
 	gchar *fullpath;
 	FolderItem *new_item;
-	gchar *mh_sequences_filename;
-	FILE *mh_sequences_file;
+	gchar *mh_sequences_filename = NULL;
+	FILE *mh_sequences_file = NULL;
 
 	cm_return_val_if_fail(folder != NULL, NULL);
 	cm_return_val_if_fail(parent != NULL, NULL);
@@ -1022,14 +1028,16 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 
 	g_free(path);
 
-	path = folder_item_get_path(new_item);
-	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
-					    ".mh_sequences", NULL);
-	if ((mh_sequences_file = claws_fopen(mh_sequences_filename, "a+b")) != NULL) {
-		claws_fclose(mh_sequences_file);
+	if (prefs_common.mh_compat_mode) {
+		path = folder_item_get_path(new_item);
+		mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+						".mh_sequences", NULL);
+		if ((mh_sequences_file = claws_fopen(mh_sequences_filename, "a+b")) != NULL) {
+			claws_fclose(mh_sequences_file);
+		}
+		g_free(mh_sequences_filename);
+		g_free(path);
 	}
-	g_free(mh_sequences_filename);
-	g_free(path);
 
 	return new_item;
 }
@@ -1461,7 +1469,8 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 	gboolean need_scan = mh_scan_required(item->folder, item);
 	last_mtime = item->mtime;
 
-	mh_write_sequences(item, FALSE);
+	if (prefs_common.mh_compat_mode)
+		mh_write_sequences(item, FALSE);
 
 	if (item->mtime == last_mtime && !need_scan) {
 		mh_set_mtime(folder, item);

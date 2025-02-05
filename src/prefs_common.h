@@ -592,6 +592,7 @@ struct _PrefsCommon
 #endif
 
 	gboolean passphrase_dialog_msg_title_switch;
+	gboolean mh_compat_mode;
 
 	/* Proxy */
 	gboolean use_proxy;
