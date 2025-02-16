@@ -811,6 +811,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>mh_compat_mode</literal></term>
+	<listitem>
+	  <para>
+	'0' o '1'. Habilitar la creación y actualización de los ficheros
+	<filename>.mh_sequences</filename> en los buzones de tipo MH para
+	ser compatible con el sistema de gestión de mensajes MH. El valor
+	predeterminado es '0', desactivado.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>
