@@ -13,7 +13,7 @@
 <!ENTITY ap_ack SYSTEM "ack.xml">
 <!ENTITY ap_gpl SYSTEM "gpl.xml">
 ]>
-<article><title>Claws Mail - Manuel de l'utilisateur</title><subtitle/><articleinfo><corpauthor><ulink url="http://www.claws-mail.org/">L'équipe de Claws Mail</ulink></corpauthor><copyright><year>2006-2016</year><holder>L'équipe de Claws Mail.</holder></copyright><legalnotice id="license"><para>
+<article><title>Claws Mail - Manuel de l'utilisateur</title><subtitle/><articleinfo><corpauthor><ulink url="http://www.claws-mail.org/">L'équipe de Claws Mail</ulink></corpauthor><copyright><year>2006-2025</year><holder>L'équipe de Claws Mail.</holder></copyright><legalnotice id="license"><para>
 	Ce logiciel est un logiciel libre&nbsp;; vous pouvez le redistribuer
 	et/ou le modifier selon les termes de la <acronym>GNU</acronym> General
 	Public License, telle que publiée par la Free Software Foundation&nbsp;;

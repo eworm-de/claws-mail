@@ -191,7 +191,7 @@
 	  ce menu vous permet d'envoyer un
 	  message à la liste, de contacter l'administrateur de la liste afin de
 	  s'inscrire, s'en désinscrire, obtenir de
-	  l'aide mais aussi consulter les archives&nbsp;; soit en ouvrant une
+	  l'aide mais aussi consulter les archives; soit en ouvrant une
 	  nouvelle fenêtre de composition, soit en
 	  ouvrant un lien avec votre navigateur Internet.
     </para>
@@ -253,7 +253,7 @@
       </listitem>
       <listitem>
         <para>
-          Si nécessaire, et si Claws Mail sera utilisé avec une boîte
+          Si nécessaire, et si Claws Mail est utilisé avec une boîte
           aux lettres MH, vous pouvez créer des sous-dossiers.
         </para>
       </listitem>
@@ -269,7 +269,7 @@
 	      variables, correspondant aux champs de l'assistant. Vous pouvez en laisser
 	      commentées, auquel cas la valeur par défaut sera utilisée, ou spécifier
 	      des valeurs ou variables. Tous les champs ne peuvent pas contenir une
-	      variable&nbsp;; par exemple, smtpauth, smtpssl et recvssl sont des
+	      variable; par exemple, smtpauth, smtpssl et recvssl sont des
 	      booléens, soit 0 ou 1, et recvtype est une valeur de type entier. Les
 	      autres champs, comme name, email, ou recvuser, sont parsés par l'assistant
 	      et les variables qu'ils contiennent seront remplacés par des valeurs.
@@ -283,7 +283,7 @@
           (qui contient le faux compte que vous avez créé avec l'assistant lors de
           la première phase) et ~/.claws-mail/folderlist.xml, (de manière à ce que
           l'arbre de boîte aux lettres soit correctement relu). Copiez récursivement
-          le répertoire .claws-mail dans /etc/skel/&nbsp;; si les Claws Mail déployés
+          le répertoire .claws-mail dans /etc/skel/; si les Claws Mail déployés
           utiliseront des dossiers MH, copiez aussi le répertoire Mail dans /etc/skel.
           chown-isez tout /etc/skel/.claws-mail et /etc/skel/Mail à root:root.
         </para>
@@ -367,7 +367,7 @@
         </term>
         <listitem>
           <para>
-            '0' or '1'. S'il faut s'authentifier sur le serveur SMTP. Par
+            '0' ou '1'. S'il faut s'authentifier sur le serveur SMTP. Par
             défaut, ce sera '0'.
           </para>
         </listitem>
@@ -477,7 +477,7 @@
         </term>
         <listitem>
           <para>
-            '0' or '1'. S'il faut utiliser SSL pour envoyer les messages.
+            '0' ou '1'. S'il faut utiliser SSL pour envoyer les messages.
             Par défaut, ce sera '0'.
           </para>
         </listitem>
@@ -488,8 +488,8 @@
         </term>
         <listitem>
           <para>
-            0 or 1. S'il faut utiliser SSL pour recevoir les messages.
-            Par défaut, ce sera 0.
+            '0' ou '1'. S'il faut utiliser SSL pour recevoir les messages.
+            Par défaut, ce sera '0'.
           </para>
         </listitem>
       </varlistentry>
@@ -832,6 +832,18 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+	    <term>
+          <literal>mh_compat_mode</literal>
+        </term>
+	    <listitem>
+	      <para>
+            '0' ou '1'. Active la création et la mise à jour de fichiers <filename>.mh_sequences</filename>
+            dans les dossiers des boîtes aux lettres MH à des fins de compatibilité avec le système de gestion de message MH.
+            La valeur par défaut est '0', option désactivée.
+	      </para>
+	    </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>
           <literal>msgview_date_format</literal>
         </term>
@@ -849,9 +861,9 @@
         </term>
         <listitem>
           <para>
-			'0' or '1'. Indique lequel des messages précédent ou suivant sera sélectionné après
+			'0' ou '1'. Indique lequel des messages précédent ou suivant sera sélectionné après
             la suppression, la mise en corbeille ou le déplacement du message courant.
-            Par défaut: '0', sélectionne le message précédent.
+            Par défaut&nbsp;: '0', sélectionne le message précédent.
 	  </para>
         </listitem>
       </varlistentry>
@@ -892,7 +904,7 @@
 	        Couleurs de texte et de fond utilisées dans la zone de saisie de la
             recherche rapide, quand celle-ci est active ou qu'il y a une erreur
             de syntaxe.
-            Les couleurs par défaut sont, respectivement: '#000000' (noir),
+            Les couleurs par défaut sont, respectivement&nbsp;: '#000000' (noir),
             '#f5f6be' (jaune clair), '#000000' (noir), and '#ff7070' (rouge clair).
 	      </para>
         </listitem>
@@ -905,7 +917,7 @@
           <para>
 	        Délai d'attente du mode dynamique de la recherche rapide (en ms): délai possible
             entre 2 frappes au clavier dans la zone de saisie avant que la recherche rapide
-            ne soit automaquement lancée. Par défaut: 500 ms.
+            ne soit automaquement lancée. Par défaut&nbsp;: 500 ms.
 	      </para>
         </listitem>
       </varlistentry>
@@ -928,7 +940,7 @@
         </term>
         <listitem>
           <para>
-			'0' or '1'. Cette option permet de contourner une limitation de certains serveurs
+			'0' ou '1'. Cette option permet de contourner une limitation de certains serveurs
             excessivement laxistes. Quand cette option est active et que le Content-Transfer-Encoding
             est 8bit ou 7bit, dans le corps d'un message commençant par 'From ', le 'From ' deviendra
             '=46rom ' et le Content-Transfer-Encoding sera changé en Quoted-Printable. Quand cette option
@@ -955,7 +967,7 @@
         </term>
         <listitem>
           <para>
-	        '0' or '1'. Ajoute des marges lors de l'édition de message
+	        '0' ou '1'. Ajoute des marges lors de l'édition de message
 	        La valeur par défaut est '0', option désactivée.
     	  </para>
         </listitem>
@@ -966,7 +978,7 @@
         </term>
         <listitem>
           <para>
-	        '0' or '1'. Montrer les pièces jointes "inline" dans la liste des pièces jointes.
+	        '0' ou '1'. Montrer les pièces jointes "inline" dans la liste des pièces jointes.
 	        La valeur par défaut est '1', option activée.
     	  </para>
         </listitem>
@@ -978,7 +990,7 @@
         <listitem>
           <para>
             Permet de ne pas faire la vérification des
-		    certificats SSL
+		    certificats SSL.
           </para>
         </listitem>
       </varlistentry>
@@ -1012,7 +1024,7 @@
         <listitem>
           <para>
             Couleurs de texte et de fond utilisées pour l'affichage des labels. Les valeurs
-            par défaut sont, respectivement: '#000000' (noir) et '#f5f6be' (jaune clair).
+            par défaut sont, respectivement&nbsp;: '#000000' (noir) et '#f5f6be' (jaune clair).
 		  </para>
         </listitem>
       </varlistentry>
@@ -1056,7 +1068,7 @@
         <listitem>
           <para>
 			'0' ou '1'. Quand la valeur est '1', permet de saisir n'importe quelle valeur dans
-            les zones de saisie des en-têtes d'une fenêtre de composition de message. Par défaut: '0',
+            les zones de saisie des en-têtes d'une fenêtre de composition de message. Par défaut&nbsp;: '0',
             seules les valeurs d'en-têtes disponibles dans la liste déroulante sont possibles.
           </para>
         </listitem>
@@ -1161,7 +1173,7 @@
           <para>
 	        Demander confirmation à l'utilisateur, lorsque l'envoi d'un message
             se fait à un nombre de destinataires supérieur à la valeur définie.
-            Une valeur de '0' désactive cette demande de confirmation: l'envoi sera
+            Une valeur de '0' désactive cette demande de confirmation&nbsp;: l'envoi sera
             fait quelque soit le nombre de destinataires.
     	  </para>
         </listitem>
