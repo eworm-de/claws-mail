@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -393,7 +393,6 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		return NULL;
 	}
 
-	debug_print("decrypting '%s'\n", textdata);
 	gpgme_data_new_from_mem(&cipher, textdata, (size_t)strlen(textdata), 1);
 
 	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);
