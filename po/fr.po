@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 4.2.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2025-02-17 09:28+0000\n"
-"PO-Revision-Date: 2025-02-21 12:32+0100\n"
+"PO-Revision-Date: 2025-02-21 14:41+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -2020,16 +2020,16 @@ msgstr "_Normale"
 #: src/compose.c:739 src/mainwindow.c:668 src/messageview.c:306
 #: src/summaryview.c:429
 msgid "_All"
-msgstr "À _tous"
+msgstr "_Tous"
 
 #: src/compose.c:740 src/mainwindow.c:669 src/messageview.c:307
 #: src/summaryview.c:430
 msgid "_Sender"
-msgstr "À l'_expéditeur·rice"
+msgstr "L'_expéditeur·rice"
 
 #: src/compose.c:741
 msgid "_Mailing-list"
-msgstr "La _liste"
+msgstr "_Liste de diffusion"
 
 #: src/compose.c:746
 msgid "_Highest"
@@ -7705,7 +7705,7 @@ msgstr "_Trier"
 
 #: src/mainwindow.c:574
 msgid "_Attract by subject"
-msgstr "Attirer par s_ujet"
+msgstr "Grouper par s_ujet"
 
 #: src/mainwindow.c:576
 msgid "E_xpand all threads"
@@ -7777,7 +7777,7 @@ msgstr "Do_ssier non lu suivant"
 
 #: src/mainwindow.c:601 src/messageview.c:257
 msgid "F_older..."
-msgstr "Dossier..."
+msgstr "Dossier.."
 
 #: src/mainwindow.c:603 src/messageview.c:259 src/mimeview.c:237
 msgid "Next part"
@@ -7882,7 +7882,7 @@ msgstr "Rép_ondre à"
 
 #: src/mainwindow.c:670 src/messageview.c:308 src/summaryview.c:431
 msgid "Mailing _list"
-msgstr "_Liste de diffusion"
+msgstr "La _liste de diffusion"
 
 #: src/mainwindow.c:671
 msgid "Follow-up and reply to"
@@ -7905,7 +7905,7 @@ msgstr "Rediri_ger"
 
 #: src/mainwindow.c:678
 msgid "Mailing-_List"
-msgstr "_Liste de diffusion"
+msgstr "La _liste de diffusion"
 
 #: src/mainwindow.c:679
 msgid "Post"
@@ -8655,7 +8655,7 @@ msgstr ""
 msgid "Importing from mbox... (%ld MB imported)"
 msgid_plural "Importing from mbox... (%ld MB imported)"
 msgstr[0] "Importation depuis un fichier mbox.. (%ld message importé)"
-msgstr[1] "Importation depuis un fichier mbox... (%ld messages importés)"
+msgstr[1] "Importation depuis un fichier mbox.. (%ld messages importés)"
 
 #: src/mbox.c:547
 msgid "Overwrite mbox file"
