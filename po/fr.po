@@ -17,10 +17,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Claws Mail 4.2.0\n"
+"Project-Id-Version: Claws Mail 4.3.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2025-02-17 09:28+0000\n"
-"PO-Revision-Date: 2025-02-21 14:41+0100\n"
+"PO-Revision-Date: 2025-02-21 14:47+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -4520,7 +4520,7 @@ msgstr "Options intégrées"
 #: src/gtk/about.c:433
 msgctxt "compface"
 msgid "adds support for the X-Face header\n"
-msgstr "support de l'en-tête X-Face,\n"
+msgstr "support de l'en-tête X-Face\n"
 
 #: src/gtk/about.c:443
 msgctxt "Enchant"
@@ -4530,12 +4530,12 @@ msgstr "support de la correction orthographique\n"
 #: src/gtk/about.c:453
 msgctxt "GnuTLS"
 msgid "adds support for encrypted connections to servers\n"
-msgstr "support du cryptage des connexions aux serveurs,\n"
+msgstr "support du cryptage des connexions aux serveurs\n"
 
 #: src/gtk/about.c:463
 msgctxt "iconv"
 msgid "allows converting to and from different character sets\n"
-msgstr "conversion depuis et vers des jeux de caractères différents,\n"
+msgstr "conversion depuis et vers des jeux de caractères différents\n"
 
 #: src/gtk/about.c:473
 msgctxt "IPv6"
@@ -4545,17 +4545,17 @@ msgstr "support des adresses IPv6\n"
 #: src/gtk/about.c:483
 msgctxt "JPilot"
 msgid "adds support for PalmOS addressbooks\n"
-msgstr "support des carnets d'adresses de type PalmOS,\n"
+msgstr "support des carnets d'adresses de type PalmOS\n"
 
 #: src/gtk/about.c:493
 msgctxt "LDAP"
 msgid "adds support for LDAP shared addressbooks\n"
-msgstr "support des carnets d'adresses partagés via LDAP,\n"
+msgstr "support des carnets d'adresses partagés via LDAP\n"
 
 #: src/gtk/about.c:503
 msgctxt "libetpan"
 msgid "adds support for IMAP and NNTP servers\n"
-msgstr "support des connexions aux serveurs IMAP et NNTP,\n"
+msgstr "support des connexions aux serveurs IMAP et NNTP\n"
 
 #: src/gtk/about.c:513
 msgctxt "librSVG"
@@ -4565,12 +4565,12 @@ msgstr "support pour les thèmes SVG\n"
 #: src/gtk/about.c:523
 msgctxt "libSM"
 msgid "adds support for session handling\n"
-msgstr "support pour la gestion des sessions.\n"
+msgstr "support pour la gestion des sessions\n"
 
 #: src/gtk/about.c:533
 msgctxt "NetworkManager"
 msgid "adds support for detection of network connection changes\n"
-msgstr "support pour la détection des changements de connexions réseau,\n"
+msgstr " support pour la détection des changements de connexions réseau\n"
 
 #: src/gtk/about.c:543
 msgctxt "OAuth2"
@@ -4585,10 +4585,10 @@ msgid ""
 "under the terms of the GNU General Public License as published by the Free "
 "Software Foundation; either version 3, or (at your option) any later version."
 msgstr ""
-"Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou le "
+"Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le "
 "modifier au titre des clauses de la Licence Publique Générale GNU, telle que "
-"publiée par la Free Software Foundation ; soit la version 3 de la Licence, "
-"ou (à votre discrétion) une version ultérieure quelconque."
+"publiée par la Free Software Foundation; soit la version 3 de la Licence, ou "
+"(à votre discrétion) une version ultérieure quelconque."
 
 #: src/gtk/about.c:583
 msgid ""
@@ -4598,7 +4598,7 @@ msgid ""
 "more details."
 msgstr ""
 "Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE "
-"GARANTIE ; sans même une garantie implicite de COMMERCIABILITE ou DE "
+"GARANTIE; sans même une garantie implicite de COMMERCIABILITE ou DE "
 "CONFORMITE A UNE UTILISATION PARTICULIERE. Voir la Licence Publique Générale "
 "GNU pour plus de détails."
 
@@ -8798,7 +8798,7 @@ msgstr ""
 msgid ""
 "This message has been partially retrieved;\n"
 "it is %s."
-msgstr "Ce message a été partiellement récupéré ; il fait %s au total."
+msgstr "Ce message a été partiellement récupéré; il fait %s au total."
 
 # NDT : problème de longueur de la chaîne "Marquer pour téléchargement" :
 # la chaîne est coupée des 2 côtés (bouton trop petit) -> idée : tooltips
@@ -8817,7 +8817,7 @@ msgid ""
 "This message has been partially retrieved;\n"
 "it is %s and will be downloaded."
 msgstr ""
-"Ce message a été partiellement récupéré ;\n"
+"Ce message a été partiellement récupéré;\n"
 "il fait %s au total et est marqué pour être téléchargé ultérieurement."
 
 #: src/messageview.c:1988 src/messageview.c:2001
@@ -8831,7 +8831,7 @@ msgid ""
 "This message has been partially retrieved;\n"
 "it is %s and will be deleted."
 msgstr ""
-"Ce message a été partiellement récupéré ;\n"
+"Ce message a été partiellement récupéré;\n"
 "il fait %s au total et est marqué pour être supprimé ultérieurement."
 
 #: src/messageview.c:2071
@@ -12765,7 +12765,7 @@ msgstr "S/MIME"
 #: src/plugins/pgpcore/select-keys.c:96
 #, c-format
 msgid "No exact match for '%s'; please select the key."
-msgstr "Pas de correspondance exacte pour '%s' ; veuillez sélectionner la clé."
+msgstr "Pas de correspondance exacte pour '%s'; veuillez sélectionner la clé."
 
 #: src/plugins/pgpcore/select-keys.c:99
 #, c-format
