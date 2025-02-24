@@ -170,8 +170,8 @@ NotifyTrayiconPage trayicon_page;
 typedef struct {
 	PrefsPage page;
 	GtkWidget *ayatana_indicator_enabled;
-}NotifyAtayanaIndicatorPage;
-NotifyAtayanaIndicatorPage ayatana_indicator_page;
+}NotifyAyatanaIndicatorPage;
+NotifyAyatanaIndicatorPage ayatana_indicator_page;
 #endif
 
 #ifdef NOTIFICATION_INDICATOR
@@ -544,7 +544,7 @@ void notify_gtk_init(void)
 
 		ayatana_indicator_path[0] = _("Plugins");
 		ayatana_indicator_path[1] = _("Notification");
-		ayatana_indicator_path[2] = _("Atayana App Indicator");
+		ayatana_indicator_path[2] = _("Ayatana App Indicator");
 		ayatana_indicator_path[3] = NULL;
 
 		ayatana_indicator_page.page.path = ayatana_indicator_path;

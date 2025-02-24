@@ -11886,8 +11886,8 @@ msgid "SysTrayicon"
 msgstr "Bandeja del sistema"
 
 #: src/plugins/notification/notification_prefs.c:547
-msgid "Atayana App Indicator"
-msgstr "Indicador Atayana"
+msgid "Ayatana App Indicator"
+msgstr "Indicador Ayatana"
 
 #: src/plugins/notification/notification_prefs.c:565
 msgid "Indicator"
