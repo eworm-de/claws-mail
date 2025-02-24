@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 4.3.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2025-02-17 09:28+0000\n"
-"PO-Revision-Date: 2025-02-21 14:47+0100\n"
+"PO-Revision-Date: 2025-02-24 12:29+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -12040,8 +12040,8 @@ msgid "SysTrayicon"
 msgstr "Icône de la barre système"
 
 #: src/plugins/notification/notification_prefs.c:547
-msgid "Ayatana App Indicator"
-msgstr "Indicateur Ayatana App"
+msgid "Atayana App Indicator"
+msgstr "Indicateur Atayana App"
 
 #: src/plugins/notification/notification_prefs.c:565
 msgid "Indicator"
