@@ -1,4 +1,4 @@
-10th June 2024                                       Claws Mail 4.3.0
+24th February 2025                                   Claws Mail 4.3.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,113 +9,85 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Compose window: when the focus is in the message text, copied files
-  can be pasted as attachments using /Edit/paste or Ctrl+V.
-  (The context menu's Paste will still insert the list of files into
-  the message body.)
+* The configuration option, "Don't popup error dialog on receive error"
+  has been changed to "Show error dialog on receive error". Your previous
+  choice will be automatically changed to the new format.
 
-* '/Mark/Mark all read in folder' and 'Mark/Mark all unread in
-  folder' have been re-added to the Message List context menu.
+* The option "Warn when pasting files as attachments" has been added to
+  the Compose/Writing preferences page. This option was previously
+  hidden.
 
-* It is now possible to use '/Tools/Remove references' when
-  forwarding mail.
+* chmod 0600 is now set on *history files in the configuration directory.
 
-* Keyboard shortcuts: The "Choose preset keyboard shortcuts" selector
-  has been integrated into the main preferences page.
-  When 'Current' is the selected preset, Apply/OK will keep the
-  existing settings.
+* A new preference has been added to enable setting the chmod value of
+  saved attachments: "Save attachments with chmod [   ]", found on the
+  Other/Miscelleanous preferences page. The default value is 600.
+
+* The creation and updating of .mh_sequences files in MH mailbox folders
+  is now optional and disabled by default. This is controlled by a new
+  hidden preference, mh_compat_mode. If you were previously relying on
+  this feature, set mh_compat_mode=1 in clawsrc before running this
+  version.
+
+* A new hidden preference has been added, passphrase_dialog_msg_title_switch.
+  This switches the placement of the dialogue message with the dialogue
+  title in the passphrase dialogue. This can be useful for interacting with
+  third-party programs such as KeePassXC.
     
-* An MBOX file can now be imported from the command line using
-  `claws-mail --import-mbox %f` where %f is the full path to the
-  MBOX file.
+* The top-level 'Mark' menu item has been renamed to 'Marks'. If you have
+  set custom hotkeys for any items in this menu you will need to re-set
+  them.
 
-* OAUTH2 support for Microsoft 365 GCC High has been added.
+* New accounts now have all secure options activated by default,
+  including TLS connections and SMTP AUTH.
 
-* LiteHTML Viewer plugin: Updated to LiteHTML 0.9.
+* The option to accept valid TLS certificates is now activated by default
+  on new accounts.
 
-* The menurc file is now backed-up on startup.
+* Notification plugin: support for Ayatana indicator has been added.
 
-* Removed support for the obsolete Avant Window Navigator.
-    
+* PDF Viewer plugin: support for image/x-eps (encapsulated postscript)
+  images has been added.
+
+* Libravatar plugin: the https URL, https://seccdn.libravatar.org/avatar,
+  is now used by default.
+
+* vCalendar plugin: CREATED/LAST_MODIFIED are correctly handled, and the
+  VTIMEZONE component is used when present
+
 * Various code cleanups.
 
-* The manual has been updated.
+* The English, Spanish and French manuals have been updated.
 
-* New translation: Albanian.  
-
-* Updated translations: Catalan, Czech, French, Hungarian, Indonesian,
-  Polish, Romanian, Slovak, Spanish, Swedish, Turkish.
+* Updated translations: Albanian, Brazilian Portuguese, British English,
+  Catalan, Czech, Dutch, French, Polish, Portuguese, Romanian, Russian,
+  Simplified Chinese, Slovak, Spanish, Swedish, Turkish.
 
 * bug fixes:
-	* bug 4668, 'Sometimes, at program start, message list takes
-		     all the vertical space'
-	* bug 4720, 'matcher: release regex_t in
-		     matcherprop_string_match'
-	* bug 4724, 'set proper availability status to sign/encrypt
-		     toolbar buttons'
-	* bug 4725, 'oauth2: remove trailing zero from transmit
-		     buffer in oauth2_contact_server'
-	* bug 4728, 'socket: handle GNUTLS_E_PREMATURE_TERMINATION in
-		     ssl_read'
-	* bug 4730, 'oauth2: fix string handling in
-		     oauth2_contact_server'
-	* bug 4733, 'Line breaks lost in headers'
-	* bug 4734, 'ssl_certificate: remove unhelpful warnings from
-		     certificate check'
-	* bug 4746, 'matcher: remove incorrect condition in
-		     matcherprop_free'
-	* bug 4747, 'matcher: simplify matcherprop_new'
-	* bug 4749, 'release regex_t in
-		     summary_compile_simplify_regexp'
-	* bug 4750, 'remove regcomp wrapper and call regcomp
-		     directly'
-	* bug 4752, 'Adjust incorrect debug_printf call in pgp
-		     plugins'
-	* bug 4754, 'text/enriched literal less-than sign sequence
-		     handled incorrectly
-	* bug 4757, 'remove AX_FUNC_MKDIR'
-	* bug 4758, 'remove unused check for bind_textdomain_codeset'
-	* bug 4759, 'remove unused function checks from
-		     AC_CHECK_FUNCS'
-	* bug 4760, 'use correct type for move_bar_id'
-	* bug 4762, 'oauth2: preserve an existing refresh token'
-	* bug 4765, 'only store smtp auth if authorization method is
-		     OAUTH2'
-	* bug 4766, 'preserve the expiry value of SMTP auth type is
-		     not OAUTH2'
-	* bug 4768, 'Adjust logic while evaluating enable_avatars'
-	* bug 4770, 'remove intl from list of include directories'
-	* bug 4773, 'remove obsolescent AC_C_CONST'
-	* bug 4780, 'use proper prototype for two archiver functions'
-	* bug 4781, 'use correct prototype for
-		     privacy_free_signature_data'
-	* bug 4782, 'use correct prototype for stop_archiving'
-	* bug 4786, 'remove type confusion in getsockopt call in
-		     sock_connect_async_cb'
-	* bug 4787, 'Use correct function for memory transfer in
-		     crypt_cfb_buf'
-	* bug 4788, '"Change primary passphrase" disabled status
-		     handling'
-	* bug 4790, 'widget spacing in "Changing primary passphrase"
-		     dialog'
-	* bug 4791, 'remove obsolete glib version check'
-	* bug 4795, 'Please remove -no-cpp-precomp flag for Apple'
-	* bug 4796, 'URL with wide character doesn't work'
-	* bug 4798, 'Quoting wrong when format=flowed and
-		     respect_flowed_format is set'
-	* CIDs 1220325, 1491306 and 1491315, 'Explicit null
-	  dereferenced (FORWARD_NULL)'
-	* CIDs 1491064, 1491074, 1491211, 1491105, 1491139, 1491164,
-	  1491166, 1491168, 1491169, 1491178, 1491232, 1491242,
-	  1492281 and 1591844 'Use after free (USE_AFTER_FREE)'
-	* CID 1491137 'Out-of-bounds access (OVERRUN)'
-	* CID 1591952 values overwritten before being used
-	* CID 1596594 (CHECKED_RETURN)
-	* CID 1596595 'Resource leak'
-	* errors caused by invalid MIME viewer command-line
-	* building on non-X11 systems
-	* Use CFLAGS provided by nettle.pc
-	* Fancy plugin, recognise mid and data embedded images
+	* bug 3964, 'Attachment icon doesn't show in message list unless
+		     the message is clicked and then disappears later'
+	* bug 4658, 'Headers unfolded incorrectly in message view'
+	* bug 4817, 'Edit button in Messages view->Text settings not
+		     translatable'
+	* bug 4818, 'Your Claws Mail configuration is from a newer...'
+		     dialog is shown more than once'
+	* bug 4819, 'Text wrapping broken when text contains an URL'
+	* bug 4821, 'If the Mail folder is on another partition, folder
+		     chmod settings are not applied to draft and queue'
+	* bug 4824, 'No syntax highlighting after exiting external editor'
+	* bug 4828, '"Mark" not translated anymore'
+	* bug 4835, 'Disallow a forward slash in (IMAP) account names'
+	* bug 4840, 'core dump unsubscribing from newsgroups'
+	* CID 1491093: attrib leaked if attvalue is null
+	* CID 1491370: unchecked return value.
+	* archive plugin build in debug mode.
+	* keep newsgroup subscription window on top when 'subscribe to
+	  newsgroup...' fails and newsgroup list can't be retrieved
+	* don't silently fail to save a sent msg
+	* IMAP: show the clip icon in the message list as soon as
+	  possible
+	* stop needlessly checking which folders want sycnhronising every
+	  time we select a msg in an MH mailbox
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
