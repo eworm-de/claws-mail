@@ -12040,8 +12040,8 @@ msgid "SysTrayicon"
 msgstr "Icône de la barre système"
 
 #: src/plugins/notification/notification_prefs.c:547
-msgid "Atayana App Indicator"
-msgstr "Indicateur Atayana App"
+msgid "Ayatana App Indicator"
+msgstr "Indicateur Ayatana App"
 
 #: src/plugins/notification/notification_prefs.c:565
 msgid "Indicator"
