@@ -337,6 +337,10 @@ AC_ARG_ENABLE(more-archive-debug,
         [  --enable-more-archive-debug     Build with additional debug calls in archive plugin],
         [enable_more_archive_debug=$enableval], [enable_more_archive_debug=no])
 
+AC_ARG_ENABLE(timing-debug,
+        [  --enable-timing-debug     Build with timing debug calls],
+        [enable_timing_debug=$enableval], [enable_timing_debug=no])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -1057,6 +1061,15 @@ if test x$enable_more_archive_debug = xyes; then
 	more_debug_output_modules="$more_debug_output_modules ArchivePlugin"
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG_ARCHIVE, 1, [Define if you want additional archive plugin debug calls])
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to build with timing debug calls])
+if test x$enable_timing_debug = xyes; then
+	more_debug_output_modules="$more_debug_output_modules timing"
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG_TIMING, 1, [Define if you want timing debug calls])
 else
 	AC_MSG_RESULT(no)
 fi

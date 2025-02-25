@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & the Claws Mail team
+ * Copyright (C) 2005-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
     }                                                                         \
   } while (0)
 
-#if 0 /* set to 0 to measure times at various places */
+#ifndef DEBUG_TIMING
 #define START_TIMING(str) do {} while(0);
 #define END_TIMING() do {} while(0);
 #else
