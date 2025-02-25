@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <section id="ch_intro">
-<title>Introducción</title>
+<title>Introducci&oacute;n</title>
 
   <section id="intro_what">
-    <title>¿Qué es &CM;?</title>
+    <title>&iquest;Qu&eacute; es &CM;?</title>
     <para>
-	&CM; es un cliente de correo electrónico orientado a ser rápido, 
-	fácil de usar y potente. Mayormente es independiente del escritorio 
-	usado, pero intenta integrarse en el escritorio de la mejor manera 
-	posible. Los desarrolladores de &CM; intentan por todos los medios 
-	mantenerlo ligero, de manera que sea utilizable en ordenadores de 
-	bajo coste o sin mucha memoria o potencia de CPU.
+	&CM; es un cliente de correo electr&oacute;nico orientado a ser
+	r&aacute;pido, f&aacute;cil de usar y potente. Mayormente es
+	independiente del escritorio usado, pero intenta integrarse en el
+	escritorio de la mejor manera posible. Los desarrolladores de &CM;
+	intentan por todos los medios mantenerlo ligero, de manera que sea
+	utilizable en ordenadores de bajo coste o sin mucha memoria o
+	potencia de CPU.
     </para>
   </section>
 
   <section id="intro_whatnot">
-    <title>¿Qué no es &CM;?</title>
+    <title>&iquest;Qu&eacute; no es &CM;?</title>
     <para>
-	&CM; no es un gestor de información personal completo como Evolution 
-	u Outlook, aunque los módulos externos proporcionan estas 
-	funcionalidades. &CM; no le permitirá escribir y enviar correos HTML 
-	u otros tipos de cosas desagradables, por lo que para algunos entornos
-	empresariales puede que no sea el software que necesita.
+	&CM; no es un gestor de informaci&oacute;n personal completo como
+	Evolution u Outlook, aunque los m&oacute;dulos externos proporcionan
+	estas funcionalidades. &CM; no le permitir&aacute; escribir y enviar
+	correos HTML u otros tipos de cosas desagradables, por lo que para
+	algunos entornos empresariales puede que no sea el software que
+	necesita.
     </para>
   </section>
 
-  <section id="intro_features"> 
-    <title>Características principales</title>
+  <section id="intro_features">
+    <title>Caracter&iacute;sticas principales</title>
     <para>
-    	&CM; brinda casi todo lo que un perfecto cliente de correo necesita.
-	Recuperacion de correo POP3, IMAP4, buzón local, sobre SSL; soporta
-	varios métodos de autentificación; Tiene múltiples cuentas y buzones,
-	potentes funcionalidades de filtrado y búsqueda, capacidad de 
-	importación y exportación de varios formatos, soporte de GnuPG
-	(firmas digitales y cifrado). Soporta módulos, barras de herramientas
-	configurables, corrección ortográfica, mecanismos para evitar cualquier
-	pérdida de datos, preferencias para cada carpeta y mucho más. Una 
-	lista de las características se puede encontrar en <ulink 
+	&CM; brinda casi todo lo que un perfecto cliente de correo necesita.
+	Recuperacion de correo POP3, IMAP4, buz&oacute;n local, sobre SSL;
+	soporta varios m&eacute;todos de autentificaci&oacute;n; Tiene
+	m&uacute;ltiples cuentas y buzones, potentes funcionalidades de
+	filtrado y b&uacute;squeda, capacidad de importaci&oacute;n y
+	exportaci&oacute;n de varios formatos, soporte de GnuPG (firmas
+	digitales y cifrado). Soporta m&oacute;dulos, barras de herramientas
+	configurables, correcci&oacute;n ortogr&aacute;fica, mecanismos para
+	evitar cualquier p&eacute;rdida de datos, preferencias para cada
+	carpeta y mucho m&aacute;s. Puede encontrar una lista de las
+	caracter&iacute;sticas en <ulink
 	url="https://www.claws-mail.org/features.php"
 	>www.claws-mail.org/features.php</ulink>.
     </para>
@@ -45,34 +49,38 @@
   <section id="intro_history">
     <title>Historia de &CM;</title>
     <para>
-	&CM; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
-	servir de banco de puebas para posibles características de Sylpheed (
-	<ulink url="http://sylpheed.sraoss.jp/en/"
-	>sylpheed.sraoss.jp/en/</ulink>), de manera que las nuevas
-	funcionalidades se pudieran probar ampliamente sin comprometer la
-	estabilidad de Sylpheed. Los desarrolladores de &CM; sincronizaban
-	regularmente su código fuente con el de Sylpheed, y el autor de
-	Sylpheed, Hiroyuki Yamamoto, tomaba las nuevas funcionalidades que
-	le gustaban una vez se estabilizaban.
+	&CM; ha existido desde Abril del 2001. Inicialmente se llam&oacute;
+	Sylpheed-Claws y se renombr&oacute; a &CM; en Noviembre de 2006. El
+	objetivo inicial de &CM; fue servir de banco de puebas para posibles
+	caracter&iacute;sticas de Sylpheed ( <ulink
+	url="http://sylpheed.sraoss.jp/en/"
+	>sylpheed.sraoss.jp/en/</ulink>), y poder probarlas ampliamente
+	sin comprometer la estabilidad de Sylpheed. Los desarrolladores de
+	Sylpheed-Claws sincronizaban regularmente su c&oacute;digo fuente
+	con el de Sylpheed, y el autor de Sylpheed, Hiroyuki Yamamoto,
+	incorporaba las nuevas funcionalidades que le gustaban una vez se
+	estabilizaban.
     </para><para>
-	Originalmente ambos, Sylpheed y &CM; estaban basados en GTK1. El
-	trabajo en las versiones GTK2 empezó a principios del 2003, y el
-	primer &CM; moderno (basado en GTK2) se liberó en Marzo del 2005.
-	Desde esa época los objetivos de Sylpheed y &CM; empezaron a ser
-	más divergentes, y &CM; se convirtió en una entidad por si mismo.
+	Originalmente ambos, Sylpheed y &CM;, estaban basados en GTK1. El
+	trabajo en las versiones GTK2 comenz&oacute; a principios del 2003,
+	y el primer Sylpheed-Claws moderno (basado en GTK2) se liber&oacute;
+	en Marzo del 2005. Desde m&aacute;s o menos esa &eacute;poca los
+	objetivos de Sylpheed y Sylpheed-Claws empezaron a ser m&aacute;s
+	divergentes, y Sylpheed-Claws se convirti&oacute; en una entidad por
+	si mismo. Este es el motivo de que su nombre sea ahora &CM;.
     </para>
   </section>
 
   <section id="intro_information">
     <title>URLs de utilidad</title>
     <para>
-	Sitio web: <ulink 
-	url="https://www.claws-mail.org">www.claws-mail.org</ulink>
+	Sitio web: <ulink url="https://www.claws-mail.org"
+	>www.claws-mail.org</ulink>
     </para><para>
 	&Uacute;ltimas noticias: <ulink url="https://www.claws-mail.org/news.php"
 	>www.claws-mail.org/news.php</ulink>
     </para><para>
-	Módulos adicionales: <ulink 
+	M&oacute;dulos adicionales: <ulink
 	url="https://www.claws-mail.org/plugins.php"
 	>www.claws-mail.org/plugins.php</ulink>
     </para><para>
@@ -85,11 +93,11 @@
 	Listas de correo: <ulink url="https://www.claws-mail.org/MLs.php"
 	>www.claws-mail.org/MLs.php</ulink>
     </para><para>
-	Seguimiento de fallos: <ulink 
+	Seguimiento de fallos: <ulink
 	url="https://www.thewildbeast.co.uk/claws-mail/bugzilla/"
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para><para>
-	Código fuente:
+	C&oacute;digo fuente:
     </para>
     <variablelist>
       <varlistentry>
@@ -102,7 +110,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term>Repositorio de código</term>
+       <term>Repositorio de c&oacute;digo</term>
        <listitem>
          <para>
            <ulink url="https://git.claws-mail.org/"
@@ -114,4 +122,3 @@
   </section>
 
 </section>
-
