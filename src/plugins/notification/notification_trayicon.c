@@ -118,18 +118,18 @@ static GtkWidget *focused_widget = NULL;
 
 static GtkActionEntry trayicon_popup_menu_entries[] = {
 	{"SysTrayiconPopup", NULL, "SysTrayiconPopup", NULL, NULL, NULL },
-	{"SysTrayiconPopup/GetMail", NULL, N_("_Get Mail"), NULL, NULL, G_CALLBACK(trayicon_get_all_cb) },
-	{"SysTrayiconPopup/GetMailAcc", NULL, N_("_Get Mail from account"), NULL, NULL, NULL },
+	{"SysTrayiconPopup/GetMail", NULL, N_("Get Mail"), NULL, NULL, G_CALLBACK(trayicon_get_all_cb) },
+	{"SysTrayiconPopup/GetMailAcc", NULL, N_("Get Mail from account"), NULL, NULL, NULL },
 	{"SysTrayiconPopup/---", NULL, "---", NULL, NULL, NULL },
-	{"SysTrayiconPopup/Email", NULL, N_("_Email"), NULL, NULL, G_CALLBACK(trayicon_compose_cb) },
-	{"SysTrayiconPopup/EmailAcc", NULL, N_("E_mail from account"), NULL, NULL, NULL },
-	{"SysTrayiconPopup/OpenAB", NULL, N_("Open A_ddressbook"), NULL, NULL, G_CALLBACK(trayicon_addressbook_cb) },
-	{"SysTrayiconPopup/Exit", NULL, N_("E_xit Claws Mail"), NULL, NULL, G_CALLBACK(trayicon_exit_cb) },
+	{"SysTrayiconPopup/Email", NULL, N_("Email"), NULL, NULL, G_CALLBACK(trayicon_compose_cb) },
+	{"SysTrayiconPopup/EmailAcc", NULL, N_("Email from account"), NULL, NULL, NULL },
+	{"SysTrayiconPopup/OpenAB", NULL, N_("Open Addressbook"), NULL, NULL, G_CALLBACK(trayicon_addressbook_cb) },
+	{"SysTrayiconPopup/Exit", NULL, N_("Exit Claws Mail"), NULL, NULL, G_CALLBACK(trayicon_exit_cb) },
 };
 
 static GtkToggleActionEntry trayicon_popup_toggle_menu_entries[] =
 {
-	{"SysTrayiconPopup/ToggleOffline", NULL, N_("_Work Offline"), NULL, NULL, G_CALLBACK(trayicon_toggle_offline_cb), FALSE },
+	{"SysTrayiconPopup/ToggleOffline", NULL, N_("Work Offline"), NULL, NULL, G_CALLBACK(trayicon_toggle_offline_cb), FALSE },
 #ifdef HAVE_LIBNOTIFY
 	{"SysTrayiconPopup/ShowBubbles", NULL, N_("Show Trayicon Notifications"), NULL, NULL, G_CALLBACK(trayicon_toggle_notify_cb), FALSE },
 #endif
