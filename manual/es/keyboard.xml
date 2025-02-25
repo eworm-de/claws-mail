@@ -5,19 +5,19 @@
   <section id="keyb_general">
     <title>Motivaciones y convenciones generales</title>
     <para>
-	Aunque &SC; es una aplicación gráfica y principalmente puede ser 
+	Aunque &CM; es una aplicación gráfica y principalmente puede ser 
 	utilizada con el ratón, también requiere del uso frecuente del teclado.
 	Componer un mensaje es una de las tareas más comunes que hace uso
 	del teclado. Para la gente que escribe muchos correos tener que
 	apartar las manos del teclado al ratón disminuye la productividad de
-	manera notable, por lo que &SC; proporciona una serie de atajos de
+	manera notable, por lo que &CM; proporciona una serie de atajos de
 	teclado para permitir un manejo más rápido.
     </para>
     <para>
 	Esto no sólo beneficia a los usuarios avanzados proporcionándoles
 	alternativas y navegación con teclado, si no que también permite que
 	gente con discapacidades (que pueden no ser capaces de controlar
-	adecuadamente un dispositivo apuntador) pueda usar &SC;. 
+	adecuadamente un dispositivo apuntador) pueda usar &CM;. 
     </para>
     <para>
 	La convención más general es la tecla <option>Escape</option>. Los

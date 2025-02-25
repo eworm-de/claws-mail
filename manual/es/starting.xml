@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <section id="ch_starting">
-<title>Comenzando con &SC;</title>
+<title>Comenzando con &CM;</title>
 
   <section id="start_wizard">
     <title>El asistente inicial</title>
     <para>
-	La primera vez que inicie &SC; tendrá que responder a unas pocas
+	La primera vez que inicie &CM; tendrá que responder a unas pocas
 	preguntas para poder configurar una cuenta. Estas preguntas son
 	fáciles de responder y están agrupadas en varias páginas breves. 
     </para><para>
@@ -58,7 +58,7 @@
     	</variablelist>
     </blockquote>
     <para>
-	Cuando pulse el botón <quote>Auto-configurar</quote>, &SC; intentará
+	Cuando pulse el botón <quote>Auto-configurar</quote>, &CM; intentará
 	configurar los servidores de su cuenta a partir de su dirección de
 	correo electrónico y el tipo de cuenta elegida.
     </para>
@@ -76,13 +76,13 @@
 	guardará los correos en un directorio llamado <quote>Mail</quote> en
 	su directorio personal.
     </para><para>
-	Si &SC; se construyó con soporte para OpenSSL lo siguiente que verá
+	Si &CM; se construyó con soporte para OpenSSL lo siguiente que verá
 	será la página de <quote>Seguridad</quote>. Aquí podrá elegir el uso
 	de cifrado SSL para enviar y recibir sus correos. La mayoría de ISP
 	no permiten esto, pero muchas empresas lo hacen. Si no está seguro
 	sobre ello puede dejarlo sin seleccionar.
     </para><para>
-	Ahora puede pulsar el botón Guardar y comenzar a disfrutar de &SC;.
+	Ahora puede pulsar el botón Guardar y comenzar a disfrutar de &CM;.
     </para>
   </section>
 
@@ -93,7 +93,7 @@
 	barra de herramientas denominado <quote>Recibir</quote> o desde el
 	submenú <quote>Recibir</quote> del menú <quote>Mensaje</quote>.
     </para><para>
-	Si quiere que &SC; compruebe su correo automáticamente a intervalos
+	Si quiere que &CM; compruebe su correo automáticamente a intervalos
 	regulares, puede indicárlo en la página de preferencias <quote>Manejo
 	de correo: Recibiendo</quote> que encontrará en el menú 
 	<quote>Configuración/Preferencias...</quote>. Simplemente marque la
@@ -134,7 +134,7 @@
 	podrá indicar el asunto del mensaje, y posteriormente escribir su
 	contenido.
     </para><para>
-	Una pequeña nota sobre el asunto del mensaje: &SC; le pedirá
+	Una pequeña nota sobre el asunto del mensaje: &CM; le pedirá
 	confirmación si intenta enviar un correo con un asunto vacío. Esto es
 	así porque puede ser desagradable para el destinatario recibir
 	mensajes sin un asunto, ya que ésto no ayuda a gestionar el correo.

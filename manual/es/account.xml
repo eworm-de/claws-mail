@@ -10,7 +10,7 @@
 	como su nombre indica los datos indispensables de la cuenta. En esta
 	pestaña puede especificar su nombre, dirección de correo, organización
 	y la información básica de conexión. El nombre de la cuenta es sólo el
-	nombre que &SC; usará para referirse a ella, por ejemplo, en el
+	nombre que &CM; usará para referirse a ella, por ejemplo, en el
 	selector de cuenta de la esquina inferior derecha de la ventana
 	principal. La información del servidor le permite indicar el protocolo
 	de recepción a usar (que no es modificable en cuentas ya existentes),
@@ -19,7 +19,7 @@
 	y su nombre de usuario en el servidor de recepción.
     </para><para>
 	En la pestaña <quote>Recibir</quote> se puede cambiar el comportamiento
-	predeterminado de &SC;. Por ejemplo, dejar los mensajes en el servidor
+	predeterminado de &CM;. Por ejemplo, dejar los mensajes en el servidor
 	durante un tiempo, evitar la descarga de correos demasiado grandes, o
 	especificar si se quiere que las reglas de filtrado se apliquen a los
 	mensajes de esta cuenta. La opción <quote>Límite de tamaño al
@@ -147,7 +147,7 @@
   <section id="account_multiple">
     <title>Múltiples cuentas</title>
     <para>
-	Se pueden crear fácilmente múltiples cuentas en &SC;. Para las cuentas
+	Se pueden crear fácilmente múltiples cuentas en &CM;. Para las cuentas
 	POP se puede almacenar todo el correo de distintas cuentas en la(s)
 	misma(s) carpeta(s), usando la configuración de la pestaña
 	<quote>Recibir</quote>. Las cuentas IMAP y de noticias tienen sus

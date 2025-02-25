@@ -10,7 +10,7 @@
 	en diferentes secciones: la <quote>Agenda de direcciones</quote> y
 	sus subseciones, que contienen los contactos añadidos localmente; las
 	secciones vCard, que contienen las vCard importadas; y, si el
-	soporte para ello ha sido incluido en &SC;, las secciones LDAP y
+	soporte para ello ha sido incluido en &CM;, las secciones LDAP y
 	jPilot, conteniendo contactos de sus servidores LDAP o dispositivos
 	de mano.
     </para><para>
@@ -45,7 +45,7 @@
   <section id="addrbk_expimp">
     <title>Exportando e importando direcciones</title>
     <para>
-	&SC; puede importar agendas de direcciones fácilmente desde la mayoría
+	&CM; puede importar agendas de direcciones fácilmente desde la mayoría
 	de los programas de correo electrónico. Desde el menú
 	<quote>Herramientas</quote> en la agenda de direcciones podrá importar
 	agendas de Pine o Mutt. Como estos formatos no están muy difundidos,
@@ -69,14 +69,14 @@
       <para>
 	Los servidores LDAP se utilizan para compartir agendas de direcciones
 	en un entorno de red. A menudo están disponibles en empresas. Activar
-	un servidor LDAP en &SC; es bastante sencillo. Seleccione en el menú
+	un servidor LDAP en &CM; es bastante sencillo. Seleccione en el menú
 	<quote>Agenda/Nuevo servidor LDAP</quote>, después elija un nombre
 	para este servidor LDAP. Introduzca el nombre de la máquina con el
 	servidor (<emphasis>p.ej. <quote>ldap.sylpheed.org</quote></emphasis>),
 	su puerto si es necesario (<emphasis>el puerto estándar es el 389
 	</emphasis>). Puede entonces rellenar la <quote>Base de
 	búsqueda</quote> si conoce el valor a usar o pulsar el botón
-	<quote>Comprobar servidor</quote> para que &SC; intente deducirla de
+	<quote>Comprobar servidor</quote> para que &CM; intente deducirla de
 	manera automática. Si su servidor necesita autentificación, puede
 	establecerla en la pestaña <quote>Extendido</quote>
 	Cuando cierre esta ventana pulsando <quote>Aceptar</quote> el
@@ -94,14 +94,14 @@
     <section id="addrbk_adv_jpilot">
       <title>Integración con jPilot</title>
       <para>
-	&SC; puede usar las direcciones almacenadas en su dispositivo de mano.
+	&CM; puede usar las direcciones almacenadas en su dispositivo de mano.
       </para>
     </section>
 
     <section id="addrbk_adv_vcard">
       <title>Soporte de vCard</title>
       <para>
-	&SC; puede importar las vCard de sus contactos utilizando el menú
+	&CM; puede importar las vCard de sus contactos utilizando el menú
 	<quote>Agenda/Nueva vCard</quote>.
       </para>
     </section>

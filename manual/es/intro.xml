@@ -3,23 +3,23 @@
 <title>Introducción</title>
 
   <section id="intro_what">
-    <title>¿Qué es &SC;?</title>
+    <title>¿Qué es &CM;?</title>
     <para>
-	&SC; es un cliente de correo electrónico orientado a ser rápido, 
+	&CM; es un cliente de correo electrónico orientado a ser rápido, 
 	fácil de usar y potente. Mayormente es independiente del escritorio 
 	usado, pero intenta integrarse en el escritorio de la mejor manera 
-	posible. Los desarrolladores de &SC; intentan por todos los medios 
+	posible. Los desarrolladores de &CM; intentan por todos los medios 
 	mantenerlo ligero, de manera que sea utilizable en ordenadores de 
 	bajo coste o sin mucha memoria o potencia de CPU.
     </para>
   </section>
 
   <section id="intro_whatnot">
-    <title>¿Qué no es &SC;?</title>
+    <title>¿Qué no es &CM;?</title>
     <para>
-	&SC; no es un gestor de información personal completo como Evolution 
+	&CM; no es un gestor de información personal completo como Evolution 
 	u Outlook, aunque los módulos externos proporcionan estas 
-	funcionalidades. &SC; no le permitirá escribir y enviar correos HTML 
+	funcionalidades. &CM; no le permitirá escribir y enviar correos HTML 
 	u otros tipos de cosas desagradables, por lo que para algunos entornos
 	empresariales puede que no sea el software que necesita.
     </para>
@@ -28,7 +28,7 @@
   <section id="intro_features"> 
     <title>Características principales</title>
     <para>
-    	&SC; brinda casi todo lo que un perfecto cliente de correo necesita.
+    	&CM; brinda casi todo lo que un perfecto cliente de correo necesita.
 	Recuperacion de correo POP3, IMAP4, buzón local, sobre SSL; soporta
 	varios métodos de autentificación; Tiene múltiples cuentas y buzones,
 	potentes funcionalidades de filtrado y búsqueda, capacidad de 
@@ -43,23 +43,23 @@
   </section>
 
   <section id="intro_history">
-    <title>Historia de &SC;</title>
+    <title>Historia de &CM;</title>
     <para>
-	&SC; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
+	&CM; ha existido desde Abril del 2001. El objetivo inicial de &SC; fue
 	servir de banco de puebas para posibles características de Sylpheed (
 	<ulink url="http://sylpheed.sraoss.jp/en/"
 	>sylpheed.sraoss.jp/en/</ulink>), de manera que las nuevas
 	funcionalidades se pudieran probar ampliamente sin comprometer la
-	estabilidad de Sylpheed. Los desarrolladores de &SC; sincronizaban
+	estabilidad de Sylpheed. Los desarrolladores de &CM; sincronizaban
 	regularmente su código fuente con el de Sylpheed, y el autor de
 	Sylpheed, Hiroyuki Yamamoto, tomaba las nuevas funcionalidades que
 	le gustaban una vez se estabilizaban.
     </para><para>
-	Originalmente ambos, Sylpheed y &SC; estaban basados en GTK1. El
+	Originalmente ambos, Sylpheed y &CM; estaban basados en GTK1. El
 	trabajo en las versiones GTK2 empezó a principios del 2003, y el
-	primer &SC; moderno (basado en GTK2) se liberó en Marzo del 2005.
-	Desde esa época los objetivos de Sylpheed y &SC; empezaron a ser
-	más divergentes, y &SC; se convirtió en una entidad por si mismo.
+	primer &CM; moderno (basado en GTK2) se liberó en Marzo del 2005.
+	Desde esa época los objetivos de Sylpheed y &CM; empezaron a ser
+	más divergentes, y &CM; se convirtió en una entidad por si mismo.
     </para>
   </section>
 

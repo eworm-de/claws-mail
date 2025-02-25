@@ -146,7 +146,7 @@
 	los campos Para, Cc, Bcc y el Asunto.
     </para><para>
 	Más información y ejemplos de uso se pueden encontrar en las preguntas
-	frecuentes de usuario (FAQ) en el sitio web de &SC; <ulink
+	frecuentes de usuario (FAQ) en el sitio web de &CM; <ulink
 	url="https://www.claws-mail.org/faq/"
 	>www.claws-mail.org/faq/</ulink>.
     </para>
@@ -214,14 +214,14 @@
 	Cuando ya existen etiquetas es aún más fácil, ya que el menú contextual
 	permite establecer o quitar etiquetas con un sólo clic sobre los
 	mensajes seleccionados. Se permiten selecciones que mezclen mensajes
-	etiquetados o no, y &SC; será lo suficientemente hábil para hacer lo
+	etiquetados o no, y &CM; será lo suficientemente hábil para hacer lo
 	que el usuario desea en cualquier caso.
   </para>
   </section>
   <section id="adv_ml_support">
   <title>Soporte de listas de correo</title>
   <para>
-	&SC; ofrece soporte para listas de correo desde el submenú
+	&CM; ofrece soporte para listas de correo desde el submenú
 	<quote>Mensaje/Lista de correo</quote>. Cuando tenga seleccionado un
 	mensaje de una lista de correo, el submenú le permite rápidamente
 	iniciar la suscripción, desuscribirse, enviar un correo, obtener ayuda,
@@ -233,34 +233,34 @@
   <section id="adv_plugins">
     <title>Módulos</title>
     <para>
-	Los módulos son el mecanismo para extender las capacidades de &SC;.
+	Los módulos son el mecanismo para extender las capacidades de &CM;.
 	Por ejemplo, imagine que quiere almacenar sus mensajes en una base
 	de datos <acronym>SQL</acronym> remota. En la mayoría de clientes
 	que encontrará esto es simplemente imposible sin reconstruir toda la
-	estructura interna del mismo. Con &SC; puede simplemente escribir un
+	estructura interna del mismo. Con &CM; puede simplemente escribir un
 	módulo para conseguirlo.
     </para><para>
 	Este sólo es un ejemplo de las posibilidades. Ya existe un buen número
-	de módulos desarrollados para &SC;, y más están por venir. La <link
-	linkend="ch_plugins">sección Extendiendo &SC;</link> contiene más
+	de módulos desarrollados para &CM;, y más están por venir. La <link
+	linkend="ch_plugins">sección Extendiendo &CM;</link> contiene más
 	detalles sobre ellos.
     </para>
   </section>
   <section id="deploying">
-    <title>Desplegando &SC;</title>
+    <title>Desplegando &CM;</title>
     <para>
 	La asistente de configuración inicial intenta rellenar varios campos
 	utilizando información recolectada del sistema, como el nombre de
 	usuario, nombre de la máquina, y otros. Como está orientado al uso
 	general los valores predeterminados a menudo tienen que ser fijos.
 	Sin embargo este asistente es configurable, de tal manera que permite
-	a los administradores de sistema desplegar &SC; fácilmente para varios
+	a los administradores de sistema desplegar &CM; fácilmente para varios
 	usuarios de una máquina o, incluso, sobre múltiples máquinas instaladas
 	con alguna herramienta de replicación.
     </para><para>
 	La primera parte consiste en crear una plantilla para el asistente
 	de configuración y establecer los parámetros predeterminados de una
-	nueva instalación de &SC;.
+	nueva instalación de &CM;.
     </para>
     <itemizedlist>
       <listitem>
@@ -272,7 +272,7 @@
       </listitem>
       <listitem>
 	<para>
-	Inicie &SC; y navegue por el asistente. Los valores que introduzca no
+	Inicie &CM; y navegue por el asistente. Los valores que introduzca no
 	serán de utilidad para el futuro despliegue, así que puede pulsar
 	siguiente-siguiente-siguiente.
 	</para>
@@ -280,20 +280,20 @@
       <listitem>
 	<para>
 	Una vez que el asistente haya finalizado y tenga la ventana principal
-	de &SC; abierta, configure los valores predeterminados que quiera en
+	de &CM; abierta, configure los valores predeterminados que quiera en
 	la copia maestra. Puede cargar módulos, añadir gente o servidores LDAP
 	en la agenda, crear reglas de filtrado, etc.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Si es necesario y el despliege de &SC; usará carpetas MH, puede crear
+	Si es necesario y el despliege de &CM; usará carpetas MH, puede crear
 	subdirectorios en el buzón.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	A continuación, salga de &SC;.
+	A continuación, salga de &CM;.
 	</para>
       </listitem>
       <listitem>
@@ -322,7 +322,7 @@
 	(de manera que el árbol de carpetas sea leído correctamente para los
 	nuevos usuarios). Copie recursivamente <filename
 	class="directory">.claws-mail</filename> a <filename
-	class="directory">/etc/skel/</filename>. Si el despliegue de &SC; va
+	class="directory">/etc/skel/</filename>. Si el despliegue de &CM; va
 	a usar carpetas MH, copie tambien el directorio <filename
 	class="directory">Mail</filename> creado. Cambie los permisos de todos
 	los ficheros bajo <filename
@@ -334,7 +334,7 @@
       <listitem>
 	<para>
 	¡Pruebe! Cree un usuario nuevo, inicie la sesión como ese usuario y
-	ejecute &SC;. Si todo fue rellenado tal y como quería, el usuario
+	ejecute &CM;. Si todo fue rellenado tal y como quería, el usuario
 	simplemente tendrá que rellenar su contraseña.
 	</para>
       </listitem>
@@ -581,12 +581,12 @@
   <section id="adv_hidden">
     <title>Preferencias ocultas</title>
     <para>
-	Hay cierto número de preferencias ocultas en &SC;, preferencias sin
+	Hay cierto número de preferencias ocultas en &CM;, preferencias sin
 	las que ciertos usuarios a quienes quisimos complacer no podrían
 	vivir, pero que en nuestra opinión no tienen lugar en el interfaz
 	gráfico. Puede encontrarlas en el fichero de configuración
 	<filename>~/.claws-mail/clawsrc</filename>, y cambiarlas mientras
-	&SC; no esté ejecutándose.
+	&CM; no esté ejecutándose.
     </para>
     <para>
 	Existe una pequeña herramienta gráfica escrita en Perl-GTK denominada
@@ -690,7 +690,7 @@
 	<listitem>
 	  <para>
 	El color que se usará para la línea X-Mailer cuando su valor sea
-	&SC;. El valor predeterminado es '#0000CF' (azul medio).
+	&CM;. El valor predeterminado es '#0000CF' (azul medio).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1027,7 +1027,7 @@
         <term><literal>unsafe_ssl_certs</literal></term>
 	<listitem>
 	  <para>
-	Permite a &SC; recordar múltiples certificados SSL para un
+	Permite a &CM; recordar múltiples certificados SSL para un
 	servidor/puerto dado cuando está a '1'. Está deshabilitado de manera
 	predeterminada ('0').
 	  </para>
@@ -1111,7 +1111,7 @@
   <section id="adv_autofaces">
     <title>Autofaces</title>
     <para>
-	&SC; permite establecer el contenido de las cabeceras Face y X-Face
+	&CM; permite establecer el contenido de las cabeceras Face y X-Face
 	directamente desde ficheros, bien globalmente para todas las cuentas
 	definidas o bien para cada cuenta en particular. Estos ficheros
 	deben ubicarse en el directorio
@@ -1137,7 +1137,7 @@
 	<filename>~/.claws-mail/autofaces/xface._Mi_Correo_</filename>.
 	Nótese que esta funcionalidad no comprueba el contenido de los
 	ficheros, ni la existencia de cabeceras duplicadas (la mayoría de los
-	clientes de correo, incluyendo &SC;, ignorarán los duplicados y sólo
+	clientes de correo, incluyendo &CM;, ignorarán los duplicados y sólo
 	mostrarán la última de ellas).
     </para>
   </section>

@@ -8,7 +8,7 @@
 	Si recibe un montón de correos pronto se encontrará con que su carpeta
 	de Entrada ha crecido hasta el punto en que encontrar un mensaje,
 	incluso si lo ha recibido hace unos días, se vuelve una tarea árdua.
-	Esta es la razón por la que &SC;, como la mayoría de los buenos
+	Esta es la razón por la que &CM;, como la mayoría de los buenos
 	clientes de correo, proporciona múltiples posibilidades de organización
 	de los mensajes al usuario.
     </para><para>
@@ -65,7 +65,7 @@
 	El protocolo IMAP permite guardar una lista de carpetas suscritas.
 	La mayoría de los agentes de usuario no muestran en la interfaz
 	gráfica las carpetas no suscritas y tienen una pequeña ventana que
-	permite suscribirse a dichas carpetas. Por defecto en &SC; se respetan
+	permite suscribirse a dichas carpetas. Por defecto en &CM; se respetan
 	las suscripciones, y sólo se mostrarán las carpetas suscritas. Si
 	desea ver todas las carpetas desmarque <quote>Mostrar sólo las carpetas
 	suscritas</quote> en el menú contextual del buzón IMAP o en las
@@ -83,7 +83,7 @@
     <title>Filtrado</title>
     <para>
 	Una vez haya creado una elegante estructura de carpetas, probablemente
-	querrá que &SC; distribuya los mensajes entrantes automáticamente, de
+	querrá que &CM; distribuya los mensajes entrantes automáticamente, de
 	manera que no haya que moverlos manualmente cada vez que llegan. Para
 	ésto se puede usar el mecanismo de filtrado.
     </para><para>
@@ -95,13 +95,13 @@
 	un nombre, una condición y una acción. Las reglas desactivadas
 	simplemente se ignoran. El nombre es opcional, pero sirve para facilitar
 	la identificación de las reglas existentes. El formato de la condición
-	es una expresión que define lo que &SC; deberá buscar al filtrar los
+	es una expresión que define lo que &CM; deberá buscar al filtrar los
 	mensajes, por ejemplo: <quote>to matchcase claws-mail-users</quote>
 	es para mensajes enviados a cualquier dirección que contenga
 	<quote>claws-mail-users</quote>. Puede definir condiciones
 	fácilmente pulsando el botón <quote>Definir...</quote> a la derecha del
 	campo. La tercera parte de una regla de filtrado es la acción, que
-	indica a &SC; que hacer con los mensajes que cumplan la condición que
+	indica a &CM; que hacer con los mensajes que cumplan la condición que
 	hemos definido. Por ejemplo, <quote>mark_as_read</quote> marcaría el
 	correo como leído tan pronto como llegase a la Entrada, o <quote>move
 	#mh/Mailbox/inbox/Amigos</quote> movería el mensaje a la subcarpeta
@@ -110,7 +110,7 @@
     </para><para>
 	Una vez haya definido la regla, puede añadirla a la lista de reglas
 	con el botón <quote>Añadir</quote>. No olvide que el orden de las
-	reglas es importante: si &SC; encuentra una regla adecuada para un
+	reglas es importante: si &CM; encuentra una regla adecuada para un
 	mensaje que lo mueve o lo borra estó detendrá la búsqueda de más reglas
 	para él. Esta es la razón de los botones en la parte derecha de la
 	lista de reglas, que permiten la reordenación de las mismas. Las reglas
@@ -147,7 +147,7 @@
 	de los mensajes que coincidan, o utilize <quote>Encontrar todos</quote>
 	para seleccionar todos los mensajes de una vez. Tenga en cuenta que
 	buscar en el cuerpo de los mensajes es mucho más lento que buscar en
-	las cabeceras, ya que los cuerpos no están en la cache de &SC;.
+	las cabeceras, ya que los cuerpos no están en la cache de &CM;.
     </para><para>
 	Si está leyendo un correo muy grande y quiere encontrar alguna parte
 	concreta del mismo puede usar la opción <quote>Buscar en el mensaje

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appendix id="ap_faq">
-<title>Las preguntas frecuentes (FAQ) de &SC;</title>
+<title>Las preguntas frecuentes (FAQ) de &CM;</title>
   <section>
-    <title>¿Cuáles son las diferencias entre &SC; y Sylpheed?</title>
+    <title>¿Cuáles son las diferencias entre &CM; y Sylpheed?</title>
     <para>
-	&SC; es un nuevo proyecto basado en Sylpheed (también denominado
+	&CM; es un nuevo proyecto basado en Sylpheed (también denominado
 	<emphasis>fork</emphasis> en Inglés), por tanto encontrará todas las
 	funcionalidades de Sylpheed y muchas más. También incluye algunos
 	diálogos modificados para mejorar la usabilidad. Puede encontrar más
@@ -13,7 +13,7 @@
     </para>
   </section>
   <section>
-    <title>¿Me permite &SC; escribir mensajes HTML?</title>
+    <title>¿Me permite &CM; escribir mensajes HTML?</title>
     <para>
 	No. Se debatió sobre este tema, y el resultado fue que el correo
 	HTML es algo no deseado. Si realmente necesita enviar HTML puede,
@@ -21,7 +21,7 @@
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo enviar parches, informar de fallos y hablar de &SC;
+    <title>¿Cómo puedo enviar parches, informar de fallos y hablar de &CM;
       con otros?</title>
     <para>
 	Los parches deben enviarse a través de nuestro Bugzilla, <ulink
@@ -38,29 +38,29 @@
     </para>
     <para>
 	Para hablar con otros debería unirse a la lista de correo de
-	usuarios de &SC;. Los detalles los puede encontrar en <ulink
+	usuarios de &CM;. Los detalles los puede encontrar en <ulink
 	url="https://www.claws-mail.org/MLs.php"
 	>www.claws-mail.org/MLs.php</ulink>.
     </para>
   </section>
   <section>
-    <title>¿Tiene &SC; alguna funcionalidad anti-spam?</title>
+    <title>¿Tiene &CM; alguna funcionalidad anti-spam?</title>
     <para>
 	Sí. Tiene módulos para SpamAssassin y Bogofilter. Puede encontrar
 	más detalles sobre ello en el capítulo <link linkend="ch_plugins"
-	>Extendiendo &SC;</link>.
+	>Extendiendo &CM;</link>.
     </para>
     <para>
 	También puede usar otros filtros de correo basura como Bogofilter a
 	través de las funcionalidades de <quote>Filtrado</quote> y
 	<quote>Acciones</quote>. Las instrucciones para usar Bogofilter con
-	&SC; se pueden encontrar en las <ulink
+	&CM; se pueden encontrar en las <ulink
 	url="http://bogofilter.sourceforge.net/faq.shtml#with-sc"
 	>preguntas frecuentes (FAQ) de Bogofilter</ulink>.
     </para>
   </section>
   <section>
-    <title>¿Soporta &SC; acuses de recibo?</title>
+    <title>¿Soporta &CM; acuses de recibo?</title>
     <para>
 	Sí. Para solicitar un acuse de recibo utilice
 	<quote>Opciones/Solicitar acuse de recibo</quote> en la ventana de
@@ -77,7 +77,7 @@
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo hacer que &SC; me avise cuando llega correo nuevo?
+    <title>¿Cómo puedo hacer que &CM; me avise cuando llega correo nuevo?
     </title>
     <para>
 	Vaya a <quote>Configuración/Preferencias</quote> y en la sección
@@ -105,9 +105,9 @@
   </section>
   <section>
     <title>¿Dónde puedo encontrar las respuestas a más preguntas frecuentes
-    sobre &SC;?</title>
+    sobre &CM;?</title>
     <para>
-	Dentro el sitio web de &SC;, en <ulink
+	Dentro el sitio web de &CM;, en <ulink
 	url="https://www.claws-mail.org/faq/"
 	>www.claws-mail.org/faq/</ulink>, se puede encontrar una
 	colección más amplia de preguntas frecuentes aportadas por los

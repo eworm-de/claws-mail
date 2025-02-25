@@ -12,18 +12,18 @@
   <!ENTITY ap_glossary SYSTEM "glossary.xml">
   <!ENTITY ap_ack      SYSTEM "ack.xml">
   <!ENTITY ap_gpl      SYSTEM "gpl.xml">
-  <!ENTITY SC          "Claws Mail">
+  <!ENTITY CM          "Claws Mail">
 ]>
 <article>
-  <title>Manual de usuario de &SC;</title>
+  <title>Manual de usuario de &CM;</title>
   <subtitle></subtitle>
   <articleinfo>
     <corpauthor>
-	    <ulink url="http://www.claws-mail.org/">El equipo de &SC;</ulink>
+	    <ulink url="http://www.claws-mail.org/">El equipo de &CM;</ulink>
     </corpauthor>
     <copyright>
       <year>2006-2025</year>
-      <holder>El equipo de &SC;.</holder>
+      <holder>El equipo de &CM;.</holder>
     </copyright>
     <legalnotice id="license">
       <para>

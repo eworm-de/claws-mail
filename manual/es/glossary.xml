@@ -34,7 +34,7 @@
     </term>
     <listitem>
       <para>
-	Fichero adicional incluido con un mensaje de correo. &SC; puede
+	Fichero adicional incluido con un mensaje de correo. &CM; puede
 	mostrar algunos adjuntos, otros necesitan programas externos. Los
 	<xref linkend="gt_plugins" /> pueden proporcionar funciones
 	adicionales para los adjuntos.
@@ -80,7 +80,7 @@
       <para>
 	Conjuntos de botones dispuestos horizontalmente que proporcionan
 	acceso a las funciones usadas habitualmente. Las barras de
-	herramientas en &SC; son configurables por el usuario.
+	herramientas en &CM; son configurables por el usuario.
       </para>
     </listitem>
   </varlistentry>
@@ -133,7 +133,7 @@
     <listitem>
       <para>
 	Una carpeta es el contenedor de mensajes principal. Las carpetas
-	pueden ser locales o remotas, pero &SC; las gestiona de manera
+	pueden ser locales o remotas, pero &CM; las gestiona de manera
 	uniforme.
       </para>
     </listitem>
@@ -240,7 +240,7 @@
     </term>
     <listitem>
       <para>
-	Una cuenta representa una identidad dentro de &SC;. Como tal, sólo
+	Una cuenta representa una identidad dentro de &CM;. Como tal, sólo
 	una dirección de correo está asociada con cada cuenta. Sin embargo
 	el número de cuentas que puede configurar no está limitado.
       </para>
@@ -453,7 +453,7 @@
 	Las listas de correo electrónico constituyen un uso especial del
 	correo que permite la amplia distribución de información a muchos
 	usuarios de Internet. A menudo toman la forma de listas de
-	discusión, como la lista de usuarios de &SC;, donde un suscriptor
+	discusión, como la lista de usuarios de &CM;, donde un suscriptor
 	utiliza la lista para enviar mensajes al resto de suscriptores, los
 	cuales pueden contestar de manera similar.
       </para>
@@ -493,7 +493,7 @@
     <listitem>
       <para>
 	Un formato de buzón en el que todos los correos se concatenan y
-	almacenan en un solo fichero. El formato mbox soportado por &SC; es
+	almacenan en un solo fichero. El formato mbox soportado por &CM; es
 	el mboxrd.
       </para>
     </listitem>
@@ -504,7 +504,7 @@
     </term>
     <listitem>
       <para>
-	La undad básica de información manejada por &SC;. Un mensaje será
+	La undad básica de información manejada por &CM;. Un mensaje será
 	normalmente un mensaje de correo, almacenado en disco en formato
 	<xref linkend="gt_mh" />. A través de <xref linkend="gt_plugins" />
 	se pueden gestionar otros tipos de mensajes (y formatos de
@@ -519,7 +519,7 @@
     <listitem>
       <para>
 	Un formato de buzón en el que todos los correos se mantienen en
-	ficheros separados. Es el formato predeterminado que usa &SC;.
+	ficheros separados. Es el formato predeterminado que usa &CM;.
       </para>
     </listitem>
   </varlistentry>
@@ -543,10 +543,10 @@
     </term>
     <listitem>
       <para>
-	Elementos externos que &SC; puede cargar y utilizar para extender
+	Elementos externos que &CM; puede cargar y utilizar para extender
 	sus funcionalidades. En términos técnicos estos elementos son
 	librerías dinámicas que pueden registrar una o varias funciones que
-	&SC; llamará cuando algo <emphasis>interesante</emphasis> se haga.
+	&CM; llamará cuando algo <emphasis>interesante</emphasis> se haga.
       </para>
     </listitem>
   </varlistentry>
@@ -891,7 +891,7 @@
     <listitem>
       <para>
 	Conjuntos de imágenes para cambiar la apariencia de los botones,
-	carpetas y otros elementos gráficos de &SC;.
+	carpetas y otros elementos gráficos de &CM;.
       </para>
     </listitem>
   </varlistentry>
@@ -923,7 +923,7 @@
 	(Localizador uniforme de recurso). Es un esquema de nombrado para
 	objetos (ficheros normalmente) en entornos de red multi-protocolo
 	como Internet. Por ejemplo ésta es la de la página principal de
-	&SC;: <literal>https://www.claws-mail.org</literal>.
+	&CM;: <literal>https://www.claws-mail.org</literal>.
       </para>
     </listitem>
   </varlistentry>
@@ -978,7 +978,7 @@
     <listitem>
       <para>
 	Una ventana especial que registra en detalle las operaciones de
-	protocolo realizadas por &SC;. Es una herramienta útil para la
+	protocolo realizadas por &CM;. Es una herramienta útil para la
 	depuración de fallos.
       </para>
     </listitem>
@@ -1010,7 +1010,7 @@
       <para>
 	Imagen en blanco y negro (48x48 pixels) codificada de manera
 	especial e incluida en las cabeceras del mensaje. Los clientes de
-	correo capacitados, como &SC; y otros, pueden decodificarla y
+	correo capacitados, como &CM; y otros, pueden decodificarla y
 	mostrarla junto al texto del mensaje. Aunque no son únicas, pueden
 	ayudar a la rápida identificación del remitente del mensaje. Véase
 	también <xref linkend="gt_face" />.
