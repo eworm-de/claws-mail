@@ -7967,7 +7967,7 @@ msgstr "Crear regla de f_iltrado"
 #: src/mainwindow.c:749 src/mainwindow.c:756 src/messageview.c:322
 #: src/messageview.c:329
 msgid "_Automatically"
-msgstr "_Automático"
+msgstr "_Automáticamente"
 
 #: src/mainwindow.c:750 src/mainwindow.c:757 src/mainwindow.c:865
 #: src/messageview.c:323 src/messageview.c:330
