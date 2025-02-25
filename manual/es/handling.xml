@@ -11,8 +11,7 @@
 	Esta es la razón por la que &SC;, como la mayoría de los buenos
 	clientes de correo, proporciona múltiples posibilidades de organización
 	de los mensajes al usuario.
-    </para>
-    <para>
+    </para><para>
 	Puede crear tantas carpetas y subcarpetas como necesite. Por ejemplo,
 	una carpeta para la familia, otra para los amigos, carpetas para
 	listas de correo, carpetas de archivo para correos antiguos que aún
@@ -64,16 +63,16 @@
     <title>Suscripciones IMAP</title>
     <para>
 	El protocolo IMAP permite guardar una lista de carpetas suscritas.
-	La mayoría de los agentes de usuario no muestran en el interfaz 
-	gráfico las carpetas no suscritas y tienen una pequeña ventana que
+	La mayoría de los agentes de usuario no muestran en la interfaz
+	gráfica las carpetas no suscritas y tienen una pequeña ventana que
 	permite suscribirse a dichas carpetas. Por defecto en &SC; se respetan
 	las suscripciones, y sólo se mostrarán las carpetas suscritas. Si
 	desea ver todas las carpetas desmarque <quote>Mostrar sólo las carpetas
-	suscritas</quote> en el menú de contexto del buzón IMAP o en las
-	preferencias de la cuenta. También podrá suscribir y desuscribir 
-	carpetas desde este menú contextual. Si las carpetas no suscritas no 
-	aparecen en la lista tendrá dos maneras de suscribirse a una carpeta: 
-	o bien mostrar todas las carpetas, suscribir las que quiera y ocultar 
+	suscritas</quote> en el menú contextual del buzón IMAP o en las
+	preferencias de la cuenta. También podrá suscribir y desuscribir
+	carpetas desde este menú contextual. Si las carpetas no suscritas no
+	aparecen en la lista tendrá dos maneras de suscribirse a una carpeta:
+	o bien mostrar todas las carpetas, suscribir las que quiera y ocultar
 	las carpetas no suscritas de nuevo, o bien, si sabe los nombres de las
 	carpetas, usar <quote>Crear nueva carpeta</quote> en el menú contextual
 	de su antecesora.
@@ -87,15 +86,14 @@
 	querrá que &SC; distribuya los mensajes entrantes automáticamente, de
 	manera que no haya que moverlos manualmente cada vez que llegan. Para
 	ésto se puede usar el mecanismo de filtrado.
-    </para>
-    <para>
+    </para><para>
 	Encontrará las preferencias de filtrado a través del elemento
 	<quote>Filtrado...</quote> del menú de <quote>Configuración</quote>.
 	Desde este diálogo podrá definir nuevas reglas, modificar o borrar
 	las existentes, reordenarlas, y activarlas o desactivarlas. Las reglas
 	de filtrado se componen de cuatro elementos: su estado de activación,
 	un nombre, una condición y una acción. Las reglas desactivadas
-	simplemente se ignoran. El nombre es opcional, pero está para facilitar
+	simplemente se ignoran. El nombre es opcional, pero sirve para facilitar
 	la identificación de las reglas existentes. El formato de la condición
 	es una expresión que define lo que &SC; deberá buscar al filtrar los
 	mensajes, por ejemplo: <quote>to matchcase claws-mail-users</quote>
@@ -106,7 +104,7 @@
 	indica a &SC; que hacer con los mensajes que cumplan la condición que
 	hemos definido. Por ejemplo, <quote>mark_as_read</quote> marcaría el
 	correo como leído tan pronto como llegase a la Entrada, o <quote>move
-	#mh/Mailbox/inbox/Amigos</quote> movería el mensaje a la subcarpeta 
+	#mh/Mailbox/inbox/Amigos</quote> movería el mensaje a la subcarpeta
 	<quote>Amigos</quote>. Aquí también el botón <quote>Definir...</quote>
 	está disponible para ayudarle a definir las acciones a realizar.
     </para><para>
@@ -118,19 +116,19 @@
 	lista de reglas, que permiten la reordenación de las mismas. Las reglas
 	también se pueden reordenar arrastrando y soltando con el ratón.
     </para><para>
-	También existe un método rápido para crear reglas de filtrado basadas
-	en el mensaje seleccionado. Después de seleccionar un correo del tipo
+	Existe también un método rápido para crear reglas de filtrado a partir
+	del mensaje seleccionado. Después de seleccionar un correo del tipo
 	que quiera filtrar, seleccione <quote>Crear regla de filtrado</quote>
 	en el menú <quote>Herramientas</quote> y elija un tipo del submenú:
-	<quote>Automáticamente</quote> es útil para mensajes de listas de 
-	correo, <quote>Basada en Desde</quote> crea un filtro a partir del
-	remitente del correo, <quote>Basada en Para</quote> lo hace a partir
-	del destinatario y <quote>Basada en el Asunto</quote> lo crea en
+	<quote>Automáticamente</quote> es útil para mensajes de listas de
+	correo, <quote>Por el Desde</quote> crea un filtro a partir del
+	remitente del correo, <quote>Por el Para</quote> lo hace a partir
+	del destinatario y <quote>Por el Asunto</quote> lo crea en
 	función del asunto del correo. Cada uno de estos tipos de filtrado
 	tiene sus ventajas, dejando al usuario que encuentre la que le
-	resulte más práctica. Normalmente, <quote>Basada en Desde</quote> es
+	resulte más práctica. Normalmente, <quote>Por el Desde</quote> es
 	mejor para organizar correos de los contactos habituales, mientras que
-	<quote>Basada en Para</quote> es más útil para organizar los mensajes
+	<quote>Por el Para</quote> es más útil para organizar los mensajes
 	que le envíen a sus distintas cuentas.
     </para>
   </section>
@@ -138,13 +136,13 @@
   <section id="handling_searching">
     <title>Buscando</title>
     <para>
-	Existen varios métodos para buscar en sus mensajes de correo.
+	Existen varias maneras de buscar en sus mensajes de correo.
     </para><para>
 	Una de ellas es relativamente estándar, y se puede encontrar en el
-	menú <quote>Editar</quote>, es la opción <quote>Buscar en 
+	menú <quote>Editar</quote>, es la opción <quote>Buscar en
 	carpeta...</quote>. Esto abrirá una ventana donde se pueden especificar
-	uno o más campos por los que buscar: Desde, Para, Asunto y Cuerpo. 
-	Una vez especificados los criterios pulse en los botones 
+	uno o más campos por los que buscar: Desde, Para, Asunto y Cuerpo.
+	Una vez especificados los criterios pulse en los botones
 	<quote>Atrás</quote> o <quote>Adelante</quote> para navegar a través
 	de los mensajes que coincidan, o utilize <quote>Encontrar todos</quote>
 	para seleccionar todos los mensajes de una vez. Tenga en cuenta que
@@ -152,7 +150,7 @@
 	las cabeceras, ya que los cuerpos no están en la cache de &SC;.
     </para><para>
 	Si está leyendo un correo muy grande y quiere encontrar alguna parte
-	concreta del mismo puede usar la opción <quote>Buscar en el mensaje 
+	concreta del mismo puede usar la opción <quote>Buscar en el mensaje
 	actual...</quote> del menú <quote>Editar</quote>. Funciona igual que
 	la búsqueda en un documento de texto.
     </para><para>
@@ -164,24 +162,24 @@
 	La <quote>búsqueda rápida</quote> es más potente que la búsqueda normal,
 	ya que puede buscar en las cabeceras estándar (Desde, Para, Asunto)
 	o en modo <quote>Extendido</quote> utilizando prácticamente cualquier
-	criterio que pueda imaginar. En modo <quote>Extendido</quote> el botón 
+	criterio que pueda imaginar. En modo <quote>Extendido</quote> el botón
 	de <quote>Información</quote> es visible, lo que permite ver la sintaxis
 	de búsqueda. El botón <quote>Editar</quote> también esta disponible
-	para crear rápidamente una regla. Además se puede configurar la 
+	para crear rápidamente una regla. Además se puede configurar la
 	<quote>búsqueda rápida</quote> para buscar recursivamente por las
 	subcarpetas y si debe o no reinicializarse por si misma cuando se
 	cambia de carpeta.
     </para><para>
-	Cuando pulse Entrar después de haber especificado la cadena de 
+	Cuando pulse Entrar después de haber especificado la cadena de
 	búsqueda, la lista de mensajes se reducirá para mostrarle sólo los
 	mensajes que coincidan. Si se configuró la búsqueda recursivamente
 	cualquier subcarpeta de la actual que contenga mensajes que coincidan
 	cambiará su icono por el de una lupa. De esta manera puede buscar en
 	todo el buzón de una sola vez. Si la búsqueda esta en modo pegajoso
-	el filtro permanecerá aplicado cuando se cambie a otra carpeta. 
+	el filtro permanecerá aplicado cuando se cambie a otra carpeta.
 	&Eacute;sto
 	puede ser molesto inicialmente, ya que puede que se olvide de ello,
-	pero es útil en algunos casos, por ejemplo si quiere buscar en el 
+	pero es útil en algunos casos, por ejemplo si quiere buscar en el
 	cuerpo de los mensajes y no está seguro de la carpeta que lo contiene:
 	una búsqueda recursiva sobre el cuerpo de los correos de todo el buzón
 	puede ser realmente lenta.
@@ -189,4 +187,3 @@
   </section>
 
 </section>
-
