@@ -353,7 +353,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	COLOR_BUTTON_PACK_START(hbox, COL_TGT_FOLDER,
 				C_("Tooltip and Dialog title",
-				   "Pick color for Target folder."));
+				   "Pick color for Target folder"));
 	COLOR_LABEL_PACK_START(hbox, COL_TGT_FOLDER, _("Target folder"));
 	gtk_widget_set_tooltip_text(GTK_WIDGET(label[COL_TGT_FOLDER]), 
 				    C_("Tooltip", "Target folder is used when the option "
