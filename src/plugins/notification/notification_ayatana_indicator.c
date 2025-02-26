@@ -1,5 +1,5 @@
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2024 Holger Berndt, Jan Willamowius and the Claws Mail Team.
+ * Copyright (C) 2005-2025 the Claws Mail Team, Holger Berndt and Jan Willamowius
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ void notification_update_ayatana_indicator(void)
 
   gtk_menu_item_set_label(GTK_MENU_ITEM(status), buf);
   if (count.new_msgs > 0) {
-    app_indicator_set_icon_full(ayatana_indicator, "indicator-messages-new", "");
+    app_indicator_set_icon_full(ayatana_indicator, "mail-message-new-symbolic", "");
   } else if (count.unread_msgs > 0) {
     app_indicator_set_icon_full(ayatana_indicator, "mail-unread-symbolic", "");
   } else {
