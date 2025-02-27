@@ -320,6 +320,9 @@ static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
 		return -1;
 
 	parentinfo = procmime_mimeinfo_parent(mimeinfo);
+	if (parentinfo == NULL)
+		return -1;
+
 	childnumber = g_node_child_index(parentinfo->node, mimeinfo);
 	
 	procmime_mimeinfo_free_all(&mimeinfo);
