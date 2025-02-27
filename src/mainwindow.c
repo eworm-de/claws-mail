@@ -4355,7 +4355,7 @@ static void cancel_cb(GtkAction *action, gpointer data)
 static void open_msg_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_open_msg(mainwin->summaryview);
+	summary_open_msg(mainwin->summaryview, TRUE, FALSE);
 }
 
 static void view_source_cb(GtkAction *action, gpointer data)

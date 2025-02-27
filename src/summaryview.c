@@ -170,7 +170,8 @@ static void summary_display_msg		(SummaryView		*summaryview,
 static void summary_display_msg_full	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row,
 					 gboolean		 new_window,
-					 gboolean		 all_headers);
+					 gboolean		 all_headers,
+					 gboolean		 from_sep_msgview);
 static void summary_set_row_marks	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row);
 
@@ -3589,7 +3590,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 static void summary_display_msg(SummaryView *summaryview, GtkCMCTreeNode *row)
 {
-	summary_display_msg_full(summaryview, row, FALSE, FALSE);
+	summary_display_msg_full(summaryview, row, FALSE, FALSE, FALSE);
 }
 
 static gboolean defer_change(gpointer data);
@@ -3728,7 +3729,8 @@ static int msginfo_mark_as_read_timeout(void *data)
 
 static void summary_display_msg_full(SummaryView *summaryview,
 				     GtkCMCTreeNode *row,
-				     gboolean new_window, gboolean all_headers)
+				     gboolean new_window, gboolean all_headers,
+				     gboolean from_sep_msgview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
@@ -3807,6 +3809,9 @@ static void summary_display_msg_full(SummaryView *summaryview,
 					msginfo_mark_as_read_timeout, data);
 		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {
 			msginfo_mark_as_read(summaryview, msginfo, row);
+		} else if (from_sep_msgview &&
+			   prefs_common.mark_as_read_on_new_window) {
+			msginfo_mark_as_read(summaryview, msginfo, row);
 		}
 	}
 
@@ -3824,7 +3829,7 @@ void summary_display_msg_selected(SummaryView *summaryview,
 	if (summary_is_locked(summaryview)) return;
 	summaryview->displayed = NULL;
 	summary_display_msg_full(summaryview, summaryview->selected, FALSE,
-				 all_headers);
+				 all_headers, FALSE);
 }
 
 void summary_redisplay_msg(SummaryView *summaryview)
@@ -3838,14 +3843,15 @@ void summary_redisplay_msg(SummaryView *summaryview)
 	}
 }
 
-void summary_open_msg(SummaryView *summaryview)
+void summary_open_msg(SummaryView *summaryview, gboolean new_window,
+		      gboolean from_sep_msgview)
 {
 	if (!summaryview->selected) return;
 	
 	/* CLAWS: if separate message view, don't open a new window
 	 * but rather use the current separated message view */
 	summary_display_msg_full(summaryview, summaryview->selected, 
-				 TRUE, FALSE);
+				 new_window, FALSE, from_sep_msgview);
 }
 
 void summary_view_source(SummaryView * summaryview)
@@ -7182,7 +7188,7 @@ void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 	if (FOLDER_SHOWS_TO_HDR(summaryview->folder_item))
 		summary_reedit(summaryview);
 	else
-		summary_open_msg(summaryview);
+		summary_open_msg(summaryview, TRUE, FALSE);
 
 	summaryview->display_msg = FALSE;
 }
