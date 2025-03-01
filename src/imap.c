@@ -171,8 +171,8 @@ struct _IMAPFolderItem
 
 	GHashTable *flags_set_table;
 	GHashTable *flags_unset_table;
-	guint32 last_change;
-	guint32 last_sync;
+	time_t last_change;
+	time_t last_sync;
 	gboolean should_update;
 	gboolean should_trash_cache;
 	gint can_create_flags;
