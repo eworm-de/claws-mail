@@ -5,9 +5,12 @@
   <section id="plugins_default">
     <title>M&oacute;dulos</title>
     <para>
+
 	Las capacidades de &CM; se amplian usando m&oacute;dulos, cuya lista
 	aparece debajo.
+
     </para><para>
+
 	Los m&oacute;dulos se instalan en <filename class="directory"
 	>$PREFIX/lib/claws-mail/plugins/</filename> y
 	tienen el sufijo <quote>.so</quote>. Para cargar un m&oacute;dulo
@@ -16,33 +19,42 @@
 	bot&oacute;n <quote>Cargar m&oacute;dulo</quote>. Seleccione el
 	m&oacute;dulo que desee cargar y pulse el bot&oacute;n
 	<quote>Aceptar</quote>.
+
     </para><para>
+
 	Si no encuentra el m&oacute;dulo que busca es posible que la
 	distribuci&oacute;n de su sistema operativo lo proporcione en
 	alg&uacute;n paquete distinto. En ese caso busque el m&oacute;dulo
 	con su gestor de paquetes.
+
     </para><para>
+
 	Algunos m&oacute;dulos proporcionan la misma funcionalidad que otros
 	(por ejemplo, los tres m&oacute;dulos anti-correo basura). En tal
 	caso tendr&aacute; que elejir cual de ellos cargar, ya que &CM; no
 	cargar&aacute; m&aacute;s de uno del mismo tipo a la vez.
+
     </para>
     <para>
+
 	Existe una lista de todos los m&oacute;dulos disponibles en <ulink
 	url="https://www.claws-mail.org/plugins.php"
 	>www.claws-mail.org/plugins.php</ulink>.
+
     </para>
     <variablelist>
       <varlistentry>
         <term>Nofificador ACPI</term>
 	<listitem>
 	  <para>
+
 	Permite la notificaci&oacute;n del correo nuevo a trav&eacute;s de
 	los LEDs que se encuentran en ciertos modelos de port&aacute;til de
 	marcas como Acer, Asus, Fujitsu o IBM. M&aacute;s
 	informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=acpinotifier"
 	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -50,9 +62,11 @@
 	<term>Guardi&aacute;n de direcciones</term>
 	<listitem>
 	  <para>
-	Guarda todas las direcciones de destinatarios desconocidos (
-	<quote>Para</quote>, <quote>Cc</quote> y/o <quote>Bcc</quote>) en
-	una carpeta de la agenda de direcciones designada al efecto.
+
+	Guarda todas las direcciones de destinatarios desconocidos
+	(<quote>Para</quote>, <quote>Cc</quote> y/o <quote>Bcc</quote>)
+	en una carpeta de la agenda de direcciones designada al efecto.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -60,6 +74,7 @@
 	<term>Aviso de adjuntos</term>
 	<listitem>
 	  <para>
+
 	Le recuerda la posibilidad de que se haya olvidado adjuntos.
 	Comprueba expresiones comunes que se usan cuando se adjuntan
 	ficheros y le avisa si no se a&ntilde;adi&oacute; ning&uacute;n
@@ -67,6 +82,7 @@
 	informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=attachwarner"
 	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -74,7 +90,9 @@
 	<term>Eliminador de adjuntos</term>
 	<listitem>
 	  <para>
+
 	Permite eliminar los ficheros adjuntos de los mensajes.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -82,14 +100,19 @@
 	<term>Bogofilter</term>
 	<listitem>
 	  <para>
+
 	El m&oacute;dulo Bogofilter viene con dos caracter&iacute;sticas
 	principales:
+
 	  </para><para>
+
 	La habilidad para escanear el correo entrante recibido de cuentas
 	IMAP, POP3 o locales usando Bogofilter. Puede, opcionalmente, borrar
 	el correo identificado como basura o guardarlo en una carpeta
 	designada al efecto. El escaneado se puede desactivar.
+
 	  </para><para>
+
 	La posibilidad de que el usuario ense&ntilde;e a Bogofilter a
 	distinguir entre el correo basura o el aceptable. Puede entrenar a
 	Bogofilter marcando los mensajes como correo basura o como buenos en
@@ -99,19 +122,28 @@
 	herramientas</quote>.  Los mensajes marcados como basura se pueden
 	guardar en una carpeta designada al efecto tambi&eacute;n de manera
 	opcional.
+
 	  </para><para>
+
 	Las preferencias del m&oacute;dulo se pueden encontrar en
 	<quote>Configuraci&oacute;n/Preferencias/M&oacute;dulos/Bogofilter</quote>.
+
 	  </para><para>
+
 	La ventaja de Bogofilter sobre SpamAssassin es su velocidad.
+
 	  </para><para>
+
 	Bogofilter necesita entrenamiento antes de poder filtrar mensajes.
 	Para entrenarlo es necesario marcar alg&uacute;n correo basura como
 	tal y alg&uacute;n correo leg&iacute;timo como bueno.
+
 	  </para><para>
+
 	Bogofilter est&aacute; disponible en <ulink
 	url="http://bogofilter.sourceforge.net/"
 	>bogofilter.sourceforge.net/</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -119,17 +151,23 @@
         <term>BSFilter</term>
         <listitem>
           <para>
+
 	BSFilter es un m&oacute;dulo muy similar al Bogofilter pero utiliza
 	para realizar su tarea el filtro bayesiano de correo basura bsfilter
 	(<ulink url="http://bsfilter.org/index-e.html"
 	>bsfilter.org/index-e.html</ulink>).
+
           </para><para>
-	Al igual que con Bogofilter, hay que entrenarlo con mensajes
-	basura y mensajes leg&iacute;timos para que pueda comenzar a
-	reconocer el correo basura.
+
+	Al igual que con Bogofilter, hay que entrenarlo con mensajes basura
+	y mensajes leg&iacute;timos para que pueda comenzar a reconocer el
+	correo basura.
+
           </para><para>
+
 	Las preferencias se encuentran en
 	<quote>Configuraci&oacute;n/Preferencias/M&oacute;dulos/BSFilter</quote>.
+
           </para>
         </listitem>
       </varlistentry>
@@ -137,10 +175,12 @@
         <term>Clamd</term>
         <listitem>
           <para>
+
 	Permite escanear todos los mensajes recibidos de cuentas locales,
-	POP o IMAP usando el demonio clam, parte del software antivirus
-	Clam AV (<ulink url="http://www.clamav.net/"
+	POP o IMAP usando el demonio clam, parte del software antivirus Clam
+	AV (<ulink url="http://www.clamav.net/"
 	>www.clamav.net/</ulink>).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -148,12 +188,17 @@
         <term>Visor HTML Fancy</term>
         <listitem>
           <para>
+
 	Permite mostrar mensajes HTML usando la versi&oacute;n basada en GTK
 	de la librer&iacute;a WebKit. Por omisi&oacute;n no se carga
 	ning&uacute;n contenido remoto.
+
 	  </para><para>
+
 	Las preferencias se encuentran en
-	<quote>Configuraci&oacute;n/Preferencias/M&oacute;dulos/Visor HTML Fancy</quote>.
+	<quote>Configuraci&oacute;n/Preferencias/M&oacute;dulos/Visor HTML
+	Fancy</quote>.
+
 	  </para>
         </listitem>
       </varlistentry>
@@ -161,9 +206,11 @@
 	<term>Fetchinfo</term>
 	<listitem>
 	  <para>
+
 	Inserta cabeceras que contienen cierta informaci&oacute;n sobre la
 	descarga, como el UIDL, el nombre de la cuenta de &CM;, el servidor
 	POP, el identificador de usuario y la hora de descarga.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -171,8 +218,11 @@
 	<term>Aviso de palabras clave</term>
 	<listitem>
 	  <para>
+
 	Muestra un aviso al enviar o poner en la cola un mensaje y el texto
-	del mismo contiene alguna referencia a una o m&aacute;s palabras clave.
+	del mismo contiene alguna referencia a una o m&aacute;s palabras
+	clave.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -180,12 +230,14 @@
 	<term>Libravatar</term>
 	<listitem>
 	  <para>
+
 	Permite mostrar las im&aacute;genes de avatares asociadas a los
 	perfiles de usuario de libravatar.org o los dominios de los usuarios
 	que esten configurados para proporcionar avatares.  M&aacute;s
 	informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=libravatar"
 	>www.claws-mail.org/plugin.php?plugin=libravatar</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -193,7 +245,10 @@
 	<term>Archivador de correo</term>
 	<listitem>
 	  <para>
-	Permite archivar carpetas y subcarpetas en varios formatos diferentes.
+
+	Permite archivar carpetas y subcarpetas en varios formatos
+	diferentes.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -201,7 +256,9 @@
 	<term>mailMBOX</term>
 	<listitem>
 	  <para>
+
 	Gestiona buzones en formato Mbox.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -209,9 +266,11 @@
 	<term>NewMail</term>
 	<listitem>
 	  <para>
+
 	Escribe un resumen de las cabeceras de los mensajes en un fichero de
 	traza (por defecto <filename>~/Mail/NewLog</filename>) cuando llega
 	correo nuevo y <emphasis>despu&eacute;s</emphasis> de ordenarlo.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -219,11 +278,13 @@
 	<term>Notificaci&oacute;n</term>
 	<listitem>
 	  <para>
+
 	Proporciona varios m&eacute;todos para notificar al usuario sobre el
 	correo nuevo y no le&iacute;do. M&aacute;s informaci&oacute;n:
 	<ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=notification"
 	>www.claws-mail.org/plugin.php?plugin=notification</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -231,11 +292,13 @@
 	<term>Visor PDF</term>
 	<listitem>
 	  <para>
+
 	Permite visualizar los adjuntos de tipo PDF y PostScript utilizando
 	la biblioteca Poppler y el programa externo GhostScript. M&aacute;s
 	informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
 	>www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -243,9 +306,11 @@
 	<term>Perl</term>
 	<listitem>
 	  <para>
+
 	Para ampliar las posibilidades de filtrado de &CM;. Proporciona un
 	interfaz Perl al mecanismo de filtrado de &CM;, permitiendo el uso
 	de toda la potencia de Perl en los filtros de correo.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -253,6 +318,7 @@
 	<term>PGP/Core, PGP/Inline y PGP/MIME</term>
 	<listitem>
 	  <para>
+
 	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
 	correos y verificar firmas, as&iacute; como firmar y cifrar sus
 	propios correos. Utiliza GnuPG/GPGME, <ulink
@@ -261,6 +327,7 @@
 	M&aacute;s informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=gpg"
 	>www.claws-mail.org/plugin.php?plugin=gpg</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -268,10 +335,12 @@
         <term>Python</term>
         <listitem>
 	  <para>
+
 	Este m&oacute;dulo permite integrarse con Python.
 	M&aacute;s informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=python"
 	>www.claws-mail.org/plugin.php?plugin=python</ulink>.
+
 	  </para>
         </listitem>
       </varlistentry>
@@ -279,11 +348,13 @@
 	<term>RSSyl</term>
 	<listitem>
 	  <para>
+
 	Le permite leer sus canales de noticias (<emphasis>feeds</emphasis>)
 	en &CM;. Actualmente est&aacute;n soportados los canales RSS 1.0 y
 	2.0, as&iacute; como los Atom. M&aacute;s informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=rssyl"
 	>www.claws-mail.org/plugin.php?plugin=rssyl</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -291,11 +362,13 @@
 	<term>S/MIME</term>
 	<listitem>
 	  <para>
+
 	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
 	correos y verificar firmas digitales, as&iacute; como firmar y
 	cifrar sus propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles
 	en <ulink url="https://www.gnupg.org/software/gpgme/"
 	>www.gnupg.org/software/gpgme/</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -303,15 +376,20 @@
 	<term>SpamAssassin</term>
 	<listitem>
 	  <para>
+
 	El m&oacute;dulo SpamAssassin proporciona dos grandes
 	funcionalidades:
+
 	  </para><para>
+
 	La capacidad de escanear con SpamAssassin el correo entrante de
 	cualquier cuenta POP, IMAP o local. Opcionalmente puede borrar los
 	mensajes identificados como spam o guardarlos en una carpeta al
 	efecto.  El escaneo de correo se puede desactivar, lo cual es
 	&uacute;til si el correo ya es escaneado en su servidor.
+
 	  </para><para>
+
 	La posibilidad para que los usuarios ense&ntilde;en a SpamAssassin a
 	distinguir el spam de los correos deseados. Se puede entrenar a
 	SpamAssassin marcando los mensajes como spam o no usando el
@@ -321,15 +399,20 @@
 	<quote>Configuraci&oacute;n/Preferencias/Barras de
 	herramientas</quote>. Los mensajes marcados como spam se pueden
 	guardar opcionalmente en una carpeta destinada a ello.
+
 	  </para><para>
+
 	Las preferencias del m&oacute;dulo se encuentran en
 	<quote>Configuraci&oacute;n/Preferencias/M&oacute;dulos/SpamAssassin</quote>.
+
 	  </para><para>
+
 	SpamAssassin est&aacute; disponible en <ulink
 	url="http://spamassassin.apache.org/"
 	>spamassassin.apache.org/</ulink>. Es necesaria la versi&oacute;n
 	3.1.x o superior para utilizar la funcionalidad de aprendizaje en
 	modo TCP.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -337,6 +420,7 @@
 	<term>SpamReport</term>
 	<listitem>
 	  <para>
+
 	Este m&oacute;dulo permite informar sobre correo basura en varios
 	sitios. Actualmente est&aacute;n soportados los sitios <ulink
 	url="http://spam-signal.fr">spam-signal.fr</ulink> y <ulink
@@ -344,6 +428,7 @@
 	nominaci&oacute;n de correo basura de las <ulink
 	url="http://lists.debian.org">listas de Debian
 	(lists.debian.org)</ulink>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -351,11 +436,13 @@
 	<term>Int&eacute;rprete TNEF</term>
 	<listitem>
 	  <para>
+
 	Este m&oacute;dulo permite leer los adjuntos de tipo <literal
 	>application/ms-tnef</literal>.
 	M&aacute;s informaci&oacute;n: <ulink
 	url="https://www.claws-mail.org/plugin.php?plugin=tnef_parser"
 	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>.
+
           </para>
         </listitem>
       </varlistentry>
@@ -363,6 +450,7 @@
 	<term>vCalendar</term>
 	<listitem>
 	  <para>
+
 	Permite la gesti&oacute;n de mensajes vCalendar al estilo de
 	Evolution u Outlook, y tambi&eacute;n suscripciones Webcal.
 	M&aacute;s informaci&oacute;n: <ulink
@@ -373,6 +461,7 @@
       </varlistentry>
     </variablelist>
     <para>
+
 	Si usted es un desarrollador, escribir un m&oacute;dulo para
 	extender las capacidades de &CM; ser&aacute; probablemente la mejor
 	soluci&oacute;n y la m&aacute;s f&aacute;cil. Nosotros
@@ -380,12 +469,14 @@
 	encantados de responder a sus preguntas en la lista de correo o en
 	el canal de IRC, <literal>#claws</literal> en <ulink
 	url="https://libera.chat">Libera.chat</ulink>.
+
     </para>
   </section>
 
   <section id="plugins_network">
     <title>Acceso a la red desde los m&oacute;dulos</title>
     <para>
+
 	Algunos de los m&oacute;dulos externos, por ejemplo RSSyl,
 	vCalendar, Fancy o Libravatar, necesitan acceso a Internet para
 	llevar a cabo sus funciones (recuperar canales en el caso de RSSyl o
@@ -400,7 +491,9 @@
 	m&aacute;quina miproxy.ejemplo.com con el  usuario
 	<quote>usuario</quote> y contrase&ntilde;a <quote>contra</quote>
 	para conectarse a Internet.
+
     </para><para>
+
 	Puede establecer esta variable antes de iniciar &CM;, usando por por
 	ejemplo la orden
 	<command>http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080
@@ -411,38 +504,51 @@
 	su shell.</para></footnote>: <command>export
 	http_proxy=http://usuario:contra@miproxy.ejemplo.com:8080</command>
 	(tendr&aacute; que reconectar para que se tenga en cuenta).
+
     </para>
   </section>
 
   <section id="plugin_path_config">
     <title>Configuraci&oacute;n de la ruta de los m&oacute;dulos</title>
     <para>
+
 	Cuando se carga un m&oacute;dulo se guarda la ruta completa al mismo
 	en el fichero de configuraci&oacute;n
 	<filename>~/.claws-mail/clawsrc</filename>.
+
     </para><para>
+
 	Esto no es un problema puesto que la mayor&iacute;a de usuarios
 	s&oacute;lo utilizan una copia de &CM; y siempre usan el mismo
 	m&eacute;todo de instalaci&oacute;n.
+
     </para><para>
+
 	Por el contrario, puede que &eacute;sto no funcione si se tienen
 	m&uacute;ltiples copias de &CM; instaladas y desea compartir la
 	misma configuraci&oacute;n entre ellas, especialmente si se utilizan
 	diferentes versiones de &CM;.
+
     </para><para>
+
 	La copia instalada en segundo lugar intentar&aacute; cargar los
 	m&oacute;dulos instalados por la primera y, si las versiones
 	difieren, los m&oacute;dulos ser&aacute;n rechazados.
+
     </para><para>
+
 	Para evitar este problema se puede editar manualmente la
 	secci&oacute;n de los m&oacute;dulos en el fichero
 	<filename>clawsrc</filename>, sustituyendo la ruta completa por el
 	nombre del fichero &uacute;nicamente en aquellos que desee cargar de
 	manera relativa a la copia de &CM; en ejecuci&oacute;n.
+
     </para><para>
+
 	De esta manera cada copia de &CM; intentar&aacute; cargar esos
 	m&oacute;dulos de su propio directorio de m&oacute;dulos en lugar de
 	una ubicaci&oacute;n concreta.
+
     </para>
   </section>
 

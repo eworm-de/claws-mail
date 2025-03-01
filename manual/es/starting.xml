@@ -5,19 +5,25 @@
   <section id="start_wizard">
     <title>El asistente inicial</title>
 	<para>
+
 	La primera vez que inicie &CM; tendr&aacute; que responder a unas
 	pocas preguntas para poder configurar una cuenta. Estas preguntas
 	son f&aacute;ciles de responder y est&aacute;n agrupadas en varias
 	p&aacute;ginas breves.
+
 	</para><para>
+
 	Primero se le pedir&aacute; que rellene su nombre
 	(<emphasis>normalmente deducido a partir del sistema
 	operativo</emphasis>), su direcci&oacute;n de correo y el nombre de
 	su organizaci&oacute;n (<emphasis>opcional</emphasis>).
+
 	</para><para>
+
 	La p&aacute;gina siguiente le permite introducir los detalles de
 	c&oacute;mo recuperar su correo. El formato de la p&aacute;gina
 	vendr&aacute; dado por el <quote>Tipo de servidor</quote>:
+
 	</para>
     <blockquote>
       <variablelist>
@@ -25,10 +31,12 @@
 	<term>POP3</term>
 		<listitem>
 	<para>
+
 	Si elije POP3 necesitar&aacute; introducir la direcci&oacute;n del
-	servidor, nombre de usuario y contrase&ntilde;a. La contrase&ntilde;a es opcional,
-	si no se indica aqu&iacute; se le preguntar&aacute; cada vez que sea
-	necesaria.
+	servidor, nombre de usuario y contrase&ntilde;a. La
+	contrase&ntilde;a es opcional, si no se indica aqu&iacute; se le
+	preguntar&aacute; cada vez que sea necesaria.
+
 	</para>
 		</listitem>
 	    </varlistentry>
@@ -36,12 +44,14 @@
 	<term>IMAP</term>
 		<listitem>
 	<para>
+
 	Si elije IMAP necesitar&aacute; introducir la direcci&oacute;n del
-	servidor, nombre de usuario, contrase&ntilde;a y directorio del servidor
-	IMAP. La contrase&ntilde;a es opcional, si no se indica aqu&iacute; se le
-	preguntar&aacute; cada vez que sea necesaria. El directorio del
-	servidor IMAP es tambi&eacute;n opcional, a menudo no es necesario y
-	se puede dejar vac&iacute;o.
+	servidor, nombre de usuario, contrase&ntilde;a y directorio del
+	servidor IMAP. La contrase&ntilde;a es opcional, si no se indica
+	aqu&iacute; se le preguntar&aacute; cada vez que sea necesaria. El
+	directorio del servidor IMAP es tambi&eacute;n opcional, a menudo no
+	es necesario y se puede dejar vac&iacute;o.
+
 	</para>
 		</listitem>
 	    </varlistentry>
@@ -49,23 +59,28 @@
 	<term>Fichero mbox local</term>
 		<listitem>
 	<para>
+
 	Si elije fichero mbox local necesitar&aacute; introducir la
 	ubicaci&oacute;n del fichero de almacenamiento del buz&oacute;n
 	local. Esta ubicaci&oacute;n depende de su sistema operativo, pero
 	valores como <filename>/var/mail/usuario</filename> o
 	<filename>/var/spool/mail/usuario</filename> son comunes, donde
 	<literal>usuario</literal> es su nombre de usuario en el sistema.
+
 	  </para>
 		</listitem>
 	    </varlistentry>
       </variablelist>
     </blockquote>
     <para>
+
 	Cuando pulse el bot&oacute;n <quote>Auto-configurar</quote>, &CM;
 	intentar&aacute; configurar los servidores de su cuenta a partir de
 	su direcci&oacute;n de correo electr&oacute;nico y el tipo de cuenta
 	elegida.
+
     </para><para>
+
 	En la p&aacute;gina siguiente se introducir&aacute; la
 	direcci&oacute;n del servidor SMTP (<emphasis>tambi&eacute;n
 	denominado a veces <quote>servidor saliente</quote> </emphasis>).
@@ -73,33 +88,40 @@
 	enviar correo, que no es el caso habitual si est&aacute; usando un
 	ISP para conectar a Internet y es el caso habitual si est&aacute;
 	configurando una cuenta profesional.
+
     </para><para>
+
 	Si elige bien POP3 o bien fichero mbox local, la p&aacute;gina
 	siguiente le preguntar&aacute; donde quiere guardar su correo en el
 	disco. El valor predeterminado <quote>Mail</quote> ser&aacute;
 	normalmente adecuado, y guardar&aacute; los correos en un directorio
 	llamado <quote>Mail</quote> en su directorio personal.
+
     </para><para>
+
 	Si &CM; se construy&oacute; con soporte para OpenSSL lo siguiente
 	que ver&aacute; ser&aacute; la p&aacute;gina de
 	<quote>Seguridad</quote>. Aqu&iacute; podr&aacute; elegir el uso de
 	cifrado SSL para enviar y recibir sus correos. La mayor&iacute;a de
 	ISP no permiten esto, pero muchas empresas lo hacen. Si no
 	est&aacute; seguro sobre ello puede dejarlo sin seleccionar.
-    </para><para>
-	Ahora puede pulsar el bot&oacute;n Guardar y comenzar a disfrutar de
-	&CM;.
+	</para><para> Ahora puede pulsar el bot&oacute;n Guardar y comenzar
+	a disfrutar de &CM;.
+
     </para>
   </section>
 
   <section id="start_getting">
     <title>Obteniendo correo</title>
     <para>
+
 	La recuperaci&oacute;n del correo se puede realizar desde el
 	bot&oacute;n de la barra de herramientas denominado
 	<quote>Recibir</quote> o desde el submen&uacute;
 	<quote>Recibir</quote> del men&uacute; <quote>Mensaje</quote>.
+
     </para><para>
+
 	Si quiere que &CM; compruebe su correo autom&aacute;ticamente a
 	intervalos regulares, puede indic&aacute;rlo en la p&aacute;gina de
 	preferencias <quote>Manejo de correo: Recibiendo</quote> que
@@ -108,12 +130,14 @@
 	marque la casilla <quote>Comprobar si hay correo nuevo
 	autom&aacute;ticamente cada [...] minutos</quote> y establezca el
 	intervalo deseado.
+
     </para>
   </section>
 
   <section id="start_reading">
     <title>Leyendo su correo</title>
     <para>
+
 	Una vez que haya recuperado sus correos estos estar&aacute;n
 	contenidos en la carpeta Entrada. El n&uacute;mero total de mensajes
 	en una carpeta se muestra a la derecha del nombre de la misma,
@@ -126,12 +150,14 @@
 	espaciadora para mostrar y deslizar el contenido del mensaje. Se
 	pueden usar otras teclas para navegar por los mensajes como P y N
 	(anterior y siguiente respectivamente).
+
     </para>
   </section>
 
   <section id="start_writing">
     <title>Escribiendo su primer mensaje</title>
     <para>
+
 	Al pulsar en el bot&oacute;n <quote>Correo</quote> de la barra de
 	herramientas se abrir&aacute; una ventana de composici&oacute;n.
 	Esta ventana contiene distintos campos que deber&iacute;an ser
@@ -156,6 +182,7 @@
   <section id="start_sending">
     <title>Enviando su primer correo</title>
     <para>
+
 	Cuando haya finalizado de escribir su primer mensaje, puede pulsar
 	el bot&oacute;n <quote>Enviar</quote> para enviarlo inmediatamente o
 	bien usar el bot&oacute;n <quote>Enviar despu&eacute;s</quote> para
@@ -167,11 +194,14 @@
 	ser&aacute; almacenado en la carpeta Cola. Ser&aacute; enviado
 	cuando pulse el bot&oacute;n <quote>Enviar</quote> en la barra de
 	herramientas de la ventana principal.
+
     </para><para>
+
 	Los correos que env&iacute;e se guardar&aacute;n en la carpeta
 	Enviado de su buz&oacute;n, de manera que pueda recordar qu&eacute;
 	escribi&oacute; a qui&eacute;n, o usar un mensaje ya enviado como
 	base para escribir otro.
+
     </para>
   </section>
 

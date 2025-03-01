@@ -5,6 +5,7 @@
   <section id="intro_what">
     <title>&iquest;Qu&eacute; es &CM;?</title>
     <para>
+
 	&CM; es un cliente de correo electr&oacute;nico orientado a ser
 	r&aacute;pido, f&aacute;cil de usar y potente. Mayormente es
 	independiente del escritorio usado, pero intenta integrarse en el
@@ -12,27 +13,31 @@
 	intentan por todos los medios mantenerlo ligero, de manera que sea
 	utilizable en ordenadores de bajo coste o sin mucha memoria o
 	potencia de CPU.
+
     </para>
   </section>
 
   <section id="intro_whatnot">
     <title>&iquest;Qu&eacute; no es &CM;?</title>
     <para>
+
 	&CM; no es un gestor de informaci&oacute;n personal completo como
 	Evolution u Outlook, aunque los m&oacute;dulos externos proporcionan
 	estas funcionalidades. &CM; no le permitir&aacute; escribir y enviar
 	correos HTML u otros tipos de cosas desagradables, por lo que para
 	algunos entornos empresariales puede que no sea el software que
 	necesita.
+
     </para>
   </section>
 
   <section id="intro_features">
     <title>Caracter&iacute;sticas principales</title>
     <para>
+
 	&CM; brinda casi todo lo que un perfecto cliente de correo necesita.
-	Recuperacion de correo POP3, IMAP4, buz&oacute;n local, sobre SSL;
-	soporta varios m&eacute;todos de autentificaci&oacute;n; Tiene
+	Recuperaci&oacute;n de correo POP3, IMAP4, buz&oacute;n local, sobre
+	SSL; soporta varios m&eacute;todos de autentificaci&oacute;n; Tiene
 	m&uacute;ltiples cuentas y buzones, potentes funcionalidades de
 	filtrado y b&uacute;squeda, capacidad de importaci&oacute;n y
 	exportaci&oacute;n de varios formatos, soporte de GnuPG (firmas
@@ -43,16 +48,18 @@
 	caracter&iacute;sticas en <ulink
 	url="https://www.claws-mail.org/features.php"
 	>www.claws-mail.org/features.php</ulink>.
+
     </para>
   </section>
 
   <section id="intro_history">
     <title>Historia de &CM;</title>
     <para>
+
 	&CM; ha existido desde Abril del 2001. Inicialmente se llam&oacute;
 	Sylpheed-Claws y se renombr&oacute; a &CM; en Noviembre de 2006. El
 	objetivo inicial de &CM; fue servir de banco de puebas para posibles
-	caracter&iacute;sticas de Sylpheed ( <ulink
+	caracter&iacute;sticas de Sylpheed (<ulink
 	url="http://sylpheed.sraoss.jp/en/"
 	>sylpheed.sraoss.jp/en/</ulink>), y poder probarlas ampliamente
 	sin comprometer la estabilidad de Sylpheed. Los desarrolladores de
@@ -60,7 +67,9 @@
 	con el de Sylpheed, y el autor de Sylpheed, Hiroyuki Yamamoto,
 	incorporaba las nuevas funcionalidades que le gustaban una vez se
 	estabilizaban.
+
     </para><para>
+
 	Originalmente ambos, Sylpheed y &CM;, estaban basados en GTK1. El
 	trabajo en las versiones GTK2 comenz&oacute; a principios del 2003,
 	y el primer Sylpheed-Claws moderno (basado en GTK2) se liber&oacute;
@@ -68,6 +77,7 @@
 	objetivos de Sylpheed y Sylpheed-Claws empezaron a ser m&aacute;s
 	divergentes, y Sylpheed-Claws se convirti&oacute; en una entidad por
 	si mismo. Este es el motivo de que su nombre sea ahora &CM;.
+
     </para>
   </section>
 

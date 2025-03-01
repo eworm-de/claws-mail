@@ -4,34 +4,43 @@
   <section id="adv_actions">
     <title>Acciones</title>
     <para>
-	Las acciones le permitirán utilizar toda la potencia de la línea de
-	órdenes de Unix con sus correos. Puede definir múltiples órdenes,
-	con parámetros como el fichero de correo actual, una lista de mensajes,
-	el texto seleccionado actualmente, y similares. Así podrá realizar
-	varias tareas, como editar el mensaje en crudo en su editor de texto,
-	<quote>esconder</quote> lo que escriba usando ROT-13, aplicar parches
-	contenidos en los correos directamente, etc. El único límite es su
-	imaginación. Las acciones se pueden configurar a través del menú
-	<quote>/Configuración/Acciones...</quote>.
+
+	Las acciones le permitir&aacute;n utilizar toda la potencia de la
+	l&iacute;nea de &oacute;rdenes de Unix con sus correos. Puede
+	definir m&uacute;ltiples &oacute;rdenes, con par&aacute;metros como
+	el fichero de correo actual, una lista de mensajes, el texto
+	seleccionado actualmente, y similares. As&iacute; podr&aacute;
+	realizar varias tareas, como editar el mensaje en crudo en su editor
+	de texto, <quote>esconder</quote> lo que escriba usando ROT-13,
+	aplicar parches contenidos en los correos directamente, etc. El
+	&uacute;nico l&iacute;mite es su imaginaci&oacute;n. Las acciones se
+	pueden configurar a trav&eacute;s del men&uacute;
+	<quote>/Configuraci&oacute;n/Acciones...</quote>.
+
     </para>
     <para>
-	El menú <quote>Herramientas/Acciones</quote> contendrá un elemento
-	por cada acción que se haya creado. Cuando se seleccione uno o más
-	mensajes en la lista de mensajes o esté viendo un mensaje en la vista
-	de mensajes, al seleccionar uno de estos elementos de menú se invocará
-	la acción, y, dependiendo de como se haya definido, el/los mensaje(s)
-	serán pasados a ésta.
+
+	El men&uacute; <quote>Herramientas/Acciones</quote> contendr&aacute;
+	un elemento por cada acci&oacute;n que se haya creado. Cuando se
+	seleccione uno o m&aacute;s mensajes en la lista de mensajes o
+	est&eacute; viendo un mensaje en la vista de mensajes, al
+	seleccionar uno de estos elementos de men&uacute; se invocar&aacute;
+	la acci&oacute;n, y, dependiendo de como se haya definido, el/los
+	mensaje(s) ser&aacute;n pasados a &eacute;sta.
+
     </para>
     <para>
-	Además es posible añadir entradas en la barra de herramientas para sus
-	acciones. Para ello abra el menú
-	<quote>Configuración/Preferencias</quote> y seleccione
-	<quote>Barras de herramientas/Ventana principal</quote>.
-	Seleccione <quote>Acción de usuario</quote> en el menú desplegable
-	<quote>Tipo de ítem</quote>, después seleccione la acción en el
-	desplegable <quote>Evento ejecutado al pulsar</quote> y, finalmente,
-	pulse en el botón <quote>Icono</quote> para seleccionar el icono que
-	desee utilizar.
+
+	Adem&aacute;s es posible a&ntilde;adir entradas en la barra de
+	herramientas para sus acciones. Para ello abra el men&uacute;
+	<quote>Configuraci&oacute;n/Preferencias</quote> y seleccione
+	<quote>Barras de herramientas/Ventana principal</quote>.  Seleccione
+	<quote>Acci&oacute;n de usuario</quote> en el men&uacute;
+	desplegable <quote>Tipo de &iacute;tem</quote>, despu&eacute;s
+	seleccione la acci&oacute;n en el desplegable <quote>Evento
+	ejecutado al pulsar</quote> y, finalmente, pulse en el bot&oacute;n
+	<quote>Icono</quote> para seleccionar el icono que desee utilizar.
+
     </para>
     <blockquote>
       <example>
@@ -40,68 +49,76 @@
 	</title>
 	<variablelist>
 	  <varlistentry>
-	    <term>
-	Nombre del menú: <emphasis>Abrir con/Kate</emphasis>
-	Línea de orden: <command>kate %p</command>
-	    </term>
+	<term>
+	Nombre del men&uacute;: <emphasis>Abrir con/Kate</emphasis>
+	L&iacute;nea de orden: <command>kate %p</command>
+	</term>
 	    <listitem>
-	      <para>
+	<para>
+
 	Abre el fichero de la parte MIME decodificada seleccionada
 	(<emphasis>%p</emphasis>) con el editor de texto
 	<emphasis>kate</emphasis>.
-	      </para>
+
+	</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
       </example>
       <example>
-        <title>
-	Gestión de spam usando <ulink url="https://bogofilter.sourceforge.io/"
+	<title>
+	Gesti&oacute;n de spam usando <ulink url="https://bogofilter.sourceforge.io/"
 	>Bogofilter</ulink>
 	</title>
 	<variablelist>
 	  <varlistentry>
-	    <term>
-	Nombre del menú: <emphasis>Bogofilter/Marcar como bueno</emphasis>
-	Línea de orden: <command>bogofilter -n -v -B "%f"</command>
-	    </term>
+	<term>
+	Nombre del men&uacute;: <emphasis>Bogofilter/Marcar como bueno</emphasis>
+	L&iacute;nea de orden: <command>bogofilter -n -v -B "%f"</command>
+	</term>
 	    <listitem>
-	      <para>
-	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>) como
-	<quote>no spam</quote> usando <emphasis>Bogofilter</emphasis>.
-	      </para>
+	<para>
+
+	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>)
+	como <quote>no spam</quote> usando <emphasis>Bogofilter</emphasis>.
+
+	</para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term>
-	Nombre del menú:
+	<term>
+	Nombre del men&uacute;:
 	<emphasis>Bogofilter/Marcar como correo basura</emphasis>
-	Línea de orden: <command>bogofilter -s -v -B "%f"</command>
-	    </term>
+	L&iacute;nea de orden: <command>bogofilter -s -v -B "%f"</command>
+	</term>
 	    <listitem>
-	      <para>
-	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>) como
-	<quote>spam</quote> usando <emphasis>Bogofilter</emphasis>.
-	      </para>
+	<para>
+
+	Marca el correo seleccionado actualmente (<emphasis>%f</emphasis>)
+	como <quote>spam</quote> usando <emphasis>Bogofilter</emphasis>.
+
+	</para>
 	    </listitem>
 	  </varlistentry>
-    	</variablelist>
+	</variablelist>
       </example>
     <example>
-      <title>Buscar en DuckDuckGo usando un script externo</title>
+	<title>Buscar en DuckDuckGo usando un script externo</title>
 	<variablelist>
 	  <varlistentry>
-	    <term>
-	Nombre del menú: <emphasis>Buscar/DuckDuckGo</emphasis>
-	Línea de orden: <command>|/ruta/a/ddg_search.pl</command>
-	    </term>
+	<term>
+	Nombre del men&uacute;: <emphasis>Buscar/DuckDuckGo</emphasis>
+	L&iacute;nea de orden: <command>|/ruta/a/ddg_search.pl</command>
+	</term>
 	    <listitem>
-	      <para>
+	<para>
+
 	Busca en DuckDuckGo el texto seleccionado actualmente
 	(<emphasis>|</emphasis>) usando un script externo <emphasis><ulink
 	url="https://www.claws-mail.org/tools.php">ddg_search.pl</ulink>
 	</emphasis>.
-	      </para>
+
+	</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
@@ -111,252 +128,326 @@
   <section id="adv_templates">
     <title>Plantillas</title>
     <para>
-	Las plantillas se usan en las ventanas de composición y sirven de
-	modelo para correos. Las plantillas se pueden rellenar con texto
-	estático y con partes dinámicas, como el nombre del remitente original
-	(<quote>Estimado %N, ..."</quote>), la fecha, etc. Al aplicar la
-	plantilla los campos dinámicos serán reemplazados con los valores
-	relevantes. Se pueden configurar las plantillas a través del menú
+
+	Las plantillas se usan en las ventanas de composici&oacute;n y
+	sirven de modelo para correos. Las plantillas se pueden rellenar con
+	texto est&aacute;tico y con partes din&aacute;micas, como el nombre
+	del remitente original (<quote>Estimado %N, ..."</quote>), la fecha,
+	etc. Al aplicar la plantilla los campos din&aacute;micos
+	ser&aacute;n reemplazados con los valores relevantes. Se pueden
+	configurar las plantillas a trav&eacute;s del men&uacute;
 	<quote>Herramientas</quote>.
+
     </para><para>
-	Al aplicar una plantilla se le preguntará si quiere
+
+	Al aplicar una plantilla se le preguntar&aacute; si quiere
 	<quote>Insertar</quote> o <quote>Reemplazar</quote>, la diferencia
-	entre ellas sólo es relativa al cuerpo del mensaje.
-	<quote>Reemplazar</quote> sustituirá el cuerpo del mensaje en la
-	ventana de composición actual con el cuerpo definido en la plantilla,
-	eliminándolo si el cuerpo de la plantilla está vacío.
-	<quote>Insertar</quote> insertará el cuerpo de la plantilla, si existe,
-	en la posición actual del cursor.
+	entre ellas s&oacute;lo es relativa al cuerpo del mensaje.
+	<quote>Reemplazar</quote> sustituir&aacute; el cuerpo del mensaje en
+	la ventana de composici&oacute;n actual con el cuerpo definido en la
+	plantilla, elimin&aacute;ndolo si el cuerpo de la plantilla
+	est&aacute; vac&iacute;o.  <quote>Insertar</quote> insertar&aacute;
+	el cuerpo de la plantilla, si existe, en la posici&oacute;n actual
+	del cursor.
+
     </para><para>
-	Independientemente de lo que elija, cualquier campo Para, Cc, Bcc que
-	esté definido en la plantilla será agregado a la lista de destinatarios
-	de la ventana de composición. Si está definido el asunto de la
-	plantilla siempre sustituirá el asunto de la ventana de composición.
+
+	Independientemente de lo que elija, cualquier campo Para, Cc, Bcc
+	que est&eacute; definido en la plantilla ser&aacute; agregado a la
+	lista de destinatarios de la ventana de composici&oacute;n. Si
+	est&aacute; definido el asunto de la plantilla siempre
+	sustituir&aacute; el asunto de la ventana de composici&oacute;n.
+
     </para><para>
-	Se pueden usar símbolos en cualquier parte de la plantilla y serán
-	reemplazados por su valor dinámico si es posible, si no, no se usará
-	ningún valor. Esto tiene habitualmente más sentido si aplica una
-	plantilla al responder o reenviar, de otra manera la mayoría de los
-	valores de los símbolos estarán indefinidos. No hay restricción sobre
-	que símbolos se pueden usar en que parte de la plantilla, incluso si
-	insertar el cuerpo (%M o %Q) pueda carecer de sentido en situaciones
-	comunes.
+
+	Se pueden usar s&iacute;mbolos en cualquier parte de la plantilla y
+	ser&aacute;n reemplazados por su valor din&aacute;mico si es
+	posible, si no, no se usar&aacute; ning&uacute;n valor. Esto tiene
+	habitualmente m&aacute;s sentido si aplica una plantilla al
+	responder o reenviar, de otra manera la mayor&iacute;a de los
+	valores de los s&iacute;mbolos estar&aacute;n indefinidos. No hay
+	restricci&oacute;n sobre que s&iacute;mbolos se pueden usar en que
+	parte de la plantilla, incluso si insertar el cuerpo (%M o %Q) pueda
+	carecer de sentido en situaciones comunes.
+
     </para><para>
-	Al aplicar una plantilla el cuerpo se procesa en primer lugar, después
-	los campos Para, Cc, Bcc y el Asunto.
+
+	Al aplicar una plantilla el cuerpo se procesa en primer lugar,
+	despu&eacute;s los campos Para, Cc, Bcc y el Asunto.
+
     </para><para>
-	Más información y ejemplos de uso se pueden encontrar en las preguntas
-	frecuentes de usuario (FAQ) en el sitio web de &CM; <ulink
-	url="https://www.claws-mail.org/faq/"
+
+	M&aacute;s informaci&oacute;n y ejemplos de uso se pueden encontrar
+	en las preguntas frecuentes de usuario (FAQ) en el sitio web de &CM;
+	<ulink url="https://www.claws-mail.org/faq/"
 	>www.claws-mail.org/faq/</ulink>.
+
     </para>
    </section>
   <section id="adv_processing">
     <title>Procesamiento</title>
     <para>
+
 	Las reglas de procesamiento son iguales que las de filtrado, con la
-	excepción de que se aplican cuando se abre una carpeta o cuando
-	se selecciona la opción correspondiente en el menú contextual de la
-	carpeta, y que sólo se aplican a ésa carpeta.
-	Puede usarlas para mover automáticamente
+	excepci&oacute;n de que se aplican cuando se abre una carpeta o
+	cuando se selecciona la opci&oacute;n correspondiente en el
+	men&uacute; contextual de la carpeta, y que s&oacute;lo se aplican a
+	&eacute;sa carpeta.  Puede usarlas para mover autom&aacute;ticamente
 	correos antiguos a una carpeta de archivo, o para un procesado
-	posterior de los mensajes, y más cosas. Se pueden establecer las reglas
-	de procesamiento de cada carpeta pulsando con el botón derecho del
-	ratón sobre ella.
+	posterior de los mensajes, y m&aacute;s cosas. Se pueden establecer
+	las reglas de procesamiento de cada carpeta pulsando con el
+	bot&oacute;n derecho del rat&oacute;n sobre ella.
+
     </para><para>
-	Las reglas de procesamiento están acompañadas por las reglas de
-	pre-procesamiento y post-procesamiento. Al igual que las reglas de
-	procesamiento sólo se aplican al abrir una carpeta o al aplicarlas
-	manualmente desde el menú contextual de la carpeta, pero al igual
-	que las reglas de filtrado son compartidas por todas las carpetas.
-	Se pueden configurar en el menú <quote>Herramientas</quote>. Las
-	reglas de pre-procesamiento se ejecutan antes que las reglas de
-	procesamiento específicas de la carpeta, mientras que las de
-	post-procesamiento se ejecutan después de éstas.
+
+	Las reglas de procesamiento est&aacute;n acompa&ntilde;adas por las
+	reglas de pre-procesamiento y post-procesamiento. Al igual que las
+	reglas de procesamiento s&oacute;lo se aplican al abrir una carpeta
+	o al aplicarlas manualmente desde el men&uacute; contextual de la
+	carpeta, pero al igual que las reglas de filtrado son compartidas
+	por todas las carpetas.  Se pueden configurar en el men&uacute;
+	<quote>Herramientas</quote>. Las reglas de pre-procesamiento se
+	ejecutan antes que las reglas de procesamiento espec&iacute;ficas de
+	la carpeta, mientras que las de post-procesamiento se ejecutan
+	despu&eacute;s de &eacute;stas.
+
     </para>
   </section>
   <section id="adv_colour_labels">
   <title>Etiquetas de colores</title>
   <para>
+
 	Las etiquetas de colores se pueden usar para indicar que un mensaje
 	tiene alguna relevancia particular. Para establecer una etiqueta de
-	color simplemente pulse con el botón derecho sobre un mensaje en la
-	lista de mensajes y utilize el submenú <quote>Etiquetar de
-	color</quote>.
+	color simplemente pulse con el bot&oacute;n derecho sobre un mensaje
+	en la lista de mensajes y utilize el submen&uacute; <quote>Etiquetar
+	de color</quote>.
+
   </para><para>
+
 	Las etiquetas de colores son configurables por el usuario. Se puede
-	establecer tanto el color como la etiqueta asociada. Las preferencias
-	se encuentran en la página
-	<quote>Configuración/Preferencias/Ver/Colores</quote>.
+	establecer tanto el color como la etiqueta asociada. Las
+	preferencias se encuentran en la p&aacute;gina
+	<quote>Configuraci&oacute;n/Preferencias/Ver/Colores</quote>.
+
   </para>
   </section>
   <section id="adv_tags">
   <title>Etiquetas</title>
   <para>
+
 	Las etiquetas son notas de texto breves que se pueden establecer en
-	los mensajes. Son útiles para clasificarlos con sus propias palabras.
-	Estas etiquetas se pueden usar después para encontrar los correos con
-	la búsqueda rápida o, por ejemplo, gestionarlos con reglas de filtrado
-	o de procesamiento.
+	los mensajes. Son &uacute;tiles para clasificarlos con sus propias
+	palabras. Estas etiquetas se pueden usar despu&eacute;s para
+	encontrar los correos con la b&uacute;squeda r&aacute;pida o, por
+	ejemplo, gestionarlos con reglas de filtrado o de procesamiento.
+
   </para><para>
-	Los mensajes etiquetados se muestran con una línea de fondo amarillo
-	en la parte superior de la vista de mensaje. Esta línea muestra todas
-	las etiquetas asociadas al mensaje. También e puede habilitar la
-	columna «Etiquetas» en la lista de mensajes, de manera que los
-	elementos etiquetados se pueden ver si necesidad de abrirlos.
+
+	Los mensajes etiquetados se muestran con una l&iacute;nea de fondo
+	amarillo en la parte superior de la vista de mensaje. Esta
+	l&iacute;nea muestra todas las etiquetas asociadas al mensaje.
+	Tambi&eacute;n e puede habilitar la columna «Etiquetas» en la lista
+	de mensajes, de manera que los elementos etiquetados se pueden ver
+	si necesidad de abrirlos.
+
   </para><para>
-	El establecimiento de etiquetas se realiza pulsando con el botón
-	derecho del ratón sobre el mensaje en la lista de mensajes o con la
-	correspondiente opción de menú de Mensaje. Se mostrará un panel con
-	las etiquetas existentes que se pueden seleccionar o simplemente
-	añadir una nueva. Por supuesto también se pueden eliminar.
+
+	El establecimiento de etiquetas se realiza pulsando con el
+	bot&oacute;n derecho del rat&oacute;n sobre el mensaje en la lista
+	de mensajes o con la correspondiente opci&oacute;n de men&uacute; de
+	Mensaje. Se mostrar&aacute; un panel con las etiquetas existentes
+	que se pueden seleccionar o simplemente a&ntilde;adir una nueva. Por
+	supuesto tambi&eacute;n se pueden eliminar.
+
   </para><para>
-	Cuando ya existen etiquetas es aún más fácil, ya que el menú contextual
-	permite establecer o quitar etiquetas con un sólo clic sobre los
-	mensajes seleccionados. Se permiten selecciones que mezclen mensajes
-	etiquetados o no, y &CM; será lo suficientemente hábil para hacer lo
-	que el usuario desea en cualquier caso.
+
+	Cuando ya existen etiquetas es a&uacute;n m&aacute;s f&aacute;cil,
+	ya que el men&uacute; contextual permite establecer o quitar
+	etiquetas con un s&oacute;lo clic sobre los mensajes seleccionados.
+	Se permiten selecciones que mezclen mensajes etiquetados o no, y
+	&CM; ser&aacute; lo suficientemente h&aacute;bil para hacer lo que
+	el usuario desea en cualquier caso.
+
   </para>
   </section>
   <section id="adv_ml_support">
   <title>Soporte de listas de correo</title>
   <para>
-	&CM; ofrece soporte para listas de correo desde el submenú
+
+	&CM; ofrece soporte para listas de correo desde el submen&uacute;
 	<quote>Mensaje/Lista de correo</quote>. Cuando tenga seleccionado un
-	mensaje de una lista de correo, el submenú le permite rápidamente
-	iniciar la suscripción, desuscribirse, enviar un correo, obtener ayuda,
-	contactar con el dueño de la lista y ver los archivos de la lista, bien
-	abriendo una nueva ventana de composición con la dirección apropiada
+	mensaje de una lista de correo, el submen&uacute; le permite
+	r&aacute;pidamente iniciar la suscripci&oacute;n, desuscribirse,
+	enviar un correo, obtener ayuda, contactar con el due&ntilde;o de la
+	lista y ver los archivos de la lista, bien abriendo una nueva
+	ventana de composici&oacute;n con la direcci&oacute;n apropiada
 	rellenada o bien abriendo la URL en su navegador web.
+
   </para>
   </section>
   <section id="adv_plugins">
-    <title>Módulos</title>
+    <title>M&oacute;dulos</title>
     <para>
-	Los módulos son el mecanismo para extender las capacidades de &CM;.
-	Por ejemplo, imagine que quiere almacenar sus mensajes en una base
-	de datos <acronym>SQL</acronym> remota. En la mayoría de clientes
-	que encontrará esto es simplemente imposible sin reconstruir toda la
-	estructura interna del mismo. Con &CM; puede simplemente escribir un
-	módulo para conseguirlo.
+
+	Los m&oacute;dulos son el mecanismo para extender las capacidades de
+	&CM;. Por ejemplo, imagine que quiere almacenar sus mensajes en una
+	base de datos <acronym>SQL</acronym> remota. En la mayor&iacute;a de
+	clientes que encontrar&aacute; esto es simplemente imposible sin
+	reconstruir toda la estructura interna del mismo. Con &CM; puede
+	simplemente escribir un m&oacute;dulo para conseguirlo.
+
     </para><para>
-	Este sólo es un ejemplo de las posibilidades. Ya existe un buen número
-	de módulos desarrollados para &CM;, y más están por venir. La <link
-	linkend="ch_plugins">sección Extendiendo &CM;</link> contiene más
-	detalles sobre ellos.
+
+	Este s&oacute;lo es un ejemplo de las posibilidades. Ya existe un
+	buen n&uacute;mero de m&oacute;dulos desarrollados para &CM;, y
+	m&aacute;s est&aacute;n por venir. La <link
+	linkend="ch_plugins">secci&oacute;n Extendiendo &CM;</link> contiene
+	m&aacute;s detalles sobre ellos.
+
     </para>
   </section>
   <section id="deploying">
     <title>Desplegando &CM;</title>
     <para>
-	La asistente de configuración inicial intenta rellenar varios campos
-	utilizando información recolectada del sistema, como el nombre de
-	usuario, nombre de la máquina, y otros. Como está orientado al uso
-	general los valores predeterminados a menudo tienen que ser fijos.
-	Sin embargo este asistente es configurable, de tal manera que permite
-	a los administradores de sistema desplegar &CM; fácilmente para varios
-	usuarios de una máquina o, incluso, sobre múltiples máquinas instaladas
-	con alguna herramienta de replicación.
+
+	La asistente de configuraci&oacute;n inicial intenta rellenar varios
+	campos utilizando informaci&oacute;n recolectada del sistema, como
+	el nombre de usuario, nombre de la m&aacute;quina, y otros. Como
+	est&aacute; orientado al uso general los valores predeterminados a
+	menudo tienen que ser fijos.  Sin embargo este asistente es
+	configurable, de tal manera que permite a los administradores de
+	sistema desplegar &CM; f&aacute;cilmente para varios usuarios de una
+	m&aacute;quina o, incluso, sobre m&uacute;ltiples m&aacute;quinas
+	instaladas con alguna herramienta de replicaci&oacute;n.
+
     </para><para>
+
 	La primera parte consiste en crear una plantilla para el asistente
-	de configuración y establecer los parámetros predeterminados de una
-	nueva instalación de &CM;.
+	de configuraci&oacute;n y establecer los par&aacute;metros
+	predeterminados de una nueva instalaci&oacute;n de &CM;.
+
     </para>
     <itemizedlist>
       <listitem>
 	<para>
+
 	Comience con un usuario que no tenga el directorio <filename
 	class="directory">~/.claws-mail</filename>, idealmente un usuario
 	nuevo.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Inicie &CM; y navegue por el asistente. Los valores que introduzca no
-	serán de utilidad para el futuro despliegue, así que puede pulsar
-	siguiente-siguiente-siguiente.
+
+	Inicie &CM; y navegue por el asistente. Los valores que introduzca
+	no ser&aacute;n de utilidad para el futuro despliegue, as&iacute;
+	que puede pulsar siguiente-siguiente-siguiente.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Una vez que el asistente haya finalizado y tenga la ventana principal
-	de &CM; abierta, configure los valores predeterminados que quiera en
-	la copia maestra. Puede cargar módulos, añadir gente o servidores LDAP
-	en la agenda, crear reglas de filtrado, etc.
+
+	Una vez que el asistente haya finalizado y tenga la ventana
+	principal de &CM; abierta, configure los valores predeterminados que
+	quiera en la copia maestra. Puede cargar m&oacute;dulos,
+	a&ntilde;adir gente o servidores LDAP en la agenda, crear reglas de
+	filtrado, etc.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Si es necesario y el despliege de &CM; usará carpetas MH, puede crear
-	subdirectorios en el buzón.
+
+	Si es necesario y el despliege de &CM; usar&aacute; carpetas MH,
+	puede crear subdirectorios en el buz&oacute;n.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	A continuación, salga de &CM;.
+
+	A continuaci&oacute;n, salga de &CM;.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
+
 	Ahora edite el nuevo fichero de plantilla creado por el asistente,
 	<filename>~/.claws-mail/accountrc.tmpl</filename>. En este fichero
-	podrá ver distintas variables, correspondientes con los campos del
-	asistente. Puede dejar alguna comentada, en cuyo caso se usará el valor
-	predeterminado habitual, o especificar valores o variables. No todos
-	los campos pueden contener variables. Por ejemplo,
-	<literal>smtpauth</literal>, <literal>smtpssl</literal> y
+	podr&aacute; ver distintas variables, correspondientes con los
+	campos del asistente. Puede dejar alguna comentada, en cuyo caso se
+	usar&aacute; el valor predeterminado habitual, o especificar valores
+	o variables. No todos los campos pueden contener variables. Por
+	ejemplo, <literal>smtpauth</literal>, <literal>smtpssl</literal> y
 	<literal>recvssl</literal> son booleanos, bien 0 o 1, y
-	<literal>recvtype</literal> es un valor entero. Los otros campos, como
-	<literal>name</literal>, <literal>email</literal> o
-	<literal>recvuser</literal>, son leídos por el asistente y las
-	variables que contienen reemplazadas por valores. Esto permite
-	especificar todo lo que su instalación necesite, incluso si tiene
-	nombres de servidores o de entrada extraños.
+	<literal>recvtype</literal> es un valor entero. Los otros campos,
+	como <literal>name</literal>, <literal>email</literal> o
+	<literal>recvuser</literal>, son le&iacute;dos por el asistente y
+	las variables que contienen reemplazadas por valores. Esto permite
+	especificar todo lo que su instalaci&oacute;n necesite, incluso si
+	tiene nombres de servidores o de entrada extra&ntilde;os.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
+
 	Guarde este fichero y borre
-	<filename>~/.claws-mail/accountrc</filename> (que contiene la
-	cuenta inútil) y <filename>~/.claws-mail/folderlist.xml</filename>
-	(de manera que el árbol de carpetas sea leído correctamente para los
-	nuevos usuarios). Copie recursivamente <filename
-	class="directory">.claws-mail</filename> a <filename
+	<filename>~/.claws-mail/accountrc</filename> (que contiene la cuenta
+	in&uacute;til) y <filename>~/.claws-mail/folderlist.xml</filename>
+	(de manera que el &aacute;rbol de carpetas sea le&iacute;do
+	correctamente para los nuevos usuarios). Copie recursivamente
+	<filename class="directory">.claws-mail</filename> a <filename
 	class="directory">/etc/skel/</filename>. Si el despliegue de &CM; va
 	a usar carpetas MH, copie tambien el directorio <filename
-	class="directory">Mail</filename> creado. Cambie los permisos de todos
-	los ficheros bajo <filename
+	class="directory">Mail</filename> creado. Cambie los permisos de
+	todos los ficheros bajo <filename
 	class="directory">/etc/skel/.claws-mail</filename> y <filename
 	class="directory">etc/skel/Mail</filename> a
 	<literal>root:root</literal> por razones de seguridad.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	¡Pruebe! Cree un usuario nuevo, inicie la sesión como ese usuario y
-	ejecute &CM;. Si todo fue rellenado tal y como quería, el usuario
-	simplemente tendrá que rellenar su contraseña.
+
+	&iexcl;Pruebe! Cree un usuario nuevo, inicie la sesi&oacute;n como
+	ese usuario y ejecute &CM;. Si todo fue rellenado tal y como
+	quer&iacute;a, el usuario simplemente tendr&aacute; que rellenar su
+	contrase&ntilde;a.
+
 	</para>
       </listitem>
       <listitem>
 	<para>
-	Ahora, si está creando una copia maestra para un despliegue en una
-	instalación múltiple, puede seguir este proceso. Si lo estaba haciendo
-	para una sola máquina ¡ha terminado!
+
+	Ahora, si est&aacute; creando una copia maestra para un despliegue
+	en una instalaci&oacute;n m&uacute;ltiple, puede seguir este
+	proceso. Si lo estaba haciendo para una sola m&aacute;quina
+	&iexcl;ha terminado!
+
 	</para>
       </listitem>
     </itemizedlist>
     <para>
-	A continuación se listan las distintas variables del fichero
+
+	A continuaci&oacute;n se listan las distintas variables del fichero
 	<filename>accountrc.tmpl</filename>:
+
     </para>
     <variablelist>
       <varlistentry>
 	<term><literal>domain</literal></term>
 	<listitem>
 	  <para>
+
 	Su nombre de dominio (<literal>ejemplo.com</literal>). Si no se
-	establece se extraerá del nombre de la máquina.
+	establece se extraer&aacute; del nombre de la m&aacute;quina.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -364,8 +455,11 @@
 	<term><literal>name</literal></term>
 	<listitem>
 	  <para>
-	El nombre de usuario. Si no se establece se extraerá de la información
-	de entrada de Unix, que normalmente es lo correcto.
+
+	El nombre de usuario. Si no se establece se extraer&aacute; de la
+	informaci&oacute;n de entrada de Unix, que normalmente es lo
+	correcto.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -373,8 +467,11 @@
 	<term><literal>email</literal></term>
 	<listitem>
 	  <para>
-	El correo electrónico del usuario. Si no se establece se extraerá a
-	partir de <literal>$name</literal> y <literal>$domain</literal>.
+
+	El correo electr&oacute;nico del usuario. Si no se establece se
+	extraer&aacute; a partir de <literal>$name</literal> y
+	<literal>$domain</literal>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -382,7 +479,10 @@
 	<term><literal>organization</literal></term>
 	<listitem>
 	  <para>
-	Su organización. Si no se establece estará vacía.
+
+	Su organizaci&oacute;n. Si no se establece estar&aacute;
+	vac&iacute;a.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -390,8 +490,10 @@
 	<term><literal>smtpserver</literal></term>
 	<listitem>
 	  <para>
-	El servidor SMTP a usar. Si no se establece será
+
+	El servidor SMTP a usar. Si no se establece ser&aacute;
 	<literal>smtp.$domain</literal>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -399,8 +501,10 @@
 	<term><literal>smtpauth</literal></term>
 	<listitem>
 	  <para>
+
 	0 o 1. Si hay que autentificarse en el servidor SMTP. Si no se
-	establece será 0.
+	establece ser&aacute; 0.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -408,8 +512,11 @@
 	<term><literal>smtpuser</literal></term>
 	<listitem>
 	  <para>
-	El nombre de usuario para el servidor SMTP. Si no se establece estará
-	vacío (el mismo nombre de usuario que para recibir).
+
+	El nombre de usuario para el servidor SMTP. Si no se establece
+	estar&aacute; vac&iacute;o (el mismo nombre de usuario que para
+	recibir).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -417,10 +524,12 @@
 	<term><literal>smtppass</literal></term>
 	<listitem>
 	  <para>
-	La contraseña del servidor SMTP. Si no se establece estará vacío
-	(si <literal>smtppass</literal> está vacío pero
-	<literal>smtpuser</literal> no, se le preguntará la contraseña al
-	usuario).
+
+	La contrase&ntilde;a del servidor SMTP. Si no se establece
+	estar&aacute; vac&iacute;o (si <literal>smtppass</literal>
+	est&aacute; vac&iacute;o pero <literal>smtpuser</literal> no, se le
+	preguntar&aacute; la contrase&ntilde;a al usuario).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -428,8 +537,10 @@
 	<term><literal>recvtype</literal></term>
 	<listitem>
 	  <para>
-	El tipo de servidor del que recibir. 0 para POP3, 3 para IMAP4, 5 para
-	fichero MBox local. Si no se establece será 0 (POP3).
+
+	El tipo de servidor del que recibir. 0 para POP3, 3 para IMAP4, 5
+	para fichero MBox local. Si no se establece ser&aacute; 0 (POP3).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -437,9 +548,11 @@
 	<term><literal>recvserver</literal></term>
 	<listitem>
 	  <para>
-	El servidor de recepción. Si no se establece será
+
+	El servidor de recepci&oacute;n. Si no se establece ser&aacute;
 	<literal>(pop|imap).$domain</literal>, dependiendo del
 	<literal>$recvtype</literal>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -447,8 +560,11 @@
 	<term><literal>recvuser</literal></term>
 	<listitem>
 	  <para>
-	El nombre de usuario del servidor de recepción. Si no se establece
-	será extraído de la información de entrada de Unix.
+
+	El nombre de usuario del servidor de recepci&oacute;n. Si no se
+	establece ser&aacute; extra&iacute;do de la informaci&oacute;n de
+	entrada de Unix.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -456,8 +572,11 @@
 	<term><literal>recvpass</literal></term>
 	<listitem>
 	  <para>
-	La contraseña del servidor de recepción. Si no se establece estará
-	vacía (se pedirá al usuario una vez por sesión).
+
+	La contrase&ntilde;a del servidor de recepci&oacute;n. Si no se
+	establece estar&aacute; vac&iacute;a (se pedir&aacute; al usuario
+	una vez por sesi&oacute;n).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -465,8 +584,10 @@
 	<term><literal>imapdir</literal></term>
 	<listitem>
 	  <para>
-	El subdirectorio IMAP. Si no se establece estará vacío, lo cual es
-	suficiente a menudo.
+
+	El subdirectorio IMAP. Si no se establece estar&aacute;
+	vac&iacute;o, lo cual es suficiente a menudo.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -474,8 +595,10 @@
 	<term><literal>mboxfile</literal></term>
 	<listitem>
 	  <para>
+
 	El fichero Mbox para recibir si <literal>$recvtype</literal> es 5.
-	Si no se establece será <literal>/var/mail/$LOGIN.</literal>.
+	Si no se establece ser&aacute; <literal>/var/mail/$LOGIN.</literal>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -483,9 +606,11 @@
 	<term><literal>mailbox</literal></term>
 	<listitem>
 	  <para>
-	El buzón MH donde almacenar el correo (para
+
+	El buz&oacute;n MH donde almacenar el correo (para
 	<literal>$recvtype</literal> igual a 0 o a 5). Si no se establece
-	será <quote>Mail</quote>.
+	ser&aacute; <quote>Mail</quote>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -493,8 +618,10 @@
 	<term><literal>smtpssl</literal></term>
 	<listitem>
 	  <para>
-	0 o 1. Si hay que usar SSL para enviar correo. Si no se establece será
-	0.
+
+	0 o 1. Si hay que usar SSL para enviar correo. Si no se establece
+	ser&aacute; 0.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -502,29 +629,35 @@
 	<term><literal>recvssl</literal></term>
 	<listitem>
 	  <para>
-	0 o 1. Si hay que usar SSL para recibir correo. Si no se establece será
-	0.
+
+	0 o 1. Si hay que usar SSL para recibir correo. Si no se establece
+	ser&aacute; 0.
+
 	  </para>
 	</listitem>
       </varlistentry>
     </variablelist>
     <para>
-	A continuación se listan las diferentes variables que puede utilizar
-	en los campos <literal>domain</literal>, <literal>name</literal>,
-	<literal>email</literal>, <literal>organization</literal>,
-	<literal>smtpserver</literal>, <literal>smtpuser</literal>,
-	<literal>smtppass</literal>, <literal>recvserver</literal>,
-	<literal>recvuser</literal>, <literal>recvpass</literal>,
-	<literal>imapdir</literal>, <literal>mboxfile</literal> y
-	<literal>mailbox</literal>:
+
+	A continuaci&oacute;n se listan las diferentes variables que puede
+	utilizar en los campos <literal>domain</literal>,
+	<literal>name</literal>, <literal>email</literal>,
+	<literal>organization</literal>, <literal>smtpserver</literal>,
+	<literal>smtpuser</literal>, <literal>smtppass</literal>,
+	<literal>recvserver</literal>, <literal>recvuser</literal>,
+	<literal>recvpass</literal>, <literal>imapdir</literal>,
+	<literal>mboxfile</literal> y <literal>mailbox</literal>:
+
     </para>
     <variablelist>
       <varlistentry>
 	<term><literal>$DEFAULTDOMAIN</literal></term>
 	<listitem>
 	  <para>
-	El nombre de dominio extraído de la información Unix del nombre de
-	máquina. A menudo incorrecta.
+
+	El nombre de dominio extra&iacute;do de la informaci&oacute;n Unix
+	del nombre de m&aacute;quina. A menudo incorrecta.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -532,8 +665,10 @@
 	<term><literal>$DOMAIN</literal></term>
 	<listitem>
 	  <para>
+
 	El nombre de dominio establecido en la variable
 	<literal>domain</literal>, la primera del fichero plantilla.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -541,7 +676,9 @@
 	<term><literal>$USERNAME</literal></term>
 	<listitem>
 	  <para>
+
 	El nombre real del usuario.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -549,7 +686,9 @@
 	<term><literal>$LOGIN</literal></term>
 	<listitem>
 	  <para>
+
 	El nombre de usuario (<emphasis>login</emphasis>) Unix del usuario.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -557,10 +696,12 @@
 	<term><literal>$NAME_MAIL</literal></term>
 	<listitem>
 	  <para>
-	El nombre real del usuario tal y como se estableción en el campo de
-	la plantilla, en minúsculas y con los espacios reemplazados por puntos.
-	<quote>Ricardo Mones</quote> se convertiría en
-	<quote>ricardo.mones</quote>.
+
+	El nombre real del usuario tal y como se estableci&oacute;n en el
+	campo de la plantilla, en min&uacute;sculas y con los espacios
+	reemplazados por puntos.  <quote>Ricardo Mones</quote> se
+	convertir&iacute;a en <quote>ricardo.mones</quote>.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -568,42 +709,56 @@
 	<term><literal>$EMAIL</literal></term>
 	<listitem>
 	  <para>
-	La dirección de correo electrónico tal y como se estableción en la
-	variable <literal>email</literal> del campo de la plantilla.
+
+	La direcci&oacute;n de correo electr&oacute;nico tal y como se
+	estableci&oacute;n en la variable <literal>email</literal> del campo
+	de la plantilla.
+
 	  </para>
 	</listitem>
       </varlistentry>
     </variablelist>
     <para>
-	Asegúrese de no usar una variable antes de definirla.
+
+	Aseg&uacute;rese de no usar una variable antes de definirla.
+
     </para>
   </section>
   <section id="adv_hidden">
     <title>Preferencias ocultas</title>
     <para>
-	Hay cierto número de preferencias ocultas en &CM;, preferencias sin
-	las que ciertos usuarios a quienes quisimos complacer no podrían
-	vivir, pero que en nuestra opinión no tienen lugar en el interfaz
-	gráfico. Puede encontrarlas en el fichero de configuración
+
+	Hay cierto n&uacute;mero de preferencias ocultas en &CM;,
+	preferencias sin las que ciertos usuarios a quienes quisimos
+	complacer no podr&iacute;an vivir, pero que en nuestra
+	opini&oacute;n no tienen lugar en el interfaz gr&aacute;fico. Puede
+	encontrarlas en el fichero de configuraci&oacute;n
 	<filename>~/.claws-mail/clawsrc</filename>, y cambiarlas mientras
-	&CM; no esté ejecutándose.
+	&CM; no est&eacute; ejecut&aacute;ndose.
+
     </para>
     <para>
-	Existe una pequeña herramienta gráfica escrita en Perl-GTK denominada
-	Clawsker que permite un ajuste más amigable de estas preferencias en
-	lugar de la edición directa de <filename>clawsrc</filename>.
-	Puede leer más sobre ella en la <ulink
-	url="https://www.claws-mail.org/clawsker.php">página de Clawsker</ulink>.
+
+	Existe una peque&ntilde;a herramienta gr&aacute;fica escrita en
+	Perl-GTK denominada Clawsker que permite un ajuste m&aacute;s
+	amigable de estas preferencias en lugar de la edici&oacute;n directa
+	de <filename>clawsrc</filename>. Puede leer m&aacute;s sobre ella
+	en la <ulink
+	url="https://www.claws-mail.org/clawsker.php">p&aacute;gina de
+	Clawsker</ulink>.
+
     </para>
     <variablelist>
       <varlistentry>
 	<term><literal>address_search_wildcard</literal></term>
 	<listitem>
 	  <para>
-	El auto-completado con tabulador de la ventana de composición y
-	otros lugares del interfaz funcionará cuando coincida cualquier
-	parte de la cadena ('1') o sólo el inicio de la cadena ('0'). El
-	valor predeterminado es '1'.
+
+	El auto-completado con tabulador de la ventana de composici&oacute;n
+	y otros lugares del interfaz funcionar&aacute; cuando coincida
+	cualquier parte de la cadena ('1') o s&oacute;lo el inicio de la
+	cadena ('0'). El valor predeterminado es '1'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -611,10 +766,12 @@
 	<term><literal>addressbook_use_editaddress_dialog</literal></term>
 	<listitem>
 	  <para>
-	Utilizar un diálogo independiente para editar los detalles de una
-	persona si está a '1' (predeterminado). Con valor '0' se usará un
-	formulario incrustado en la ventana principal de la agenda de
-	direcciones.
+
+	Utilizar un di&aacute;logo independiente para editar los detalles de
+	una persona si est&aacute; a '1' (predeterminado). Con valor '0' se
+	usar&aacute; un formulario incrustado en la ventana principal de la
+	agenda de direcciones.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -622,9 +779,11 @@
 	<term><literal>bold_marked</literal></term>
 	<listitem>
 	  <para>
+
 	Mostrar los mensajes marcados utilizando negrita en la lista de
-	mensajes si está a '1'. Con '0' (predeterminado) se usará la
-	tipografía normal.
+	mensajes si est&aacute; a '1'. Con '0' (predeterminado) se
+	usar&aacute; la tipograf&iacute;a normal.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -632,9 +791,11 @@
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
-	Mostrar los mensajes no leídos utilizando negrita en la lista de
-	mensajes si está a '1' (predeterminado). Con '0' se usará la
-	tipografía normal.
+
+	Mostrar los mensajes no le&iacute;dos utilizando negrita en la lista
+	de mensajes si est&aacute; a '1' (predeterminado). Con '0' se
+	usar&aacute; la tipograf&iacute;a normal.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -642,10 +803,12 @@
 	<term><literal>cache_max_mem_usage</literal></term>
 	<listitem>
 	  <para>
-	La cantidad máxima de memoria a utilizar para la caché de mensajes,
-	en kB. Se intentará mantener el uso de memoria por debajo de este
-	valor, pero siempre usará la cantidad asignada para ganar velocidad.
-	El valor predeterminado es '4096'.
+
+	La cantidad m&aacute;xima de memoria a utilizar para la cach&eacute;
+	de mensajes, en kB. Se intentar&aacute; mantener el uso de memoria
+	por debajo de este valor, pero siempre usar&aacute; la cantidad
+	asignada para ganar velocidad.  El valor predeterminado es '4096'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -653,14 +816,17 @@
 	<term><literal>cache_min_keep_time</literal></term>
 	<listitem>
 	  <para>
-	El tiempo mínimo para mantener la memoria caché de mensajes, en
-	minutos. Las entradas más recientes que este tiempo no se liberarán,
-	aunque el uso de memoria sea demasiado elevado. Debería
-	probablemente establecer este parámetro a un valor mayor que su
-	intervalo de comprobación de correo. En caso contrario la memoria
-	intermedia siempre se liberará entre comprobaciones, aunque acceda a
-	la carpeta en cada comprobación, provocando mucho trasiego de E/S en
-	disco. El valor predeterminado es '15'.
+
+	El tiempo m&iacute;nimo para mantener la memoria cach&eacute; de
+	mensajes, en minutos. Las entradas m&aacute;s recientes que este
+	tiempo no se liberar&aacute;n, aunque el uso de memoria sea
+	demasiado elevado. Deber&iacute;a probablemente establecer este
+	par&aacute;metro a un valor mayor que su intervalo de
+	comprobaci&oacute;n de correo. En caso contrario la memoria
+	intermedia siempre se liberar&aacute; entre comprobaciones, aunque
+	acceda a la carpeta en cada comprobaci&oacute;n, provocando mucho
+	trasiego de E/S en disco. El valor predeterminado es '15'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -668,9 +834,11 @@
 	<term><literal>compose_no_markup</literal></term>
 	<listitem>
 	  <para>
+
 	No utilizar texto en negrita y cursiva en el selector de cuentas de
-	la ventana de composición si está a '1'. El valor predeterminado es
-	'0' (utilizar marcado).
+	la ventana de composici&oacute;n si est&aacute; a '1'. El valor
+	predeterminado es '0' (utilizar marcado).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -679,9 +847,12 @@
 	<term><literal>default_header_bgcolor</literal></term>
 	<listitem>
 	  <para>
+
 	Color de primer plano y de fondo para las entradas de texto de las
-	cabeceras en la ventana de composición. Los valores predeterminados
-	son '#000000' (negro) y '#f5f6be' (amarillo pálido) respectivamente.
+	cabeceras en la ventana de composici&oacute;n. Los valores
+	predeterminados son '#000000' (negro) y '#f5f6be' (amarillo
+	p&aacute;lido) respectivamente.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -689,8 +860,10 @@
 	<term><literal>emphasis_color</literal></term>
 	<listitem>
 	  <para>
-	El color que se usará para la línea X-Mailer cuando su valor sea
-	&CM;. El valor predeterminado es '#0000CF' (azul medio).
+
+	El color que se usar&aacute; para la l&iacute;nea X-Mailer cuando su
+	valor sea &CM;. El valor predeterminado es '#0000CF' (azul medio).
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -698,16 +871,21 @@
 	<term><literal>enable_avatars</literal></term>
 	<listitem>
 	  <para>
-	Activa la captura y/o la presentación de los avatares internos (las
-	cabeceras Face y también X-Face si se construyó con soporte
-	compface). Un '0' desactiva ambos, '1' activa sólo la captura, '2'
-	activa la presentación sólo y '3' activa ambos. El valor
-	predeterminado es '3'.
+
+	Activa la captura y/o la presentaci&oacute;n de los avatares
+	internos (las cabeceras Face y tambi&eacute;n X-Face si se
+	construy&oacute; con soporte compface). Un '0' desactiva ambos, '1'
+	activa s&oacute;lo la captura, '2' activa la presentaci&oacute;n
+	s&oacute;lo y '3' activa ambos. El valor predeterminado es '3'.
+
 	  </para>
 	  <para>
-	Nótese que los módulos externos que proporcionen estas características
-	pueden desactivar parcial o completamente esta propiedad para acelerar
-	el proceso, independientemente del valor configurado.
+
+	N&oacute;tese que los m&oacute;dulos externos que proporcionen estas
+	caracter&iacute;sticas pueden desactivar parcial o completamente
+	esta propiedad para acelerar el proceso, independientemente del
+	valor configurado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -715,8 +893,11 @@
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>
+
 	Activa la barra de desplazamiento horizontal en la lista de mensajes
-	si está a '1' (predeterminado). Establecer a '0' para desactivar.
+	si est&aacute; a '1' (predeterminado). Establecer a '0' para
+	desactivar.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -724,9 +905,11 @@
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
+
 	Al mostrar un mensaje que se haya enviado muestra en la columna Para
-	la dirección de correo del remitente (precedida por una flecha).
-	El valor predeterminado es '0'.
+	la direcci&oacute;n de correo del remitente (precedida por una
+	flecha). El valor predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -734,10 +917,13 @@
 	<term><literal>folder_search_wildcard</literal></term>
 	<listitem>
 	  <para>
-	La función de búsqueda según se teclea en la ventana de selección de
-	carpetas se activará cuando coincida con cualquier parte del nombre
-	de la carpeta ('1') o sólo el inicio del nombre ('0'). El valor
-	predeterminado es '1'.
+
+	La funci&oacute;n de b&uacute;squeda seg&uacute;n se teclea en la
+	ventana de selecci&oacute;n de carpetas se activar&aacute; cuando
+	coincida con cualquier parte del nombre de la carpeta ('1') o
+	s&oacute;lo el inicio del nombre ('0'). El valor predeterminado es
+	'1'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -745,9 +931,12 @@
 	<term><literal>folderview_vscrollbar_policy</literal></term>
 	<listitem>
 	  <para>
-	Especificar la política de la barra de desplazamiento vertical de la
-	vista de carpetas: '0' se muestra siempre, '1' es automático y '2'
-	es siempre oculto. El valor predeterminado es '0'.
+
+	Especificar la pol&iacute;tica de la barra de desplazamiento
+	vertical de la vista de carpetas: '0' se muestra siempre, '1' es
+	autom&aacute;tico y '2' es siempre oculto. El valor predeterminado
+	es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -755,9 +944,12 @@
 	<term><literal>hide_timezone</literal></term>
 	<listitem>
 	  <para>
-	Si se activa ('1') se establecerá la zona horaria en las cabeceras
-	de fecha al valor de zona horaria desconocida, tal como se especifica
-	en la sección 3 del RFC 5322. El valor predeterminado es '0'.
+
+	Si se activa ('1') se establecer&aacute; la zona horaria en las
+	cabeceras de fecha al valor de zona horaria desconocida, tal como se
+	especifica en la secci&oacute;n 3 del RFC 5322. El valor
+	predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -765,9 +957,12 @@
 	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
-	Tiempo en milisegundos que causará que se expanda un árbol de
-	carpetas cuando el cursor del ratón se mantenga encima en las
-	operaciones de arrastrar y soltar. El valor predeterminado es '500'.
+
+	Tiempo en milisegundos que causar&aacute; que se expanda un
+	&aacute;rbol de carpetas cuando el cursor del rat&oacute;n se
+	mantenga encima en las operaciones de arrastrar y soltar. El valor
+	predeterminado es '500'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -775,8 +970,11 @@
 	<term><literal>live_dangerously</literal></term>
 	<listitem>
 	  <para>
-	No solicitar confirmación antes de la eliminación definitiva de los
-	mensajes cuando está a '1'. El valor predeterminado es '0'.
+
+	No solicitar confirmaci&oacute;n antes de la eliminaci&oacute;n
+	definitiva de los mensajes cuando est&aacute; a '1'. El valor
+	predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -791,11 +989,13 @@
 	<term><literal>log_status_skip_color</literal></term>
 	<listitem>
 	  <para>
+
 	Colores a usar en la ventana de traza. Los valores predeterminados
 	son: '#af0000' (rojo oscuro), '#000000' (negro), '#00af00' (verde
 	lima oscuro), '#0000ef' (azul), '#af0000' (rojo oscuro), '#00af00'
 	(verde lima oscuro), '#0000af' (azul oscuro) y '#aa00aa' (magenta
 	oscuro) respectivamente.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -803,11 +1003,14 @@
        <term><literal>master_passphrase_pbkdf2_rounds</literal></term>
 	<listitem>
 	  <para>
-	Número de veces (o iteraciones) que se deben usar en la función PBKDF2
-	para calcular la derivación de clave de la siguiente contraseña maestra.
-	La derivación almacenada de la contraseña maestra actual no resulta
-	afectada por el cambio de esta opción. El valor predeterminado es
-	'50000'.
+
+	N&uacute;mero de veces (o iteraciones) que se deben usar en la
+	funci&oacute;n PBKDF2 para calcular la derivaci&oacute;n de clave de
+	la siguiente contrase&ntilde;a maestra. La derivaci&oacute;n
+	almacenada de la contrase&ntilde;a maestra actual no resulta
+	afectada por el cambio de esta opci&oacute;n. El valor
+	predeterminado es '50000'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -815,10 +1018,12 @@
 	<term><literal>mh_compat_mode</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. Habilitar la creación y actualización de los ficheros
-	<filename>.mh_sequences</filename> en los buzones de tipo MH para
-	ser compatible con el sistema de gestión de mensajes MH. El valor
-	predeterminado es '0', desactivado.
+
+	'0' o '1'. Habilitar la creaci&oacute;n y actualizaci&oacute;n de
+	los ficheros <filename>.mh_sequences</filename> en los buzones de
+	tipo MH para ser compatible con el sistema de gesti&oacute;n de
+	mensajes MH. El valor predeterminado es '0', desactivado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -826,9 +1031,11 @@
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>
+
 	'0' o '1'. Utilizar en la vista de mensaje el mismo formato de fecha
 	definido para la lista de mensajes por el usuario. El valor
 	predeterminado es '0', desactivado.
+
 	  </para>
 	</listitem>
        </varlistentry>
@@ -836,9 +1043,11 @@
 	<term><literal>next_on_delete</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. Activa la selección del mensaje siguiente después de mover,
-	borrar o enviar a la papelera un mensaje. El valor predeterminado es
-	'0', seleccionar el mensaje anterior.
+
+	'0' o '1'. Activa la selecci&oacute;n del mensaje siguiente
+	despu&eacute;s de mover, borrar o enviar a la papelera un mensaje.
+	El valor predeterminado es '0', seleccionar el mensaje anterior.
+
 	  </para>
 	</listitem>
        </varlistentry>
@@ -846,12 +1055,15 @@
 	<term><literal>outgoing_fallback_to_ascii</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. La codificación de los mensajes enviados usará ASCII de 7
-	bits cuando sea adecuada al contenido del mensaje, ignorando la
-	opción <quote>Codificación de caracteres para enviar</quote> a menos
-	que sea necesaria. Si se desactiva esta opción se utilizará siempre
-	la codificación definida por el usuario, independientemente del
+
+	'0' o '1'. La codificaci&oacute;n de los mensajes enviados
+	usar&aacute; ASCII de 7 bits cuando sea adecuada al contenido del
+	mensaje, ignorando la opci&oacute;n <quote>Codificaci&oacute;n de
+	caracteres para enviar</quote> a menos que sea necesaria. Si se
+	desactiva esta opci&oacute;n se utilizar&aacute; siempre la
+	codificaci&oacute;n definida por el usuario, independientemente del
 	contenido del mensaje. El valor predeterminado es '1', activado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -859,9 +1071,12 @@
 	<term><literal>primary_paste_unselects</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. Hace que el búfer primario se limpie y que el punto de
-	inserción se reposicione cuando se usa el botón central para
-	pegar texto. El valor predeterminado es '0', desactivado.
+
+	'0' o '1'. Hace que el b&uacute;fer primario se limpie y que el
+	punto de inserci&oacute;n se reposicione cuando se usa el
+	bot&oacute;n central para pegar texto. El valor predeterminado es
+	'0', desactivado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -872,10 +1087,13 @@
 	<term><literal>qs_error_bgcolor</literal></term>
 	<listitem>
 	  <para>
-	Color de primer plano y de fondo para el campo de búsqueda rápida
-	cuando la búsqueda está activa y cuando hay un error de sintaxis.
-	Los valores predeterminados son '#000000' (negro), '#f5f6be' (amarillo
-	pálido), '#000000' (negro) y '#ff7070' (rojo pálido) respectivamente.
+
+	Color de primer plano y de fondo para el campo de b&uacute;squeda
+	r&aacute;pida cuando la b&uacute;squeda est&aacute; activa y cuando
+	hay un error de sintaxis.  Los valores predeterminados son '#000000'
+	(negro), '#f5f6be' (amarillo p&aacute;lido), '#000000' (negro) y
+	'#ff7070' (rojo p&aacute;lido) respectivamente.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -883,11 +1101,14 @@
 	<term><literal>qs_press_timeout</literal></term>
 	<listitem>
 	  <para>
-	Tiempo de espera (en ms) para la búsqueda preliminar al teclear en
-	la búsqueda rápida: cuando está escribiendo en la entrada de la
-	búsqueda rápida en modo «mientras teclea», es el intervalo entre dos
-	pulsaciones de tecla a partir del cual se realiza la búsqueda. El
-	valor predeterminado es 500.
+
+	Tiempo de espera (en ms) para la b&uacute;squeda preliminar al
+	teclear en la b&uacute;squeda r&aacute;pida: cuando est&aacute;
+	escribiendo en la entrada de la b&uacute;squeda r&aacute;pida en
+	modo «mientras teclea», es el intervalo entre dos pulsaciones de
+	tecla a partir del cual se realiza la b&uacute;squeda. El valor
+	predeterminado es 500.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -895,11 +1116,13 @@
 	<term><literal>respect_flowed_format</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. Respetar el <literal>format=flowed</literal> en las partes
-	<literal>text/plain</literal> de los mensajes. Esto provocará que
-	algunos correos tengan líneas largas, pero corregirá algunas URLs
-	que de otra manera se recortarían. El valor predeterminado es '0',
-	desactivado.
+
+	'0' o '1'. Respetar el <literal>format=flowed</literal> en las
+	partes <literal>text/plain</literal> de los mensajes. Esto
+	provocar&aacute; que algunos correos tengan l&iacute;neas largas,
+	pero corregir&aacute; algunas URLs que de otra manera se
+	recortar&iacute;an. El valor predeterminado es '0', desactivado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -907,10 +1130,12 @@
 	<term><literal>save_parts_readwrite</literal></term>
 	<listitem>
 	  <para>
+
 	Si se establece a '1' guarda los ficheros temporales de los adjuntos
 	que se abran con el permiso de escritura activado. El valor
-	predeterminado es '0', los ficheros temporales sólo tienen permiso
-	de lectura.
+	predeterminado es '0', los ficheros temporales s&oacute;lo tienen
+	permiso de lectura.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -918,8 +1143,11 @@
 	<term><literal>show_compose_margin</literal></term>
 	<listitem>
 	  <para>
-	'0' o '1'. Añade márgenes al área del texto del mensaje en la ventana
-	de composición. El valor predeterminado es '0', desactivado.
+
+	'0' o '1'. A&ntilde;ade m&aacute;rgenes al &aacute;rea del texto del
+	mensaje en la ventana de composici&oacute;n. El valor predeterminado
+	es '0', desactivado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -927,9 +1155,11 @@
 	<term><literal>show_inline_attachments</literal></term>
 	<listitem>
 	  <para>
+
 	'0' o '1'. Muestra los adjuntos incrustados en el cuerpo del mensaje
 	en la vista de la estructura MIME. El valor predeterminado es '1',
 	activado.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -937,8 +1167,10 @@
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>
-	Desactiva la verificación de los certificados SSL cuando está a '1'.
-	El valor predeterminado es '0'.
+
+	Desactiva la verificaci&oacute;n de los certificados SSL cuando
+	est&aacute; a '1'. El valor predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -946,8 +1178,10 @@
 	<term><literal>statusbar_update_step</literal></term>
 	<listitem>
 	  <para>
-	Salto de actualización en las barras de progreso. El valor
+
+	Salto de actualizaci&oacute;n en las barras de progreso. El valor
 	predeterminado es '10'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -955,11 +1189,13 @@
 	<term><literal>stripes_color_offset</literal></term>
 	<listitem>
 	  <para>
-	Especificar el valor a usar cuando se crean líneas de color
+
+	Especificar el valor a usar cuando se crean l&iacute;neas de color
 	alternante en los componentes <literal>GtkCMCTree</literal>. Cuanto
-	más pequeño es el valor menos visible será la diferencia entre los
-	colores alternantes de las líneas. El valor predeterminado es
-	'4000'.
+	m&aacute;s peque&ntilde;o es el valor menos visible ser&aacute; la
+	diferencia entre los colores alternantes de las l&iacute;neas. El
+	valor predeterminado es '4000'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -968,9 +1204,11 @@
 	<term><literal>tags_bgcolor</literal></term>
 	<listitem>
 	  <para>
+
 	Color de primer plano y de fondo usados al mostrar las etiquetas.
 	Los valores predeterminados son '#000000' (negro) y '#f5f6be'
-	(amarillo pálido) respectivamente.
+	(amarillo p&aacute;lido) respectivamente.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -978,8 +1216,10 @@
 	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>
-	Mostrar el cursor en la vista de mensaje cuando está a '1'. El valor
-	predeterminado es '0'.
+
+	Mostrar el cursor en la vista de mensaje cuando est&aacute; a '1'.
+	El valor predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -987,9 +1227,12 @@
 	<term><literal>thread_by_subject_max_age</literal></term>
 	<listitem>
 	  <para>
-	Número de días para incluir un mensaje en un hilo cuando se use la
-	opción <quote>Jerarquizar usando el asunto además de las cabeceras
-	estándar</quote>. El valor predeterminado es '10'.
+
+	N&uacute;mero de d&iacute;as para incluir un mensaje en un hilo
+	cuando se use la opci&oacute;n <quote>Jerarquizar usando el asunto
+	adem&aacute;s de las cabeceras est&aacute;ndar</quote>. El valor
+	predeterminado es '10'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -997,8 +1240,10 @@
 	<term><literal>toolbar_detachable</literal></term>
 	<listitem>
 	  <para>
+
 	Mostrar los botones de manejo de las barras de herramientas cuando
-	está a '1'. El valor predeterminado es '0'.
+	est&aacute; a '1'. El valor predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1006,10 +1251,12 @@
 	<term><literal>type_any_header</literal></term>
 	<listitem>
 	  <para>
-	Cuando está a '1' permite escribir cualquier cabecera en las
-	entradas de cabeceras de la ventana de composición. De manera
-	predeterminada ('0') sólo se pueden seleccionar las entradas
+
+	Cuando est&aacute; a '1' permite escribir cualquier cabecera en las
+	entradas de cabeceras de la ventana de composici&oacute;n. De manera
+	predeterminada ('0') s&oacute;lo se pueden seleccionar las entradas
 	disponibles en el desplegable.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1017,9 +1264,12 @@
 	<term><literal>two_line_vertical</literal></term>
 	<listitem>
 	  <para>
-	Cuando está a '1' distribuye en dos líneas la información de la
-	lista de mensajes al usar el aspecto de tres columnas. De manera
-	predeterminada esto está desactivado ('0').
+
+	Cuando est&aacute; a '1' distribuye en dos l&iacute;neas la
+	informaci&oacute;n de la lista de mensajes al usar el aspecto de
+	tres columnas. De manera predeterminada esto est&aacute; desactivado
+	('0').
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1027,9 +1277,11 @@
         <term><literal>unsafe_ssl_certs</literal></term>
 	<listitem>
 	  <para>
-	Permite a &CM; recordar múltiples certificados SSL para un
-	servidor/puerto dado cuando está a '1'. Está deshabilitado de manera
-	predeterminada ('0').
+
+	Permite a &CM; recordar m&uacute;ltiples certificados SSL para un
+	servidor/puerto dado cuando est&aacute; a '1'. Est&aacute;
+	deshabilitado de manera predeterminada ('0').
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1037,9 +1289,11 @@
 	<term><literal>use_networkmanager</literal></term>
 	<listitem>
 	  <para>
-	Utilizar NetworkManager para desconectar automáticamente. Esta
-	opción está activada de manera predeterminada ('1'). Establezca el
-	valor a '0' para ignorar NetworkManager.
+
+	Utilizar NetworkManager para desconectar autom&aacute;ticamente.
+	Esta opci&oacute;n est&aacute; activada de manera predeterminada
+	('1'). Establezca el valor a '0' para ignorar NetworkManager.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1047,10 +1301,12 @@
 	<term><literal>use_stripes_everywhere</literal></term>
 	 <listitem>
 	   <para>
-	Cuando está a a '1' (de manera predeterminada) activa las líneas de
-	colores alternantes en los componentes
+
+	Cuando est&aacute; a a '1' (de manera predeterminada) activa las
+	l&iacute;neas de colores alternantes en los componentes
 	<literal>GtkCMCTree</literal>. Establezca el valor a '0' para
 	desactivarlas.
+
 	   </para>
 	 </listitem>
       </varlistentry>
@@ -1058,11 +1314,14 @@
 	<term><literal>use_stripes_in_summaries</literal></term>
 	 <listitem>
 	   <para>
-	Activar las líneas alternantes en los componentes
+
+	Activar las l&iacute;neas alternantes en los componentes
 	<literal>GtkCMCTree</literal> de la ventana principal (lista de
-	mensajes y árbol de carpetas). La única manera útil de usar esta
-	opción es establecerla a '0' cuando
-	<literal>use_stripes_everywhere</literal> está establecida a '1'.
+	mensajes y &aacute;rbol de carpetas). La &uacute;nica manera
+	&uacute;til de usar esta opci&oacute;n es establecerla a '0' cuando
+	<literal>use_stripes_everywhere</literal> est&aacute; establecida a
+	'1'.
+
 	   </para>
 	 </listitem>
       </varlistentry>
@@ -1070,9 +1329,11 @@
 	<term><literal>utf8_instead_of_locale_for_broken_mail</literal></term>
 	<listitem>
 	  <para>
-	Utilizar la codificación UTF-8 para los correos incorrectos en lugar
-	de la localización actual cuando está a '1'. El valor predeterminado
-	es '0'.
+
+	Utilizar la codificaci&oacute;n UTF-8 para los correos incorrectos
+	en lugar de la localizaci&oacute;n actual cuando est&aacute; a '1'.
+	El valor predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1080,9 +1341,11 @@
 	<term><literal>warn_dnd</literal></term>
 	<listitem>
 	  <para>
-	Mostrar un diálogo de confirmación al arrastrar y soltar carpetas
-	cuando está a '1'. Establezca el valor a '0' para evitar esta
-	confirmación.
+
+	Mostrar un di&aacute;logo de confirmaci&oacute;n al arrastrar y
+	soltar carpetas cuando est&aacute; a '1'. Establezca el valor a '0'
+	para evitar esta confirmaci&oacute;n.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1090,9 +1353,12 @@
     <term><literal>warn_sending_many_recipients_num</literal></term>
     <listitem>
       <para>
-	Mostrar un diálogo de confirmación al enviar un mensaje a un número de
-	destinatarios mayor que el valor de esta preferencia. Establezca el
-	valor a '0' para evitar esta confirmación.
+
+	Mostrar un di&aacute;logo de confirmaci&oacute;n al enviar un
+	mensaje a un n&uacute;mero de destinatarios mayor que el valor de
+	esta preferencia. Establezca el valor a '0' para evitar esta
+	confirmaci&oacute;n.
+
       </para>
     </listitem>
       </varlistentry>
@@ -1100,9 +1366,11 @@
 	<term><literal>zero_replacement_char</literal></term>
 	<listitem>
 	  <para>
-	Caracter mostrado en las columnas numéricas de la lista de carpetas
-	cuando una carpeta no contiene mensajes. El valor predeterminado es
-	'0'.
+
+	Caracter mostrado en las columnas num&eacute;ricas de la lista de
+	carpetas cuando una carpeta no contiene mensajes. El valor
+	predeterminado es '0'.
+
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1111,34 +1379,41 @@
   <section id="adv_autofaces">
     <title>Autofaces</title>
     <para>
+
 	&CM; permite establecer el contenido de las cabeceras Face y X-Face
 	directamente desde ficheros, bien globalmente para todas las cuentas
 	definidas o bien para cada cuenta en particular. Estos ficheros
 	deben ubicarse en el directorio
 	<filename>~/.claws-mail/autofaces</filename>.
+
     </para>
     <para>
+
 	Si existen, las Face y/o X-Face para todas las cuentas se obtienen
-	de los ficheros <filename>face</filename> y/o <filename>xface</filename>
-	respectivamente. De manera similar, si existen, las Face y/o X-Face
-	para una cuenta concreta se obtienen de
+	de los ficheros <filename>face</filename> y/o
+	<filename>xface</filename> respectivamente. De manera similar, si
+	existen, las Face y/o X-Face para una cuenta concreta se obtienen de
 	<filename>face.</filename><emphasis>nombredecuenta</emphasis> y/o
-	<filename>xface.</filename><emphasis>nombredecuenta</emphasis>, donde
-	<emphasis>nombredecuenta</emphasis> es el nombre de la cuenta con la
-	que desea asociar esta cabecera.
+	<filename>xface.</filename><emphasis>nombredecuenta</emphasis>,
+	donde <emphasis>nombredecuenta</emphasis> es el nombre de la cuenta
+	con la que desea asociar esta cabecera.
+
    </para>
    <para>
+
 	Si el nombre de la cuenta contiene caracteres que pueden resultar
-	inadecuados al sistema de ficheros subyacente (incluidos los espacios)
-	éstos se sustituirán por subrayados (<quote>_</quote>) al buscar los
-	autofaces de dicha cuenta. Por ejemplo, si su cuenta se llama
-	<quote>&lt;Mi Correo&gt;</quote>, el nombre para la cabecera
-	X-Face de esa cuenta sería
+	inadecuados al sistema de ficheros subyacente (incluidos los
+	espacios) &eacute;stos se sustituir&aacute;n por subrayados
+	(<quote>_</quote>) al buscar los autofaces de dicha cuenta. Por
+	ejemplo, si su cuenta se llama <quote>&lt;Mi Correo&gt;</quote>, el
+	nombre para la cabecera X-Face de esa cuenta ser&iacute;a
 	<filename>~/.claws-mail/autofaces/xface._Mi_Correo_</filename>.
-	Nótese que esta funcionalidad no comprueba el contenido de los
-	ficheros, ni la existencia de cabeceras duplicadas (la mayoría de los
-	clientes de correo, incluyendo &CM;, ignorarán los duplicados y sólo
-	mostrarán la última de ellas).
+	N&oacute;tese que esta funcionalidad no comprueba el contenido de
+	los ficheros, ni la existencia de cabeceras duplicadas (la
+	mayor&iacute;a de los clientes de correo, incluyendo &CM;,
+	ignorar&aacute;n los duplicados y s&oacute;lo mostrar&aacute;n la
+	&uacute;ltima de ellas).
+
     </para>
   </section>
 </section>

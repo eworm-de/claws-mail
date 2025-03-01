@@ -2,116 +2,149 @@
 <appendix id="ap_faq">
 <title>Las preguntas frecuentes (FAQ) de &CM;</title>
   <section>
-    <title>¿Cuáles son las diferencias entre &CM; y Sylpheed?</title>
+    <title>&iquest;Cu&aacute;les son las diferencias entre &CM; y Sylpheed?</title>
     <para>
-	&CM; es un nuevo proyecto basado en Sylpheed (también denominado
-	<emphasis>fork</emphasis> en Inglés), por tanto encontrará todas las
-	funcionalidades de Sylpheed y muchas más. También incluye algunos
-	diálogos modificados para mejorar la usabilidad. Puede encontrar más
-	información en <ulink url="https://www.claws-mail.org/features.php"
+
+	&CM; es un nuevo proyecto basado en Sylpheed (tambi&eacute;n
+	denominado <emphasis>fork</emphasis> en Ingl&eacute;s), por tanto
+	encontrar&aacute; todas las funcionalidades de Sylpheed y muchas
+	m&aacute;s. Tambi&eacute;n incluye algunos di&aacute;logos
+	modificados para mejorar la usabilidad. Puede encontrar m&aacute;s
+	informaci&oacute;n en <ulink
+	url="https://www.claws-mail.org/features.php"
 	>www.claws-mail.org/features.php</ulink>.
+
     </para>
   </section>
   <section>
-    <title>¿Me permite &CM; escribir mensajes HTML?</title>
+    <title>&iquest;Me permite &CM; escribir mensajes HTML?</title>
     <para>
-	No. Se debatió sobre este tema, y el resultado fue que el correo
-	HTML es algo no deseado. Si realmente necesita enviar HTML puede,
-	por supuesto, adjuntar una página web a un correo.
+
+	No. Se debati&oacute; sobre este tema, y el resultado fue que el
+	correo HTML es algo no deseado. Si realmente necesita enviar HTML
+	puede, por supuesto, adjuntar una p&aacute;gina web a un correo.
+
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo enviar parches, informar de fallos y hablar de &CM;
-      con otros?</title>
+    <title>&iquest;C&oacute;mo puedo enviar parches, informar de fallos
+	y hablar de &CM; con otros?</title>
     <para>
-	Los parches deben enviarse a través de nuestro Bugzilla, <ulink
-	url='https://www.thewildbeast.co.uk/claws-mail/bugzilla/'
+
+	Los parches deben enviarse a trav&eacute;s de nuestro Bugzilla,
+	<ulink url='https://www.thewildbeast.co.uk/claws-mail/bugzilla/'
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>, pero
-	para ello siga por favor la guía para parches en <ulink
+	para ello siga por favor la gu&iacute;a para parches en <ulink
 	url="https://www.claws-mail.org/devel.php"
 	>www.claws-mail.org/devel.php</ulink>.
+
     </para>
     <para>
+
 	Los informes de fallo deben ser enviados a nuestro Bugzilla, <ulink
 	url="https://www.thewildbeast.co.uk/claws-mail/bugzilla/"
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>.
+
     </para>
     <para>
-	Para hablar con otros debería unirse a la lista de correo de
+
+	Para hablar con otros deber&iacute;a unirse a la lista de correo de
 	usuarios de &CM;. Los detalles los puede encontrar en <ulink
 	url="https://www.claws-mail.org/MLs.php"
 	>www.claws-mail.org/MLs.php</ulink>.
+
     </para>
   </section>
   <section>
-    <title>¿Tiene &CM; alguna funcionalidad anti-spam?</title>
+    <title>&iquest;Tiene &CM; alguna funcionalidad anti-spam?</title>
     <para>
-	Sí. Tiene módulos para SpamAssassin y Bogofilter. Puede encontrar
-	más detalles sobre ello en el capítulo <link linkend="ch_plugins"
-	>Extendiendo &CM;</link>.
+
+	S&iacute;. Tiene m&oacute;dulos para SpamAssassin y Bogofilter.
+	Puede encontrar m&aacute;s detalles sobre ello en el cap&iacute;tulo
+	<link linkend="ch_plugins">Extendiendo &CM;</link>.
+
     </para>
     <para>
-	También puede usar otros filtros de correo basura como Bogofilter a
-	través de las funcionalidades de <quote>Filtrado</quote> y
-	<quote>Acciones</quote>. Las instrucciones para usar Bogofilter con
-	&CM; se pueden encontrar en las <ulink
+
+	Tambi&eacute;n puede usar otros filtros de correo basura como
+	Bogofilter a trav&eacute;s de las funcionalidades de
+	<quote>Filtrado</quote> y <quote>Acciones</quote>. Las instrucciones
+	para usar Bogofilter con &CM; se pueden encontrar en las <ulink
 	url="http://bogofilter.sourceforge.net/faq.shtml#with-sc"
 	>preguntas frecuentes (FAQ) de Bogofilter</ulink>.
+
     </para>
   </section>
   <section>
-    <title>¿Soporta &CM; acuses de recibo?</title>
+    <title>&iquest;Soporta &CM; acuses de recibo?</title>
     <para>
-	Sí. Para solicitar un acuse de recibo utilice
+
+	S&iacute;. Para solicitar un acuse de recibo utilice
 	<quote>Opciones/Solicitar acuse de recibo</quote> en la ventana de
-	composición. Cuando reciba un mensaje que solicite acuse de recibo
-	aparecerá un área encima de la vista de mensaje notificándolo.
-	Puede utilizar el botón <quote>Enviar acuse de recibo</quote> o
-	ignorar la solicitud, no se enviarán acuses de recibo de manera
-	automática.
+	composici&oacute;n. Cuando reciba un mensaje que solicite acuse de
+	recibo aparecer&aacute; un &aacute;rea encima de la vista de mensaje
+	notific&aacute;ndolo.  Puede utilizar el bot&oacute;n <quote>Enviar
+	acuse de recibo</quote> o ignorar la solicitud, no se
+	enviar&aacute;n acuses de recibo de manera autom&aacute;tica.
+
     </para>
     <para>
-	Si no quiere enviar nunca acuses de recibo puede utilizar la opción
-	<quote>No enviar nunca acuses de recibo</quote> en la página
-	<quote>Configuración/Preferencias/Manejo de correo/Enviando</quote>.
+
+	Si no quiere enviar nunca acuses de recibo puede utilizar la
+	opci&oacute;n <quote>No enviar nunca acuses de recibo</quote> en la
+	p&aacute;gina <quote>Configuraci&oacute;n/Preferencias/Manejo de
+	correo/Enviando</quote>.
+
     </para>
   </section>
   <section>
-    <title>¿Cómo puedo hacer que &CM; me avise cuando llega correo nuevo?
+    <title>&iquest;C&oacute;mo puedo hacer que &CM; me avise cuando
+	llega correo nuevo?
     </title>
     <para>
-	Vaya a <quote>Configuración/Preferencias</quote> y en la sección
-	<quote>Manejo de correo/Recibiendo</quote>, configure la opción
-	<quote>Ejecutar una orden</quote> después de recibir correo nuevo.
-	Alternativamente puede usar el módulo del icono en bandeja.
+
+	Vaya a <quote>Configuraci&oacute;n/Preferencias</quote> y en la
+	secci&oacute;n <quote>Manejo de correo/Recibiendo</quote>, configure
+	la opci&oacute;n <quote>Ejecutar una orden</quote> despu&eacute;s de
+	recibir correo nuevo.  Alternativamente puede usar el m&oacute;dulo
+	del icono en bandeja.
+
     </para>
   </section>
   <section>
-    <title>¿Por qué los caracteres especiales (p.ej. diéresis) no se
-    muestran correctamente?</title>
+    <title>&iquest;Por qu&eacute; los caracteres especiales (p.ej.
+	di&eacute;resis) no se muestran correctamente?</title>
     <para>
-	En la mayoría de los casos esto esta provocado por correos con
-	coficaciones de caracteres incorrectas. Puede intentar forzarlas
-	utilizando el submenú <quote>Ver/Codificación de caracteres</quote>.
+
+	En la mayor&iacute;a de los casos esto esta provocado por correos
+	con coficaciones de caracteres incorrectas. Puede intentar forzarlas
+	utilizando el submen&uacute; <quote>Ver/Codificaci&oacute;n de
+	caracteres</quote>.
+
     </para>
   </section>
   <section>
-    <title>¿Puedo citar sólo una parte del mensaje original al responder?
+    <title>&iquest;Puedo citar s&oacute;lo una parte del mensaje
+	original al responder?
     </title>
     <para>
-	Sí, seleccione el texto en la vista de mensaje y seleccione
+
+	S&iacute;, seleccione el texto en la vista de mensaje y seleccione
 	<quote>Responder</quote>.
+
     </para>
   </section>
   <section>
-    <title>¿Dónde puedo encontrar las respuestas a más preguntas frecuentes
-    sobre &CM;?</title>
+    <title>&iquest;D&oacute;nde puedo encontrar las respuestas a
+	m&aacute;s preguntas frecuentes sobre &CM;?</title>
     <para>
+
 	Dentro el sitio web de &CM;, en <ulink
 	url="https://www.claws-mail.org/faq/"
 	>www.claws-mail.org/faq/</ulink>, se puede encontrar una
-	colección más amplia de preguntas frecuentes aportadas por los
-	usuarios.
+	colecci&oacute;n m&aacute;s amplia de preguntas frecuentes aportadas
+	por los usuarios.
+
     </para>
     </section>
 </appendix>
