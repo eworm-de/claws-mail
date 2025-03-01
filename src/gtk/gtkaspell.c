@@ -717,7 +717,7 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 
 static void gtkaspeller_delete(GtkAspeller *gtkaspeller)
 {
-	cm_return_val_if_fail(gtkaspellcheckers, NULL);
+	cm_return_if_fail(gtkaspellcheckers);
 	
 	gtkaspellcheckers->checkers = 
 		g_slist_remove(gtkaspellcheckers->checkers, 
