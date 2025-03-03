@@ -6318,9 +6318,9 @@ static void imap_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		if (!strcmp(attr->name, "uidnext"))
 			IMAP_FOLDER_ITEM(item)->uid_next = atoi(attr->value);
 		if (!strcmp(attr->name, "last_sync"))
-			IMAP_FOLDER_ITEM(item)->last_sync = atoi(attr->value);
+			IMAP_FOLDER_ITEM(item)->last_sync = (time_t)atol(attr->value);
 		if (!strcmp(attr->name, "last_change"))
-			IMAP_FOLDER_ITEM(item)->last_change = atoi(attr->value);
+			IMAP_FOLDER_ITEM(item)->last_change = (time_t)atol(attr->value);
 	}
 	if (IMAP_FOLDER_ITEM(item)->last_change == 0)
 		IMAP_FOLDER_ITEM(item)->last_change = time(NULL);
@@ -6336,9 +6336,9 @@ static XMLTag *imap_item_get_xml(Folder *folder, FolderItem *item)
 #ifdef HAVE_LIBETPAN
 	xml_tag_add_attr(tag, xml_attr_new_int("uidnext", 
 			IMAP_FOLDER_ITEM(item)->uid_next));
-	xml_tag_add_attr(tag, xml_attr_new_int("last_sync", 
+	xml_tag_add_attr(tag, xml_attr_new_time_t("last_sync", 
 			IMAP_FOLDER_ITEM(item)->last_sync));
-	xml_tag_add_attr(tag, xml_attr_new_int("last_change", 
+	xml_tag_add_attr(tag, xml_attr_new_time_t("last_change", 
 			IMAP_FOLDER_ITEM(item)->last_change));
 
 #endif

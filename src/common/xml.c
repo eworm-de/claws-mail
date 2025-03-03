@@ -510,6 +510,20 @@ XMLAttr *xml_attr_new_int(const gchar *name, const gint value)
 	return new_attr;
 }
 
+XMLAttr *xml_attr_new_time_t(const gchar *name, const time_t value)
+{
+	XMLAttr *new_attr;
+	gchar *valuestr;
+
+	valuestr = g_strdup_printf("%ld", value);
+
+	new_attr = g_new(XMLAttr, 1);
+	new_attr->name = XML_STRING_ADD(name);
+	new_attr->value = valuestr;
+
+	return new_attr;
+}
+
 void xml_tag_add_attr(XMLTag *tag, XMLAttr *attr)
 {
 	tag->attr = g_list_prepend(tag->attr, attr);

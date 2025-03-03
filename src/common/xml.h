@@ -88,6 +88,8 @@ XMLAttr *xml_attr_new		(const gchar	*name,
 				 const gchar	*value);
 XMLAttr *xml_attr_new_int	(const gchar	*name,
 				 const gint	 value);
+XMLAttr *xml_attr_new_time_t	(const gchar	*name,
+				 const time_t	 value);
 void xml_tag_add_attr		(XMLTag		*tag,
 				 XMLAttr*	attr);
 
