@@ -151,7 +151,6 @@ static void browse_clear_queue( void ) {
 	pthread_mutex_lock( & _browseMutex_ );
 
 	ldapqry_free_list_name_value( _displayQueue_ );
-	g_list_free( _displayQueue_ );
 	_displayQueue_ = NULL;
 
 	pthread_mutex_unlock( & _browseMutex_ );
