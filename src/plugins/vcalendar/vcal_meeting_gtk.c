@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2022 Colin Leroy <colin@colino.net> and
- * the Claws Mail team
+ * the Claws Mail team(list)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1920,8 +1920,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		subs = vcal_folder_get_webcal_events();
 
 	if (g_slist_length(list) == 0 && g_slist_length(subs) == 0) {
-		g_slist_free(list);
-		g_slist_free(subs);
+        list = NULL;
+        subs = NULL;
 		if (!automatic) {
 			alertpanel_full(_("Empty calendar"),
 					_("There is nothing to export."),
@@ -1929,6 +1929,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_NOTICE);
 			g_free(tmpfile);
 			g_free(internal_file);
+			g_slist_free(list);
+			g_slist_free(subs);
 			return FALSE;
 		} else {
 			str_write_to_file("", tmpfile, TRUE);
