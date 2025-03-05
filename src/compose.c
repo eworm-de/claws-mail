@@ -11940,7 +11940,7 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 	 * does not work */
 
 	if (!strncmp(email, "mailto:", strlen("mailto:"))) {
-		gchar *decoded=g_new(gchar, strlen(email));
+		gchar *decoded=g_new(gchar, strlen(email)+1);
 		int start = 0;
 
 		decode_uri(decoded, email + strlen("mailto:")); /* will fit */
