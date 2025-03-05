@@ -1576,9 +1576,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	for (i = 0; accounts != NULL; accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
 		
-		if (!ac->selectable_as_current_account) {
-			continue;
-		}
 		if (ac->protocol == A_NNTP) {
 			continue;
 		}
