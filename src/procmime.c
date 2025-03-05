@@ -1441,7 +1441,8 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 				{"Disposition:",
 						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
-	guint content_start, i;
+	glong content_start;
+	guint i;
 	FILE *fp;
         gchar *tmp;
 	gint len = 0;
