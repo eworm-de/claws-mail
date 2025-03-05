@@ -54,9 +54,9 @@ test_pkcs5_pbkdf2(gconstpointer user_data)
 	gint ret;
 
 	if (data->rounds > 10000 && !g_test_slow()) {
-		gchar *msg = "Time-intensive test, rerun in slow mode to run it.";
+		const gchar *msg = "Time-intensive test, rerun in slow mode to run it.";
 		g_test_skip(msg);
-		g_test_message(msg);
+		g_test_message("%s", msg);
 		return;
 	}
 
