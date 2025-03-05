@@ -337,19 +337,19 @@ static gint SSL_connect_nb(gnutls_session_t ssl)
 #endif
 }
 
-gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *list_len)
+gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, unsigned int *list_len)
 {
 	const gnutls_datum_t *raw_cert_list;
 	gnutls_x509_crt_t *certs = NULL;
 	gboolean result = TRUE;
 
-	*list_len = -1;
+	*list_len = 0;
 	if (!session)
 		return NULL;
 
 	raw_cert_list = gnutls_certificate_get_peers(session, list_len);
 
-	if (raw_cert_list && gnutls_certificate_type_get(session) == GNUTLS_CRT_X509) {
+	if (raw_cert_list && (*list_len>0) && gnutls_certificate_type_get(session) == GNUTLS_CRT_X509) {
 		int i = 0;
 
 		if (*list_len > 128)
