@@ -292,7 +292,7 @@ const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *na
 gboolean procmime_decode_content(MimeInfo *mimeinfo)
 {
 	gchar buf[BUFFSIZE];
-	gint readend;
+	glong readend;
 	gchar *tmpfilename;
 	FILE *outfp, *infp;
 	GStatBuf statbuf;
@@ -364,7 +364,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	*buf = '\0';
 	if (encoding == ENC_QUOTED_PRINTABLE) {
 		while ((ftell(infp) < readend) && (claws_fgets(buf, sizeof(buf), infp) != NULL)) {
-			gint len;
+			size_t len;
 			len = qp_decode_line(buf);
 			buf[len] = '\0';
 			if (!flowed) {
@@ -378,7 +378,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			FLUSH_LASTLINE();
 	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE + 1];
-		gint len, inlen, inread;
+		glong len;
+		gsize inlen, inread;
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
 		FILE *tmpfp = NULL;
@@ -403,8 +404,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		while ((inlen = MIN(readend - ftell(infp), sizeof(buf))) > 0 && !err) {
 			inread = claws_fread(buf, 1, inlen, infp);
 			memset(outbuf, 0, sizeof(buf));
-			len = g_base64_decode_step(buf, inlen, outbuf, &state, &save);
-			if (uncanonicalize == TRUE && strlen(outbuf) < len && starting) {
+			len = (glong)g_base64_decode_step(buf, inlen, outbuf, &state, &save);
+			if (uncanonicalize == TRUE && strlen(outbuf) < (size_t)len && starting) {
 				uncanonicalize = FALSE;
 				null_bytes = TRUE;
 			}
@@ -423,10 +424,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				 * per block */
 				if (null_bytes) {
 					/* we won't uncanonicalize, output to outfp directly */
-					if (claws_fwrite(outbuf, sizeof(gchar), len, outfp) < len)
+					if (claws_fwrite(outbuf, sizeof(gchar), (size_t)len, outfp) < (size_t)len)
 						err = TRUE;
 				} else {
-					if (claws_fwrite(outbuf, sizeof(gchar), len, tmpfp) < len)
+					if (claws_fwrite(outbuf, sizeof(gchar), (size_t)len, tmpfp) < (size_t)len)
 						err = TRUE;
 				}
 				got_error = FALSE;
@@ -446,7 +447,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		}
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
-		gint len;
+		glong len;
 		gboolean flag = FALSE;
 
 		while ((ftell(infp) < readend) && (claws_fgets(buf, sizeof(buf), infp) != NULL)) {
@@ -456,10 +457,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				len = fromuutobits(outbuf, buf);
 				if (len <= 0) {
 					if (len < 0) 
-						g_warning("bad UUENCODE content (%d)", len);
+						g_warning("bad UUENCODE content (%ld)", len);
 					break;
 				}
-				if (claws_fwrite(outbuf, sizeof(gchar), len, outfp) < len)
+				if (claws_fwrite(outbuf, sizeof(gchar), (size_t)len, outfp) < (size_t)len)
 					err = TRUE;
 			} else
 				flag = TRUE;
@@ -510,7 +511,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 {
 	FILE *infp = NULL, *outfp;
-	gint len;
+	glong len;
 	gchar *tmpfilename;
 	GStatBuf statbuf;
 	gboolean err = FALSE;
@@ -592,7 +593,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			}
 		}
 
-		while ((len = claws_fread(inbuf, sizeof(gchar),
+		while ((len = (glong)claws_fread(inbuf, sizeof(gchar),
 				    B64_LINE_SIZE, tmp_fp))
 		       == B64_LINE_SIZE) {
 			out = g_base64_encode(inbuf, B64_LINE_SIZE);
@@ -603,7 +604,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				err = TRUE;
 		}
 		if (len > 0 && claws_feof(tmp_fp)) {
-			out = g_base64_encode(inbuf, len);
+			out = g_base64_encode(inbuf, (gsize)len);
 			if (claws_fputs(out, outfp) == EOF)
 				err = TRUE;
 			g_free(out);
@@ -682,7 +683,7 @@ static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
 {
 	FILE *infp;
 	gchar buf[BUFFSIZE];
-	gint restlength, readlength;
+	glong restlength, readlength;
 	gint saved_errno = 0;
 
 	cm_return_val_if_fail(outfp != NULL, -1);
@@ -706,7 +707,7 @@ static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
 	restlength = mimeinfo->length;
 
 	while ((restlength > 0) && ((readlength = claws_fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
-		if (claws_fwrite(buf, 1, readlength, outfp) != readlength) {
+		if (claws_fwrite(buf, 1, (size_t)readlength, outfp) != (size_t)readlength) {
 			saved_errno = errno;
 			claws_fclose(infp);
 			return -(saved_errno);
@@ -1286,7 +1287,7 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 
 	while ((len = claws_fread(buf, sizeof(guchar), sizeof(buf), fp)) > 0) {
 		guchar *p;
-		gint i;
+		gulong i;
 
 		for (p = buf, i = 0; i < len; ++p, ++i) {
 			if (*p & 0x80)
@@ -1445,7 +1446,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 	guint i;
 	FILE *fp;
         gchar *tmp;
-	gint len = 0;
+	glong len = 0;
 
 	procmime_decode_content(mimeinfo);
 
@@ -1641,7 +1642,9 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 				{NULL,		   NULL, FALSE}};
 	gchar *tmp;
 	gchar *boundary;
-	gint boundary_len = 0, lastoffset = -1, i;
+	gsize boundary_len = 0;
+	glong lastoffset = -1;
+	gulong i;
 	gchar buf[BUFFSIZE];
 	FILE *fp;
 	int result = 0;
@@ -1675,7 +1678,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 			start_found = TRUE;
 
 			if (lastoffset != -1) {
-				gint len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
+				glong len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
 				if (len < 0)
 					len = 0;
 				result = procmime_parse_mimepart(mimeinfo,
@@ -1705,7 +1708,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 	}
 	
 	if (start_found && !end_found && lastoffset != -1) {
-		gint len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
+		glong len = (ftell(fp) - strlen(buf)) - lastoffset - 1;
 
 		if (len >= 0) {
 			result = procmime_parse_mimepart(mimeinfo,
@@ -1736,7 +1739,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 	next = params;
 	for (; next != NULL; param = next) {
 		gchar *attribute, *value, *tmp, *down_attr, *orig_down_attr;
-		gint len;
+		glong len;
 		gboolean convert = FALSE;
 
 		next = strchr_with_skip_quote(param, '"', ';');
@@ -2149,7 +2152,7 @@ static gboolean output_func(GNode *node, gpointer data)
 	depth = g_node_depth(node);
 	for (i = 0; i < depth; i++)
 		g_print("    ");
-	g_print("%s/%s (offset:%d length:%d encoding: %d)\n", 
+	g_print("%s/%s (offset:%ld length:%ld encoding: %d)\n", 
 		(mimeinfo->type <= MIMETYPE_UNKNOWN)? typenames[mimeinfo->type] : "unknown", 
 		mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
 
@@ -2161,7 +2164,7 @@ static void output_mime_structure(MimeInfo *mimeinfo, int indent)
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, output_func, NULL);
 }
 
-static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset, gboolean short_scan)
+static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, glong offset, gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
 	GStatBuf buf;
@@ -2213,7 +2216,7 @@ static MimeInfo *procmime_scan_queue_file_full(const gchar *filename, gboolean s
 	FILE *fp;
 	MimeInfo *mimeinfo;
 	gchar buf[BUFFSIZE];
-	gint offset = 0;
+	glong offset = 0;
 
 	cm_return_val_if_fail(filename != NULL, NULL);
 
@@ -2276,7 +2279,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 	gchar *val = value, *valpos, *tmp;
 	ParametersData *pdata = (ParametersData *)user_data;
 	GString *buf = g_string_new("");
-	gint len;
+	glong len;
 
 	EncodeAs encas = ENC_AS_TOKEN;
 
@@ -2713,7 +2716,7 @@ void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 {
 	FILE *infp;
 	gchar *data;
-	gint length, readlength;
+	glong length, readlength;
 
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
@@ -2739,7 +2742,7 @@ void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 
 	data = g_malloc(null_terminate ? length + 1 : length);
 	if (data == NULL) {
-		g_warning("could not allocate %d bytes for procmime_get_part_as_string",
+		g_warning("could not allocate %ld bytes for procmime_get_part_as_string",
 				(null_terminate ? length + 1 : length));
 		claws_fclose(infp);
 		return NULL;
@@ -2777,7 +2780,7 @@ GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo)
 		 * the data for the stream. */
 		return g_memory_input_stream_new_from_data(
 				mimeinfo->data.mem,
-				mimeinfo->length, NULL);
+				(gssize)mimeinfo->length, NULL);
 	} else {
 		return g_memory_input_stream_new_from_data(
 				procmime_get_part_as_string(mimeinfo, FALSE),

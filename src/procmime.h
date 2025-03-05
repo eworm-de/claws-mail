@@ -143,8 +143,8 @@ struct _MimeInfo
 	/* Content-Location */
 	gchar 		*location;
 
-	guint		 offset;
-	guint		 length;
+	glong		 offset;
+	glong		 length;
 
 	/* Content-Disposition */
 	DispositionType	 disposition;

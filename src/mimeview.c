@@ -181,7 +181,7 @@ static void mimeview_copy_cb(GtkAction *action, gpointer data)
 	} else {
 		void *data = procmime_get_part_as_string(mimeinfo, FALSE);
 		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
-				       data, mimeinfo->length);
+				       data, (gint)mimeinfo->length);
 		g_free(data);
 	}
 }

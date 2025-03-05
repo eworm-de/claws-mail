@@ -297,7 +297,7 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 		debug_print("error decoding\n");
 		return FALSE;
 	}
-	debug_print("Tnef parser parsing part (%d).\n", mimeinfo->length);
+	debug_print("Tnef parser parsing part (%ld).\n", mimeinfo->length);
 	if (mimeinfo->content == MIMECONTENT_FILE)
 		debug_print("content: %s\n", mimeinfo->data.filename);
 	else 

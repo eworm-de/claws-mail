@@ -649,7 +649,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	err = gpgme_data_new_from_filepart(&data, NULL, fp, mimeinfo->offset, mimeinfo->length);
 	claws_fclose(fp);
 
-	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
+	debug_print("data %p (%ld %ld)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
 	if (err) {
 		debug_print ("gpgme_data_new_from_file failed: %s\n",
 			     gpgme_strerror (err));

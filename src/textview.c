@@ -705,10 +705,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 	if (name != NULL)
-		g_snprintf(buf, sizeof(buf), _("[%s  %s (%d bytes)]"),
+		g_snprintf(buf, sizeof(buf), _("[%s  %s (%ld bytes)]"),
 			   name, content_type, mimeinfo->length);
 	else
-		g_snprintf(buf, sizeof(buf), _("[%s (%d bytes)]"),
+		g_snprintf(buf, sizeof(buf), _("[%s (%ld bytes)]"),
 			   content_type, mimeinfo->length);
 
 	g_free(content_type);			   
@@ -1017,7 +1017,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 #endif
 	GSList *cur;
 	gboolean continue_write = TRUE;
-	size_t wrote = 0, i = 0;
+	glong wrote = 0, i = 0;
 
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -1088,7 +1088,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		if (procmime_get_part(fname, mimeinfo)) goto textview_default;
 
 		g_snprintf(buf, sizeof(buf), cmd, fname);
-		debug_print("Viewing text content of type: %s (length: %d) "
+		debug_print("Viewing text content of type: %s (length: %ld) "
 			"using %s\n", mimeinfo->subtype, mimeinfo->length, buf);
 
 		if (pipe(pfd) < 0) {
@@ -1173,7 +1173,7 @@ textview_default:
 			conv_code_converter_destroy(conv);
 			return;
 		}
-		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
+		debug_print("Viewing text content of type: %s (length: %ld)\n", mimeinfo->subtype, mimeinfo->length);
 		while (((i = ftell(tmpfp)) < mimeinfo->offset + mimeinfo->length) &&
 		       (claws_fgets(buf, sizeof(buf), tmpfp) != NULL)
 		       && continue_write) {
