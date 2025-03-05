@@ -350,14 +350,14 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, unsigned 
 	raw_cert_list = gnutls_certificate_get_peers(session, list_len);
 
 	if (raw_cert_list && (*list_len>0) && gnutls_certificate_type_get(session) == GNUTLS_CRT_X509) {
-		int i = 0;
+		glong i = 0;
 
 		if (*list_len > 128)
 			*list_len = 128;
 
 		certs = g_malloc(sizeof(gnutls_x509_crt_t) * (*list_len));
 
-		for(i = 0 ; i < (*list_len) ; i++) {
+		for(i = 0 ; i < (glong)(*list_len) ; i++) {
 			int r;
 
 			gnutls_x509_crt_init(&certs[i]);
@@ -375,7 +375,7 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, unsigned 
 				gnutls_x509_crt_deinit(certs[i]);
 
 			g_free(certs);
-			*list_len = -1;
+			*list_len = 0;
 
 			return NULL;
 		}
@@ -387,8 +387,8 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, unsigned 
 gboolean ssl_init_socket(SockInfo *sockinfo)
 {
 	gnutls_session_t session;
-	int r, i;
-	unsigned int cert_list_length;
+	int r;
+	unsigned int i, cert_list_length;
 	gnutls_x509_crt_t *certs = NULL;
 	gnutls_certificate_credentials_t xcred;
 
