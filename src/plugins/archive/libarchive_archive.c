@@ -532,6 +532,12 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 				return archive_error_string(arch);
 			break;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+		case ZSTD:
+			if (archive_write_add_filter_zstd(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+#endif
 		case NO_COMPRESS:
 #if ARCHIVE_VERSION_NUMBER < 3000000
 			if (archive_write_set_compression_none(arch) != ARCHIVE_OK)
@@ -707,7 +713,7 @@ void archive_scan_folder(const char* dir) {
 
 int main(int argc, char** argv) {
 	char* archive = NULL;
-	char buf[PATH_MAX];
+	char buf[PATH_MAX*2];
 	int pid;
 	int opt;
 	int perm = ARCHIVE_EXTRACT_PERM | ARCHIVE_EXTRACT_TIME |

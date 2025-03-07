@@ -160,6 +160,9 @@ const gchar* plugin_desc(void) {
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 			"\tLZ4\n"
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+			"\tZSTD\n"
+#endif
 			);
 	}
 	return plugin_description;

@@ -264,6 +264,12 @@ static COMPRESS_METHOD get_compress_method(GSList* btn) {
 				return LZ4;
 			}
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+			else if (strcmp("ZSTD", name) == 0) {
+				debug_print("ZSTD compression enabled\n");
+				return LZ4;
+			}
+#endif
 			else if (strcmp("NONE", name) == 0) {
 				debug_print("Compression disabled\n");
 				return NO_COMPRESS;
@@ -716,6 +722,11 @@ static void show_result(struct ArchivePage* page) {
 			method = g_strdup("LZ4");
 			break;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+		case ZSTD:
+			method = g_strdup("ZSTD");
+			break;
+#endif
 		case NO_COMPRESS:
 			method = g_strdup("No Compression");
 			break;
@@ -1021,6 +1032,9 @@ void archiver_gtk_show(void) {
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	GtkWidget* lz4_radio_btn;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+	GtkWidget* zstd_radio_btn;
+#endif
 	GtkWidget* no_radio_btn;
 	GtkWidget* shar_radio_btn;
 	GtkWidget* pax_radio_btn;
@@ -1172,6 +1186,14 @@ void archiver_gtk_show(void) {
         archiver_set_tooltip(lz4_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LZ4"));
 #endif
 
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	zstd_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "ZZSTD");
+	gtk_widget_set_name(zstd_radio_btn, "ZSTD");
+	gtk_box_pack_start(GTK_BOX(hbox1), zstd_radio_btn, FALSE, FALSE, 0);
+        archiver_set_tooltip(zstd_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "ZSTD"));
+#endif
+
 	no_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), _("_None"));
 	gtk_widget_set_name(no_radio_btn, "NONE");
@@ -1218,6 +1240,11 @@ void archiver_gtk_show(void) {
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	case COMPRESSION_LZ4:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lz4_radio_btn), TRUE);
+		break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	case COMPRESSION_ZSTD:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(zstd_radio_btn), TRUE);
 		break;
 #endif
 	case COMPRESSION_NONE:

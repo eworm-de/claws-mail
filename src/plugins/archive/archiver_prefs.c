@@ -66,6 +66,9 @@ struct ArchiverPrefsPage {
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	GtkWidget *lz4_radiobtn;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	GtkWidget *zstd_radiobtn;
+#endif
 	GtkWidget *none_radiobtn;
 	GtkWidget *tar_radiobtn;
 	GtkWidget *shar_radiobtn;
@@ -190,6 +193,9 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	GtkWidget *lz4_radiobtn;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	GtkWidget *zstd_radiobtn;
+#endif
 	GtkWidget *none_radiobtn;
 	GSList    *format_group = NULL;
 	GtkWidget *tar_radiobtn;
@@ -309,6 +315,14 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 	archiver_set_tooltip(lz4_radiobtn, g_strdup_printf(_("Choose this option to use %s compression by default"), "LZ4"));
 #endif
 
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	zstd_radiobtn = gtk_radio_button_new_with_label(compression_group, "ZSTD");
+	compression_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(zstd_radiobtn));
+	gtk_widget_show(zstd_radiobtn);
+	gtk_box_pack_start(GTK_BOX (hbox1), zstd_radiobtn, FALSE, FALSE, 0);
+	archiver_set_tooltip(zstd_radiobtn, g_strdup_printf(_("Choose this option to use %s compression by default"), "ZSTD"));
+#endif
+
     none_radiobtn = gtk_radio_button_new_with_label(compression_group, _("None"));
 	compression_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(none_radiobtn));
 	gtk_widget_show(none_radiobtn);
@@ -352,6 +366,11 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	case COMPRESSION_LZ4:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lz4_radiobtn), TRUE);
+		break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	case COMPRESSION_ZSTD:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(zstd_radiobtn), TRUE);
 		break;
 #endif
 	case COMPRESSION_NONE:
@@ -460,6 +479,9 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	page->lz4_radiobtn = lz4_radiobtn;
 #endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	page->zstd_radiobtn = zstd_radiobtn;
+#endif
 	page->none_radiobtn = none_radiobtn;
 	page->tar_radiobtn = tar_radiobtn;
 	page->shar_radiobtn = shar_radiobtn;
@@ -513,6 +535,10 @@ static void save_archiver_prefs(PrefsPage * _page)
 #if ARCHIVE_VERSION_NUMBER >= 3001900
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->lz4_radiobtn)))
 		archiver_prefs.compression = COMPRESSION_LZ4;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->zstd_radiobtn)))
+		archiver_prefs.compression = COMPRESSION_ZSTD;
 #endif
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->none_radiobtn)))
 		archiver_prefs.compression = COMPRESSION_NONE;
