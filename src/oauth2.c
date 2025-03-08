@@ -687,8 +687,9 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 		passwd_store_write_config();
 		log_message(LOG_PROTOCOL, _("OAuth2 access and refresh token updated\n"));  
 	}
-
-	memset(OAUTH2Data->refresh_token, 0, strlen(OAUTH2Data->refresh_token));
+	if (OAUTH2Data->refresh_token) {
+		memset(OAUTH2Data->refresh_token, 0, strlen(OAUTH2Data->refresh_token));
+	}
 	g_free(OAUTH2Data->refresh_token);
 	g_free(OAUTH2Data);
 	g_free(uid);
