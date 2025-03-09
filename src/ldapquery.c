@@ -543,6 +543,7 @@ static GList *ldapqry_build_items_fl(
 				g_free(picfile);
 				g_free(dir);
 			}
+			addritem_free_attribute(attrib);
 		}
 	}
 	
