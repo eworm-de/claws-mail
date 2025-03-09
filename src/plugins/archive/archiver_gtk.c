@@ -1188,7 +1188,7 @@ void archiver_gtk_show(void) {
 
 #if ARCHIVE_VERSION_NUMBER >= 3004000
 	zstd_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
-					GTK_RADIO_BUTTON(gzip_radio_btn), "ZZSTD");
+					GTK_RADIO_BUTTON(gzip_radio_btn), "ZSTD");
 	gtk_widget_set_name(zstd_radio_btn, "ZSTD");
 	gtk_box_pack_start(GTK_BOX(hbox1), zstd_radio_btn, FALSE, FALSE, 0);
         archiver_set_tooltip(zstd_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "ZSTD"));
