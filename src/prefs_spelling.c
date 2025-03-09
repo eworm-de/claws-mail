@@ -320,18 +320,17 @@ void prefs_spelling_init(void)
 	prefs_spelling = page;
 	
 	language = g_getenv("LANG");
-	if (language == NULL)
-		language = "en";
-	else if (!strcmp(language, "POSIX") || !strcmp(language, "C"))
+	if (language == NULL || !strcmp(language, "POSIX") || !strcmp(language, "C"))
 		language = "en";
 	
 	if (!prefs_common.dictionary)
-		prefs_common.dictionary = g_strdup_printf("%s",
-						language);
-	if (!strlen(prefs_common.dictionary)
-	||  !strcmp(prefs_common.dictionary,"(None"))
-		prefs_common.dictionary = g_strdup_printf("%s",
-						language);
+		prefs_common.dictionary = g_strdup_printf("%s", language);
+
+	if (!strlen(prefs_common.dictionary) || !strcmp(prefs_common.dictionary, _("None"))) {
+		g_free(prefs_common.dictionary);
+		prefs_common.dictionary = g_strdup_printf("%s", language);
+	}
+
 	if (strcasestr(prefs_common.dictionary,".utf"))
 		*(strcasestr(prefs_common.dictionary,".utf")) = '\0';
 	if (strstr(prefs_common.dictionary,"@"))
