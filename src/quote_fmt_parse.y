@@ -303,6 +303,7 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 #define RLEFT (sizeof result) - (rptr - result)	
 
 	zone[0] = 0;
+    result[0] = '\0';
 
 	if (procheader_date_parse_to_tm(msginfo->date, &lt, zone)) {
 		/*
