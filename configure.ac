@@ -2263,7 +2263,6 @@ echo "NetworkManager       : $enable_networkmanager"
 echo "Manual               : $enable_manual"
 echo "Generic UMPC code    : $enable_generic_umpc"
 echo "SVG support          : $enable_svg"
-echo "Config dir           : $ac_cv_with_config_dir"
 echo "Password crypto      : $pwd_crypto"
 echo "Unit tests           : $enable_tests"
 echo "pthread              : $enable_pthread"
@@ -2271,7 +2270,7 @@ echo "Startup notification : $enable_startup_notification"
 echo "Valgrind support     : $enable_valgrind"
 
 if test -n "$more_debug_output_modules"; then
-	echo "More debug output enabled for:"
+	echo "Extra debug output enabled for:"
 	for module in $more_debug_output_modules; do
 		echo "            - $module"
 	done
@@ -2309,5 +2308,7 @@ done;
 fi
 echo ""
 echo "The binary will be installed in $prefix/bin"
+echo ""
+echo "Configuration directory: $ac_cv_with_config_dir"
 echo ""
 echo "Configure finished, type 'make' to build."
