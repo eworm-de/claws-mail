@@ -1065,15 +1065,9 @@ void archiver_gtk_show(void) {
 				G_CALLBACK(archiver_dialog_cb),
 				page);
 
-	frame = gtk_frame_new(_("Enter Archiver arguments"));
-	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-	gtk_container_add(GTK_CONTAINER(content_area), frame);
-
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);
-	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox1);
 	
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
