@@ -543,6 +543,7 @@ static void addrgather_dlg_create(void)
 	gtk_widget_show(notebook);
 	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 
 	/* Status line */
 	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
