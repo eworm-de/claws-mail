@@ -1625,6 +1625,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	TABLE_ADD_LINE("", save_hbox, TRUE);
 	
 	gtk_widget_set_size_request(meet->window, -1, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(meet->window), 4);
 	gtk_container_add(GTK_CONTAINER(meet->window), meet->table);
 #else
 	TABLE_ADD_LINE(_("Organizer:"), hbox, FALSE, TRUE);
