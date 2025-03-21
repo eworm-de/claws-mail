@@ -29,6 +29,7 @@ struct _RPrefs {
 	gboolean refresh_enabled;
 	gint refresh;
 	gboolean refresh_on_startup;
+	gboolean refresh_all_skips;
 	gchar *cookies_path;
 	gboolean ssl_verify_peer;
 	gboolean use_custom_user_agent;
