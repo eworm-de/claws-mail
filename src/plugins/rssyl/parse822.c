@@ -197,7 +197,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 				if (body)
 				{
 					g_warning("unexpected leading html tag found at line %d", i);
-				    g_string_free(body, TRUE);
+					g_string_free(body, TRUE);
 				}
 				body = g_string_new("");
 				i++;

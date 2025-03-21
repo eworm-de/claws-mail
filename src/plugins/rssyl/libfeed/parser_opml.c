@@ -107,7 +107,7 @@ void opml_process(gchar *path, OPMLProcessFunc function, gpointer data)
 	if( !g_file_get_contents(path, &contents, NULL, &error) ) {
 		g_warning("error: '%s'", error->message);
 		g_error_free(error);
-	}    
+	}
 
 	if( contents ) {
 /*
@@ -127,7 +127,7 @@ void opml_process(gchar *path, OPMLProcessFunc function, gpointer data)
 			(status == XML_STATUS_OK ? "OK" : "NOT OK"));
 
 		XML_Parse(ctx->parser, "", 0, TRUE);
-	}    
+	}
 
 	XML_ParserFree(ctx->parser);
 	if (ctx->str != NULL)
