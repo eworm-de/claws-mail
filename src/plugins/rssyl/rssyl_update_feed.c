@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2006-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <prefs_common.h>
 #include <inc.h>
 #include <main.h>
+#include <defs.h>
 
 /* Local includes */
 #include "libfeed/feed.h"
@@ -44,14 +45,59 @@
 #include "rssyl_prefs.h"
 #include "rssyl_update_comments.h"
 
-/* rssyl_fetch_feed_thr() */
+extern const gchar *plugin_version(void);
 
+/* rssyl_get_user_agent
+   returns a ptr to a newly allocated string containing either the feed's specific user agent string
+   (if set and if trimmed string is non-empty),
+   or the custom user agent string set in global preferences (if prefs tells so and if trimmed string
+   is not empty), otherwise the default user agent string.
+   caller has to free the allocated string from pointer after use.
+*/
+gchar *rssyl_get_user_agent(RFolderItem *ritem)
+{
+	gchar *user_agent = NULL; 
+
+	/* check if feed properties has a user agent enabled and set */
+	/* ritem may be NULL when call comes from an initial fetch from url (when subscribing) */
+	if (ritem != NULL && ritem->use_default_user_agent == FALSE) {
+		gchar *specific = g_strstrip(g_strdup(ritem->specific_user_agent));
+
+		if (strlen(specific) > 0)
+			user_agent = specific;
+		else
+			debug_print("RSSyl: feed-specific User Agent is empty, trying custom value from global prefs\n");
+	}
+
+	/* fallback to user agent value from preferences (if enabled and set) */
+	if (user_agent == NULL) {
+		if (rssyl_prefs.use_custom_user_agent) {
+			gchar *custom = g_strstrip(g_strdup(rssyl_prefs.custom_user_agent));
+
+			if (strlen(custom) > 0)
+				user_agent = custom;
+			else
+				debug_print("RSSyl: custom User Agent is empty, assuming default value\n");
+		}
+	}
+
+	/* fallback to default User Agent */
+	if (user_agent == NULL)
+		user_agent = g_strdup_printf("ClawsMailRSSyl/%s (%s)", (gchar *)plugin_version(), HOMEPAGE_URI);
+
+	debug_print("RSSyl: User Agent is %s\n", user_agent);
+	return user_agent;
+}
+
+/* rssyl_fetch_feed_thr() */
 static void *rssyl_fetch_feed_thr(void *arg)
 {
 	RFetchCtx *ctx = (RFetchCtx *)arg;
+	gchar *user_agent = rssyl_get_user_agent(ctx->ritem);
 
 	/* Fetch and parse the feed. */
-	ctx->response_code = feed_update(ctx->feed, -1);
+	ctx->response_code = feed_update(ctx->feed, -1, user_agent);
+	g_free(user_agent);
 
 	/* Signal main thread that we're done here. */
 	ctx->ready = TRUE;
@@ -169,6 +215,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 	ctx->error = NULL;
 	ctx->success = TRUE;
 	ctx->ready = FALSE;
+	ctx->ritem = ritem;
 
 	if (ritem->auth->type != FEED_AUTH_NONE)
 		ritem->auth->password = rssyl_passwd_get(ritem);
@@ -198,6 +245,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_url(gchar *url)
 	ctx->error = NULL;
 	ctx->success = TRUE;
 	ctx->ready = FALSE;
+	ctx->ritem = NULL;
 
 	feed_set_timeout(ctx->feed, prefs_common_get_prefs()->io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
@@ -220,6 +268,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	gchar *msg = NULL;
 	gboolean success = FALSE;
+	gchar *user_agent = rssyl_get_user_agent(ritem);
 
 	g_return_val_if_fail(ritem != NULL, FALSE);
 	g_return_val_if_fail(ritem->url != NULL, FALSE);
@@ -227,7 +276,8 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	debug_print("RSSyl: starting to update '%s' (%s)\n",
 			ritem->item.name, ritem->url);
 
-	log_print(LOG_PROTOCOL, RSSYL_LOG_UPDATING, ritem->url);
+	log_print(LOG_PROTOCOL, RSSYL_LOG_UPDATING, ritem->url, user_agent);
+	g_free(user_agent);
 
 	msg = g_strdup_printf(_("Updating feed '%s'..."), ritem->item.name);
 	STATUSBAR_PUSH(mainwin, msg);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2006-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <expat.h>
 
 #include "feed.h"
+#include "../rssyl_prefs.h"
 #include "parser.h"
 
 /* feed_new()
@@ -68,13 +69,13 @@ static void _free_auth(Feed *feed)
 		return;
 
 	if (feed->auth != NULL) {
-                if (feed->auth->username != NULL)
-                        g_free(feed->auth->username);
-                if (feed->auth->password != NULL)
-                        g_free(feed->auth->password);
-                g_free(feed->auth);
+		if (feed->auth->username != NULL)
+			g_free(feed->auth->username);
+		if (feed->auth->password != NULL)
+			g_free(feed->auth->password);
+		g_free(feed->auth);
 		feed->auth = NULL;
-        }
+	}
 }
 
 void feed_free(Feed *feed)
@@ -245,7 +246,7 @@ FeedItem *feed_nth_item(Feed *feed, guint n)
  * Takes initialized feed with url set, fetches the feed from this url,
  * updates rest of Feed struct members and returns HTTP response code
  * we got from url's server. */
-guint feed_update(Feed *feed, time_t last_update)
+guint feed_update(Feed *feed, time_t last_update, const gchar *user_agent)
 {
 	CURL *eh = NULL;
 	CURLcode res;
@@ -291,7 +292,7 @@ guint feed_update(Feed *feed, time_t last_update)
 	curl_easy_setopt(eh, CURLOPT_TIMEOUT, feed->timeout);
 	curl_easy_setopt(eh, CURLOPT_NOSIGNAL, 1);
 	curl_easy_setopt(eh, CURLOPT_ENCODING, "");
-	curl_easy_setopt(eh, CURLOPT_USERAGENT, "libfeed 0.1");
+	curl_easy_setopt(eh, CURLOPT_USERAGENT, user_agent);
 	curl_easy_setopt(eh, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
 
 	/* Use HTTP's If-Modified-Since feature, if application provided

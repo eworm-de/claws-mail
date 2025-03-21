@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@
 #include "rssyl_prefs.h"
 #include "rssyl_feed.h"
 
-static RPrefsPage rssyl_gtk_prefs_page;
 RPrefs rssyl_prefs;
 
 static void destroy_rssyl_prefs_page(PrefsPage *page);
@@ -55,8 +54,27 @@ static PrefParam param[] = {
 		P_STRING, NULL, NULL, NULL },
 	{ "ssl_verify_peer", "TRUE", &rssyl_prefs.ssl_verify_peer,
 		P_BOOL,	NULL, NULL, NULL },
+	{ "use_custom_user_agent", "FALSE", &rssyl_prefs.use_custom_user_agent,
+		P_BOOL, NULL, NULL, NULL },
+	{ "custom_user_agent", "", &rssyl_prefs.custom_user_agent,
+		P_STRING, NULL, NULL, NULL },
 	{ 0, 0, 0, 0, 0, 0, 0 }
 };
+
+static struct _RPrefsPage {
+	PrefsPage page;
+	GtkWidget *refresh_enabled;
+	GtkWidget *refresh;
+	GtkWidget *refresh_on_startup;
+	GtkWidget *cookies_path;
+	GtkWidget *ssl_verify_peer;
+	GtkWidget *use_custom_user_agent;
+	GtkWidget *custom_user_agent;
+};
+
+typedef struct _RPrefsPage RPrefsPage;
+
+static RPrefsPage rssyl_gtk_prefs_page;
 
 void rssyl_prefs_init(void)
 {
@@ -96,6 +114,16 @@ rssyl_refresh_enabled_toggled_cb(GtkToggleButton *tb, gpointer data)
 	return FALSE;
 }
 
+/* Toggle the custom user agent entry sensitivity after the
+ * checkbutton was toggled. */
+static gboolean
+rssyl_use_custom_user_agent_toggled_cb(GtkToggleButton *tb, gpointer data)
+{
+	gtk_widget_set_sensitive(GTK_WIDGET(data),
+			gtk_toggle_button_get_active(tb));
+	return FALSE;
+}
+
 /* Open a file select dialog and set file path to cookies entry */
 static void
 rssyl_prefs_cookies_browse_cb(GtkWidget* widget, gpointer data)
@@ -120,7 +148,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 		GtkWindow *window, gpointer data)
 {
 	RPrefsPage *prefs_page = (RPrefsPage *) page;
-	GtkWidget *vbox, *vbox1, *vbox2;
+	GtkWidget *vbox, *vbox1, *vbox2, *vbox3;
 	GtkWidget *frame;
 	GtkWidget *refresh, *refresh_enabled, *refresh_hbox;
 	GtkWidget *label;
@@ -128,6 +156,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkAdjustment *refresh_adj;
 	GtkWidget *cookies_path, *cookies_btn, *cookies_hbox;
 	GtkWidget *ssl_verify_peer;
+	GtkWidget *use_custom_user_agent, *custom_user_agent, *user_agent_hbox;
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
@@ -185,6 +214,29 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 		G_CALLBACK(rssyl_prefs_cookies_browse_cb), cookies_path);
 	gtk_box_pack_start(GTK_BOX(vbox2), cookies_hbox, FALSE, FALSE, 0);
 
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+
+	user_agent_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	gtk_box_pack_start(GTK_BOX(user_agent_hbox), label, FALSE, FALSE, 0);
+
+	use_custom_user_agent = gtk_check_button_new_with_label(
+			_("Use a custom User Agent"));
+	gtk_widget_set_tooltip_text(use_custom_user_agent,
+			_("Instead of using the default User Agent for feed retrieval, you can enter a custom value"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_custom_user_agent),
+			rssyl_prefs.use_custom_user_agent);
+	gtk_box_pack_start(GTK_BOX(user_agent_hbox), use_custom_user_agent, FALSE, FALSE, 0);
+
+	custom_user_agent = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(custom_user_agent), rssyl_prefs.custom_user_agent);
+	gtk_box_pack_start(GTK_BOX(user_agent_hbox), custom_user_agent, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(custom_user_agent,
+			_("Custom User Agent to use for feed retrieval. If empty, the default User Agent string will be used"));
+
+	g_signal_connect(G_OBJECT(use_custom_user_agent), "toggled",
+			G_CALLBACK(rssyl_use_custom_user_agent_toggled_cb), custom_user_agent);
+	gtk_box_pack_start(GTK_BOX(vbox3), user_agent_hbox, FALSE, FALSE, 0);
+
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
 
@@ -196,6 +248,12 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
 	gtk_container_add(GTK_CONTAINER(frame), vbox2);
 
+	PACK_FRAME (vbox, frame, _("User Agent"));
+	gtk_container_set_border_width(GTK_CONTAINER(vbox3), 6);
+	gtk_container_add(GTK_CONTAINER(frame), vbox3);
+
+	SET_TOGGLE_SENSITIVITY(use_custom_user_agent, custom_user_agent);
+
 	gtk_widget_show_all(vbox);
 
 	/* Store pointers to relevant widgets */
@@ -205,6 +263,8 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	prefs_page->refresh_on_startup = refresh_on_startup;
 	prefs_page->cookies_path = cookies_path;
 	prefs_page->ssl_verify_peer = ssl_verify_peer;
+	prefs_page->use_custom_user_agent = use_custom_user_agent;
+	prefs_page->custom_user_agent = custom_user_agent;
 }
 
 static void destroy_rssyl_prefs_page(PrefsPage *page)
@@ -231,6 +291,10 @@ static void save_rssyl_prefs(PrefsPage *page)
 				GTK_ENTRY(prefs_page->cookies_path)));
 	rssyl_prefs.ssl_verify_peer = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(prefs_page->ssl_verify_peer));
+	rssyl_prefs.use_custom_user_agent = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(prefs_page->use_custom_user_agent));
+	rssyl_prefs.custom_user_agent = g_strdup(gtk_entry_get_text(
+				GTK_ENTRY(prefs_page->custom_user_agent)));
 
 	/* Store prefs in rc file */
 	pref_file = prefs_write_open(rc_file_path);

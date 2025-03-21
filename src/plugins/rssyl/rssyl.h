@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,9 @@ struct _RFolderItem {
 	gboolean fetching_comments;
 	time_t last_update;
 
+	gboolean use_default_user_agent;
+	gchar *specific_user_agent;
+
 	struct _RFeedProp *feedprop;
 
 	GSList *items;
@@ -88,6 +91,7 @@ struct _RFetchCtx {
 	gchar *error;
 	gboolean success;
 	gboolean ready;
+	RFolderItem *ritem;
 };
 
 typedef struct _RFetchCtx RFetchCtx;

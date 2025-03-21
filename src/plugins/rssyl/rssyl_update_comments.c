@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2006-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,6 +113,9 @@ void rssyl_update_comments(RFolderItem *ritem)
 
 					fetchctx = rssyl_prep_fetchctx_from_url(feed_item_get_comments_url(fi));
 					if (fetchctx != NULL) {
+						/* rssyl_prep_fetchctx_from_url does not initialize fetchctx->ritem,
+						   do it now for later calls to rssyl_get_user_agent() */
+						fetchctx->ritem = ritem;
 						feed_set_ssl_verify_peer(fetchctx->feed, ritem->ssl_verify_peer);
 
 						rssyl_fetch_feed(fetchctx, 0);

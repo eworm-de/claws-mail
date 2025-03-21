@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ struct _RFeedProp {
 	GtkWidget *auth_type;
 	GtkWidget *auth_username;
 	GtkWidget *auth_password;
+	GtkWidget *use_default_user_agent;
+	GtkWidget *specific_user_agent;
 };
 
 typedef struct _RFeedProp RFeedProp;

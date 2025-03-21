@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -324,6 +324,13 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		/* (bool) Verify SSL peer  */
 		if( !strcmp(attr->name, "ssl_verify_peer"))
 			ritem->ssl_verify_peer = (atoi(attr->value) == 0 ? FALSE : TRUE );
+		/* User Agent */
+		if( !strcmp(attr->name, "use_default_user_agent"))
+			ritem->use_default_user_agent = (atoi(attr->value) == 0 ? FALSE : TRUE );
+		if( !strcmp(attr->name, "specific_user_agent")) {
+			g_free(ritem->specific_user_agent);
+			ritem->specific_user_agent = g_strdup(attr->value);
+		}
 	}
 }
 
@@ -378,6 +385,11 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 	/* (bool) Verify SSL peer */
 	xml_tag_add_attr(tag, xml_attr_new("ssl_verify_peer",
 				(ri->ssl_verify_peer ? "1" : "0")) );
+	/* User Agent */
+	xml_tag_add_attr(tag, xml_attr_new("use_default_user_agent",
+				(ri->use_default_user_agent ? "1" : "0")) );
+	if( ri->specific_user_agent != NULL )
+		xml_tag_add_attr(tag, xml_attr_new("specific_user_agent", ri->specific_user_agent));
 
 	return tag;
 }
@@ -444,6 +456,8 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->ssl_verify_peer = TRUE;
 	ritem->feedprop = NULL;
 	ritem->refresh_id = 0;
+	ritem->use_default_user_agent = 1;
+	ritem->specific_user_agent = NULL;
 
 	return (FolderItem *)ritem;
 }
@@ -462,6 +476,7 @@ static void rssyl_item_destroy(Folder *folder, FolderItem *item)
 	g_free(ritem->auth);
 	g_free(ritem->official_title);
 	g_slist_free(ritem->items);
+	g_free(ritem->specific_user_agent);
 
 	/* Remove a scheduled refresh, if any */
 	if( ritem->refresh_id != 0)
@@ -979,6 +994,13 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 	newitem->refresh_id = olditem->refresh_id;
 	newitem->fetching_comments = olditem->fetching_comments;
 	newitem->last_update = olditem->last_update;
+
+	/* User Agent */
+	newitem->use_default_user_agent = olditem->use_default_user_agent;
+	if (olditem->specific_user_agent != NULL) {
+		g_free(newitem->specific_user_agent);
+		newitem->specific_user_agent = g_strdup(olditem->specific_user_agent);
+	}
 
 	pathold = rssyl_item_get_path(oldi->folder, oldi);
 	dpathold = g_strconcat(pathold, G_DIR_SEPARATOR_S, RSSYL_DELETED_FILE, NULL);

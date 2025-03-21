@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,18 +31,11 @@ struct _RPrefs {
 	gboolean refresh_on_startup;
 	gchar *cookies_path;
 	gboolean ssl_verify_peer;
+	gboolean use_custom_user_agent;
+	gchar *custom_user_agent;
 };
 
-typedef struct _RPrefsPage RPrefsPage;
-
-struct _RPrefsPage {
-	PrefsPage page;
-	GtkWidget *refresh_enabled;
-	GtkWidget *refresh;
-	GtkWidget *refresh_on_startup;
-	GtkWidget *cookies_path;
-	GtkWidget *ssl_verify_peer;
-};
+extern RPrefs rssyl_prefs;
 
 void rssyl_prefs_init(void);
 void rssyl_prefs_done(void);

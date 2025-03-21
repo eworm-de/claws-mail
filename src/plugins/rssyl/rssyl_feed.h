@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #define RSSYL_LOG_SUBSCRIBING  _("RSSyl: Subscribing new feed: %s\n")
 #define RSSYL_LOG_SUBSCRIBED   _("RSSyl: New feed subscribed: '%s' (%s)\n")
-#define RSSYL_LOG_UPDATING     _("RSSyl: Updating feed: %s\n")
+#define RSSYL_LOG_UPDATING     _("RSSyl: Updating feed: %s (User Agent: %s)\n")
 #define RSSYL_LOG_UPDATED      _("RSSyl: Feed update finished: %s\n")
 #define RSSYL_LOG_ERROR_FETCH  _("RSSyl: Error fetching feed at '%s': %s\n")
 #define RSSYL_LOG_ERROR_NOFEED _("RSSyl: No valid feed found at '%s'\n")

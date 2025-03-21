@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@
 
 static void rssyl_gtk_prop_store(RFolderItem *ritem)
 {
-	gchar *url, *auth_user, *auth_pass;
+	gchar *url, *auth_user, *auth_pass, *specific_user_agent;
 	gint x, old_ri, old_fetch_comments;
-	gboolean use_default_ri = FALSE, keep_old = FALSE;
+	gboolean use_default_ri = FALSE, keep_old = FALSE, use_default_user_agent = TRUE;
 	FolderItem *item;
 
 	g_return_if_fail(ritem != NULL);
@@ -125,6 +125,21 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 	ritem->ssl_verify_peer = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->ssl_verify_peer));
 
+	/* User Agent */
+	use_default_user_agent = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(ritem->feedprop->use_default_user_agent));
+	ritem->use_default_user_agent = use_default_user_agent;
+	debug_print("store: use default user agent is %s\n",
+			( use_default_user_agent ? "ON" : "OFF" ) );
+
+	specific_user_agent = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->specific_user_agent));
+	if (specific_user_agent != NULL) {
+		if (ritem->specific_user_agent) {
+			g_free(ritem->specific_user_agent);
+		}
+		ritem->specific_user_agent = g_strdup(specific_user_agent);
+	}
+
 	/* Store updated properties */
 	item = &ritem->item;
 	item->folder->klass->item_get_xml(item->folder, item);
@@ -143,6 +158,9 @@ rssyl_feedprop_togglebutton_toggled_cb(GtkToggleButton *tb,
 		sb = feedprop->refresh_interval;
 	} else if( (GtkWidget *)tb == feedprop->fetch_comments ) {
 		sb = feedprop->fetch_comments_max_age;
+	} else if((GtkWidget *)tb == feedprop->use_default_user_agent ) {
+		active = !active;
+		sb = feedprop->specific_user_agent;
 	}
 
 	g_return_val_if_fail(sb != NULL, FALSE);
@@ -356,6 +374,17 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(feedprop->ssl_verify_peer),
 			ritem->ssl_verify_peer);
 
+	/* User Agent */
+	feedprop->use_default_user_agent = gtk_check_button_new_with_mnemonic(
+			_("Use default User Agent"));
+	gtk_toggle_button_set_active(
+			GTK_TOGGLE_BUTTON(feedprop->use_default_user_agent),
+			ritem->use_default_user_agent);
+
+	feedprop->specific_user_agent = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(feedprop->specific_user_agent),
+			(ritem->specific_user_agent != NULL ? ritem->specific_user_agent : ""));
+
 	/* === Now pack all the widgets */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(feedprop->window), vbox);
@@ -464,6 +493,30 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
 	PACK_FRAME (vbox, frame, _("Refresh"));
+	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
+	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
+
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
+	/* Use default User Agent - checkbutton */
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->use_default_user_agent, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(feedprop->use_default_user_agent), "toggled",
+			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
+			(gpointer)feedprop);
+
+	/* User Agent - label */
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
+	label = gtk_label_new(_("User Agent"));
+	gtk_widget_set_tooltip_text(feedprop->use_default_user_agent,
+			_("Disable this to use a User Agent specific to this feed"));
+	gtk_widget_set_tooltip_text(feedprop->specific_user_agent,
+			_("Specific User Agent to use for this feed. If empty, the User Agent string set in 'Preferences/Plugins/RSSyl' will be used"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->specific_user_agent, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(feedprop->specific_user_agent,
+			!ritem->use_default_user_agent);
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->use_default_user_agent, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
+	PACK_FRAME (vbox, frame, _("User Agent"));
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
