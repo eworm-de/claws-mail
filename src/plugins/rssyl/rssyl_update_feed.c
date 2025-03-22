@@ -400,7 +400,7 @@ void rssyl_update_recursively(FolderItem *item, gboolean manual_refresh)
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->klass == rssyl_folder_get_class());
 
-	debug_print("Recursively updating '%s'\n", item->name);
+	debug_print("RSSyl: Recursively updating '%s'\n", item->name);
 
 	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			manual_refresh ? rssyl_update_recursively_manually_func : rssyl_update_recursively_automated_func,
