@@ -268,10 +268,12 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	gchar *msg = NULL;
 	gboolean success = FALSE;
-	gchar *user_agent = rssyl_get_user_agent(ritem);
+	gchar *user_agent = NULL;
 
 	g_return_val_if_fail(ritem != NULL, FALSE);
 	g_return_val_if_fail(ritem->url != NULL, FALSE);
+	
+	user_agent = rssyl_get_user_agent(ritem);
 
 	debug_print("RSSyl: starting to update '%s' (%s)\n",
 			ritem->item.name, ritem->url);
