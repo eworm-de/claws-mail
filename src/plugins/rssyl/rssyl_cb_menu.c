@@ -332,7 +332,7 @@ void rssyl_update_all_cb( GtkAction *action, gpointer data)
 		return;
 	}
 
-	rssyl_update_recursively(item);
+	rssyl_update_recursively(item, TRUE);
 }
 
 void rssyl_remove_mailbox_cb(GtkAction *action, gpointer data)

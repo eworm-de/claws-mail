@@ -313,7 +313,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	rssyl_deleted_update(ritem);
 
 	debug_print("RSSyl: STARTING TO PARSE FEED\n");
-  if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
+	if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
 		debug_print("RSSyl: Error processing feed\n");
 		if( verbose & RSSYL_SHOW_ERRORS ) {
@@ -357,7 +357,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	return success;
 }
 
-static gboolean rssyl_update_recursively_func(GNode *node, gpointer data)
+static gboolean rssyl_update_recursively_func(GNode *node, gpointer data, gboolean manual_refresh)
 {
 	FolderItem *item;
 	RFolderItem *ritem;
@@ -368,8 +368,10 @@ static gboolean rssyl_update_recursively_func(GNode *node, gpointer data)
 	ritem = (RFolderItem *)item;
 
 	if( ritem->url != NULL ) {
-		if(rssyl_prefs_get()->refresh_all_skips &&
-			(ritem->default_refresh_interval == FALSE) && (ritem->refresh_interval == 0)) {
+		if((manual_refresh == FALSE) &&
+			rssyl_prefs_get()->refresh_all_skips &&
+			(ritem->default_refresh_interval == FALSE) &&
+			(ritem->refresh_interval == 0)) {
 			debug_print("RSSyl: Skipping feed '%s'\n", item->name);
 		} else {
 			debug_print("RSSyl: Updating feed '%s'\n", item->name);
@@ -381,31 +383,49 @@ static gboolean rssyl_update_recursively_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-void rssyl_update_recursively(FolderItem *item)
+static gboolean rssyl_update_recursively_automated_func(GNode *node, gpointer data)
+{
+	return rssyl_update_recursively_func(node, data, FALSE);
+}    
+
+static gboolean rssyl_update_recursively_manually_func(GNode *node, gpointer data)
+{
+	return rssyl_update_recursively_func(node, data, TRUE);
+}    
+
+void rssyl_update_recursively(FolderItem *item, gboolean manual_refresh)
 {
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-
-	if( item->folder->klass != rssyl_folder_get_class() )
-		return;
+	g_return_if_fail(item->folder->klass == rssyl_folder_get_class());
 
 	debug_print("Recursively updating '%s'\n", item->name);
 
 	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-			rssyl_update_recursively_func, NULL);
+			manual_refresh ? rssyl_update_recursively_manually_func : rssyl_update_recursively_automated_func,
+			NULL);
 }
 
-void rssyl_update_all_func(FolderItem *item, gpointer data)
+static void rssyl_update_all_func(FolderItem *item, gpointer data, gboolean manual_refresh)
 {
 	/* Only try to refresh our feed folders */
-	if( !IS_RSSYL_FOLDER_ITEM(item) )
-		return;
+	g_return_if_fail(IS_RSSYL_FOLDER_ITEM(item));
+	g_return_if_fail(folder_item_parent(item) == NULL);
 
-	if( folder_item_parent(item) == NULL )
-		rssyl_update_recursively(item);
+	rssyl_update_recursively(item, manual_refresh);
 }
 
-void rssyl_update_all_feeds(void)
+static void rssyl_update_all_automated_func(FolderItem *item, gpointer data)
+{
+    rssyl_update_all_func(item, data, FALSE);
+}
+
+static void rssyl_update_all_manually_func(FolderItem *item, gpointer data)
+{
+    rssyl_update_all_func(item, data, TRUE);
+}
+
+void rssyl_update_all_feeds(gboolean manual_refresh)
 {
 	if (prefs_common_get_prefs()->work_offline &&
 			!inc_offline_should_override(TRUE,
@@ -413,5 +433,7 @@ void rssyl_update_all_feeds(void)
 		return;
 	}
 
-	folder_func_to_all_folders((FolderItemFunc)rssyl_update_all_func, NULL);
+	folder_func_to_all_folders(
+			(FolderItemFunc)(manual_refresh? rssyl_update_all_manually_func : rssyl_update_all_automated_func),
+			NULL);
 }

@@ -124,13 +124,15 @@ static void rssyl_create_default_mailbox(void)
 
 static gboolean rssyl_update_all_feeds_deferred(gpointer data)
 {
-	rssyl_update_all_feeds();
+    /* automated refreshing */
+	rssyl_update_all_feeds(FALSE);
 	return FALSE;
 }
 
 static void rssyl_toolbar_cb_refresh_all_feeds(gpointer parent, const gchar *item_name, gpointer data)
 {
-	rssyl_update_all_feeds();
+    /* refreshing upon user manual request */
+	rssyl_update_all_feeds(TRUE);
 }
 
 void rssyl_init(void)

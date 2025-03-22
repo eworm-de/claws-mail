@@ -30,8 +30,8 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem);
 
 gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose);
 
-void rssyl_update_recursively(FolderItem *item);
+void rssyl_update_recursively(FolderItem *item, gboolean manual_refresh);
 
-void rssyl_update_all_feeds(void);
+void rssyl_update_all_feeds(gboolean manual_refresh);
 
 #endif /* __RSSYL_UPDATE_FEED */

@@ -44,7 +44,7 @@ static char *rssyl_popup_menu_labels[] =
 	N_("_Refresh feed"),
 	N_("Feed pr_operties"),
 	N_("Rena_me..."),
-	N_("R_efresh recursively"),
+	N_("R_efresh all feeds"),
 	N_("Subscribe _new feed..."),
 	N_("Create new _folder..."),
 	N_("Import feed list..."),
