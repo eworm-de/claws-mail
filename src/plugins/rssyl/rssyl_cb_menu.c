@@ -143,7 +143,7 @@ void rssyl_new_folder_cb(GtkAction *action,
 	/* TODO: Perhaps stop after X attempts? */
 	tmp = g_strdup(new_folder);
 	while (folder_find_child_item_by_name(item, tmp)) {
-		debug_print("RSSyl: Folder '%s' already exists, trying another name\n",
+		debug_print("RSSyl: folder '%s' already exists, trying another name\n",
 				new_folder);
 		g_free(tmp);
 		tmp = g_strdup_printf("%s__%d", new_folder, ++i);

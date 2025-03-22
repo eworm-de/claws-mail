@@ -184,7 +184,7 @@ rssyl_props_cancel_cb(GtkWidget *widget, gpointer data)
 {
 	RFolderItem *ritem = (RFolderItem *)data;
 
-	debug_print("RSSyl: Cancel pressed\n");
+	debug_print("RSSyl: cancel pressed\n");
 
 	gtk_widget_destroy(ritem->feedprop->window);
 

@@ -197,7 +197,7 @@ void rssyl_update_format()
 		return;
 	}
 
-	debug_print("RSSyl: Old format found, updating.\n");
+	debug_print("RSSyl: old format found, updating.\n");
 
 	oldfeeds = rssyl_old_feed_metadata_parse(old_feeds_xml);
 
@@ -228,7 +228,7 @@ void rssyl_update_format()
 	g_free(ctx);
 
 	if (g_remove(old_feeds_xml) != 0) {
-		debug_print("RSSyl: Couldn't delete '%s'\n", old_feeds_xml);
+		debug_print("RSSyl: couldn't delete '%s'\n", old_feeds_xml);
 	}
 	g_free(old_feeds_xml);
 }

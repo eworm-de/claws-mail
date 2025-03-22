@@ -367,13 +367,13 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	debug_print("RSSyl: rssyl_feed_item_exists returned %d\n", dif);
 
 	if( dif == EXISTS_UNCHANGED ) {
-		debug_print("RSSyl: This item already exists, skipping...\n");
+		debug_print("RSSyl: this item already exists, skipping...\n");
 		return;
 	}
 
 	/* Item is already in the list, but has changed */
 	if( dif >= EXISTS_CHANGED && old_item != NULL ) {
-		debug_print("RSSyl: Item changed, removing old one and adding new.\n");
+		debug_print("RSSyl: item changed, removing old one and adding new.\n");
 
 		/* Store permflags of the old item. */
 		ctx = (RFeedCtx *)old_item->data;
@@ -386,7 +386,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 
 		ritem->items = g_slist_remove(ritem->items, old_item);
 		if (g_unlink(ctx->path) != 0) {
-			debug_print("RSSyl: Error, could not delete file '%s': %s\n",
+			debug_print("RSSyl: error, could not delete file '%s': %s\n",
 					ctx->path, g_strerror(errno));
 		}
 
@@ -397,13 +397,13 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 
 	/* Check against list of deleted items. */
 	if (rssyl_deleted_check(ritem, feed_item)) {
-		debug_print("RSSyl: Item '%s' found among deleted items, NOT adding it.\n",
+		debug_print("RSSyl: item '%s' found among deleted items, NOT adding it.\n",
 				feed_item_get_title(feed_item));
 		return;
 	}
 
 	/* Add a new item, formatting its title along the way */
-	debug_print("RSSyl: Adding item '%s'\n", feed_item_get_title(feed_item));
+	debug_print("RSSyl: adding item '%s'\n", feed_item_get_title(feed_item));
 	ritem->items = g_slist_prepend(ritem->items, feed_item_copy(feed_item));
 
 	dirname = folder_item_get_path(&ritem->item);
@@ -475,7 +475,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 			fprintf(f, "X-RSSyl-OrigTitle: %s\n", feed_item_get_title(feed_item));
 		}
 	} else {
-		debug_print("RSSyl: No feed title, it seems\n");
+		debug_print("RSSyl: no feed title, it seems\n");
 		fprintf(f, "Subject: (empty)\n");
 	}
 

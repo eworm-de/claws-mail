@@ -105,9 +105,9 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 	
 	if( err ) {
 		log_warning(LOG_PROTOCOL,
-				_("RSSyl: Error while writing '%s' to feed export list.\n"),
+				_("RSSyl: error while writing '%s' to feed export list.\n"),
 				item->name);
-		debug_print("RSSyl: Error while writing '%s' to feed_export list.\n",
+		debug_print("RSSyl: error while writing '%s' to feed_export list.\n",
 				item->name);
 	}
 }
@@ -126,7 +126,7 @@ void rssyl_opml_export(void)
 	if( g_file_test(opmlfile, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR ) ) {
 		if (g_remove(opmlfile) != 0) {
 			log_warning(LOG_PROTOCOL,
-					_("RSSyl: Couldn't delete old OPML file '%s': %s\n"),
+					_("RSSyl: couldn't delete old OPML file '%s': %s\n"),
 					opmlfile, g_strerror(errno));
 			debug_print("RSSyl: Couldn't delete old file '%s'\n", opmlfile);
 			g_free(opmlfile);
@@ -136,9 +136,9 @@ void rssyl_opml_export(void)
 	
 	if( (f = claws_fopen(opmlfile, "w")) == NULL ) {
 		log_warning(LOG_PROTOCOL,
-				_("RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"),
+				_("RSSyl: couldn't open file '%s' for feed list exporting: %s\n"),
 				opmlfile, g_strerror(errno));
-		debug_print("RSSyl: Couldn't open feed list export file, returning.\n");
+		debug_print("RSSyl: couldn't open feed list export file, returning.\n");
 		g_free(opmlfile);
 		return;
 	}
@@ -177,11 +177,11 @@ void rssyl_opml_export(void)
 				"</opml>\n") < 0);
 
 	if( err ) {
-		log_warning(LOG_PROTOCOL, _("RSSyl: Error during writing feed export file.\n"));
-		debug_print("RSSyl: Error during writing feed export file.\n");
+		log_warning(LOG_PROTOCOL, _("RSSyl: error during writing feed export file.\n"));
+		debug_print("RSSyl: error during writing feed export file.\n");
 	}
 
-	debug_print("RSSyl: Feed export finished.\n");
+	debug_print("RSSyl: feed export finished.\n");
 
 	claws_safe_fclose(f);
 	g_free(opmlfile);
