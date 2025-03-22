@@ -211,13 +211,13 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 
-	debug_print("rssyl_get_last_num(): Scanning %s ...\n", item->path);
+	debug_print("RSSyl: rssyl_get_last_num(): Scanning %s ...\n", item->path);
 	path = folder_item_get_path(item);
 	g_return_if_fail(path != NULL);
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
 		FILE_OP_ERROR(item->path, "g_dir_open");
-		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
+		debug_print("RSSyl: g_dir_open() failed on \"%s\", error %d (%s).\n",
 				path, error->code, error->message);
 		g_error_free(error);
 		g_free(path);
@@ -235,7 +235,7 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 	}
 	g_dir_close(dp);
 
-	debug_print("Last number in dir %s = %d\n", item->path, max);
+	debug_print("RSSyl: Last number in dir %s = %d\n", item->path, max);
 	item->last_num = max;
 }
 
@@ -687,7 +687,7 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(path != NULL, -1);
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
-		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
+		debug_print("RSSyl: g_dir_open() failed on \"%s\", error %d (%s).\n",
 				path, error->code, error->message);
 		g_error_free(error);
 		g_free(path);

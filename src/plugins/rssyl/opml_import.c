@@ -54,18 +54,18 @@ void rssyl_opml_import_func(gchar *title, gchar *url, gint depth, gpointer data)
 	gboolean nulltitle = FALSE;
 	gint i = 1;
 
-	debug_print("depth %d, ctx->depth %d\n", depth, ctx->depth);
+	debug_print("RSSyl: depth %d, ctx->depth %d\n", depth, ctx->depth);
 	while (depth < ctx->depth) {
 		/* We've gone up at least one level, need to find correct parent */
 		ctx->current = g_slist_delete_link(ctx->current, ctx->current);
 		ctx->depth--;
 	}
 
-	debug_print("OPML_IMPORT: %s %s (%s)\n",
+	debug_print("RSSyl: OPML_IMPORT: %s %s (%s)\n",
 			(url != NULL ? "feed": "folder"), title, url);
 
 	if( title == NULL ) {
-		debug_print("NULL title received, substituting a placeholder title\n");
+		debug_print("RSSyl: NULL title received, substituting a placeholder title\n");
 		title = g_strdup(_("Untitled"));
 		nulltitle = TRUE;
 	}

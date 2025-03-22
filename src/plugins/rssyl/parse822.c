@@ -270,7 +270,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 	ritem->last_update = 0;
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
-		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
+		debug_print("RSSyl: g_dir_open on \"%s\" failed with error %d (%s)\n",
 				path, error->code, error->message);
 		g_error_free(error);
 		g_free(path);

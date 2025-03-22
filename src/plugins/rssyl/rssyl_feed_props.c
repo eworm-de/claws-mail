@@ -73,7 +73,7 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 	use_default_ri = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->default_refresh_interval));
 	ritem->default_refresh_interval = use_default_ri;
-	debug_print("store: default refresh interval is %s\n",
+	debug_print("RSSyl: store: default refresh interval is %s\n",
 			( use_default_ri ? "ON" : "OFF" ) );
 
 	/* Use default if checkbutton is set */
@@ -129,7 +129,7 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 	use_default_user_agent = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->use_default_user_agent));
 	ritem->use_default_user_agent = use_default_user_agent;
-	debug_print("store: use default user agent is %s\n",
+	debug_print("RSSyl: store: use default user agent is %s\n",
 			( use_default_user_agent ? "ON" : "OFF" ) );
 
 	specific_user_agent = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->specific_user_agent));

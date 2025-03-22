@@ -74,7 +74,7 @@ void rssyl_update_comments(RFolderItem *ritem)
 	debug_print("RSSyl: starting to parse comments, path is '%s'\n", path);
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
-		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
+		debug_print("RSSyl: g_dir_open on \"%s\" failed with error %d (%s)\n",
 				path, error->code, error->message);
 		g_error_free(error);
 		g_free(path);

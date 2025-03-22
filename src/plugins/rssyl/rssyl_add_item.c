@@ -204,8 +204,8 @@ static gint rssyl_feed_item_changed(FeedItem *new_item, FeedItem *old_item )
 	if( old_item->text && new_item->text ) {
 		if( strcmp(old_item->text, new_item->text) ) { /* ... compare them */
 			debug_print("RSSyl:\t\titem texts differ\n");
-			debug_print("\nOLD: '%s'\n", old_item->text);
-			debug_print("\nNEW: '%s'\n", new_item->text);
+			debug_print("\nRSSyl: OLD: '%s'\n", old_item->text);
+			debug_print("\nRSSyl: NEW: '%s'\n", new_item->text);
 
 			return ITEM_CHANGED_TEXTONLY;
 		}

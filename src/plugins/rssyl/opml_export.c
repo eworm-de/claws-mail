@@ -107,7 +107,7 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 		log_warning(LOG_PROTOCOL,
 				_("RSSyl: Error while writing '%s' to feed export list.\n"),
 				item->name);
-		debug_print("Error while writing '%s' to feed_export list.\n",
+		debug_print("RSSyl: Error while writing '%s' to feed_export list.\n",
 				item->name);
 	}
 }
