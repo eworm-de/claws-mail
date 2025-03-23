@@ -415,7 +415,7 @@ const gchar *plugin_desc(void)
 		 "This plugin uses libcurl to retrieve images, so if you're behind a "
 		 "proxy please refer to curl(1) manpage for details on 'http_proxy' "
 		 "configuration. More details about this and others on README file.\n\n"
-		 "Feedback to <ricardo@mones.org> is welcome.\n");
+		 "Feedback to <ricardo@mones.org> is welcome.");
 }
 
 /**

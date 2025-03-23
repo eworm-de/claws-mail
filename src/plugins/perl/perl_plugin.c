@@ -2523,7 +2523,7 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
   return _("This plugin provides a Perl scripting interface for mail filters.\n\n"
-    "Feedback to <berndth@gmx.de> is welcome.\n");
+    "Feedback to <berndth@gmx.de> is welcome.");
 }
 
 const gchar *plugin_type(void)
