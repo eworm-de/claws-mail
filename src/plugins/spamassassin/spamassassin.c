@@ -627,7 +627,7 @@ const gchar *plugin_desc(void)
 		 	 "When a message is identified as spam it can be deleted or "
 		 	 "saved in a specially designated folder.\n"
 			 "\n"
-			 "Options can be found in /Configuration/Preferences/Plugins/SpamAssassin");
+			 "Options can be found in '/Configuration/Preferences/Plugins/SpamAssassin'.");
 }
 
 const gchar *plugin_type(void)

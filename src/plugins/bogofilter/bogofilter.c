@@ -588,8 +588,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
 					   "a message. The probable cause of the "
 					   "error is that it didn't learn from any mail.\n"
-					   "Use \"/Marks/Mark as spam\" and \"/Marks/Mark as "
-					   "ham\" to train Bogofilter with a few hundred "
+					   "Use '/Marks/Mark as spam' and '/Marks/Mark as "
+					   "ham' to train Bogofilter with a few hundred "
 					   "spam and ham messages."));
 		else
 			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
@@ -996,7 +996,7 @@ const gchar *plugin_desc(void)
 	         "When a message is identified as spam it can be deleted or "
 	         "saved in a specially designated folder.\n"
 	         "\n"
-		 "Options can be found in /Configuration/Preferences/Plugins/Bogofilter");
+		 "Options can be found in '/Configuration/Preferences/Plugins/Bogofilter'.");
 }
 
 const gchar *plugin_type(void)

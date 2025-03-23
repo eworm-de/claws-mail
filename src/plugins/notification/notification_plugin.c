@@ -428,7 +428,7 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
   return _("This plugin provides various ways "
-    "to notify the user of new and unread email.\n"
+    "to notify the user of new and unread email.\n\n"
     "The plugin is extensively configurable in the "
     "plugins section of the preferences dialog.\n\n"
     "Feedback to <berndth@gmx.de> is welcome.");

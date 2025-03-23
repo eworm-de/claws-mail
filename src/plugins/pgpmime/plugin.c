@@ -62,12 +62,12 @@ const gchar *plugin_desc(void)
                  "sign and encrypt your own mails.\n"
 		 "\n"
 		 "It can be selected as the Default Privacy System in "
-		 "/Configuration/[Account Preferences]/Privacy and when "
-		 "composing a message from /Options/Privacy System\n"
+		 "'/Configuration/[Account Preferences]/Privacy' and when "
+		 "composing a message from '/Options/Privacy System'.\n"
 		 "\n"
 		 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 		 "\n"
-		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>");
+		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>.");
 }
 
 const gchar *plugin_type(void)

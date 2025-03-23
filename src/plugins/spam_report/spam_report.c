@@ -398,7 +398,7 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin reports spam to various places.\n"
+	return _("This plugin reports spam to various places.\n\n"
 		 "Currently the following sites or methods are supported:\n\n"
 		 " * spam-signal.fr\n"
                  " * spamcop.net\n"

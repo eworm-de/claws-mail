@@ -72,12 +72,12 @@ const gchar *plugin_desc(void)
 		 "autocompletion from the GPG keyring. It is used by other "
 		 "plugins, like PGP/Mime.\n"
                  "\n"
-		 "Options can be found in /Configuration/Preferences/Plugins/GPG "
-		 "and /Configuration/[Account Preferences]/Plugins/GPG\n"
+		 "Options can be found in '/Configuration/Preferences/Plugins/GPG' "
+		 "and '/Configuration/[Account Preferences]/Plugins/GPG'.\n"
 		 "\n"
 		 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 		 "\n"
-		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>");
+		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>.");
 }
 
 const gchar *plugin_type(void)

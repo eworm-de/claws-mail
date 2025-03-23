@@ -58,9 +58,9 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
 	return _("This plugin renders HTML mail using the litehtml library "
-		 "(http://www.litehtml.com/).\nBy default all remote content is "
-		 "blocked. Options can be found in "
-		 "/Configuration/Preferences/Plugins/LiteHTML");
+		 "(http://www.litehtml.com/).\n\n"
+		 "By default all remote content is blocked.\n\n"
+		 "Options can be found in '/Configuration/Preferences/Plugins/LiteHTML'.");
 }
 
 const gchar *plugin_type(void)

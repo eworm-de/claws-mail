@@ -138,10 +138,10 @@ const gchar* plugin_desc(void) {
 			"The supported folder types are MH, IMAP, RSSyl and "
 			"vCalendar.\n"
 			"\n"
-			"To activate the archiving feature go to /Tools/Create Archive\n"
+			"To activate the archiving feature go to '/Tools/Create Archive'.\n"
 			"\n"
-			"Default options can be set in /Configuration/Preferences/Plugins"
-			"/Mail Archiver"),
+			"Default options can be set in "
+			"'/Configuration/Preferences/Plugins/Mail Archiver'."),
 
 /* archive formats (untranslated, libarchive-version dependant) */
 			"\tTAR\n\tPAX\n\tSHAR\n\tCPIO\n",

@@ -60,11 +60,11 @@ const gchar *plugin_desc(void)
 {
 	return _("This plugin handles S/MIME signed and/or encrypted "
 		 "mails. You can decrypt mails, verify signatures or "
-                 "sign and encrypt your own mails.\n"
+		  "sign and encrypt your own mails.\n"
 		 "\n"
 		 "It can be selected as the Default Privacy System in "
-		 "/Configuration/[Account Preferences]/Privacy and when "
-		 "composing a message from /Options/Privacy System\n"
+		 "'/Configuration/[Account Preferences]/Privacy' and when "
+		 "composing a message from '/Options/Privacy System'.\n"
 		 "\n"
 		 "This plugin uses the GPGME library as a wrapper for GnuPG.\n"
 		 "This plugin also needs gpgsm, gnupg-agent and dirmngr "
@@ -74,7 +74,7 @@ const gchar *plugin_desc(void)
 		 "with GPGSM can be found at:\n"
 		 "http://www.claws-mail.org/faq/index.php/S/MIME_howto\n"
 		 "\n"
-		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>");
+		 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>.");
 }
 
 const gchar *plugin_type(void)

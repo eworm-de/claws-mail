@@ -204,7 +204,7 @@ const gchar *plugin_desc(void)
 		 "information: UIDL, Claws Mail account name, "
 		 "POP server, user ID and retrieval time.\n"
 	     "\n"
-	     "Options can be found in /Configuration/Preferences/Plugins/Fetchinfo");
+	     "Options can be found in '/Configuration/Preferences/Plugins/Fetchinfo'.");
 }
 
 const gchar *plugin_type(void)

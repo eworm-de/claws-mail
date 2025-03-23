@@ -2127,7 +2127,7 @@ gint plugin_init(gchar **error)
 
 	msg = g_strdup_printf(_("This plugin enables the viewing of PDF and PostScript "
 				"attachments using the Poppler %s Lib and the gs tool.\n\n"
-				"Any feedback is welcome: iwkse@claws-mail.org"
+				"Feedback to <iwkse@claws-mail.org> is welcome."
 				), poppler_get_version());
 
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,8,1,46),

@@ -141,7 +141,7 @@ gint plugin_init (gchar **error)
 		pluginDesc = g_strdup_printf(
 			_("This plugin writes a header summary to a log file for each "
 			"mail received after sorting.\n\n"
-			"Default is ~/Mail/NewLog\n\nCurrent log is %s"), LogName);
+			"Default is '~/Mail/NewLog'.\n\nCurrent log is '%s'."), LogName);
 	return (0);
 } /* plugin_init */
 

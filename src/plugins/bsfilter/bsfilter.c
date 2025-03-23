@@ -368,8 +368,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			msg =  g_strdup_printf(_("The Bsfilter plugin couldn't filter "
 					   "a message. The probable cause of the "
 					   "error is that it didn't learn from any mail.\n"
-					   "Use \"/Marks/Mark as spam\" and \"/Marks/Mark as "
-					   "ham\" to train Bsfilter with a few hundred "
+					   "Use '/Marks/Mark as spam' and '/Marks/Mark as "
+					   "ham' to train Bsfilter with a few hundred "
 					   "spam and ham messages."));
 		else
 			msg =  g_strdup_printf(_("The Bsfilter plugin couldn't filter "
@@ -621,13 +621,13 @@ const gchar *plugin_desc(void)
 	         "\n"
 		 "Before Bsfilter can recognize spam messages, you have to "
 		 "train it by marking a few hundred spam and ham messages "
-		 "with the use of \"/Marks/Mark as spam\" and \"/Marks/Mark as "
-		 "ham\".\n"
+		 "with the use of '/Marks/Mark as spam' and '/Marks/Mark as "
+		 "ham'.\n"
 	         "\n"
 	         "When a message is identified as spam it can be deleted or "
 	         "saved in a specially designated folder.\n"
 	         "\n"
-		 "Options can be found in /Configuration/Preferences/Plugins/Bsfilter");
+		 "Options can be found in '/Configuration/Preferences/Plugins/Bsfilter'.");
 }
 
 const gchar *plugin_type(void)
