@@ -770,7 +770,7 @@ static PyMethodDef ClawsMailMethods[] = {
      "\n"
      "Takes an argument of type clawsmail.Folder, and selects the corresponding folder.\n"
      "\n"
-     "DEPRECATED: Use folderview_select() instead."},
+     "DEPRECATED: use folderview_select() instead."},
 
     {"get_folderview_selected_mailbox",  get_folderview_selected_mailbox, METH_NOARGS,
      "get_folderview_selected_mailbox() - get selected mailbox in folderview\n"
@@ -931,7 +931,7 @@ PyMODINIT_FUNC initclawsmail(void)
   /* add module member "compose_window" set to None */
   Py_INCREF(Py_None);
   if (PyModule_AddObject(cm_module, "compose_window", Py_None) == -1)
-	  debug_print("Error: Could not add object 'compose_window'\n");
+	  debug_print("Error: could not add object 'compose_window'\n");
 
   /* initialize classes */
   ok = ok && cmpy_add_node(cm_module);

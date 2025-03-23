@@ -131,7 +131,7 @@ void notification_update_indicator(void)
     NotificationMsgCount count;
 
     if(!folder->name) {
-      debug_print("Notification plugin: Warning: Ignoring unnamed mailbox in indicator applet\n");
+      debug_print("Notification plugin: warning: ignoring unnamed mailbox in indicator applet\n");
       continue;
     }
     gchar *id = folder->name;

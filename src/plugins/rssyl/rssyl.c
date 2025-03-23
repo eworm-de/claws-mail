@@ -211,7 +211,7 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 
-	debug_print("RSSyl: rssyl_get_last_num(): Scanning %s ...\n", item->path);
+	debug_print("RSSyl: rssyl_get_last_num(): scanning %s ...\n", item->path);
 	path = folder_item_get_path(item);
 	g_return_if_fail(path != NULL);
 
