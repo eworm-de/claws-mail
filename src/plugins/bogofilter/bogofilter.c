@@ -985,18 +985,17 @@ const gchar *plugin_name(void)
 const gchar *plugin_desc(void)
 {
 	return _("This plugin can check all messages that are received from an "
-	         "IMAP, LOCAL or POP account for spam using Bogofilter. "
-		 "You will need Bogofilter installed locally.\n"
-	         "\n"
-		 "Before Bogofilter can recognize spam messages, you have to "
-		 "train it by marking a few hundred spam and ham messages "
-		 "with the use of \"/Marks/Mark as spam\" and \"/Marks/Mark as "
-		 "ham\".\n"
-	         "\n"
-	         "When a message is identified as spam it can be deleted or "
-	         "saved in a specially designated folder.\n"
-	         "\n"
-		 "Options can be found in '/Configuration/Preferences/Plugins/Bogofilter'.");
+			 "IMAP, LOCAL or POP account for spam using Bogofilter. "
+			 "You will need Bogofilter installed locally.\n"
+			 "\n"
+			 "Before Bogofilter can recognize spam messages, you have to "
+			 "train it by marking a few hundred spam and ham messages "
+			 "with the use of '/Marks/Mark as spam' and '/Marks/Mark as ham'.\n"
+			 "\n"
+			 "When a message is identified as spam it can be deleted or "
+			 "saved in a specially designated folder.\n"
+			 "\n"
+			 "Options can be found in '/Configuration/Preferences/Plugins/Bogofilter'.");
 }
 
 const gchar *plugin_type(void)
