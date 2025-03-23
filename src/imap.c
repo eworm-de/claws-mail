@@ -1250,7 +1250,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 
 	imap_init(folder);
 	IMAP_FOLDER(folder)->max_set_size = account->imap_batch_size;
-	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP server: %s:%d..."),
+	buf = g_strdup_printf(_("Account '%s': connecting to IMAP server: %s:%d..."),
 				folder->account->account_name, folder->account->recv_server,
 				port);
 	statusbar_print_all("%s", buf);

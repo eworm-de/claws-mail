@@ -666,12 +666,12 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 				gtkaspellcheckers->checkers,
 				gtkaspeller);
 
-		debug_print("Aspell: Created a new gtkaspeller %p\n",
+		debug_print("Aspell: created a new gtkaspeller %p\n",
 				gtkaspeller);
 	} else {
 		dictionary_delete(dict);
 
-		debug_print("Aspell: Could not create spell checker.\n");
+		debug_print("Aspell: could not create spell checker\n");
 	}
 
 	debug_print("Aspell: number of existing checkers %d\n", 
@@ -723,7 +723,7 @@ static void gtkaspeller_delete(GtkAspeller *gtkaspeller)
 		g_slist_remove(gtkaspellcheckers->checkers, 
 				gtkaspeller);
 
-	debug_print("Aspell: Deleting gtkaspeller %p.\n", 
+	debug_print("Aspell: deleting gtkaspeller %p\n", 
 			gtkaspeller);
 
 	gtkaspeller_real_delete(gtkaspeller);

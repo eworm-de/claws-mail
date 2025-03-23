@@ -103,7 +103,7 @@ static void _update_config_common(gint version)
 
 static void _update_config_account(PrefsAccount *ac_prefs, gint version)
 {
-	debug_print("Account '%s': Updating config version from %d to %d.\n",
+	debug_print("Account '%s': updating config version from %d to %d.\n",
 			ac_prefs->account_name, version, version + 1);
 
 	switch (version) {
@@ -173,7 +173,7 @@ static void _update_config_account(PrefsAccount *ac_prefs, gint version)
 
 static void _update_config_password_store(gint version)
 {
-	debug_print("Password store: Updating config version from %d to %d.\n",
+	debug_print("Password store: updating config version from %d to %d.\n",
 			version, version + 1);
 
 	switch (version) {
@@ -189,7 +189,7 @@ static void _update_config_password_store(gint version)
 
 static void _update_config_folderlist(gint version)
 {
-	debug_print("Folderlist: Updating config version from %d to %d.\n",
+	debug_print("Folderlist: updating config version from %d to %d.\n",
 			version, version + 1);
 
 	switch (version) {
@@ -267,13 +267,13 @@ int prefs_update_config_version_accounts()
 
 		gint ver = ac_prefs->config_version;
 
-		debug_print("Account '%s': Starting config update at config_version %d.\n", ac_prefs->account_name, ver);
+		debug_print("Account '%s': starting config update at config_version %d.\n", ac_prefs->account_name, ver);
 
 		if (!_version_check(ver))
 			return -1;
 
 		if (ver == CLAWS_CONFIG_VERSION) {
-			debug_print("Account '%s': No update necessary, already at latest config_version.\n", ac_prefs->account_name);
+			debug_print("Account '%s': no update necessary, already at latest config_version.\n", ac_prefs->account_name);
 			continue;
 		}
 
@@ -371,7 +371,7 @@ int prefs_update_config_version_folder_item(FolderItem *item)
 	}
 
 	if (ver == CLAWS_CONFIG_VERSION) {
-		debug_print("Folder item '%s': No update necessary, already at latest config_version %d.\n", id, ver);
+		debug_print("Folder item '%s': no update necessary, already at latest config_version %d.\n", id, ver);
 		g_free(id);
 		return 0; /* nothing to do */
 	}

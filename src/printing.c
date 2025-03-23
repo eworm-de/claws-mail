@@ -206,9 +206,9 @@ GtkPageSetup *printing_get_page_setup(void)
 		g_key_file_free(keyfile);
 
 		if (read_from_file) {
-			debug_print("Printing: Read page setup from key file\n");
+			debug_print("Printing: read page setup from key file\n");
 		} else {
-			debug_print("Printing: Could not read page setup from key file\n");
+			debug_print("Printing: could not read page setup from key file\n");
 		}
 
 		/* if reading from file did not work, or has not been tried (GTK+ < 2.14), use prefs */
@@ -384,7 +384,7 @@ void printing_page_setup(GtkWindow *parent)
 	keyfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			      PRINTING_PAGE_SETUP_STORAGE_FILE, NULL);
 	if (!gtk_page_setup_to_file(page_setup, keyfile, NULL)) {
-		debug_print("Printing: Could not store page setup in file `%s'\n", keyfile);
+		debug_print("Printing: could not store page setup in file `%s'\n", keyfile);
 	}
 	g_free(keyfile);
 }

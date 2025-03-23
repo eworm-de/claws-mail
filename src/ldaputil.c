@@ -111,7 +111,7 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 	} else {
 		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"),
 				rc, ldaputil_get_error(ld));
-		debug_print("LDAP: Error %d (%s)\n", rc, ldaputil_get_error(ld));
+		debug_print("LDAP: error %d (%s)\n", rc, ldaputil_get_error(ld));
 	}
 	
 	if (errcode)
@@ -199,7 +199,7 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 	} else {
 		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"),
 				rc, ldaputil_get_error(ld));
-		debug_print("LDAP: Error %d (%s)\n", rc, ldaputil_get_error(ld));
+		debug_print("LDAP: error %d (%s)\n", rc, ldaputil_get_error(ld));
 	}
 	if (result)
 		ldap_msgfree( result );
