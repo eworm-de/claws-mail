@@ -369,7 +369,8 @@ static gboolean rssyl_update_recursively_func(GNode *node, gpointer data, gboole
 
 	if( ritem->url != NULL ) {
 		debug_print("RSSyl: %s refresh'\n", manual_refresh ? "manual" : "automated");
-		if(rssyl_prefs_get()->refresh_all_skips &&
+		if((manual_refresh == FALSE) &&
+			rssyl_prefs_get()->refresh_all_skips &&
 			(ritem->default_refresh_interval == FALSE) &&
 			(ritem->refresh_interval == 0)) {
 			debug_print("RSSyl: skipping feed '%s'\n", item->name);
