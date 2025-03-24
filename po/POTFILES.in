@@ -136,6 +136,7 @@ src/plugins/notification/notification_prefs.c
 src/plugins/notification/notification_trayicon.c
 src/plugins/pdf_viewer/poppler_viewer.c
 src/plugins/perl/perl_gtk.c
+src/plugins/perl/perl_plugin.c
 src/plugins/pgpcore/autocompletion.c
 src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/pgp_viewer.c
