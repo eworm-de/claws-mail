@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.17.3\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2025-02-24 08:52+0000\n"
+"POT-Creation-Date: 2025-03-24 12:07+0100\n"
 "PO-Revision-Date: 2025-02-24 09:55+0200\n"
 "Last-Translator: Cristian Secară <cristi AT secarica DOT ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
@@ -138,7 +138,7 @@ msgstr " _Stabilește drept cont implicit "
 #: src/addressbook.c:1430 src/addressbook.c:3265 src/addressbook.c:3317
 #: src/addressbook.c:4186 src/addressbook.c:4191 src/addressbook.c:4307
 #: src/addrindex.c:1837 src/alertpanel.c:139 src/alertpanel.c:203
-#: src/browseldap.c:301 src/compose.c:636 src/compose.c:10989
+#: src/browseldap.c:300 src/compose.c:636 src/compose.c:10989
 #: src/edittags.c:589 src/exphtmldlg.c:193 src/exphtmldlg.c:295
 #: src/expldifdlg.c:323 src/gtk/about.c:931 src/gtk/icon_legend.c:184
 #: src/gtk/pluginwindow.c:391 src/gtk/prefswindow.c:512
@@ -184,7 +184,7 @@ msgstr "Ștergere cont"
 #: src/addrcustomattr.c:496 src/addrduplicates.c:147 src/addrduplicates.c:791
 #: src/addressadd.c:299 src/addressbook.c:1476 src/addressbook.c:1484
 #: src/addressbook.c:2962 src/addressbook.c:2975 src/addressbook.c:2989
-#: src/addressbook.c:2996 src/addressbook_foldersel.c:210 src/addrgather.c:554
+#: src/addressbook.c:2996 src/addressbook_foldersel.c:210 src/addrgather.c:555
 #: src/compose.c:3712 src/compose.c:3844 src/compose.c:5152 src/compose.c:5189
 #: src/compose.c:5226 src/compose.c:5269 src/compose.c:5833 src/compose.c:6131
 #: src/compose.c:9563 src/compose.c:10768 src/compose.c:10773
@@ -195,19 +195,19 @@ msgstr "Ștergere cont"
 #: src/exphtmldlg.c:608 src/exphtmldlg.c:683 src/expldifdlg.c:673
 #: src/expldifdlg.c:749 src/export.c:174 src/foldersel.c:349
 #: src/folderview.c:2505 src/folderview.c:2563 src/grouplistdialog.c:241
-#: src/gtk/foldersort.c:244 src/gtk/gtkaspell.c:1504 src/gtk/inputdialog.c:376
+#: src/gtk/foldersort.c:244 src/gtk/gtkaspell.c:1502 src/gtk/inputdialog.c:376
 #: src/gtk/prefswindow.c:507 src/gtk/progressdialog.c:93 src/imap.c:1243
 #: src/imap_gtk.c:369 src/imap_gtk.c:519 src/imap_gtk.c:579 src/import.c:177
 #: src/importldif.c:925 src/importldif.c:991 src/importmutt.c:250
 #: src/importpine.c:249 src/inc.c:893 src/main.c:2197 src/mainwindow.c:3998
-#: src/mbox.c:549 src/messageview.c:2080 src/messageview.c:2091
+#: src/mbox.c:549 src/messageview.c:2082 src/messageview.c:2093
 #: src/mh_gtk.c:207 src/mh_gtk.c:376 src/mimeview.c:1857 src/mimeview.c:2298
 #: src/news.c:407 src/news_gtk.c:252 src/password_gtk.c:215
 #: src/plugins/archive/archiver_gtk.c:117
-#: src/plugins/archive/archiver_gtk.c:575
-#: src/plugins/archive/archiver_gtk.c:622
-#: src/plugins/archive/archiver_gtk.c:945
-#: src/plugins/archive/archiver_gtk.c:1042
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:956
+#: src/plugins/archive/archiver_gtk.c:1056
 #: src/plugins/att_remover/att_remover.c:383
 #: src/plugins/att_remover/att_remover.c:425
 #: src/plugins/attachwarner/attachwarner.c:218
@@ -218,11 +218,11 @@ msgstr "Ștergere cont"
 #: src/plugins/managesieve/sieve_editor.c:435
 #: src/plugins/managesieve/sieve_editor.c:632
 #: src/plugins/managesieve/sieve_manager.c:330
-#: src/plugins/notification/notification_foldercheck.c:585
+#: src/plugins/notification/notification_foldercheck.c:584
 #: src/plugins/notification/notification_trayicon.c:550
 #: src/plugins/pgpcore/passphrase.c:122 src/plugins/pgpcore/select-keys.c:500
 #: src/plugins/rssyl/rssyl_cb_menu.c:189 src/plugins/rssyl/rssyl_cb_menu.c:356
-#: src/plugins/rssyl/rssyl_feed_props.c:477
+#: src/plugins/rssyl/rssyl_feed_props.c:530
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:46
 #: src/plugins/vcalendar/vcalendar.c:122 src/plugins/vcalendar/vcalendar.c:1063
 #: src/plugins/vcalendar/vcal_folder.c:2028
@@ -236,8 +236,8 @@ msgstr "Ștergere cont"
 #: src/prefs_summary_column.c:355 src/prefs_summary_open.c:180
 #: src/prefs_template.c:398 src/prefs_template.c:898 src/prefs_template.c:911
 #: src/prefs_themes.c:577 src/send_message.c:300 src/ssl_manager.c:451
-#: src/summaryview.c:1334 src/summaryview.c:4561 src/summaryview.c:5030
-#: src/summaryview.c:5086 src/summaryview.c:5825 src/textview.c:3114
+#: src/summaryview.c:1335 src/summaryview.c:4567 src/summaryview.c:5036
+#: src/summaryview.c:5092 src/summaryview.c:5831 src/textview.c:3114
 #: src/toolbar.c:3107 src/wizard.c:1833
 msgid "_Cancel"
 msgstr "_Renunță"
@@ -245,14 +245,14 @@ msgstr "_Renunță"
 #: src/account.c:1141 src/addrcustomattr.c:218 src/addressbook.c:430
 #: src/addressbook.c:455 src/addressbook.c:472 src/addressbook.c:1150
 #: src/edittags.c:297 src/imap_gtk.c:369
-#: src/plugins/archive/archiver_gtk.c:1309
+#: src/plugins/archive/archiver_gtk.c:1330
 #: src/plugins/att_remover/att_remover.c:425
 #: src/plugins/mailmbox/plugin_gtk.c:336
 #: src/plugins/managesieve/sieve_manager.c:330
 #: src/plugins/rssyl/rssyl_cb_menu.c:189
 #: src/plugins/vcalendar/vcal_folder.c:2028 src/prefs_actions.c:1105
 #: src/prefs_customheader.c:695 src/prefs_display_header.c:327
-#: src/prefs_filtering.c:1689 src/prefs_template.c:1104 src/summaryview.c:4561
+#: src/prefs_filtering.c:1689 src/prefs_template.c:1104 src/summaryview.c:4567
 msgid "_Delete"
 msgstr "Șter_ge"
 
@@ -504,10 +504,10 @@ msgstr ""
 #: src/plugins/pgpcore/sgpgme.c:1084 src/plugins/pgpcore/sgpgme.c:1207
 #: src/plugins/vcalendar/vcalendar.c:966 src/prefs_migration.c:62
 #: src/prefs_themes.c:508 src/prefs_themes.c:564 src/summary_search.c:797
-#: src/summaryview.c:1334 src/summaryview.c:1943 src/summaryview.c:1991
-#: src/summaryview.c:2028 src/summaryview.c:2076 src/summaryview.c:2110
-#: src/summaryview.c:2144 src/summaryview.c:2178 src/summaryview.c:2208
-#: src/summaryview.c:4275 src/summaryview.c:4321 src/summaryview.c:6092
+#: src/summaryview.c:1335 src/summaryview.c:1944 src/summaryview.c:1992
+#: src/summaryview.c:2029 src/summaryview.c:2077 src/summaryview.c:2111
+#: src/summaryview.c:2145 src/summaryview.c:2179 src/summaryview.c:2209
+#: src/summaryview.c:4281 src/summaryview.c:4327 src/summaryview.c:6098
 #: src/toolbar.c:3087
 msgid "_No"
 msgstr "_Nu"
@@ -523,11 +523,11 @@ msgstr "_Nu"
 #: src/plugins/pgpcore/sgpgme.c:1207 src/plugins/vcalendar/vcalendar.c:123
 #: src/plugins/vcalendar/vcalendar.c:966 src/prefs_migration.c:62
 #: src/prefs_themes.c:508 src/prefs_themes.c:564 src/summary_search.c:797
-#: src/summaryview.c:1334 src/summaryview.c:1943 src/summaryview.c:1991
-#: src/summaryview.c:2028 src/summaryview.c:2076 src/summaryview.c:2110
-#: src/summaryview.c:2144 src/summaryview.c:2178 src/summaryview.c:2208
-#: src/summaryview.c:4275 src/summaryview.c:4321 src/summaryview.c:5086
-#: src/summaryview.c:6092 src/toolbar.c:3087
+#: src/summaryview.c:1335 src/summaryview.c:1944 src/summaryview.c:1992
+#: src/summaryview.c:2029 src/summaryview.c:2077 src/summaryview.c:2111
+#: src/summaryview.c:2145 src/summaryview.c:2179 src/summaryview.c:2209
+#: src/summaryview.c:4281 src/summaryview.c:4327 src/summaryview.c:5092
+#: src/summaryview.c:6098 src/toolbar.c:3087
 msgid "_Yes"
 msgstr "_Da"
 
@@ -565,27 +565,27 @@ msgid "_Add"
 msgstr "_Adaugă"
 
 #: src/addrcustomattr.c:497 src/addressadd.c:300
-#: src/addressbook_foldersel.c:211 src/addrgather.c:555 src/alertpanel.c:385
+#: src/addressbook_foldersel.c:211 src/addrgather.c:556 src/alertpanel.c:385
 #: src/compose.c:9564 src/editaddress.c:172 src/editaddress.c:816
 #: src/editbook.c:197 src/editgroup.c:406 src/editjpilot.c:306
 #: src/editldap_basedn.c:239 src/editldap.c:363 src/editvcard.c:204
 #: src/export.c:175 src/foldersel.c:350 src/grouplistdialog.c:243
-#: src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1506 src/gtk/inputdialog.c:378
+#: src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1504 src/gtk/inputdialog.c:378
 #: src/gtk/prefswindow.c:508 src/import.c:178 src/importmutt.c:251
 #: src/importpine.c:250 src/main.c:2197 src/password_gtk.c:217
-#: src/plugins/archive/archiver_gtk.c:575
-#: src/plugins/archive/archiver_gtk.c:622
-#: src/plugins/archive/archiver_gtk.c:749
-#: src/plugins/archive/archiver_gtk.c:1044
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:760
+#: src/plugins/archive/archiver_gtk.c:1058
 #: src/plugins/att_remover/att_remover.c:384
 #: src/plugins/managesieve/sieve_editor.c:633
-#: src/plugins/notification/notification_foldercheck.c:586
+#: src/plugins/notification/notification_foldercheck.c:585
 #: src/plugins/notification/notification_trayicon.c:550
 #: src/plugins/pgpcore/passphrase.c:123
-#: src/plugins/rssyl/rssyl_feed_props.c:483
+#: src/plugins/rssyl/rssyl_feed_props.c:536
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1804
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1928 src/prefs_actions.c:220
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1929 src/prefs_actions.c:220
 #: src/prefs_customheader.c:177 src/prefs_display_header.c:246
 #: src/prefs_filtering_action.c:393 src/prefs_filtering.c:352
 #: src/prefs_folder_column.c:342 src/prefs_matcher.c:573
@@ -942,7 +942,7 @@ msgid "Do you want to delete the query results and addresses in '%s'?"
 msgstr "Vreți să ștergeți rezultatele interogării și adresele din „%s”?"
 
 #: src/addressbook.c:2961 src/addressbook.c:2989 src/addressbook.c:2996
-#: src/plugins/archive/archiver_prefs.c:430 src/prefs_filtering_action.c:171
+#: src/plugins/archive/archiver_prefs.c:449 src/prefs_filtering_action.c:171
 #: src/toolbar.c:506
 msgid "Delete"
 msgstr "Șterge"
@@ -1152,20 +1152,20 @@ msgstr "Nume de antet"
 msgid "Address Count"
 msgstr "Număr de adrese"
 
-#: src/addrgather.c:584
+#: src/addrgather.c:585
 msgid "Header Fields"
 msgstr "Câmpuri de antet"
 
-#: src/addrgather.c:585 src/exphtmldlg.c:640 src/expldifdlg.c:705
+#: src/addrgather.c:586 src/exphtmldlg.c:640 src/expldifdlg.c:705
 #: src/importldif.c:967
 msgid "Finish"
 msgstr "Finalizat"
 
-#: src/addrgather.c:643
+#: src/addrgather.c:644
 msgid "Collect email addresses from selected messages"
 msgstr "Colectează adrese de e-mail din mesajele selectate"
 
-#: src/addrgather.c:647
+#: src/addrgather.c:648
 msgid "Collect email addresses from folder"
 msgstr "Colectează adrese de e-mail din dosar"
 
@@ -1201,7 +1201,7 @@ msgstr "Notificare"
 #: src/alertpanel.c:167 src/compose.c:5865 src/compose.c:6443
 #: src/compose.c:12401 src/file_checker.c:83 src/file_checker.c:107
 #: src/messageview.c:861 src/mimeview.c:1890 src/plugins/pgpcore/sgpgme.c:996
-#: src/plugins/vcalendar/vcalendar.c:122 src/summaryview.c:5086
+#: src/plugins/vcalendar/vcalendar.c:122 src/summaryview.c:5092
 msgid "Warning"
 msgstr "Avertisment"
 
@@ -1218,23 +1218,23 @@ msgstr "_Vizualizare jurnal"
 msgid "Show this message next time"
 msgstr "Arată acest mesaj și data viitoare"
 
-#: src/browseldap.c:221
+#: src/browseldap.c:220
 msgid "Browse Directory Entry"
 msgstr "Răsfoiește intrarea în director"
 
-#: src/browseldap.c:240
+#: src/browseldap.c:239
 msgid "Server Name:"
 msgstr "Nume server:"
 
-#: src/browseldap.c:251
+#: src/browseldap.c:250
 msgid "Distinguished Name (dn):"
 msgstr "Nume distinctiv (dn)"
 
-#: src/browseldap.c:283
+#: src/browseldap.c:282
 msgid "LDAP Name"
 msgstr "Nume LDAP"
 
-#: src/browseldap.c:289
+#: src/browseldap.c:288
 msgid "Attribute Value"
 msgstr "Valoare atribut"
 
@@ -2002,13 +2002,13 @@ msgstr "_Normală"
 
 # continuare de meniu la Răspunde
 #: src/compose.c:739 src/mainwindow.c:668 src/messageview.c:306
-#: src/summaryview.c:429
+#: src/summaryview.c:430
 msgid "_All"
 msgstr "_Tuturor"
 
 # continuare de meniu la Răspunde
 #: src/compose.c:740 src/mainwindow.c:669 src/messageview.c:307
-#: src/summaryview.c:430
+#: src/summaryview.c:431
 msgid "_Sender"
 msgstr "E_xpeditorului"
 
@@ -2408,7 +2408,8 @@ msgid "No account for sending mails available!"
 msgstr "Nu este disponibil nici un cont pentru trimiterea e-mailurilor !"
 
 #: src/compose.c:6188
-msgid "Selected account isn't NNTP: Posting is impossible."
+#, fuzzy
+msgid "Selected account isn't NNTP: posting is impossible."
 msgstr "Contul selectat nu este NNTP. Postarea este imposibilă."
 
 #: src/compose.c:6442
@@ -2453,7 +2454,7 @@ msgstr "Tip MIME"
 #: src/plugins/att_remover/att_remover.c:302
 #: src/plugins/pgpcore/select-keys.c:454 src/prefs_matcher.c:640
 #: src/prefs_summaries.c:700 src/prefs_summary_column.c:84
-#: src/summaryview.c:468
+#: src/summaryview.c:469
 msgid "Size"
 msgstr "Mărime"
 
@@ -2463,7 +2464,7 @@ msgstr "Salvează mesajul în "
 
 #: src/compose.c:7598 src/editjpilot.c:277 src/editldap.c:514
 #: src/editvcard.c:193 src/export.c:161 src/import.c:164 src/importmutt.c:240
-#: src/importpine.c:239 src/plugins/archive/archiver_gtk.c:1077
+#: src/importpine.c:239 src/plugins/archive/archiver_gtk.c:1085
 #: src/plugins/bogofilter/bogofilter_gtk.c:213
 #: src/plugins/bogofilter/bogofilter_gtk.c:236
 #: src/plugins/bsfilter/bsfilter_gtk.c:180
@@ -2524,7 +2525,7 @@ msgstr ""
 "Sistemul de confidențialitate '%s' nu poate fi încărcat. Nu veți putea semna "
 "sau cripta acest mesaj."
 
-#: src/compose.c:8780 src/plugins/archive/archiver_gtk.c:1176
+#: src/compose.c:8780 src/plugins/archive/archiver_gtk.c:1192
 msgid "_None"
 msgstr "_Niciunul"
 
@@ -3258,11 +3259,11 @@ msgstr "Potriviți numele „conținând” termenul de căutare"
 
 #: src/editldap.c:636
 msgid ""
-"Searches for names and addresses can be performed either using \"begins-"
-"with\" or \"contains\" search term. Check this option to perform a "
-"\"contains\" search; this type of search usually takes longer to complete. "
-"Note that for performance reasons, address completion uses \"begins-with\" "
-"for all searches against other address interfaces."
+"Searches for names and addresses can be performed either using \"begins-with"
+"\" or \"contains\" search term. Check this option to perform a \"contains\" "
+"search; this type of search usually takes longer to complete. Note that for "
+"performance reasons, address completion uses \"begins-with\" for all "
+"searches against other address interfaces."
 msgstr ""
 "Căutările pentru nume și adrese pot fi efectuate fie folosind termenul de "
 "căutare „începe cu”, fie „conține”. Bifați această opțiune pentru a efectua "
@@ -3475,10 +3476,11 @@ msgid "Stylesheet"
 msgstr "Foaie de stil"
 
 #: src/exphtmldlg.c:448 src/gtk/colorlabel.c:369 src/gtk/colorlabel.c:495
-#: src/gtk/gtkaspell.c:1560 src/gtk/gtkaspell.c:2195 src/gtk/menu.c:126
-#: src/mainwindow.c:1176 src/plugins/archive/archiver_prefs.c:312
+#: src/gtk/gtkaspell.c:1558 src/gtk/gtkaspell.c:2193 src/gtk/menu.c:126
+#: src/mainwindow.c:1176 src/plugins/archive/archiver_prefs.c:326
 #: src/plugins/libravatar/libravatar_prefs.c:319 src/prefs_account.c:1143
-#: src/prefs_toolbar.c:770 src/prefs_toolbar.c:1420 src/summaryview.c:6268
+#: src/prefs_spelling.c:329 src/prefs_toolbar.c:770 src/prefs_toolbar.c:1420
+#: src/summaryview.c:6274
 msgid "None"
 msgstr "Fără"
 
@@ -3706,7 +3708,7 @@ msgstr "Nume deosebit"
 
 # titlu pe bară
 # și încă ceva (?)
-#: src/export.c:112 src/summaryview.c:8490
+#: src/export.c:112 src/summaryview.c:8496
 msgid "Export to mbox file"
 msgstr "Exportare în fișier mbox"
 
@@ -3747,7 +3749,7 @@ msgid "Full Name"
 msgstr "Nume complet"
 
 #: src/exporthtml.c:761 src/importldif.c:966
-#: src/plugins/archive/archiver_gtk.c:772
+#: src/plugins/archive/archiver_gtk.c:783
 msgid "Attributes"
 msgstr "Atribute"
 
@@ -3888,8 +3890,8 @@ msgstr "regula este bazată per cont, dar nu se potrivește cu contul curent\n"
 #: src/filtering.c:755
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], not matching current account "
-"[id=%d, name='%s']\n"
+"rule is account-based [id=%d, name='%s'], not matching current account [id="
+"%d, name='%s']\n"
 msgstr ""
 "regula este bazată per cont [id=%d, nume=„%s”], dar nu se potrivește cu "
 "contul curent [id=%d, nume=„%s”]\n"
@@ -4127,14 +4129,14 @@ msgstr "Stabilește coloanele afișate"
 
 #: src/folderview.c:407 src/folderview.c:454
 #: src/plugins/notification/notification_lcdproc.c:141
-#: src/prefs_folder_column.c:78 src/prefs_matcher.c:401 src/summaryview.c:6536
+#: src/prefs_folder_column.c:78 src/prefs_matcher.c:401 src/summaryview.c:6542
 msgid "New"
 msgstr "Nou"
 
 # comun și când search și în dropdown-ul din fereastra principală
 #: src/folderview.c:408 src/folderview.c:455
 #: src/plugins/notification/notification_lcdproc.c:145
-#: src/prefs_folder_column.c:79 src/prefs_matcher.c:400 src/summaryview.c:6538
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:400 src/summaryview.c:6544
 #: src/toolbar.c:521
 msgid "Unread"
 msgstr "Necitit"
@@ -4145,7 +4147,7 @@ msgid "Total"
 msgstr "Total"
 
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:457 src/summaryview.c:469
+#: src/folderview.c:457 src/summaryview.c:470
 msgid "#"
 msgstr "#"
 
@@ -4154,7 +4156,7 @@ msgid "Setting folder info..."
 msgstr "Se stabilesc informațiile dosarului..."
 
 # titlu pe bară și de fereastră
-#: src/folderview.c:873 src/summaryview.c:4273
+#: src/folderview.c:873 src/summaryview.c:4279
 msgid "Mark all as read"
 msgstr "Marcare ca fiind citit"
 
@@ -4166,13 +4168,13 @@ msgstr ""
 "Chiar vreți să marcați toate e-mailurile din acest dosar și subdosarele sale "
 "ca fiind citite?"
 
-#: src/folderview.c:876 src/summaryview.c:4274
+#: src/folderview.c:876 src/summaryview.c:4280
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr ""
 "Chiar vreți ca tot conținutul acestui dosar să fie marcat ca fiind citit?"
 
 # titlu pe bară și de fereastră
-#: src/folderview.c:879 src/summaryview.c:4319
+#: src/folderview.c:879 src/summaryview.c:4325
 msgid "Mark all as unread"
 msgstr "Marcare ca fiind necitit"
 
@@ -4184,7 +4186,7 @@ msgstr ""
 "Chiar vreți să marcați toate e-mailurile din acest dosar și subdosarele sale "
 "ca fiind necitite?"
 
-#: src/folderview.c:882 src/summaryview.c:4320
+#: src/folderview.c:882 src/summaryview.c:4326
 msgid "Do you really want to mark all mails in this folder as unread?"
 msgstr ""
 "Chiar vreți ca tot conținutul acestui dosar să fie marcat ca fiind necitit?"
@@ -4343,7 +4345,7 @@ msgstr "Mutarea a eșuat !"
 msgid "Processing configuration for folder %s"
 msgstr "Configurare de procesare pentru dosarul %s"
 
-#: src/folderview.c:3202 src/summaryview.c:4728 src/summaryview.c:4834
+#: src/folderview.c:3202 src/summaryview.c:4734 src/summaryview.c:4840
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Dosarul de destinație poate fi folosit numai pentru a stoca subdosare."
 
@@ -4398,7 +4400,7 @@ msgstr "necunoscut"
 msgid "Can't retrieve newsgroup list."
 msgstr "Nu se poate prelua lista grupurilor de știri."
 
-#: src/grouplistdialog.c:476 src/gtk/gtkutils.c:1738 src/summaryview.c:1670
+#: src/grouplistdialog.c:476 src/gtk/gtkutils.c:1738 src/summaryview.c:1671
 msgid "Done."
 msgstr "Gata."
 
@@ -4768,21 +4770,21 @@ msgstr "Nu s-a putut inițializa brokerul Enchant."
 msgid "Couldn't initialize %s dictionary:"
 msgstr "Nu s-a putut inițializa dicționarul %s:"
 
-#: src/gtk/gtkaspell.c:1060
+#: src/gtk/gtkaspell.c:1058
 msgid "No misspelled word found."
 msgstr "Nu s-a găsit nici un cuvânt scris greșit."
 
 # tutlu pe bară
-#: src/gtk/gtkaspell.c:1436
+#: src/gtk/gtkaspell.c:1434
 msgid "Replace unknown word"
 msgstr "Înlocuire cuvânt necunoscut"
 
-#: src/gtk/gtkaspell.c:1452
+#: src/gtk/gtkaspell.c:1450
 #, c-format
 msgid "Replace \"%s\" with: "
 msgstr "Înlocuiește „%s” cu: "
 
-#: src/gtk/gtkaspell.c:1497
+#: src/gtk/gtkaspell.c:1495
 msgid ""
 "Holding down Control key while pressing Enter\n"
 "will learn from mistake.\n"
@@ -4790,55 +4792,55 @@ msgstr ""
 "Ținerea apăsat a tastei Control în timp ce se apasă tasta Enter\n"
 "va învăța din greșeală.\n"
 
-#: src/gtk/gtkaspell.c:1794 src/gtk/gtkaspell.c:1931
+#: src/gtk/gtkaspell.c:1792 src/gtk/gtkaspell.c:1929
 msgid "More..."
 msgstr "Mai multe..."
 
-#: src/gtk/gtkaspell.c:1850
+#: src/gtk/gtkaspell.c:1848
 #, c-format
 msgid "\"%s\" unknown in dictionary '%s'"
 msgstr "„%s” necunoscut în dicționarul „%s”"
 
-#: src/gtk/gtkaspell.c:1865
+#: src/gtk/gtkaspell.c:1863
 msgid "Accept in this session"
 msgstr "Acceptă în această sesiune"
 
-#: src/gtk/gtkaspell.c:1875
+#: src/gtk/gtkaspell.c:1873
 msgid "Add to personal dictionary"
 msgstr "Adaugă la dicționarul personal"
 
-#: src/gtk/gtkaspell.c:1885
+#: src/gtk/gtkaspell.c:1883
 msgid "Replace with..."
 msgstr "Înlocuiește cu..."
 
-#: src/gtk/gtkaspell.c:1898
+#: src/gtk/gtkaspell.c:1896
 #, c-format
 msgid "Check with %s"
 msgstr "Verifică cu dicționarul %s"
 
-#: src/gtk/gtkaspell.c:1920
+#: src/gtk/gtkaspell.c:1918
 msgid "(no suggestions)"
 msgstr "(nicio sugestie)"
 
-#: src/gtk/gtkaspell.c:1994
+#: src/gtk/gtkaspell.c:1992
 #, c-format
 msgid "Dictionary: %s"
 msgstr "Dicționar: %s"
 
-#: src/gtk/gtkaspell.c:2008
+#: src/gtk/gtkaspell.c:2006
 #, c-format
 msgid "Use alternate (%s)"
 msgstr "Folosește dicționarul alternativ (%s)"
 
-#: src/gtk/gtkaspell.c:2019
+#: src/gtk/gtkaspell.c:2017
 msgid "Use both dictionaries"
 msgstr "Folosește ambele dicționare"
 
-#: src/gtk/gtkaspell.c:2035 src/prefs_spelling.c:130
+#: src/gtk/gtkaspell.c:2033 src/prefs_spelling.c:130
 msgid "Check while typing"
 msgstr "Verifică în timpul scrierii"
 
-#: src/gtk/gtkaspell.c:2117
+#: src/gtk/gtkaspell.c:2115
 #, c-format
 msgid ""
 "The spell checker could not change dictionary.\n"
@@ -4847,7 +4849,7 @@ msgstr ""
 "Verificatorul ortografic nu a putut schimba dicționarul.\n"
 "%s"
 
-#: src/gtk/gtkaspell.c:2173
+#: src/gtk/gtkaspell.c:2171
 #, c-format
 msgid ""
 "The spell checker could not change the alternate dictionary.\n"
@@ -4876,7 +4878,7 @@ msgstr "Se configurează..."
 
 #: src/gtk/headers.h:9 src/prefs_filtering_action.c:1225
 #: src/prefs_matcher.c:645 src/prefs_matcher.c:2218 src/prefs_summaries.c:701
-#: src/prefs_summary_column.c:83 src/quote_fmt.c:48 src/summaryview.c:467
+#: src/prefs_summary_column.c:83 src/quote_fmt.c:48 src/summaryview.c:468
 msgid "Date"
 msgstr "Dată"
 
@@ -4887,7 +4889,7 @@ msgstr "Dată:"
 #: src/gtk/headers.h:10 src/gtk/quicksearch.c:857
 #: src/prefs_filtering_action.c:1222 src/prefs_matcher.c:2215
 #: src/prefs_summaries.c:703 src/prefs_summary_column.c:81 src/quote_fmt.c:49
-#: src/summaryview.c:465
+#: src/summaryview.c:466
 msgid "From"
 msgstr "De la"
 
@@ -4910,7 +4912,7 @@ msgstr "Răspuns-către"
 #: src/gtk/headers.h:13 src/gtk/quicksearch.c:863
 #: src/prefs_filtering_action.c:1223 src/prefs_matcher.c:2216
 #: src/prefs_summaries.c:704 src/prefs_summary_column.c:82 src/quote_fmt.c:56
-#: src/summaryview.c:466
+#: src/summaryview.c:467
 msgid "To"
 msgstr "Către"
 
@@ -4948,7 +4950,7 @@ msgstr "Referințe:"
 #: src/gtk/headers.h:19 src/gtk/quicksearch.c:851
 #: src/prefs_filtering_action.c:1221 src/prefs_matcher.c:2214
 #: src/prefs_summaries.c:705 src/prefs_summary_column.c:80 src/quote_fmt.c:55
-#: src/summaryview.c:464
+#: src/summaryview.c:465
 msgid "Subject"
 msgstr "Subiect"
 
@@ -4957,7 +4959,7 @@ msgstr "Subiect"
 msgid "Subject:"
 msgstr "Subiect:"
 
-#: src/gtk/headers.h:20 src/plugins/rssyl/rssyl_feed_props.c:416
+#: src/gtk/headers.h:20 src/plugins/rssyl/rssyl_feed_props.c:445
 msgid "Comments"
 msgstr "Comentarii"
 
@@ -5074,7 +5076,7 @@ msgstr "Văzut:"
 #: src/gtk/headers.h:37 src/gtk/progressdialog.c:143
 #: src/gtk/sslcertwindow.c:188 src/prefs_summaries.c:709
 #: src/prefs_summary_column.c:78 src/prefs_themes.c:1109 src/ssl_manager.c:124
-#: src/summaryview.c:2894
+#: src/summaryview.c:2895
 msgid "Status"
 msgstr "Stare"
 
@@ -5464,7 +5466,7 @@ msgstr ""
 
 #: src/gtk/pluginwindow.c:303 src/plugins/acpi_notifier/acpi_notifier.c:775
 #: src/plugins/address_keeper/address_keeper_prefs.c:280
-#: src/plugins/archive/archiver_prefs.c:105
+#: src/plugins/archive/archiver_prefs.c:108
 #: src/plugins/attachwarner/attachwarner_prefs.c:234
 #: src/plugins/bogofilter/bogofilter_gtk.c:482
 #: src/plugins/bsfilter/bsfilter_gtk.c:399
@@ -5485,7 +5487,7 @@ msgstr ""
 #: src/plugins/notification/notification_prefs.c:545
 #: src/plugins/notification/notification_prefs.c:563
 #: src/plugins/pgpcore/prefs_gpg.c:687 src/plugins/pgpcore/prefs_gpg.c:707
-#: src/plugins/rssyl/rssyl_prefs.c:66
+#: src/plugins/rssyl/rssyl_prefs.c:87
 #: src/plugins/spam_report/spam_report_prefs.c:82
 #: src/plugins/spamassassin/spamassassin_gtk.c:665
 #: src/plugins/vcalendar/vcal_prefs.c:775 src/prefs_toolbar.c:924
@@ -5508,8 +5510,8 @@ msgstr "Descriere"
 #, c-format
 msgid "For more information about plugins see the %sClaws Mail website%s."
 msgstr ""
-"Pentru mai multe informații despre plugin-uri vedeți %ssite-ul web Claws "
-"Mail%s."
+"Pentru mai multe informații despre plugin-uri vedeți %ssite-ul web Claws Mail"
+"%s."
 
 #: src/gtk/pluginwindow.c:419
 msgid "Click here to load one or more plugins"
@@ -5524,7 +5526,7 @@ msgid "Loaded plugins"
 msgstr "Plugin-uri încărcate"
 
 #: src/gtk/prefswindow.c:506 src/gtk/prefswindow.c:511
-#: src/plugins/archive/archiver_gtk.c:944
+#: src/plugins/archive/archiver_gtk.c:955
 #: src/plugins/clamd/clamav_plugin_gtk.c:91
 msgid "_Apply"
 msgstr "_Aplică"
@@ -5777,7 +5779,7 @@ msgstr "Ceva a mers prost în timpul căutării. Verificați jurnalele."
 msgid "From/To/Cc/Subject/Tag"
 msgstr "De la/Către/Cc/Subiect/Etichetă"
 
-#: src/gtk/quicksearch.c:893 src/plugins/archive/archiver_prefs.c:415
+#: src/gtk/quicksearch.c:893 src/plugins/archive/archiver_prefs.c:434
 msgid "Recursive"
 msgstr "Recursiv"
 
@@ -5989,15 +5991,15 @@ msgstr "Etichete:"
 
 #: src/headerview.c:193 src/plugins/notification/notification_popup.c:313
 #: src/plugins/notification/notification_popup.c:620
-#: src/plugins/notification/notification_trayicon.c:885 src/summaryview.c:3494
-#: src/summaryview.c:3512 src/summaryview.c:3551
+#: src/plugins/notification/notification_trayicon.c:885 src/summaryview.c:3495
+#: src/summaryview.c:3513 src/summaryview.c:3552
 msgid "(No From)"
 msgstr "(Fără expeditor)"
 
 #: src/headerview.c:208 src/plugins/notification/notification_popup.c:315
 #: src/plugins/notification/notification_popup.c:624
-#: src/plugins/notification/notification_trayicon.c:888 src/summaryview.c:3563
-#: src/summaryview.c:3566
+#: src/plugins/notification/notification_trayicon.c:888 src/summaryview.c:3564
+#: src/summaryview.c:3567
 msgid "(No Subject)"
 msgstr "(Fără subiect)"
 
@@ -6336,8 +6338,8 @@ msgid "Con_tinue connecting"
 msgstr "Con_tinuă conectarea"
 
 #: src/imap.c:1253
-#, c-format
-msgid "Account '%s': Connecting to IMAP server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to IMAP server: %s:%d..."
 msgstr "Contul „%s”: Se conectează la serverul IMAP: %s:%d..."
 
 #: src/imap.c:1318
@@ -6749,7 +6751,7 @@ msgstr "Selectați fișierul LDIF de importat."
 msgid "R"
 msgstr "R"
 
-#: src/importldif.c:707 src/summaryview.c:462
+#: src/importldif.c:707 src/summaryview.c:463
 msgid "S"
 msgstr "S"
 
@@ -6892,7 +6894,7 @@ msgid "Auth failed"
 msgstr "Autentificarea a eșuat"
 
 #: src/inc.c:727 src/prefs_matcher.c:406 src/prefs_summaries.c:712
-#: src/prefs_summary_column.c:87 src/summaryview.c:2890 src/summaryview.c:6562
+#: src/prefs_summary_column.c:87 src/summaryview.c:2891 src/summaryview.c:6568
 msgid "Locked"
 msgstr "Blocat"
 
@@ -6913,13 +6915,13 @@ msgid "Finished (no new messages)"
 msgstr "Terminat (nu sunt mesaje noi)"
 
 #: src/inc.c:870
-#, c-format
-msgid "%s: Retrieving new messages"
+#, fuzzy, c-format
+msgid "%s: retrieving new messages"
 msgstr "%s: Preluare mesaje noi"
 
 #: src/inc.c:899
-#, c-format
-msgid "Account '%s': Connecting to POP3 server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to POP3 server: %s:%d..."
 msgstr "Contul „%s”: Se conectează la serverul POP3: %s:%d..."
 
 #: src/inc.c:933
@@ -7496,7 +7498,7 @@ msgstr "Gestionar de rețea: rețeaua este offline.\n"
 msgid "_File"
 msgstr "_Fișier"
 
-#: src/mainwindow.c:518 src/messageview.c:214 src/summaryview.c:443
+#: src/mainwindow.c:518 src/messageview.c:214 src/summaryview.c:444
 msgid "_View"
 msgstr "_Vizualizare"
 
@@ -7769,17 +7771,17 @@ msgid "Compose a news message"
 msgstr "Compune un mesaj de știri"
 
 #: src/mainwindow.c:666 src/messageview.c:304
-#: src/plugins/notification/notification_banner.c:96 src/summaryview.c:427
+#: src/plugins/notification/notification_banner.c:96 src/summaryview.c:428
 msgid "_Reply"
 msgstr "_Răspunde"
 
 # meniu care continuă cu cui se răspunde
-#: src/mainwindow.c:667 src/messageview.c:305 src/summaryview.c:428
+#: src/mainwindow.c:667 src/messageview.c:305 src/summaryview.c:429
 msgid "Repl_y to"
 msgstr "Răspun_de"
 
 # continuare de meniu la Răspunde
-#: src/mainwindow.c:670 src/messageview.c:308 src/summaryview.c:431
+#: src/mainwindow.c:670 src/messageview.c:308 src/summaryview.c:432
 msgid "Mailing _list"
 msgstr "_Listei de discuții"
 
@@ -7787,17 +7789,17 @@ msgstr "_Listei de discuții"
 msgid "Follow-up and reply to"
 msgstr "Urmărește și răspunde"
 
-#: src/mainwindow.c:674 src/messageview.c:311 src/summaryview.c:433
+#: src/mainwindow.c:674 src/messageview.c:311 src/summaryview.c:434
 #: src/toolbar.c:2490
 msgid "_Forward"
 msgstr "Î_naintează"
 
-#: src/mainwindow.c:675 src/messageview.c:312 src/summaryview.c:434
+#: src/mainwindow.c:675 src/messageview.c:312 src/summaryview.c:435
 #: src/toolbar.c:2491
 msgid "For_ward as attachment"
 msgstr "Înaintează ca fișier _atașat"
 
-#: src/mainwindow.c:676 src/messageview.c:313 src/summaryview.c:435
+#: src/mainwindow.c:676 src/messageview.c:313 src/summaryview.c:436
 #: src/toolbar.c:2492
 msgid "Redirec_t"
 msgstr "Redirecționea_ză"
@@ -7855,7 +7857,7 @@ msgstr "Șterge _firul de discuție"
 msgid "Cancel a news message"
 msgstr "Anulează un mesaj de știri"
 
-#: src/mainwindow.c:701 src/summaryview.c:436
+#: src/mainwindow.c:701 src/summaryview.c:437
 msgid "_Marks"
 msgstr "_Marcări"
 
@@ -7917,11 +7919,11 @@ msgstr "Blochează"
 msgid "Unlock"
 msgstr "Deblochează"
 
-#: src/mainwindow.c:725 src/summaryview.c:437
+#: src/mainwindow.c:725 src/summaryview.c:438
 msgid "Color la_bel"
 msgstr "Cul_oare de etichetă"
 
-#: src/mainwindow.c:726 src/summaryview.c:438
+#: src/mainwindow.c:726 src/summaryview.c:439
 msgid "Ta_gs"
 msgstr "Etic_hete"
 
@@ -7992,7 +7994,7 @@ msgstr "Pe baza _subiectului"
 msgid "By S_ender"
 msgstr "După _expeditor"
 
-#: src/mainwindow.c:755 src/messageview.c:328 src/summaryview.c:441
+#: src/mainwindow.c:755 src/messageview.c:328 src/summaryview.c:442
 msgid "Create processing rule"
 msgstr "Creea_ză o regulă de procesare"
 
@@ -8272,7 +8274,7 @@ msgstr "Descrescător"
 msgid "_Auto detect"
 msgstr "Detectare _automată"
 
-#: src/mainwindow.c:1297 src/summaryview.c:6490
+#: src/mainwindow.c:1297 src/summaryview.c:6496
 msgid "Modify tags..."
 msgstr "Modifică etichetele..."
 
@@ -8444,11 +8446,11 @@ msgstr[2] "S-au șters %d de mesaje duplicate în %d dosare.\n"
 msgid "No duplicate message found in %d folders.\n"
 msgstr "Nu s-a găsit niciun mesaj duplicat în %d dosare.\n"
 
-#: src/mainwindow.c:4915 src/messageview.c:2647
+#: src/mainwindow.c:4915 src/messageview.c:2649
 msgid "Select folder to go to"
 msgstr "Selectați dosarul pentru a merge la el"
 
-#: src/mainwindow.c:5018 src/summaryview.c:5933
+#: src/mainwindow.c:5018 src/summaryview.c:5939
 msgid "Processing rules to apply before folder rules"
 msgstr "Reguli de procesare de aplicat înaintea regulilor de dosar"
 
@@ -8459,7 +8461,7 @@ msgstr "Reguli de procesare de aplicat după regulile de dosar"
 # titlu pe bară
 # încă ceva (?)
 # hm ? pare mai corect cu filtre în loc de filtrare
-#: src/mainwindow.c:5034 src/summaryview.c:5944
+#: src/mainwindow.c:5034 src/summaryview.c:5950
 msgid "Filtering configuration"
 msgstr "Configurare filtre"
 
@@ -8626,7 +8628,7 @@ msgstr "Căutare terminată"
 msgid "Compose _new message"
 msgstr "Compune un mesaj _nou"
 
-#: src/messageview.c:717 src/messageview.c:1442 src/messageview.c:1593
+#: src/messageview.c:717 src/messageview.c:1442 src/messageview.c:1595
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Vizualizare mesaj"
 
@@ -8653,27 +8655,27 @@ msgstr "_Nu trimite"
 msgid "Fetching message (%s)..."
 msgstr "Se preia mesajul (%s)..."
 
-#: src/messageview.c:1408 src/procmime.c:984
+#: src/messageview.c:1408 src/procmime.c:985
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Nu s-a putut decripta: %s"
 
-#: src/messageview.c:1489 src/messageview.c:1497
+#: src/messageview.c:1491 src/messageview.c:1499
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Mesajul nu este în conformitate cu standardul MIME. Afișarea poate fi "
 "incorectă."
 
-#: src/messageview.c:1881
+#: src/messageview.c:1883
 #, c-format
 msgid "Show all %s."
 msgstr "Arată toate %s."
 
-#: src/messageview.c:1883
+#: src/messageview.c:1885
 msgid "Only the first megabyte of text is shown."
 msgstr "Este arătat numai primul megabait de text."
 
-#: src/messageview.c:1914
+#: src/messageview.c:1916
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
@@ -8681,25 +8683,25 @@ msgstr ""
 "Aveți o confirmare de primire pentru acest mesaj: acesta a fost afișat de "
 "către destinatar."
 
-#: src/messageview.c:1917
+#: src/messageview.c:1919
 msgid "You asked for a return receipt in this message."
 msgstr "Ați cerut o confirmare de primire în acest mesaj."
 
-#: src/messageview.c:1923
+#: src/messageview.c:1925
 msgid "This message asks for a return receipt."
 msgstr "Acest mesaj cere o confirmare de primire."
 
-#: src/messageview.c:1924
+#: src/messageview.c:1926
 msgid "Send receipt"
 msgstr "Trimite confirmarea"
 
-#: src/messageview.c:1967
+#: src/messageview.c:1969
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
 msgstr ""
 
-#: src/messageview.c:1973
+#: src/messageview.c:1975
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8708,15 +8710,15 @@ msgstr ""
 "Acest mesaj a fost preluat parțial;\n"
 "este de %s."
 
-#: src/messageview.c:1977 src/messageview.c:1999
+#: src/messageview.c:1979 src/messageview.c:2001
 msgid "Mark for download"
 msgstr "Marchează pentru descărcare"
 
-#: src/messageview.c:1978 src/messageview.c:1990
+#: src/messageview.c:1980 src/messageview.c:1992
 msgid "Mark for deletion"
 msgstr "Marchează pentru ștergere"
 
-#: src/messageview.c:1983
+#: src/messageview.c:1985
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8725,12 +8727,12 @@ msgstr ""
 "Acest mesaj a fost preluat parțial;\n"
 "este %s și va fi descărcat."
 
-#: src/messageview.c:1988 src/messageview.c:2001
+#: src/messageview.c:1990 src/messageview.c:2003
 #: src/prefs_filtering_action.c:174 src/toolbar.c:515
 msgid "Unmark"
 msgstr "Demarchează"
 
-#: src/messageview.c:1994
+#: src/messageview.c:1996
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8739,7 +8741,7 @@ msgstr ""
 "Acest mesaj a fost preluat parțial;\n"
 "este %s și va fi șters."
 
-#: src/messageview.c:2071
+#: src/messageview.c:2073
 #, c-format
 msgctxt "'%s' stands for 'To' then 'Cc'"
 msgid ""
@@ -8749,15 +8751,15 @@ msgid ""
 "It is advised to not send the return receipt."
 msgstr ""
 
-#: src/messageview.c:2079 src/messageview.c:2086
+#: src/messageview.c:2081 src/messageview.c:2088
 msgid "Return Receipt Notification"
 msgstr "Notificare de confirmare de primire"
 
-#: src/messageview.c:2080 src/messageview.c:2091
+#: src/messageview.c:2082 src/messageview.c:2093
 msgid "_Send Notification"
 msgstr "Trimite o _notificare"
 
-#: src/messageview.c:2087
+#: src/messageview.c:2089
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8765,11 +8767,11 @@ msgid ""
 "notification:"
 msgstr ""
 
-#: src/messageview.c:2183 src/messageview.c:2202
+#: src/messageview.c:2185 src/messageview.c:2204
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Nu se poate tipări: mesajul nu conține text."
 
-#: src/messageview.c:2958
+#: src/messageview.c:2960
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8777,7 +8779,7 @@ msgstr ""
 "\n"
 "  Nu sunt mesaje în acest dosar"
 
-#: src/messageview.c:2966
+#: src/messageview.c:2968
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8785,7 +8787,7 @@ msgstr ""
 "\n"
 "  Mesajul a fost șters"
 
-#: src/messageview.c:2967
+#: src/messageview.c:2969
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8793,8 +8795,8 @@ msgstr ""
 "\n"
 "  Mesjul a fost șters sau mutat în alt dosar"
 
-#: src/messageview.c:2999 src/messageview.c:3005 src/summaryview.c:4405
-#: src/summaryview.c:7295
+#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4411
+#: src/summaryview.c:7301
 msgid "An error happened while learning.\n"
 msgstr "A apărut o eroare în timpul învățării.\n"
 
@@ -8979,18 +8981,18 @@ msgstr[0] "%s, %d fișier a eșuat."
 msgstr[1] "%s, %d fișiere au eșuat."
 msgstr[2] "%s, %d de fișiere au eșuat."
 
-#: src/mimeview.c:1923 src/plugins/archive/archiver_prefs.c:141
+#: src/mimeview.c:1923 src/plugins/archive/archiver_prefs.c:144
 #: src/prefs_filtering_action.c:1263
 msgid "Select destination folder"
 msgstr "Selectați dosarul de destinație"
 
-#: src/mimeview.c:1930 src/plugins/archive/archiver_prefs.c:147
+#: src/mimeview.c:1930 src/plugins/archive/archiver_prefs.c:150
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "„%s” nu este un director."
 
 #: src/mimeview.c:2052 src/plugins/fancy/fancy_viewer.c:815
-#: src/summaryview.c:5018
+#: src/summaryview.c:5024
 msgid "Save as"
 msgstr "Salvare ca"
 
@@ -9043,13 +9045,13 @@ msgid "Type:"
 msgstr "Tip:"
 
 #: src/mimeview.c:2602 src/plugins/pdf_viewer/poppler_viewer.c:706
-#: src/summaryview.c:2784
+#: src/summaryview.c:2785
 msgid "Size:"
 msgstr "Mărime:"
 
 #: src/mimeview.c:2616 src/plugins/vcalendar/vcalendar.c:1248
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1623
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1633
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1634
 msgid "Description:"
 msgstr "Descriere:"
 
@@ -9059,8 +9061,8 @@ msgid "NNTP connection to %s:%d has been disconnected.\n"
 msgstr "Conexiunea NNTP la %s:%d a fost deconectată.\n"
 
 #: src/news.c:333
-#, c-format
-msgid "Account '%s': Connecting to NNTP server: %s:%d...\n"
+#, fuzzy, c-format
+msgid "Account '%s': connecting to NNTP server: %s:%d...\n"
 msgstr "Contul „%s”: Se conectează la serverul NNTP: %s:%d...\n"
 
 #: src/news.c:370
@@ -9221,17 +9223,17 @@ msgstr "OAuth2: încercare de token de acces proaspăt cu cod de autorizare\n"
 msgid "OAuth2 access and refresh token updated\n"
 msgstr "OAuth2: token-ul de acces și de reîmprospătare a fost actualizat\n"
 
-#: src/oauth2.c:720
+#: src/oauth2.c:723
 #, c-format
 msgid "OAuth2 original: %s\n"
 msgstr "OAuth2 original: %s\n"
 
-#: src/oauth2.c:721
+#: src/oauth2.c:724
 #, c-format
 msgid "OAuth2 encoded: %s\n"
 msgstr "OAuth2 codat: %s\n"
 
-#: src/oauth2.c:722
+#: src/oauth2.c:725
 #, c-format
 msgid ""
 "OAuth2 decoded: %s\n"
@@ -9443,7 +9445,7 @@ msgstr ""
 "Exclude adresele care se potrivesc cu următoarele expresii regulate (câte "
 "una per linie)"
 
-#: src/plugins/archive/archiver.c:45 src/plugins/archive/archiver_prefs.c:106
+#: src/plugins/archive/archiver.c:45 src/plugins/archive/archiver_prefs.c:109
 msgid "Mail Archiver"
 msgstr "Arhivator de mesaje"
 
@@ -9452,7 +9454,7 @@ msgid "Create Archive..."
 msgstr "Se creează arhiva..."
 
 #: src/plugins/archive/archiver.c:123
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin adds archiving features to Claws Mail.\n"
 "\n"
@@ -9470,10 +9472,10 @@ msgid ""
 "\n"
 "The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
 "\n"
-"To activate the archiving feature go to /Tools/Create Archive\n"
+"To activate the archiving feature go to '/Tools/Create Archive'.\n"
 "\n"
-"Default options can be set in /Configuration/Preferences/Plugins/Mail "
-"Archiver"
+"Default options can be set in '/Configuration/Preferences/Plugins/Mail "
+"Archiver'."
 msgstr ""
 "Acest plugin adaugă caracteristici de arhivare la Claws Mail.\n"
 "\n"
@@ -9496,7 +9498,7 @@ msgstr ""
 "Opțiunile implicite pot fi stabilite în /Configurare/Preferințe.../Plugin-"
 "uri.../Mail Archiver"
 
-#: src/plugins/archive/archiver.c:170
+#: src/plugins/archive/archiver.c:173
 msgid "Archiver"
 msgstr "Arhivator"
 
@@ -9512,7 +9514,7 @@ msgstr "Apăsați butonul Anulează pentru a opri arhivarea"
 msgid "Archiving:"
 msgstr "Arhivare:"
 
-#: src/plugins/archive/archiver_gtk.c:527
+#: src/plugins/archive/archiver_gtk.c:533
 #, c-format
 msgid ""
 "Some uninitialized data prevents from starting\n"
@@ -9523,52 +9525,52 @@ msgstr ""
 "procesului de arhivare:\n"
 "%s%s"
 
-#: src/plugins/archive/archiver_gtk.c:530
+#: src/plugins/archive/archiver_gtk.c:536
 msgid ""
 "\n"
 "- the folder to archive is not set"
 msgstr ""
 
-#: src/plugins/archive/archiver_gtk.c:531
+#: src/plugins/archive/archiver_gtk.c:537
 msgid ""
 "\n"
 "- the name for archive is not set"
 msgstr ""
 
-#: src/plugins/archive/archiver_gtk.c:554
-#, c-format
-msgid "%s: Exists. Continue anyway?"
+#: src/plugins/archive/archiver_gtk.c:560
+#, fuzzy, c-format
+msgid "%s: exists. Continue anyway?"
 msgstr "%s: există. Continuați oricum?"
 
 # punct la sfârșit în mod deliberat
-#: src/plugins/archive/archiver_gtk.c:557
-#, c-format
-msgid "%s: Is a link. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:563
+#, fuzzy, c-format
+msgid "%s: is a link. Cannot continue"
 msgstr "%s: este un link. Nu se poate continua."
 
 # punct la sfârșit în mod deliberat
-#: src/plugins/archive/archiver_gtk.c:560
-#, c-format
-msgid "%s: Is a directory. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:566
+#, fuzzy, c-format
+msgid "%s: is a directory. Cannot continue"
 msgstr "%s: este un director. Nu se poate continua."
 
-#: src/plugins/archive/archiver_gtk.c:563
-#, c-format
-msgid "%s: Missing permissions. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:569
+#, fuzzy, c-format
+msgid "%s: missing permissions. Cannot continue"
 msgstr "%s: lipsă permisiuni. Nu se poate continua."
 
 # punct la sfârșit în mod deliberat
-#: src/plugins/archive/archiver_gtk.c:566
-#, c-format
-msgid "%s: Unknown error. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:572
+#, fuzzy, c-format
+msgid "%s: unknown error. Cannot continue"
 msgstr "%s: eroare necunoscută. Nu se poate continua."
 
-#: src/plugins/archive/archiver_gtk.c:574
-#: src/plugins/archive/archiver_gtk.c:621
+#: src/plugins/archive/archiver_gtk.c:580
+#: src/plugins/archive/archiver_gtk.c:627
 msgid "Creating archive"
 msgstr "Creare arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:587
+#: src/plugins/archive/archiver_gtk.c:593
 #, c-format
 msgid ""
 "Not a valid file name:\n"
@@ -9577,7 +9579,7 @@ msgstr ""
 "Nu este un nume de fișier valid:\n"
 "%s."
 
-#: src/plugins/archive/archiver_gtk.c:592
+#: src/plugins/archive/archiver_gtk.c:598
 #, c-format
 msgid ""
 "Not a valid Claws Mail folder:\n"
@@ -9586,7 +9588,7 @@ msgstr ""
 "Nu este un dosar Claws Mail valid:\n"
 "%s."
 
-#: src/plugins/archive/archiver_gtk.c:616
+#: src/plugins/archive/archiver_gtk.c:622
 #, c-format
 msgid ""
 "Adding files in folder failed\n"
@@ -9601,7 +9603,7 @@ msgstr ""
 "\n"
 "Continuați oricum?"
 
-#: src/plugins/archive/archiver_gtk.c:633
+#: src/plugins/archive/archiver_gtk.c:639
 #, c-format
 msgid ""
 "Archive creation error:\n"
@@ -9610,177 +9612,174 @@ msgstr ""
 "Eroare de creare a arhivei:\n"
 "%s"
 
-#: src/plugins/archive/archiver_gtk.c:746
+#: src/plugins/archive/archiver_gtk.c:757
 msgid "Archive result"
 msgstr "Rezultat arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:776
+#: src/plugins/archive/archiver_gtk.c:787
 msgid "Values"
 msgstr "Valori"
 
-#: src/plugins/archive/archiver_gtk.c:786
+#: src/plugins/archive/archiver_gtk.c:797
 msgid "Archive"
 msgstr "Arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:792
+#: src/plugins/archive/archiver_gtk.c:803
 msgid "Archive format"
 msgstr "Format de arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:799
+#: src/plugins/archive/archiver_gtk.c:810
 msgid "Compression method"
 msgstr "Metodă de compresie"
 
-#: src/plugins/archive/archiver_gtk.c:807
+#: src/plugins/archive/archiver_gtk.c:818
 msgid "Number of files"
 msgstr "Număr de fișiere"
 
-#: src/plugins/archive/archiver_gtk.c:815
+#: src/plugins/archive/archiver_gtk.c:826
 msgid "Archive Size"
 msgstr "Mărime arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:823
+#: src/plugins/archive/archiver_gtk.c:834
 msgid "Folder Size"
 msgstr "Mărime dosar"
 
-#: src/plugins/archive/archiver_gtk.c:832
+#: src/plugins/archive/archiver_gtk.c:843
 msgid "Compression level"
 msgstr "Nivel de compresie"
 
-#: src/plugins/archive/archiver_gtk.c:837
-#: src/plugins/archive/archiver_gtk.c:845
-#: src/plugins/archive/archiver_gtk.c:853
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:725 src/prefs_folder_item.c:533
 #: src/prefs_folder_item.c:1241 src/prefs_folder_item.c:1272
 msgid "Yes"
 msgstr "Da"
 
-#: src/plugins/archive/archiver_gtk.c:837
-#: src/plugins/archive/archiver_gtk.c:845
-#: src/plugins/archive/archiver_gtk.c:853
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:728 src/prefs_folder_item.c:532
 #: src/prefs_folder_item.c:1240 src/prefs_folder_item.c:1271
 #: src/prefs_summaries.c:447
 msgid "No"
 msgstr "Nu"
 
-#: src/plugins/archive/archiver_gtk.c:840
+#: src/plugins/archive/archiver_gtk.c:851
 msgid "MD5 checksum"
 msgstr "Sumă de control MD5"
 
-#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:859
 msgid "Descriptive names"
 msgstr "Nume descriptive"
 
-#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:867
 msgid "Delete selected files"
 msgstr "Șterge fișierele selectate"
 
-#: src/plugins/archive/archiver_gtk.c:865
-#: src/plugins/archive/archiver_gtk.c:1326
+#: src/plugins/archive/archiver_gtk.c:876
+#: src/plugins/archive/archiver_gtk.c:1347
 msgid "Select mails before"
 msgstr "Selectați corespondența înainte"
 
-#: src/plugins/archive/archiver_gtk.c:921
+#: src/plugins/archive/archiver_gtk.c:932
 msgid "Select folder to archive"
 msgstr "Selectați dosarul de arhivare"
 
-#: src/plugins/archive/archiver_gtk.c:941
+#: src/plugins/archive/archiver_gtk.c:952
 msgid "Select file name for archive [suffix should reflect archive like .tgz]"
 msgstr "Selectați numele de fișier pentru arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:986
+#: src/plugins/archive/archiver_gtk.c:997
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld din %ld"
 
-#: src/plugins/archive/archiver_gtk.c:1039
+#: src/plugins/archive/archiver_gtk.c:1053
 msgid "Create Archive"
 msgstr "Creează arhiva"
 
-#: src/plugins/archive/archiver_gtk.c:1054
-msgid "Enter Archiver arguments"
-msgstr "Introduceți argumentele de arhivă"
-
-#: src/plugins/archive/archiver_gtk.c:1068
+#: src/plugins/archive/archiver_gtk.c:1076
 msgid "Folder to archive"
 msgstr "Dosar de arhivare"
 
-#: src/plugins/archive/archiver_gtk.c:1075
+#: src/plugins/archive/archiver_gtk.c:1083
 msgid "Folder which is the root of the archive"
 msgstr "Dosarul care este rădăcina arhivei"
 
-#: src/plugins/archive/archiver_gtk.c:1080
+#: src/plugins/archive/archiver_gtk.c:1088
 msgid "Click this button to select a folder which is to be root of the archive"
 msgstr ""
 "Clic pe acest buton pentru a selecta dosarul care să fie rădăcina arhivei"
 
-#: src/plugins/archive/archiver_gtk.c:1086
+#: src/plugins/archive/archiver_gtk.c:1094
 msgid "Name for archive"
 msgstr "Nume pentru arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:1092
+#: src/plugins/archive/archiver_gtk.c:1100
 msgid "Archive location and name"
 msgstr "Amplasarea și numele arhivei"
 
-#: src/plugins/archive/archiver_gtk.c:1094
-#: src/plugins/archive/archiver_prefs.c:224
+#: src/plugins/archive/archiver_gtk.c:1102
+#: src/plugins/archive/archiver_prefs.c:230
 #: src/plugins/pgpcore/select-keys.c:496
 msgid "_Select"
 msgstr "_Selectează"
 
-#: src/plugins/archive/archiver_gtk.c:1097
+#: src/plugins/archive/archiver_gtk.c:1105
 msgid "Click this button to select a name and location for the archive"
 msgstr "Clic acest buton pentru a selecta numele și amplasarea pentru fișier"
 
-#: src/plugins/archive/archiver_gtk.c:1099
+#: src/plugins/archive/archiver_gtk.c:1107
 msgid "Choose compression"
 msgstr "Alegeți compresia"
 
-#: src/plugins/archive/archiver_gtk.c:1111
-#: src/plugins/archive/archiver_gtk.c:1117
-#: src/plugins/archive/archiver_gtk.c:1123
-#: src/plugins/archive/archiver_gtk.c:1130
-#: src/plugins/archive/archiver_gtk.c:1136
+#: src/plugins/archive/archiver_gtk.c:1119
+#: src/plugins/archive/archiver_gtk.c:1125
+#: src/plugins/archive/archiver_gtk.c:1131
+#: src/plugins/archive/archiver_gtk.c:1138
 #: src/plugins/archive/archiver_gtk.c:1144
 #: src/plugins/archive/archiver_gtk.c:1152
-#: src/plugins/archive/archiver_gtk.c:1158
-#: src/plugins/archive/archiver_gtk.c:1164
+#: src/plugins/archive/archiver_gtk.c:1160
+#: src/plugins/archive/archiver_gtk.c:1166
 #: src/plugins/archive/archiver_gtk.c:1172
-#: src/plugins/archive/archiver_gtk.c:1179
+#: src/plugins/archive/archiver_gtk.c:1180
+#: src/plugins/archive/archiver_gtk.c:1188
+#: src/plugins/archive/archiver_gtk.c:1195
 #, c-format
 msgid "Choose this option to use %s compression for the archive"
 msgstr "Alegeți această opțiune pentru a folosi compresia %s pentru arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:1228
+#: src/plugins/archive/archiver_gtk.c:1249
 msgid "Choose format"
 msgstr "Alegeți formatul"
 
-#: src/plugins/archive/archiver_gtk.c:1240
-#: src/plugins/archive/archiver_gtk.c:1246
-#: src/plugins/archive/archiver_gtk.c:1252
-#: src/plugins/archive/archiver_gtk.c:1258
+#: src/plugins/archive/archiver_gtk.c:1261
+#: src/plugins/archive/archiver_gtk.c:1267
+#: src/plugins/archive/archiver_gtk.c:1273
+#: src/plugins/archive/archiver_gtk.c:1279
 #, c-format
 msgid "Choose this to use %s as format for the archive"
 msgstr "Alegeți această opțiune pentru a folosi %s ca format pentru arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:1278
+#: src/plugins/archive/archiver_gtk.c:1299
 msgid "Miscellaneous options"
 msgstr "Opțiuni diverse"
 
-#: src/plugins/archive/archiver_gtk.c:1287
+#: src/plugins/archive/archiver_gtk.c:1308
 msgid "_Recursive"
 msgstr "_Recursiv"
 
-#: src/plugins/archive/archiver_gtk.c:1291
+#: src/plugins/archive/archiver_gtk.c:1312
 msgid "Choose this option to include subfolders in the archive"
 msgstr "Alegeți această opțiune pentru a include subdosarele în arhivă"
 
-#: src/plugins/archive/archiver_gtk.c:1293
+#: src/plugins/archive/archiver_gtk.c:1314
 msgid "_MD5sum"
 msgstr "Sumă de control _MD5"
 
 # punct la sfârșit în mod deliberat
-#: src/plugins/archive/archiver_gtk.c:1297
+#: src/plugins/archive/archiver_gtk.c:1318
 msgid ""
 "Choose this option to add MD5 checksums for each file in the archive.\n"
 "Be aware though, that this dramatically increases the time it\n"
@@ -9791,13 +9790,13 @@ msgstr ""
 "Aveți grijă, totuși, că acest lucru va crește timpul de creare a arhivei\n"
 "în mod dramatic."
 
-#: src/plugins/archive/archiver_gtk.c:1301
+#: src/plugins/archive/archiver_gtk.c:1322
 msgid "R_ename"
 msgstr "R_edenumește"
 
 # punct la sfârșit în mod deliberat
-#: src/plugins/archive/archiver_gtk.c:1305
-#: src/plugins/archive/archiver_prefs.c:426
+#: src/plugins/archive/archiver_gtk.c:1326
+#: src/plugins/archive/archiver_prefs.c:445
 msgid ""
 "Choose this option to use descriptive names for each file in the archive.\n"
 "The naming scheme: date_from@to@subject.\n"
@@ -9808,7 +9807,7 @@ msgstr ""
 "Schema de denumire: dată_dela@la@subiect.\n"
 "Numele vor fi trunchiate la maximum 96 de caractere."
 
-#: src/plugins/archive/archiver_gtk.c:1313
+#: src/plugins/archive/archiver_gtk.c:1334
 msgid ""
 "Choose this option to delete mails after archiving\n"
 "At this point only handles IMAP4, Local mbox and POP3"
@@ -9817,11 +9816,11 @@ msgstr ""
 "arhivare\n"
 "În prezent tratează numai IMAP4, mbox local și POP3"
 
-#: src/plugins/archive/archiver_gtk.c:1317
+#: src/plugins/archive/archiver_gtk.c:1338
 msgid "Selection options"
 msgstr "Opțiuni de selecție"
 
-#: src/plugins/archive/archiver_gtk.c:1333
+#: src/plugins/archive/archiver_gtk.c:1354
 msgid ""
 "Select emails before a certain date\n"
 "Date must comply to ISO-8601 [YYYY-MM-DD]"
@@ -9829,61 +9828,62 @@ msgstr ""
 "Selectați e-mailuri înainte de o dată anume\n"
 "Data trebuie să fie conformă cu ISO-8601 [AAAA-LL-ZZ]"
 
-#: src/plugins/archive/archiver_prefs.c:216
+#: src/plugins/archive/archiver_prefs.c:222
 msgid "Default save folder"
 msgstr "Dosar de salvare implicit"
 
-#: src/plugins/archive/archiver_prefs.c:228
+#: src/plugins/archive/archiver_prefs.c:234
 msgid "Click this button to select the default location for saving archives"
 msgstr ""
 "Clic pe acest buton pentru a selecta locația implicită pentru salvarea "
 "arhivelor"
 
-#: src/plugins/archive/archiver_prefs.c:237
+#: src/plugins/archive/archiver_prefs.c:243
 msgid "Default compression"
 msgstr "Compresie implicită"
 
-#: src/plugins/archive/archiver_prefs.c:248
 #: src/plugins/archive/archiver_prefs.c:254
 #: src/plugins/archive/archiver_prefs.c:260
-#: src/plugins/archive/archiver_prefs.c:267
+#: src/plugins/archive/archiver_prefs.c:266
 #: src/plugins/archive/archiver_prefs.c:273
-#: src/plugins/archive/archiver_prefs.c:281
-#: src/plugins/archive/archiver_prefs.c:289
+#: src/plugins/archive/archiver_prefs.c:279
+#: src/plugins/archive/archiver_prefs.c:287
 #: src/plugins/archive/archiver_prefs.c:295
 #: src/plugins/archive/archiver_prefs.c:301
-#: src/plugins/archive/archiver_prefs.c:309
-#: src/plugins/archive/archiver_prefs.c:316
+#: src/plugins/archive/archiver_prefs.c:307
+#: src/plugins/archive/archiver_prefs.c:315
+#: src/plugins/archive/archiver_prefs.c:323
+#: src/plugins/archive/archiver_prefs.c:330
 #, c-format
 msgid "Choose this option to use %s compression by default"
 msgstr "Alegeți această opțiune pentru a utiliza în mod implicit compresia %s"
 
-#: src/plugins/archive/archiver_prefs.c:362
+#: src/plugins/archive/archiver_prefs.c:381
 msgid "Default format"
 msgstr "Format implicit"
 
-#: src/plugins/archive/archiver_prefs.c:373
-#: src/plugins/archive/archiver_prefs.c:379
-#: src/plugins/archive/archiver_prefs.c:385
-#: src/plugins/archive/archiver_prefs.c:391
+#: src/plugins/archive/archiver_prefs.c:392
+#: src/plugins/archive/archiver_prefs.c:398
+#: src/plugins/archive/archiver_prefs.c:404
+#: src/plugins/archive/archiver_prefs.c:410
 #, c-format
 msgid "Choose this option to use the %s as format by default"
 msgstr "Alegeți această opțiune pentru a utiliza în mod implicit %s ca format"
 
-#: src/plugins/archive/archiver_prefs.c:408
+#: src/plugins/archive/archiver_prefs.c:427
 msgid "Default miscellaneous options"
 msgstr "Opțiuni diverse implicite"
 
-#: src/plugins/archive/archiver_prefs.c:417
+#: src/plugins/archive/archiver_prefs.c:436
 msgid "Choose this option to include subfolders in the archives by default"
 msgstr ""
 "Alegeți această opțiune pentru a include în mod implicit subdosare în arhive"
 
-#: src/plugins/archive/archiver_prefs.c:418
+#: src/plugins/archive/archiver_prefs.c:437
 msgid "MD5sum"
 msgstr "Sumă de control MD5"
 
-#: src/plugins/archive/archiver_prefs.c:420
+#: src/plugins/archive/archiver_prefs.c:439
 msgid ""
 "Choose this option to add MD5 checksums for each file in the archives by "
 "default.\n"
@@ -9895,11 +9895,11 @@ msgstr ""
 "Rețineți însă că acest lucru crește în mod dramatic timpul necesar\n"
 "pentru crearea arhivelor"
 
-#: src/plugins/archive/archiver_prefs.c:424
+#: src/plugins/archive/archiver_prefs.c:443
 msgid "Rename"
 msgstr "Redenumește"
 
-#: src/plugins/archive/archiver_prefs.c:432
+#: src/plugins/archive/archiver_prefs.c:451
 msgid "Choose this option to delete mails after archiving"
 msgstr "Alegeți această opțiune pentru a șterge e-mailurile după arhivare"
 
@@ -9917,7 +9917,7 @@ msgid "Remove"
 msgstr "Elimină"
 
 #: src/plugins/att_remover/att_remover.c:367 src/prefs_summaries.c:710
-#: src/prefs_summary_column.c:79 src/summaryview.c:2878
+#: src/prefs_summary_column.c:79 src/summaryview.c:2879
 msgid "Attachment"
 msgstr "Fișier atașat"
 
@@ -10115,8 +10115,8 @@ msgstr "Bogofilter: filtrare mesaje..."
 msgid ""
 "The Bogofilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
-"Use \"/Marks/Mark as spam\" and \"/Marks/Mark as ham\" to train Bogofilter "
-"with a few hundred spam and ham messages."
+"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bogofilter with "
+"a few hundred spam and ham messages."
 msgstr ""
 
 #: src/plugins/bogofilter/bogofilter.c:595
@@ -10152,27 +10152,38 @@ msgstr ""
 "%s"
 
 #: src/plugins/bogofilter/bogofilter.c:987
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bogofilter. You will need Bogofilter installed "
 "locally.\n"
 "\n"
 "Before Bogofilter can recognize spam messages, you have to train it by "
-"marking a few hundred spam and ham messages with the use of \"/Marks/Mark as "
-"spam\" and \"/Marks/Mark as ham\".\n"
+"marking a few hundred spam and ham messages with the use of '/Marks/Mark as "
+"spam' and '/Marks/Mark as ham'.\n"
 "\n"
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Bogofilter"
+"Options can be found in '/Configuration/Preferences/Plugins/Bogofilter'."
 msgstr ""
+"Acest plugin poate verifica toate mesajele primite de la un cont IMAP, LOCAL "
+"sau POP pentru spam, folosind un server SpamAssassin. Necesită un server "
+"SpamAssassin (spamd) care rulează undeva.\n"
+"\n"
+"Poate fi folosit și pentru marcarea mesajelor ca Ham sau Spam.\n"
+"\n"
+"Atunci când un mesaj este identificat ca spam, acesta poate fi șters sau "
+"salvat într-un dosar special desemnat.\n"
+"\n"
+"Opțiunile pot fi găsite în /Configurare/Preferințe/Pluginuri/SpamAssassin"
 
-#: src/plugins/bogofilter/bogofilter.c:1020 src/plugins/bsfilter/bsfilter.c:651
+#: src/plugins/bogofilter/bogofilter.c:1019 src/plugins/bsfilter/bsfilter.c:651
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Detectare de spam"
 
-#: src/plugins/bogofilter/bogofilter.c:1021 src/plugins/bsfilter/bsfilter.c:652
+#: src/plugins/bogofilter/bogofilter.c:1020 src/plugins/bsfilter/bsfilter.c:652
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Învățare de spam"
@@ -10312,8 +10323,8 @@ msgstr ""
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
-"Use \"/Marks/Mark as spam\" and \"/Marks/Mark as ham\" to train Bsfilter "
-"with a few hundred spam and ham messages."
+"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bsfilter with a "
+"few hundred spam and ham messages."
 msgstr ""
 
 #: src/plugins/bsfilter/bsfilter.c:375
@@ -10328,20 +10339,31 @@ msgid "Bsfilter: learning from message..."
 msgstr ""
 
 #: src/plugins/bsfilter/bsfilter.c:618
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bsfilter. You will need Bsfilter installed "
 "locally.\n"
 "\n"
 "Before Bsfilter can recognize spam messages, you have to train it by marking "
-"a few hundred spam and ham messages with the use of \"/Marks/Mark as spam\" "
-"and \"/Marks/Mark as ham\".\n"
+"a few hundred spam and ham messages with the use of '/Marks/Mark as spam' "
+"and '/Marks/Mark as ham'.\n"
 "\n"
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+"Options can be found in '/Configuration/Preferences/Plugins/Bsfilter'."
 msgstr ""
+"Acest plugin poate verifica toate mesajele primite de la un cont IMAP, LOCAL "
+"sau POP pentru spam, folosind un server SpamAssassin. Necesită un server "
+"SpamAssassin (spamd) care rulează undeva.\n"
+"\n"
+"Poate fi folosit și pentru marcarea mesajelor ca Ham sau Spam.\n"
+"\n"
+"Atunci când un mesaj este identificat ca spam, acesta poate fi șters sau "
+"salvat într-un dosar special desemnat.\n"
+"\n"
+"Opțiunile pot fi găsite în /Configurare/Preferințe/Pluginuri/SpamAssassin"
 
 #: src/plugins/bsfilter/bsfilter_gtk.c:170
 #: src/plugins/spamassassin/spamassassin_gtk.c:419
@@ -10428,19 +10450,16 @@ msgid ""
 "When a message attachment is found to contain a virus it can be deleted or "
 "saved in a specially designated folder.\n"
 "\n"
-"Because this plugin communicates with clamd via a\n"
-"socket then there are some minimum requirements to\n"
-"the permissions for your home folder and the\n"
-".claws-mail folder provided the clamav-daemon is\n"
-"configured to communicate via a unix socket. All\n"
-"users at least need to be given execute permissions\n"
-"on these folders.\n"
+"Because this plugin communicates with clamd via a socket then there are some "
+"minimum requirements to the permissions for your home folder and the .claws-"
+"mail folder provided the clamav-daemon is configured to communicate via a "
+"unix socket. All users at least need to be given execute permissions on "
+"these folders.\n"
 "\n"
-"To avoid changing permissions you could configure\n"
-"the clamav-daemon to communicate via a TCP socket\n"
-"and choose manual configuration for clamd.\n"
+"To avoid changing permissions you could configure the clamav-daemon to "
+"communicate via a TCP socket and choose manual configuration for clamd.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Clam AntiVirus"
+"Options can be found in '/Configuration/Preferences/Plugins/Clam AntiVirus'."
 msgstr ""
 
 #: src/plugins/clamd/clamav_plugin.c:375
@@ -10551,14 +10570,14 @@ msgstr ""
 #: src/plugins/clamd/libclamd/clamd-plugin.c:121
 #, c-format
 msgid ""
-"%s: Unable to open\n"
+"%s: unable to open\n"
 "clamd will be disabled"
 msgstr ""
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:210
 #, c-format
 msgid ""
-"%s: Not able to find required information\n"
+"%s: not able to find required information\n"
 "clamd will be disabled"
 msgstr ""
 
@@ -10567,11 +10586,13 @@ msgid "Could not create socket"
 msgstr "Nu s-a putut crea un socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:435
-msgid ": File does not exist"
+#, fuzzy
+msgid ": file does not exist"
 msgstr ": fișierul nu există"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:448
-msgid ": Unable to open"
+#, fuzzy
+msgid ": unable to open"
 msgstr ": nu se poate deschide"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:467
@@ -10581,8 +10602,8 @@ msgid "Socket write error"
 msgstr "Eroare de scriere socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:479
-#, c-format
-msgid "%s: Error reading"
+#, fuzzy, c-format
+msgid "%s: error reading"
 msgstr "%s: eroare la citire"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:493
@@ -10685,7 +10706,7 @@ msgstr "CSS-ul din acest fișier va fi aplicat asupra tuturor părților HTML"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 #: src/plugins/notification/notification_prefs.c:1374
-#: src/plugins/pgpcore/prefs_gpg.c:208 src/plugins/rssyl/rssyl_prefs.c:182
+#: src/plugins/pgpcore/prefs_gpg.c:208 src/plugins/rssyl/rssyl_prefs.c:222
 #: src/prefs_account.c:1620 src/prefs_account.c:1742 src/prefs_account.c:2540
 #: src/prefs_customheader.c:227
 msgid "Bro_wse"
@@ -10781,11 +10802,13 @@ msgid "Fancy HTML Viewer"
 msgstr "Fancy - Vizualizator HTML"
 
 #: src/plugins/fancy/fancy_viewer.c:1297
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
-"By default all remote content is blocked. Options can be found in /"
-"Configuration/Preferences/Plugins/Fancy"
+"\n"
+"By default all remote content is blocked.\n"
+"\n"
+"Options can be found in '/Configuration/Preferences/Plugins/Fancy'."
 msgstr ""
 "Acest plugin randează mesajele HTML folosind biblioteca WebKit %d.%d.%d.\n"
 "\n"
@@ -10813,7 +10836,7 @@ msgid ""
 "some download information: UIDL, Claws Mail account name, POP server, user "
 "ID and retrieval time.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Fetchinfo"
+"Options can be found in '/Configuration/Preferences/Plugins/Fetchinfo'."
 msgstr ""
 
 #. TRANSLATORS: Description of functionality added by this plugin
@@ -10928,18 +10951,19 @@ msgstr ""
 
 #: src/plugins/libravatar/libravatar.c:409
 msgid ""
-"Display libravatar profiles' images for mail messages. More\n"
-"info about libravatar at http://www.libravatar.org/. If you have\n"
-"a gravatar.com profile but not a libravatar one, those will also\n"
-"be retrieved (when redirections are allowed in plugin config).\n"
+"Display libravatar profiles' images for mail messages. More info about "
+"libravatar at http://www.libravatar.org/. If you have a gravatar.com profile "
+"but not a libravatar one, those will also be retrieved (when redirections "
+"are allowed in plugin config).\n"
+"\n"
 "Plugin config page is available from main window at:\n"
-"/Configuration/Preferences/Plugins/Libravatar.\n"
+"'/Configuration/Preferences/Plugins/Libravatar'.\n"
 "\n"
-"This plugin uses libcurl to retrieve images, so if you're behind a\n"
-"proxy please refer to curl(1) manpage for details on 'http_proxy'\n"
-"configuration. More details about this and others on README file.\n"
+"This plugin uses libcurl to retrieve images, so if you're behind a proxy "
+"please refer to curl(1) manpage for details on 'http_proxy' configuration. "
+"More details about this and others on README file.\n"
 "\n"
-"Feedback to <ricardo@mones.org> is welcome.\n"
+"Feedback to <ricardo@mones.org> is welcome."
 msgstr ""
 
 #: src/plugins/libravatar/libravatar_prefs.c:146
@@ -11164,12 +11188,19 @@ msgid "LiteHTML viewer"
 msgstr ""
 
 #: src/plugins/litehtml_viewer/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin renders HTML mail using the litehtml library (http://www."
 "litehtml.com/).\n"
-"By default all remote content is blocked. Options can be found in /"
-"Configuration/Preferences/Plugins/LiteHTML"
+"\n"
+"By default all remote content is blocked.\n"
+"\n"
+"Options can be found in '/Configuration/Preferences/Plugins/LiteHTML'."
 msgstr ""
+"Acest plugin randează mesajele HTML folosind biblioteca WebKit %d.%d.%d.\n"
+"\n"
+"În mod implicit, tot conținutul la distanță este blocat. Opțiunile pot fi "
+"găsite în /Configurare/Preferințe.../Plugin-uri/Fancy"
 
 #: src/plugins/mailmbox/plugin.c:57
 msgid "mailmbox folder"
@@ -11252,7 +11283,7 @@ msgstr ""
 msgid "sending error on Sieve session: %s\n"
 msgstr ""
 
-#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5825
+#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5831
 msgid "_Filter"
 msgstr "_Filtrează"
 
@@ -11429,7 +11460,7 @@ msgid "Authentication"
 msgstr "Autentificare"
 
 #: src/plugins/managesieve/sieve_prefs.c:202
-#: src/plugins/rssyl/rssyl_feed_props.c:263
+#: src/plugins/rssyl/rssyl_feed_props.c:281
 msgid "No authentication"
 msgstr "Fără autentificare"
 
@@ -11449,7 +11480,7 @@ msgid "User ID"
 msgstr "ID utilizator"
 
 #: src/plugins/managesieve/sieve_prefs.c:246
-#: src/plugins/rssyl/rssyl_feed_props.c:378
+#: src/plugins/rssyl/rssyl_feed_props.c:407
 #: src/plugins/vcalendar/vcal_prefs.c:400
 #: src/plugins/vcalendar/vcal_prefs.c:519 src/prefs_account.c:1469
 #: src/prefs_account.c:2122 src/prefs_account.c:3063 src/prefs_account.c:3091
@@ -11499,9 +11530,9 @@ msgid ""
 "This plugin writes a header summary to a log file for each mail received "
 "after sorting.\n"
 "\n"
-"Default is ~/Mail/NewLog\n"
+"Default is '~/Mail/NewLog'.\n"
 "\n"
-"Current log is %s"
+"Current log is '%s'."
 msgstr ""
 
 #: src/plugins/newmail/newmail.c:176
@@ -11523,11 +11554,11 @@ msgid "Folder:"
 msgstr "Dosar:"
 
 # titlu pe bară
-#: src/plugins/notification/notification_foldercheck.c:478
+#: src/plugins/notification/notification_foldercheck.c:477
 msgid "Select folder(s)"
 msgstr "Selectare dosare"
 
-#: src/plugins/notification/notification_foldercheck.c:578
+#: src/plugins/notification/notification_foldercheck.c:577
 msgid "select recursively"
 msgstr "selectare recursivă"
 
@@ -11584,9 +11615,11 @@ msgstr ""
 
 # hm ? în practică parcă dă mai bine cu o linie goală separatoare
 #: src/plugins/notification/notification_plugin.c:430
+#, fuzzy
 msgid ""
 "This plugin provides various ways to notify the user of new and unread "
 "email.\n"
+"\n"
 "The plugin is extensively configurable in the plugins section of the "
 "preferences dialog.\n"
 "\n"
@@ -11989,32 +12022,38 @@ msgstr "<alt>N"
 msgid "Toggle minimize"
 msgstr "Comută minimizarea"
 
-#: src/plugins/notification/notification_trayicon.c:121
-msgid "_Get Mail"
-msgstr "_Verifică corespondența pentru toate conturile"
+#: src/plugins/notification/notification_trayicon.c:121 src/toolbar.c:494
+msgid "Get Mail"
+msgstr "Verifică tot"
 
 #: src/plugins/notification/notification_trayicon.c:122
-msgid "_Get Mail from account"
+#, fuzzy
+msgid "Get Mail from account"
 msgstr "_Verifică corespondența pentru contul"
 
 #: src/plugins/notification/notification_trayicon.c:124
-msgid "_Email"
+#, fuzzy
+msgid "Email"
 msgstr "Compune _e-mail de pe contul curent"
 
 #: src/plugins/notification/notification_trayicon.c:125
-msgid "E_mail from account"
+#, fuzzy
+msgid "Email from account"
 msgstr "Compune e-_mail de pe contul"
 
 #: src/plugins/notification/notification_trayicon.c:126
-msgid "Open A_ddressbook"
+#, fuzzy
+msgid "Open Addressbook"
 msgstr "_Deschide agenda de contacte"
 
 #: src/plugins/notification/notification_trayicon.c:127
-msgid "E_xit Claws Mail"
-msgstr "_Închide Claws Mail"
+#, fuzzy
+msgid "Exit Claws Mail"
+msgstr "Închideți Claws Mail?"
 
 #: src/plugins/notification/notification_trayicon.c:132
-msgid "_Work Offline"
+#, fuzzy
+msgid "Work Offline"
 msgstr "_Lucrează offline"
 
 #: src/plugins/notification/notification_trayicon.c:134
@@ -12189,12 +12228,12 @@ msgid "Zoom Factor"
 msgstr "Factor de zoom"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:2128
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin enables the viewing of PDF and PostScript attachments using the "
 "Poppler %s Lib and the gs tool.\n"
 "\n"
-"Any feedback is welcome: iwkse@claws-mail.org"
+"Feedback to <iwkse@claws-mail.org> is welcome."
 msgstr ""
 "Acest plugin permite vizualizarea fișierelor de tip PDF și PostScript "
 "atașate folosind biblioteca %s Poppler și instrumentul gs.\n"
@@ -12226,6 +12265,42 @@ msgstr ""
 #: src/plugins/perl/perl_gtk.c:48
 msgid "Edit perl filter rules (ext)..."
 msgstr "Editare per regulă de filtrare (ext)..."
+
+#: src/plugins/perl/perl_plugin.c:1745
+#, c-format
+msgid ""
+"Error processing Perl script file: (line numbers may not be valid)\n"
+"%s"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1748
+msgid "Perl Plugin error"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1748
+#, fuzzy
+msgid "Retry"
+msgstr "Retro"
+
+#: src/plugins/perl/perl_plugin.c:1749
+msgid "Abort"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1749 src/toolbar.c:536
+msgid "Edit"
+msgstr "Editează"
+
+#: src/plugins/perl/perl_plugin.c:2525
+msgid ""
+"This plugin provides a Perl scripting interface for mail filters.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:2547
+#, fuzzy
+msgid "Perl integration"
+msgstr "Integrare Python"
 
 #: src/plugins/pgpcore/autocompletion.c:133
 msgid "Failed to register PGP address autocompletion hook"
@@ -12331,16 +12406,17 @@ msgid "PGP/Core"
 msgstr "PGP/Core"
 
 #: src/plugins/pgpcore/plugin.c:71
+#, fuzzy
 msgid ""
 "This plugin handles PGP core operations and provides address autocompletion "
 "from the GPG keyring. It is used by other plugins, like PGP/Mime.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/GPG and /"
-"Configuration/[Account Preferences]/Plugins/GPG\n"
+"Options can be found in '/Configuration/Preferences/Plugins/GPG' and '/"
+"Configuration/[Account Preferences]/Plugins/GPG'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "Acest plugin gestionează operațiile PGP de bază și oferă completarea "
 "automată a adreselor din inelul de chei GPG. Este folosit de alte plugin-"
@@ -12381,8 +12457,8 @@ msgstr "Expiră după"
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "Stabilirea valorii „0” va memora fraza-prolă pentru întreaga sesiune"
 
-#: src/plugins/pgpcore/prefs_gpg.c:182 src/plugins/rssyl/rssyl_feed_props.c:459
-#: src/plugins/rssyl/rssyl_prefs.c:150 src/prefs_account.c:1883
+#: src/plugins/pgpcore/prefs_gpg.c:182 src/plugins/rssyl/rssyl_feed_props.c:488
+#: src/plugins/rssyl/rssyl_prefs.c:183 src/prefs_account.c:1883
 #: src/prefs_account.c:2188 src/prefs_receive.c:190
 msgid "minutes"
 msgstr "minute"
@@ -12541,7 +12617,7 @@ msgid "The signature has not been checked."
 msgstr "Semnătura nu a fost verificată."
 
 #: src/plugins/pgpcore/sgpgme.c:438
-msgid "PGP Core: Can't get key - no gpg-agent running."
+msgid "PGP Core: can't get key - no gpg-agent running."
 msgstr ""
 
 #: src/plugins/pgpcore/sgpgme.c:456
@@ -12657,7 +12733,7 @@ msgstr ""
 
 #: src/plugins/pgpcore/sgpgme.c:618
 #, c-format
-msgid "WARNING: Signer's address \"%s\" does not match DNS entry\n"
+msgid "WARNING: signer's address \"%s\" does not match DNS entry\n"
 msgstr ""
 
 #: src/plugins/pgpcore/sgpgme.c:624
@@ -12877,18 +12953,19 @@ msgid "PGP/inline"
 msgstr "PGP/inline"
 
 #: src/plugins/pgpinline/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin handles the deprecated Inline method of signing and/or "
 "encrypting mails. You can decrypt mails, verify signatures or sign and "
 "encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "Acest plugin gestionează metoda învechită de semnare și/sau criptare a "
 "corespondenței. Puteți decripta corespondența, verifica semnăturile sau "
@@ -12937,17 +13014,18 @@ msgid "PGP/MIME"
 msgstr "PGP/MIME"
 
 #: src/plugins/pgpmime/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin handles PGP/MIME signed and/or encrypted mails. You can decrypt "
 "mails, verify signatures or sign and encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "Acest plugin gestionează e-mailurile PGP/MIME semnate și/sau criptate. "
 "Puteți decripta e-mailurile, verifica semnăturile sau vă puteți semna și "
@@ -12971,7 +13049,7 @@ msgid "Show Python console..."
 msgstr "Arată consola Python..."
 
 #: src/plugins/python/python_plugin.c:525
-#: src/plugins/rssyl/rssyl_feed_props.c:466
+#: src/plugins/rssyl/rssyl_feed_props.c:495
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
@@ -12993,6 +13071,7 @@ msgstr ""
 #: src/plugins/python/python_plugin.c:727
 msgid ""
 "This plugin provides Python integration features.\n"
+"\n"
 "Python code can be entered interactively into an embedded Python console, "
 "under Tools -> Show Python console, or stored in scripts.\n"
 "\n"
@@ -13001,29 +13080,25 @@ msgid ""
 "put buttons for script invocation into the toolbars using Claws Mail's "
 "builtin toolbar editor.\n"
 "\n"
-"You can provide scripts working on the main window by placing files into ~/."
-"claws-mail/python-scripts/main.\n"
+"You can provide scripts working on the main window by placing files into '~/."
+"claws-mail/python-scripts/main'.\n"
 "\n"
 "You can also provide scripts working on an open compose window by placing "
-"files into ~/.claws-mail/python-scripts/compose.\n"
+"files into '~/.claws-mail/python-scripts/compose'.\n"
 "\n"
-"The folder ~/.claws-mail/python-scripts/auto/ may contain some scripts that "
-"are automatically executed when certain events occur. Currently, the "
+"The folder '~/.claws-mail/python-scripts/auto/' may contain some scripts "
+"that are automatically executed when certain events occur. Currently, the "
 "following files in this directory are recognised:\n"
 "\n"
-"compose_any\n"
-"Gets executed whenever a compose window is opened, no matter if that opening "
-"happened as a result of composing a new message, replying or forwarding a "
-"message.\n"
+" 'compose_any' - gets executed whenever a compose window is opened, no "
+"matter if that opening happened as a result of composing a new message, "
+"replying or forwarding a message.\n"
 "\n"
-"startup\n"
-"Executed at plugin load\n"
+" 'startup' - executed at plugin load.\n"
 "\n"
-"shutdown\n"
-"Executed at plugin unload\n"
+" 'shutdown' - executed at plugin unload.\n"
 "\n"
-"\n"
-"For the most up-to-date API documentation, type\n"
+"For the most up-to-date API documentation, type:\n"
 "\n"
 " help(clawsmail)\n"
 "\n"
@@ -13037,7 +13112,7 @@ msgid ""
 "Feedback to <berndth@gmx.de> is welcome."
 msgstr ""
 
-#: src/plugins/python/python_plugin.c:778
+#: src/plugins/python/python_plugin.c:775
 msgid "Python integration"
 msgstr "Integrare Python"
 
@@ -13052,26 +13127,27 @@ msgstr ""
 
 # hm ? e corect cu fluxuri la plural ?
 #: src/plugins/rssyl/opml_export.c:108
-#, c-format
-msgid "RSSyl: Error while writing '%s' to feed export list.\n"
+#, fuzzy, c-format
+msgid "RSSyl: error while writing '%s' to feed export list.\n"
 msgstr "RSSyl: eroare la scrierea '%s' în lista de fluxuri exportate.\n"
 
 #: src/plugins/rssyl/opml_export.c:129
-#, c-format
-msgid "RSSyl: Couldn't delete old OPML file '%s': %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: couldn't delete old OPML file '%s': %s\n"
 msgstr "RSSyl: nu s-a putut șterge fișierul OPML vechi '%s': %s\n"
 
 # hm ? e corect cu fluxuri la plural ?
 #: src/plugins/rssyl/opml_export.c:139
-#, c-format
-msgid "RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: couldn't open file '%s' for feed list exporting: %s\n"
 msgstr ""
 "RSSyl: nu s-a putut deschide fișierul '%s' pentru exportul listei de "
 "fluxuri: %s\n"
 
 # hm ? e corect cu fluxuri la plural ?
 #: src/plugins/rssyl/opml_export.c:180
-msgid "RSSyl: Error during writing feed export file.\n"
+#, fuzzy
+msgid "RSSyl: error during writing feed export file.\n"
 msgstr "RSSyl: eroare în timpul scrierii fișierului de fluxuri exportate.\n"
 
 #: src/plugins/rssyl/opml_import.c:105
@@ -13110,7 +13186,7 @@ msgctxt "Empty RSS feed title placeholder"
 msgid "(empty)"
 msgstr "(gol)"
 
-#: src/plugins/rssyl/rssyl.c:152 src/plugins/rssyl/rssyl.c:164
+#: src/plugins/rssyl/rssyl.c:154 src/plugins/rssyl/rssyl.c:166
 msgid "Refresh all feeds"
 msgstr "Reîmprospătează toate fluxurile"
 
@@ -13129,7 +13205,7 @@ msgid "'%c' can't be used in folder name."
 msgstr "„%c” nu poate fi folosit în numele dosarului."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:281 src/plugins/rssyl/rssyl_cb_menu.c:328
-#: src/plugins/rssyl/rssyl_feed_props.c:197
+#: src/plugins/rssyl/rssyl_feed_props.c:215
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "Claws Mail necesită acces la rețea pentru a putea actualiza fluxul."
@@ -13152,141 +13228,162 @@ msgid "Select an OPML file"
 msgstr "Selectați un fișier OPML"
 
 #: src/plugins/rssyl/rssyl_feed.h:28
-#, c-format
-msgid "RSSyl: Subscribing new feed: %s\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "RSSyl: subscribing new feed: %s\n"
+msgstr "Subscrie la _noul flux..."
 
 #: src/plugins/rssyl/rssyl_feed.h:29
 #, c-format
-msgid "RSSyl: New feed subscribed: '%s' (%s)\n"
+msgid "RSSyl: new feed subscribed: '%s' (%s)\n"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_feed.h:30
 #, c-format
-msgid "RSSyl: Updating feed: %s\n"
+msgid "RSSyl: updating feed: %s (User Agent: %s)\n"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_feed.h:31
 #, c-format
-msgid "RSSyl: Feed update finished: %s\n"
+msgid "RSSyl: feed update finished: %s\n"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_feed.h:32
 #, c-format
-msgid "RSSyl: Error fetching feed at '%s': %s\n"
+msgid "RSSyl: error fetching feed at '%s': %s\n"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_feed.h:33
 #, c-format
-msgid "RSSyl: No valid feed found at '%s'\n"
+msgid "RSSyl: no valid feed found at '%s'\n"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_feed.h:34
-#, c-format
-msgid "RSSyl: Couldn't process feed at '%s'\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "RSSyl: couldn't process feed at '%s'\n"
+msgstr "RSSyl: nu s-a putut șterge fișierul OPML vechi '%s': %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:35
 #, c-format
-msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
+msgid "RSSyl: application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:265
+#: src/plugins/rssyl/rssyl_feed_props.c:283
 msgid "HTTP Basic authentication"
 msgstr "Autentificare HTTP simplă"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:287
+#: src/plugins/rssyl/rssyl_feed_props.c:305
 msgid "Use default refresh interval"
 msgstr "Folosește intervalul de reîmprospătare implicit"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:299
+#: src/plugins/rssyl/rssyl_feed_props.c:317
 msgid "Keep old items"
 msgstr "Păstrează elementele vechi"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:305
+#: src/plugins/rssyl/rssyl_feed_props.c:323
 msgid "_Trim"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:307
+#: src/plugins/rssyl/rssyl_feed_props.c:325
 msgid "Update feed, deleting items which are no longer in the source feed"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:310
+#: src/plugins/rssyl/rssyl_feed_props.c:328
 msgid "Fetch comments if possible"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:330
+#: src/plugins/rssyl/rssyl_feed_props.c:348
 msgid "Always mark it as new"
 msgstr "Marchează-l întotdeauna ca fiind nou"
 
 # hm ? lui cui ?
-#: src/plugins/rssyl/rssyl_feed_props.c:332
+#: src/plugins/rssyl/rssyl_feed_props.c:350
 msgid "Only mark it as new if its text has changed"
 msgstr "Marchează-l ca fiind nou numai dacă textul s-a schimbat"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:334
+#: src/plugins/rssyl/rssyl_feed_props.c:352
 msgid "Never mark it as new"
 msgstr "Nu-l marca niciodată ca fiind nou"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:339
+#: src/plugins/rssyl/rssyl_feed_props.c:357
 msgid "Add item title to the top of message"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:346
+#: src/plugins/rssyl/rssyl_feed_props.c:364
 msgid "Ignore title rename"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:351
+#: src/plugins/rssyl/rssyl_feed_props.c:369
 msgid ""
 "Enable this to keep current folder name, even if feed author changes title "
-"of the feed."
+"of the feed"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:355
+#: src/plugins/rssyl/rssyl_feed_props.c:373
 #: src/plugins/vcalendar/vcal_prefs.c:594
 msgid "Verify TLS certificate validity"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:375
+#: src/plugins/rssyl/rssyl_feed_props.c:379
+#, fuzzy
+msgid "Use default User Agent"
+msgstr "Folosește setările implicite"
+
+#: src/plugins/rssyl/rssyl_feed_props.c:404
 msgid "User name"
 msgstr "Nume de utilizator"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:388
+#: src/plugins/rssyl/rssyl_feed_props.c:417
 msgid "Source URL"
 msgstr "URL sursă"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:401
+#: src/plugins/rssyl/rssyl_feed_props.c:430
 msgid "Fetch comments on posts aged less than"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:409
+#: src/plugins/rssyl/rssyl_feed_props.c:438
 #: src/plugins/vcalendar/day-view.c:620 src/plugins/vcalendar/month-view.c:709
 #: src/prefs_account.c:1689 src/prefs_folder_item.c:589 src/prefs_matcher.c:340
 msgid "days"
 msgstr "zile"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:410
+#: src/plugins/rssyl/rssyl_feed_props.c:439
 msgid "Set to -1 to fetch all comments"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:434
+#: src/plugins/rssyl/rssyl_feed_props.c:463
 msgid "If an item changes"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_feed_props.c:439
+#: src/plugins/rssyl/rssyl_feed_props.c:468
 msgid "Items"
 msgstr "Elemente"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:452
+#: src/plugins/rssyl/rssyl_feed_props.c:481
 msgid "Refresh interval"
 msgstr "Interval de reîmprospătare"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:460
+#: src/plugins/rssyl/rssyl_feed_props.c:489
 msgid "Set to 0 to disable automatic refreshing for this feed"
 msgstr ""
 "Treceți 0 pentru a dezactiva reîmprospătarea automată pentru acest flux"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:492
+#: src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/plugins/rssyl/rssyl_feed_props.c:519 src/plugins/rssyl/rssyl_prefs.c:262
+#, fuzzy
+msgid "User Agent"
+msgstr "Agent utilizator"
+
+#: src/plugins/rssyl/rssyl_feed_props.c:510
+msgid "Disable this to use a User Agent specific to this feed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_feed_props.c:512
+msgid ""
+"Specific User Agent to use for this feed. If empty, the User Agent string "
+"set in '/Configuration/Preferences/Plugins/RSSyl' will be used"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_feed_props.c:545
 msgid "Set feed properties"
 msgstr ""
 
@@ -13303,8 +13400,9 @@ msgid "Rena_me..."
 msgstr "Redenu_mește..."
 
 #: src/plugins/rssyl/rssyl_gtk.c:47
-msgid "R_efresh recursively"
-msgstr ""
+#, fuzzy
+msgid "R_efresh all feeds"
+msgstr "Reîmprospătează toate fluxurile"
 
 #: src/plugins/rssyl/rssyl_gtk.c:48
 msgid "Subscribe _new feed..."
@@ -13344,35 +13442,56 @@ msgstr ""
 msgid "My Feeds"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_prefs.c:107
+#: src/plugins/rssyl/rssyl_prefs.c:138
 msgid "Select cookies file"
 msgstr "Selectați fișierul de cookie-uri"
 
-#: src/plugins/rssyl/rssyl_prefs.c:137
+#: src/plugins/rssyl/rssyl_prefs.c:170
 msgid "Default refresh interval"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_prefs.c:157
+#: src/plugins/rssyl/rssyl_prefs.c:190
 msgid "Refresh all feeds on start-up"
 msgstr "Reîmprospătează toate fluxurile la pornire"
 
-#: src/plugins/rssyl/rssyl_prefs.c:166
+#: src/plugins/rssyl/rssyl_prefs.c:197
+msgid "Refresh all skips feeds programmed to be refreshed manually"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:206
 msgid "Verify TLS certificates validity for new feeds"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_prefs.c:173
+#: src/plugins/rssyl/rssyl_prefs.c:213
 msgid "Path to cookies file"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_prefs.c:180
+#: src/plugins/rssyl/rssyl_prefs.c:220
 msgid "Path to Netscape-style cookies.txt file containing your cookies"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_prefs.c:191
+#: src/plugins/rssyl/rssyl_prefs.c:234
+#, fuzzy
+msgid "Use a custom User Agent"
+msgstr "Folosește culori personalizate"
+
+#: src/plugins/rssyl/rssyl_prefs.c:236
+msgid ""
+"Instead of using the default User Agent for feed retrieval, you can enter a "
+"custom value"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:245
+msgid ""
+"Custom User Agent to use for feed retrieval. If empty, the default User "
+"Agent string will be used"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:254
 msgid "Refreshing"
 msgstr "Reîmprospătare"
 
-#: src/plugins/rssyl/rssyl_prefs.c:195
+#: src/plugins/rssyl/rssyl_prefs.c:258
 msgid "Security and privacy"
 msgstr "Securitate și confidențialitate"
 
@@ -13390,9 +13509,10 @@ msgid "Feed folder:"
 msgstr "Dosar de flux:"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:70
+#, fuzzy
 msgid ""
 "Instead of using official title, you can enter a different folder name for "
-"the feed."
+"the feed"
 msgstr ""
 "În loc să folosiți titlul oficial, puteți introduce un alt nume de dosar "
 "pentru flux."
@@ -13406,26 +13526,26 @@ msgstr "_Editează proprietățile fluxului după abonare"
 msgid "Updating comments for '%s'..."
 msgstr "Se actualizează comentariile pentru '%s'..."
 
-#: src/plugins/rssyl/rssyl_update_feed.c:106
+#: src/plugins/rssyl/rssyl_update_feed.c:152
 #: src/plugins/vcalendar/vcal_folder.c:1624
 msgid "401 (Authorisation required)"
 msgstr "401 (Necesită autorizare)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:109
+#: src/plugins/rssyl/rssyl_update_feed.c:155
 msgid "403 (Forbidden)"
 msgstr "403 (Interzis)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:112
+#: src/plugins/rssyl/rssyl_update_feed.c:158
 #: src/plugins/vcalendar/vcal_folder.c:1630
 msgid "404 (Not found)"
 msgstr "404 (Nu s-a găsit)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:115
+#: src/plugins/rssyl/rssyl_update_feed.c:161
 #, c-format
 msgid "Error %d"
 msgstr "Eroare %d"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:128
+#: src/plugins/rssyl/rssyl_update_feed.c:174
 #, c-format
 msgctxt "First parameter is URL, second is error text"
 msgid ""
@@ -13435,28 +13555,28 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_update_feed.c:141
+#: src/plugins/rssyl/rssyl_update_feed.c:187
 #, c-format
 msgid ""
 "No valid feed found at\n"
 "<b>%s</b>"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_update_feed.c:153
+#: src/plugins/rssyl/rssyl_update_feed.c:199
 msgid "Untitled feed"
 msgstr "Flux neintitulat"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:155
+#: src/plugins/rssyl/rssyl_update_feed.c:201
 #, c-format
-msgid "RSSyl: Possibly invalid feed without title at %s.\n"
+msgid "RSSyl: possibly invalid feed without title at %s.\n"
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_update_feed.c:232
+#: src/plugins/rssyl/rssyl_update_feed.c:284
 #, c-format
 msgid "Updating feed '%s'..."
 msgstr "Se actualizează fluxul „%s”..."
 
-#: src/plugins/rssyl/rssyl_update_feed.c:269
+#: src/plugins/rssyl/rssyl_update_feed.c:321
 #, c-format
 msgid ""
 "Couldn't process feed at\n"
@@ -13465,7 +13585,7 @@ msgid ""
 "Please contact developers, this should not happen."
 msgstr ""
 
-#: src/plugins/rssyl/rssyl_update_feed.c:355
+#: src/plugins/rssyl/rssyl_update_feed.c:433
 msgid "Claws Mail needs network access in order to update your feeds."
 msgstr ""
 
@@ -13476,13 +13596,14 @@ msgid ""
 msgstr ""
 
 #: src/plugins/smime/plugin.c:61
+#, fuzzy
 msgid ""
 "This plugin handles S/MIME signed and/or encrypted mails. You can decrypt "
 "mails, verify signatures or sign and encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "This plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "This plugin also needs gpgsm, gnupg-agent and dirmngr installed and "
@@ -13492,8 +13613,19 @@ msgid ""
 "found at:\n"
 "http://www.claws-mail.org/faq/index.php/S/MIME_howto\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
+"Acest plugin gestionează e-mailurile PGP/MIME semnate și/sau criptate. "
+"Puteți decripta e-mailurile, verifica semnăturile sau vă puteți semna și "
+"cripta propriile e-mailuri.\n"
+"\n"
+"Poate fi selectat ca sistem de confidențialitate implicit în /Configurare /"
+"[Preferințe cont]/Confidențialitate și atunci când compuneți un mesaj din /"
+"Opțiuni/Sistem de confidențialitate\n"
+"\n"
+"Plugin-ul folosește biblioteca GPGME ca un wrapper pentru GnuPG.\n"
+"\n"
+"GPGME este copyright 2001 de către Werner Koch <dd9jn@gnu.org>"
 
 #: src/plugins/smime/smime.c:567
 #, c-format
@@ -13537,6 +13669,7 @@ msgstr ""
 #: src/plugins/spam_report/spam_report.c:401
 msgid ""
 "This plugin reports spam to various places.\n"
+"\n"
 "Currently the following sites or methods are supported:\n"
 "\n"
 " * spam-signal.fr\n"
@@ -13610,6 +13743,7 @@ msgstr ""
 "sale.\n"
 
 #: src/plugins/spamassassin/spamassassin.c:620
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using a SpamAssassin server. You will need a "
@@ -13620,7 +13754,7 @@ msgid ""
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/SpamAssassin"
+"Options can be found in '/Configuration/Preferences/Plugins/SpamAssassin'."
 msgstr ""
 "Acest plugin poate verifica toate mesajele primite de la un cont IMAP, LOCAL "
 "sau POP pentru spam, folosind un server SpamAssassin. Necesită un server "
@@ -13737,11 +13871,12 @@ msgid "TNEF Parser"
 msgstr "Parser TNEF"
 
 #: src/plugins/tnef_parse/tnef_parse.c:447
+#, fuzzy
 msgid ""
 "This Claws Mail plugin allows you to read application/ms-tnef attachments.\n"
 "\n"
 "The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
-"Hand <yerase@yerot.com>"
+"Hand <yerase@yerot.com>."
 msgstr ""
 "Acest plugin Claws Mail permite citirea atașamentelor de tip aplicație/ms-"
 "tnef.\n"
@@ -14039,25 +14174,25 @@ msgid "You are already busy at this time."
 msgstr "Sunteți deja ocupat la această oră."
 
 #: src/plugins/vcalendar/vcalendar.c:1242
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1641
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1642
 msgid "Event:"
 msgstr "Eveniment:"
 
 #: src/plugins/vcalendar/vcalendar.c:1243
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1619
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1630
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1631
 msgid "Organizer:"
 msgstr "Organizator:"
 
 #: src/plugins/vcalendar/vcalendar.c:1244
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1632
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1633
 msgid "Location:"
 msgstr "Locație:"
 
 #: src/plugins/vcalendar/vcalendar.c:1245
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1620
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1631
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1632
 msgid "Summary:"
 msgstr "Rezumat:"
 
@@ -14071,7 +14206,7 @@ msgstr "Se încheie:"
 
 #: src/plugins/vcalendar/vcalendar.c:1249
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1624
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1634
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1635
 msgid "Attendees:"
 msgstr "Participanți:"
 
@@ -14525,11 +14660,11 @@ msgid "%s - Edit meeting"
 msgstr "%s - Editare întâlnire"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1621
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1645
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1646
 msgid "Time:"
 msgstr "Oră:"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1768
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1769
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -14537,7 +14672,7 @@ msgstr[0] "%d oră"
 msgstr[1] "%d ore"
 msgstr[2] "%d de ore"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1771
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1772
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -14545,12 +14680,12 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minute"
 msgstr[2] "%d de minute"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1782
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1783
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "Urmează un eveniment: %s"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1783
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1784
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -14567,7 +14702,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1800
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1801
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
@@ -14575,32 +14710,32 @@ msgstr[0] "Reamintește-mi în %d minut"
 msgstr[1] "Reamintește-mi în %d minute"
 msgstr[2] "Reamintește-mi în %d de minute"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1926
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1927
 msgid "Empty calendar"
 msgstr "Calendar gol"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1927
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1928
 msgid "There is nothing to export."
 msgstr "Nu este nimic de exportat."
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1967
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1970
 msgid "Could not export the calendar."
 msgstr "Calendarul nu a putut fi exportat."
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1990
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1993
 msgid "Export calendar to ICS"
 msgstr "Exportă calendarul la ICS"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2007
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2010
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "Nu s-a putut exporta calendarul la „%s”\n"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2123
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2126
 msgid "Could not export the freebusy info."
 msgstr "Nu s-au putut exporta informațiile despre starea liber/ocupat."
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2158
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "Nu s-a putut exporta starea liber/ocupat la „%s”\n"
@@ -14721,13 +14856,13 @@ msgid "invalid UIDL response: %s\n"
 msgstr "răspunsul UIDL nu este valid: %s\n"
 
 #: src/pop.c:927
-#, c-format
-msgid "POP: Deleting expired message %d [%s]\n"
+#, fuzzy, c-format
+msgid "POP: deleting expired message %d [%s]\n"
 msgstr "POP: Se șterge mesajul expirat %d [%s]\n"
 
 #: src/pop.c:943
-#, c-format
-msgid "POP: Skipping message %d [%s] (%d bytes)\n"
+#, fuzzy, c-format
+msgid "POP: skipping message %d [%s] (%d bytes)\n"
 msgstr "POP: Se omite mesajul %d [%s] (%d baiți)\n"
 
 #: src/pop.c:976
@@ -15503,7 +15638,7 @@ msgstr "În numele meniului nu sunt permise două puncte „:”."
 msgid "Menu name is too long."
 msgstr "Numele meniului este prea lung."
 
-#: src/prefs_actions.c:653
+#: src/prefs_actions.c:653 src/prefs_filtering_action.c:907
 msgid "Command-line not set."
 msgstr "Linia de comandă nu este setată."
 
@@ -15693,12 +15828,12 @@ msgstr "În data de %d\\n%f a scris:\\n\\n%q\\n%X"
 
 #: src/prefs_common.c:327 src/prefs_quote.c:85
 msgid ""
-"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: "
-"%t\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
+"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
+"\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
 "\\n\\nÎnceputul mesajului înaintat:\\n\\n?d{Dată: %d\\n}?f{De la: %f\\n}?"
-"t{Către: %t\\n}?c{Cc: %c\\n}?n{Grupuri de știri: %n\\n}?s{Subiect: "
-"%s\\n}\\n\\n%M"
+"t{Către: %t\\n}?c{Cc: %c\\n}?n{Grupuri de știri: %n\\n}?s{Subiect: %s\\n}\\n"
+"\\n%M"
 
 #: src/prefs_common.c:462
 msgid "%x(%a) %H:%M"
@@ -16000,7 +16135,7 @@ msgstr "Redirecționează"
 #: src/prefs_filtering_action.c:186 src/prefs_filtering_action.c:187
 #: src/prefs_filtering_action.c:1399 src/prefs_matcher.c:639
 #: src/prefs_summaries.c:711 src/prefs_summary_column.c:86
-#: src/summaryview.c:470
+#: src/summaryview.c:471
 msgid "Score"
 msgstr "Scor"
 
@@ -16014,7 +16149,7 @@ msgstr "Stabilește scorul"
 
 #: src/prefs_filtering_action.c:188 src/prefs_filtering_action.c:189
 #: src/prefs_filtering_action.c:190 src/prefs_matcher.c:643
-#: src/prefs_summary_column.c:88 src/summaryview.c:472
+#: src/prefs_summary_column.c:88 src/summaryview.c:473
 msgid "Tags"
 msgstr "Etichete"
 
@@ -16050,10 +16185,6 @@ msgstr "Regulă"
 #: src/prefs_filtering_action.c:430 src/prefs_filtering.c:423
 msgid "Action"
 msgstr "Acțiune"
-
-#: src/prefs_filtering_action.c:907
-msgid "Command-line not set"
-msgstr "Linia de comandă nu este setată"
 
 #: src/prefs_filtering_action.c:908
 msgid "Destination is not set."
@@ -16359,9 +16490,10 @@ msgid "Select the HTML part of multipart messages"
 msgstr "Selectează partea HTML a mesajelor multiparte"
 
 #: src/prefs_folder_item.c:538
+#, fuzzy
 msgid ""
-"\"Default\" will follow global preference (found in /Preferences/Message "
-"View/Text Options)"
+"\"Default\" will follow global preference (found in '/Configuration/"
+"Preferences/'Message View/Text Options)"
 msgstr ""
 "„Implicit” va urma preferințele globale (aflate în /Preferințe/Vizualizare "
 "mesaj/Opțiuni de text)"
@@ -16552,7 +16684,7 @@ msgid ""
 "If checked, turns on logging of filtering and processing rules.\n"
 "The log is accessible from 'Tools/Filtering log'.\n"
 "Caution: enabling this option will slow down the filtering/processing, this "
-"might be critical when applying many rules upon thousands of messages."
+"might be critical when applying many rules upon thousands of messages"
 msgstr ""
 
 #: src/prefs_logging.c:181
@@ -16604,7 +16736,7 @@ msgid ""
 "and why rules are skipped.\n"
 "Choose High to explicitly show the reason why all rules are processed or "
 "skipped, and why all conditions are matched or not matched.\n"
-"Caution: the higher the level, the greater the impact on performance."
+"Caution: the higher the level, the greater the impact on performance"
 msgstr ""
 
 #: src/prefs_logging.c:274
@@ -16716,11 +16848,11 @@ msgid "whole message"
 msgstr "întregul mesaj"
 
 # comun și când search și în dropdown-ul din fereastra principală
-#: src/prefs_matcher.c:402 src/summaryview.c:6552
+#: src/prefs_matcher.c:402 src/summaryview.c:6558
 msgid "Marked"
 msgstr "Marcat"
 
-#: src/prefs_matcher.c:403 src/summaryview.c:6550
+#: src/prefs_matcher.c:403 src/summaryview.c:6556
 msgid "Deleted"
 msgstr "Șters"
 
@@ -16728,11 +16860,11 @@ msgstr "Șters"
 msgid "Replied"
 msgstr "Răspuns"
 
-#: src/prefs_matcher.c:405 src/summaryview.c:6544
+#: src/prefs_matcher.c:405 src/summaryview.c:6550
 msgid "Forwarded"
 msgstr "Înaintat"
 
-#: src/prefs_matcher.c:407 src/summaryview.c:6534 src/toolbar.c:525
+#: src/prefs_matcher.c:407 src/summaryview.c:6540 src/toolbar.c:525
 #: src/toolbar.c:1004 src/toolbar.c:2383
 msgid "Spam"
 msgstr "Spam"
@@ -16741,7 +16873,7 @@ msgstr "Spam"
 msgid "Has attachment"
 msgstr "Are fișier atașat"
 
-#: src/prefs_matcher.c:409 src/summaryview.c:6570
+#: src/prefs_matcher.c:409 src/summaryview.c:6576
 msgid "Signed"
 msgstr "Semnat"
 
@@ -17245,10 +17377,13 @@ msgstr "Segmente de linii"
 msgid "Folder list"
 msgstr "Listă de dosare"
 
+# titlu pe bară
+# și încă ceva (?)
 #: src/prefs_msg_colors.c:356
+#, fuzzy
 msgctxt "Tooltip and Dialog title"
-msgid "Pick color for Target folder."
-msgstr ""
+msgid "Pick color for Target folder"
+msgstr "Alegere culoare pentru numele dosarului"
 
 #: src/prefs_msg_colors.c:357
 msgid "Target folder"
@@ -17336,9 +17471,10 @@ msgid "Metadata handling"
 msgstr "Gestionare metadate"
 
 #: src/prefs_other.c:445
+#, fuzzy
 msgid ""
 "Safer mode asks the OS to write metadata to disk directly;\n"
-"it avoids data loss after crashes but can take some time."
+"it avoids data loss after crashes but can take some time"
 msgstr ""
 "Modul mai sigur solicită sistemului de operare să scrie metadatele direct pe "
 "disc;\n"
@@ -17362,9 +17498,10 @@ msgid "Translate header names"
 msgstr "Tradu numele anteturilor"
 
 #: src/prefs_other.c:493
+#, fuzzy
 msgid ""
 "The display of standard headers (such as 'From:', 'Subject:') will be "
-"translated into your language."
+"translated into your language"
 msgstr ""
 "Afișarea anteturilor standard (precum 'From:', 'Subject;') vor fi traduse în "
 "limba interfeței."
@@ -17391,9 +17528,10 @@ msgstr ""
 "(programul 'shred' nu este disponibil)"
 
 #: src/prefs_other.c:512
+#, fuzzy
 msgid ""
 "Use the 'shred' program to overwrite files with random data before deleting "
-"them. This slows down deletion. Be sure to read shred's man page for caveats."
+"them. This slows down deletion. Be sure to read shred's man page for caveats"
 msgstr ""
 "Folosește programul 'shred' pentru a suprascrie fișierele cu date aleatorii "
 "înainte de a le șterge. Acest lucru încetinește ștergerea. Detalii despre "
@@ -17411,7 +17549,7 @@ msgstr ""
 msgid ""
 "By default attachments are saved with chmod value 600: readable and "
 "writeable by the user only. If this is too restrictive for you, set a chmod "
-"value here, otherwise leave blank to use the default."
+"value here, otherwise leave blank to use the default"
 msgstr ""
 
 #: src/prefs_other.c:545
@@ -17425,7 +17563,7 @@ msgstr "Utilizați o frază-parolă primară"
 #: src/prefs_other.c:551
 msgid ""
 "If checked, your saved account passwords will be protected by a primary "
-"passphrase. If no primary passphrase is set, you will be prompted to set one."
+"passphrase. If no primary passphrase is set, you will be prompted to set one"
 msgstr ""
 
 #: src/prefs_other.c:556
@@ -18480,15 +18618,15 @@ msgstr "Pagina %d"
 msgid "No information available"
 msgstr "Nu este disponibilă nicio informație"
 
-#: src/privacy.c:505
+#: src/privacy.c:508
 msgid "No recipient keys defined."
 msgstr "Nu a fost definită nicio cheie de destinatar."
 
-#: src/procmime.c:414 src/procmime.c:416 src/procmime.c:417
+#: src/procmime.c:415 src/procmime.c:417 src/procmime.c:418
 msgid "[Error decoding BASE64]\n"
 msgstr "[Eroare la decodarea BASE64]\n"
 
-#: src/procmime.c:2798
+#: src/procmime.c:2802
 msgid "Could not decode part"
 msgstr "Nu s-a putut decoda partea"
 
@@ -18803,12 +18941,12 @@ msgstr ""
 msgid "The \"Quotation mark\" field of the \"Forward\" template is invalid."
 msgstr ""
 
-#: src/quote_fmt_parse.y:544
+#: src/quote_fmt_parse.y:545
 #, c-format
 msgid "Enter text to replace '%s'"
 msgstr "Introduceți textul de înlocuit „%s”"
 
-#: src/quote_fmt_parse.y:545
+#: src/quote_fmt_parse.y:546
 msgid "Enter variable"
 msgstr "Introduceți variabila"
 
@@ -18840,8 +18978,8 @@ msgid "POP before SMTP"
 msgstr "POP înaintea SMTP"
 
 #: src/send_message.c:373
-#, c-format
-msgid "Account '%s': Connecting to SMTP server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to SMTP server: %s:%d..."
 msgstr "Contul „%s”: Se conectează la serverul SMTP: %s:%d..."
 
 #: src/send_message.c:446
@@ -18953,7 +19091,7 @@ msgstr "Condiție:"
 msgid "Find _all"
 msgstr "C_aută tot"
 
-#: src/summary_search.c:696 src/summaryview.c:1141 src/summaryview.c:1405
+#: src/summary_search.c:696 src/summaryview.c:1142 src/summaryview.c:1406
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "Se caută în %s... \n"
@@ -18966,221 +19104,221 @@ msgstr "S-a ajuns la începutul listei. Continuați de la sfârșit?"
 msgid "End of list reached; continue from beginning?"
 msgstr "S-a ajuns la sfârșitul listei. Continuați de la început?"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:427
 msgid "Re-edit"
 msgstr "Re-editare"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:440
 msgid "Create _filter rule"
 msgstr "Creează o regulă de f_iltrare"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:453
 msgid "_Set displayed columns"
 msgstr "_Stabilește coloanele afișate"
 
-#: src/summaryview.c:457
+#: src/summaryview.c:458
 msgid "_Lock column headers"
 msgstr "B_lochează anteturile coloanelor"
 
-#: src/summaryview.c:595
+#: src/summaryview.c:596
 msgid "Toggle quick search bar"
 msgstr "Comută bara de căutare rapidă"
 
-#: src/summaryview.c:632
+#: src/summaryview.c:633
 msgid "Toggle multiple selection"
 msgstr "Comută selectarea multiplă"
 
-#: src/summaryview.c:1332
+#: src/summaryview.c:1333
 msgid "Process mark"
 msgstr "Procesare marcaje"
 
-#: src/summaryview.c:1333
+#: src/summaryview.c:1334
 msgid "Some marks are left. Process them?"
 msgstr "Au rămas unele marcaje. Doriți să fie procesate?"
 
-#: src/summaryview.c:1384
+#: src/summaryview.c:1385
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Se scanează dosarul (%s)..."
 
-#: src/summaryview.c:1940 src/summaryview.c:1988
+#: src/summaryview.c:1941 src/summaryview.c:1989
 msgid "No more unread messages"
 msgstr "Nu mai sunt mesaje necitite"
 
-#: src/summaryview.c:1941
+#: src/summaryview.c:1942
 msgid "No unread message found. Search from the end?"
 msgstr "Nu s-a găsit niciun mesaj necitit. Căutați de la sfârșit?"
 
-#: src/summaryview.c:1965
+#: src/summaryview.c:1966
 msgid "No unread messages."
 msgstr "Nu sunt mesaje necitite."
 
-#: src/summaryview.c:1989
+#: src/summaryview.c:1990
 msgid "No unread message found. Go to next folder?"
 msgstr "Nu s-a găsit niciun mesaj necitit. Mergeți la următorul dosar?"
 
-#: src/summaryview.c:2025 src/summaryview.c:2073
+#: src/summaryview.c:2026 src/summaryview.c:2074
 msgid "No more new messages"
 msgstr "Nu mai sunt mesaje noi"
 
-#: src/summaryview.c:2026
+#: src/summaryview.c:2027
 msgid "No new message found. Search from the end?"
 msgstr "Nu s-a găsit niciun mesaj nou. Căutați de la sfârșit?"
 
-#: src/summaryview.c:2050
+#: src/summaryview.c:2051
 msgid "No new messages."
 msgstr "Nu sunt mesaje noi."
 
-#: src/summaryview.c:2074
+#: src/summaryview.c:2075
 msgid "No new message found. Go to next folder?"
 msgstr "Nu s-a găsit niciun mesaj nou. Mergeți la următorul dosar?"
 
-#: src/summaryview.c:2107 src/summaryview.c:2141
+#: src/summaryview.c:2108 src/summaryview.c:2142
 msgid "No more marked messages"
 msgstr "Nu mai sunt mesaje marcate"
 
-#: src/summaryview.c:2108
+#: src/summaryview.c:2109
 msgid "No marked message found. Search from the end?"
 msgstr "Nu s-a mai găsit niciun mesaj marcat. Căutați de la sfârșit?"
 
-#: src/summaryview.c:2118
+#: src/summaryview.c:2119
 msgid "No marked messages."
 msgstr "Nu sunt mesaje marcate."
 
-#: src/summaryview.c:2142
+#: src/summaryview.c:2143
 msgid "No marked message found. Go to next folder?"
 msgstr "Nu s-a găsit niciun mesaj marcat. Mergeți la următorul dosar?"
 
-#: src/summaryview.c:2175 src/summaryview.c:2205
+#: src/summaryview.c:2176 src/summaryview.c:2206
 msgid "No more labeled messages"
 msgstr "Nu mai sunt mesaje etichetate"
 
-#: src/summaryview.c:2176
+#: src/summaryview.c:2177
 msgid "No labeled message found. Search from the end?"
 msgstr "Nu s-a mai găsit niciun mesaj etichetat. Căutați de la sfârșit?"
 
-#: src/summaryview.c:2186 src/summaryview.c:2220
+#: src/summaryview.c:2187 src/summaryview.c:2221
 msgid "No labeled messages."
 msgstr "Nu sunt mesaje etichetate."
 
-#: src/summaryview.c:2206
+#: src/summaryview.c:2207
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Nu s-a găsit niciun mesaj etichetat. Căutați de la început?"
 
-#: src/summaryview.c:2530
+#: src/summaryview.c:2531
 msgid "Attracting messages by subject..."
 msgstr "Se atrag mesajele pe baza subiectului..."
 
-#: src/summaryview.c:2718
+#: src/summaryview.c:2719
 #, c-format
 msgid "%d deleted"
 msgstr "%d șters(e)"
 
-#: src/summaryview.c:2722
+#: src/summaryview.c:2723
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d mutat(e)"
 
-#: src/summaryview.c:2728
+#: src/summaryview.c:2729
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d copiat(e)"
 
-#: src/summaryview.c:2742
+#: src/summaryview.c:2743
 msgid " item selected"
 msgid_plural " items selected"
 msgstr[0] " element selectat"
 msgstr[1] " elemente selectate"
 msgstr[2] " de elemente selectate"
 
-#: src/summaryview.c:2760 src/summaryview.c:2805
+#: src/summaryview.c:2761 src/summaryview.c:2806
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d noi, %d necitite, %d în total (%s)"
 
-#: src/summaryview.c:2780
+#: src/summaryview.c:2781
 msgid "Message summary"
 msgstr "Rezumat mesaj"
 
-#: src/summaryview.c:2781
+#: src/summaryview.c:2782
 msgid "New:"
 msgstr "Noi:"
 
-#: src/summaryview.c:2782
+#: src/summaryview.c:2783
 msgid "Unread:"
 msgstr "Necitite:"
 
-#: src/summaryview.c:2783
+#: src/summaryview.c:2784
 msgid "Total:"
 msgstr "Total:"
 
-#: src/summaryview.c:2785
+#: src/summaryview.c:2786
 msgid "Marked:"
 msgstr "Marcate:"
 
-#: src/summaryview.c:2786
+#: src/summaryview.c:2787
 msgid "Replied:"
 msgstr "Răspunse:"
 
-#: src/summaryview.c:2787
+#: src/summaryview.c:2788
 msgid "Forwarded:"
 msgstr "Înaintate:"
 
-#: src/summaryview.c:2788
+#: src/summaryview.c:2789
 msgid "Locked:"
 msgstr "Blocate:"
 
-#: src/summaryview.c:2789
+#: src/summaryview.c:2790
 msgid "Ignored:"
 msgstr "Ignorate:"
 
-#: src/summaryview.c:2790
+#: src/summaryview.c:2791
 msgid "Watched:"
 msgstr "Urmărite:"
 
-#: src/summaryview.c:2800
+#: src/summaryview.c:2801
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d/%d selectate (%s/%s), %d necitite"
 
-#: src/summaryview.c:2884
+#: src/summaryview.c:2885
 msgctxt "Column Header"
 msgid "_Mark"
 msgstr "_Marchează"
 
-#: src/summaryview.c:3088
+#: src/summaryview.c:3089
 msgid "Sorting summary..."
 msgstr "Se sortează rezumatul..."
 
-#: src/summaryview.c:3260
+#: src/summaryview.c:3261
 msgid "Setting summary from message data..."
 msgstr "Se stabilește rezumatul din datele mesajului..."
 
-#: src/summaryview.c:3466
+#: src/summaryview.c:3467
 msgid "(No Date)"
 msgstr "(Fără Dată)"
 
-#: src/summaryview.c:3523
+#: src/summaryview.c:3524
 msgid "(No Recipient)"
 msgstr "(fără destinatar)"
 
 # hm ? sau în data de ?
-#: src/summaryview.c:3571
+#: src/summaryview.c:3572
 #, c-format
 msgid "From: %s, on %s"
 msgstr "De la: %s, în %s"
 
 # hm ? sau în data de ?
-#: src/summaryview.c:3580
+#: src/summaryview.c:3581
 #, c-format
 msgid "To: %s, on %s"
 msgstr "Către: %s, în %s"
 
-#: src/summaryview.c:4466
+#: src/summaryview.c:4472
 msgid "You're not the author of the article."
 msgstr "Nu sunteți autorul articolului."
 
-#: src/summaryview.c:4556
+#: src/summaryview.c:4562
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
@@ -19188,29 +19326,29 @@ msgstr[0] "Chiar vreți să ștergeți mesajul selectat?"
 msgstr[1] "Chiar vreți să ștergeți cele %d mesajele selectate?"
 msgstr[2] "Chiar vreți să ștergeți cele %d de mesajele selectate?"
 
-#: src/summaryview.c:4559
+#: src/summaryview.c:4565
 msgid "Delete message"
 msgid_plural "Delete messages"
 msgstr[0] "Șterge mesajul"
 msgstr[1] "Șterge mesajele"
 msgstr[2] "Șterge mesajele"
 
-#: src/summaryview.c:4723
+#: src/summaryview.c:4729
 msgid "Destination is same as current folder."
 msgstr "Destinația este aceeași cu dosarul curent."
 
-#: src/summaryview.c:4778
+#: src/summaryview.c:4784
 msgid "Select folder to move selected message to"
 msgid_plural "Select folder to move selected messages to"
 msgstr[0] "Selectați dosarul în care să fie mutat mesajul"
 msgstr[1] "Selectați dosarul în care să fie mutate mesajele"
 msgstr[2] "Selectați dosarul în care să fie mutate mesajele"
 
-#: src/summaryview.c:4829
+#: src/summaryview.c:4835
 msgid "Destination to copy is same as current folder."
 msgstr "Destinația pentru copiere este aceeași cu dosarul curent."
 
-#: src/summaryview.c:4863
+#: src/summaryview.c:4869
 msgid "Select folder to copy selected message to"
 msgid_plural "Select folder to copy selected messages to"
 msgstr[0] "Selectați dosarul în care să fie copiat mesajul"
@@ -19218,55 +19356,55 @@ msgstr[1] "Selectați dosarul în care să fie copiate mesajele"
 msgstr[2] "Selectați dosarul în care să fie copiate mesajele"
 
 # hm ? titlu ?
-#: src/summaryview.c:5027
+#: src/summaryview.c:5033
 msgid "Append or Overwrite"
 msgstr "Adăugare sau suprascriere"
 
-#: src/summaryview.c:5028
+#: src/summaryview.c:5034
 msgid "Append or overwrite existing file?"
 msgstr "Adăugați sau suprascrieți fișierul existent?"
 
-#: src/summaryview.c:5029
+#: src/summaryview.c:5035
 msgid "_Append"
 msgstr "_Adaugă"
 
-#: src/summaryview.c:5029
+#: src/summaryview.c:5035
 msgid "_Overwrite"
 msgstr "_Suprascrie"
 
-#: src/summaryview.c:5040 src/summaryview.c:5043 src/summaryview.c:5058
+#: src/summaryview.c:5046 src/summaryview.c:5049 src/summaryview.c:5064
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Nu s-a putut salva fișierul „%s”."
 
-#: src/summaryview.c:5081
+#: src/summaryview.c:5087
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr ""
 "Sunteți pe cale să tipăriți %d mesaje, unul câte unul. Vreți să continuați?"
 
-#: src/summaryview.c:5539
+#: src/summaryview.c:5545
 msgid "Building threads..."
 msgstr "Se construiesc firele de discuție..."
 
-#: src/summaryview.c:5787
+#: src/summaryview.c:5793
 msgid "Skip these rules"
 msgstr "Omite aceste reguli"
 
-#: src/summaryview.c:5790
+#: src/summaryview.c:5796
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "Aplică aceste reguli indiferent de contul de care aparțin"
 
-#: src/summaryview.c:5793
+#: src/summaryview.c:5799
 msgid "Apply these rules if they apply to the current account"
 msgstr "Aplică aceste reguli dacă se aplică la contul curent"
 
-#: src/summaryview.c:5822
+#: src/summaryview.c:5828
 msgid "Filtering"
 msgstr "Filtrare"
 
-#: src/summaryview.c:5823
+#: src/summaryview.c:5829
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -19274,74 +19412,74 @@ msgstr ""
 "Există câteva reguli de filtrare care aparțin unui cont.\n"
 "Alegeți ce să faceți cu aceste reguli:"
 
-#: src/summaryview.c:5855
+#: src/summaryview.c:5861
 msgid "Filtering..."
 msgstr "Se filtrează..."
 
 # titlu pe bară
-#: src/summaryview.c:5938
+#: src/summaryview.c:5944
 msgid "Processing configuration"
 msgstr "Configurare procesare"
 
-#: src/summaryview.c:6088
+#: src/summaryview.c:6094
 msgid "Do you really want to reset the color label of all selected messages?"
 msgstr ""
 "Chiar vreți să resetați eticheta de culoare de la toate mesajele selectate?"
 
-#: src/summaryview.c:6090
+#: src/summaryview.c:6096
 msgid "Do you really want to apply this color label to all selected messages?"
 msgstr ""
 "Chiar vreți să aplicați eticheta de culoare la toate mesajele selectate?"
 
-#: src/summaryview.c:6091
+#: src/summaryview.c:6097
 msgid "Reset color label"
 msgstr "Restabilește eticheta de culoare"
 
-#: src/summaryview.c:6091
+#: src/summaryview.c:6097
 msgid "Set color label"
 msgstr "Stabilește eticheta de culoare"
 
-#: src/summaryview.c:6530
+#: src/summaryview.c:6536
 msgid "Ignored thread"
 msgstr "Fir de discuție ignorat"
 
-#: src/summaryview.c:6532
+#: src/summaryview.c:6538
 msgid "Watched thread"
 msgstr "Fir de discuție urmărit"
 
-#: src/summaryview.c:6540
+#: src/summaryview.c:6546
 msgid "Replied but also forwarded - click to see reply"
 msgstr "S-a răspuns dar a fost și înaintat - clic pentru a vedea răspunsul"
 
-#: src/summaryview.c:6542
+#: src/summaryview.c:6548
 msgid "Replied - click to see reply"
 msgstr "S-a răspuns - clic pentru a vedea răspunsul"
 
-#: src/summaryview.c:6554
+#: src/summaryview.c:6560
 msgid "To be moved"
 msgstr "De mutat"
 
-#: src/summaryview.c:6556
+#: src/summaryview.c:6562
 msgid "To be copied"
 msgstr "De copiat"
 
-#: src/summaryview.c:6568
+#: src/summaryview.c:6574
 msgid "Signed, has attachment(s)"
 msgstr "Semnat, are fișier(e) atașat(e)"
 
-#: src/summaryview.c:6572
+#: src/summaryview.c:6578
 msgid "Encrypted, has attachment(s)"
 msgstr "Criptat, are unul sau mai multe fișiere atașate"
 
-#: src/summaryview.c:6574
+#: src/summaryview.c:6580
 msgid "Encrypted"
 msgstr "Criptat"
 
-#: src/summaryview.c:6576
+#: src/summaryview.c:6582
 msgid "Has attachment(s)"
 msgstr "Are fișier(e) atașat(e)"
 
-#: src/summaryview.c:8302
+#: src/summaryview.c:8308
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -19350,11 +19488,11 @@ msgstr ""
 "Eroare în expresia regulată (regexp):\n"
 "%s"
 
-#: src/summaryview.c:8406
+#: src/summaryview.c:8412
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Salt înapoi la lista de dosare (aveți mesaje necitite)"
 
-#: src/summaryview.c:8411
+#: src/summaryview.c:8417
 msgid "Go back to the folder list"
 msgstr "Du-te înapoi la lista de dosare"
 
@@ -19379,13 +19517,13 @@ msgid "Copy this add_ress"
 msgstr "Copiază această ad_resă"
 
 #: src/textview.c:708
-#, c-format
-msgid "[%s  %s (%d bytes)]"
+#, fuzzy, c-format
+msgid "[%s  %s (%ld bytes)]"
 msgstr "[%s  %s (%d baiți)]"
 
 #: src/textview.c:711
-#, c-format
-msgid "[%s (%d bytes)]"
+#, fuzzy, c-format
+msgid "[%s (%ld bytes)]"
 msgstr "[%s (%d baiți)]"
 
 #: src/textview.c:882
@@ -19710,10 +19848,6 @@ msgctxt "Toolbar"
 msgid "Trash"
 msgstr "La gunoi"
 
-#: src/toolbar.c:494
-msgid "Get Mail"
-msgstr "Verifică tot"
-
 #: src/toolbar.c:495
 msgid "Get"
 msgstr "Verifică"
@@ -19779,10 +19913,6 @@ msgstr "Inserează semnătura."
 #: src/toolbar.c:535
 msgid "Replace sig."
 msgstr "Înlocuiește semnătura."
-
-#: src/toolbar.c:536
-msgid "Edit"
-msgstr "Editează"
 
 #: src/toolbar.c:537
 msgid "Wrap para."
@@ -20218,3 +20348,15 @@ msgid ""
 msgstr ""
 "Claws Mail este acum pregătit.\n"
 "Dați clic pe Salvează pentru a porni."
+
+#~ msgid "Command-line not set"
+#~ msgstr "Linia de comandă nu este setată"
+
+#~ msgid "Enter Archiver arguments"
+#~ msgstr "Introduceți argumentele de arhivă"
+
+#~ msgid "_Get Mail"
+#~ msgstr "_Verifică corespondența pentru toate conturile"
+
+#~ msgid "E_xit Claws Mail"
+#~ msgstr "_Închide Claws Mail"

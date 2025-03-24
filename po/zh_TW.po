@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail 4.1.1git113\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2025-02-24 08:52+0000\n"
+"POT-Creation-Date: 2025-03-24 12:07+0100\n"
 "PO-Revision-Date: 2023-11-14 16:59+8\n"
 "Last-Translator: Mark Chang <mark.cyj@gmail.com>\n"
 "Language-Team: Mark Chang <mark.cyj@gmail.com>\n"
@@ -132,7 +132,7 @@ msgstr " 設定為預設帳號 (_S)"
 #: src/addressbook.c:1430 src/addressbook.c:3265 src/addressbook.c:3317
 #: src/addressbook.c:4186 src/addressbook.c:4191 src/addressbook.c:4307
 #: src/addrindex.c:1837 src/alertpanel.c:139 src/alertpanel.c:203
-#: src/browseldap.c:301 src/compose.c:636 src/compose.c:10989
+#: src/browseldap.c:300 src/compose.c:636 src/compose.c:10989
 #: src/edittags.c:589 src/exphtmldlg.c:193 src/exphtmldlg.c:295
 #: src/expldifdlg.c:323 src/gtk/about.c:931 src/gtk/icon_legend.c:184
 #: src/gtk/pluginwindow.c:391 src/gtk/prefswindow.c:512
@@ -178,7 +178,7 @@ msgstr "刪除帳號"
 #: src/addrcustomattr.c:496 src/addrduplicates.c:147 src/addrduplicates.c:791
 #: src/addressadd.c:299 src/addressbook.c:1476 src/addressbook.c:1484
 #: src/addressbook.c:2962 src/addressbook.c:2975 src/addressbook.c:2989
-#: src/addressbook.c:2996 src/addressbook_foldersel.c:210 src/addrgather.c:554
+#: src/addressbook.c:2996 src/addressbook_foldersel.c:210 src/addrgather.c:555
 #: src/compose.c:3712 src/compose.c:3844 src/compose.c:5152 src/compose.c:5189
 #: src/compose.c:5226 src/compose.c:5269 src/compose.c:5833 src/compose.c:6131
 #: src/compose.c:9563 src/compose.c:10768 src/compose.c:10773
@@ -189,19 +189,19 @@ msgstr "刪除帳號"
 #: src/exphtmldlg.c:608 src/exphtmldlg.c:683 src/expldifdlg.c:673
 #: src/expldifdlg.c:749 src/export.c:174 src/foldersel.c:349
 #: src/folderview.c:2505 src/folderview.c:2563 src/grouplistdialog.c:241
-#: src/gtk/foldersort.c:244 src/gtk/gtkaspell.c:1504 src/gtk/inputdialog.c:376
+#: src/gtk/foldersort.c:244 src/gtk/gtkaspell.c:1502 src/gtk/inputdialog.c:376
 #: src/gtk/prefswindow.c:507 src/gtk/progressdialog.c:93 src/imap.c:1243
 #: src/imap_gtk.c:369 src/imap_gtk.c:519 src/imap_gtk.c:579 src/import.c:177
 #: src/importldif.c:925 src/importldif.c:991 src/importmutt.c:250
 #: src/importpine.c:249 src/inc.c:893 src/main.c:2197 src/mainwindow.c:3998
-#: src/mbox.c:549 src/messageview.c:2080 src/messageview.c:2091
+#: src/mbox.c:549 src/messageview.c:2082 src/messageview.c:2093
 #: src/mh_gtk.c:207 src/mh_gtk.c:376 src/mimeview.c:1857 src/mimeview.c:2298
 #: src/news.c:407 src/news_gtk.c:252 src/password_gtk.c:215
 #: src/plugins/archive/archiver_gtk.c:117
-#: src/plugins/archive/archiver_gtk.c:575
-#: src/plugins/archive/archiver_gtk.c:622
-#: src/plugins/archive/archiver_gtk.c:945
-#: src/plugins/archive/archiver_gtk.c:1042
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:956
+#: src/plugins/archive/archiver_gtk.c:1056
 #: src/plugins/att_remover/att_remover.c:383
 #: src/plugins/att_remover/att_remover.c:425
 #: src/plugins/attachwarner/attachwarner.c:218
@@ -212,11 +212,11 @@ msgstr "刪除帳號"
 #: src/plugins/managesieve/sieve_editor.c:435
 #: src/plugins/managesieve/sieve_editor.c:632
 #: src/plugins/managesieve/sieve_manager.c:330
-#: src/plugins/notification/notification_foldercheck.c:585
+#: src/plugins/notification/notification_foldercheck.c:584
 #: src/plugins/notification/notification_trayicon.c:550
 #: src/plugins/pgpcore/passphrase.c:122 src/plugins/pgpcore/select-keys.c:500
 #: src/plugins/rssyl/rssyl_cb_menu.c:189 src/plugins/rssyl/rssyl_cb_menu.c:356
-#: src/plugins/rssyl/rssyl_feed_props.c:477
+#: src/plugins/rssyl/rssyl_feed_props.c:530
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:46
 #: src/plugins/vcalendar/vcalendar.c:122 src/plugins/vcalendar/vcalendar.c:1063
 #: src/plugins/vcalendar/vcal_folder.c:2028
@@ -230,8 +230,8 @@ msgstr "刪除帳號"
 #: src/prefs_summary_column.c:355 src/prefs_summary_open.c:180
 #: src/prefs_template.c:398 src/prefs_template.c:898 src/prefs_template.c:911
 #: src/prefs_themes.c:577 src/send_message.c:300 src/ssl_manager.c:451
-#: src/summaryview.c:1334 src/summaryview.c:4561 src/summaryview.c:5030
-#: src/summaryview.c:5086 src/summaryview.c:5825 src/textview.c:3114
+#: src/summaryview.c:1335 src/summaryview.c:4567 src/summaryview.c:5036
+#: src/summaryview.c:5092 src/summaryview.c:5831 src/textview.c:3114
 #: src/toolbar.c:3107 src/wizard.c:1833
 msgid "_Cancel"
 msgstr "取消(_C)"
@@ -239,14 +239,14 @@ msgstr "取消(_C)"
 #: src/account.c:1141 src/addrcustomattr.c:218 src/addressbook.c:430
 #: src/addressbook.c:455 src/addressbook.c:472 src/addressbook.c:1150
 #: src/edittags.c:297 src/imap_gtk.c:369
-#: src/plugins/archive/archiver_gtk.c:1309
+#: src/plugins/archive/archiver_gtk.c:1330
 #: src/plugins/att_remover/att_remover.c:425
 #: src/plugins/mailmbox/plugin_gtk.c:336
 #: src/plugins/managesieve/sieve_manager.c:330
 #: src/plugins/rssyl/rssyl_cb_menu.c:189
 #: src/plugins/vcalendar/vcal_folder.c:2028 src/prefs_actions.c:1105
 #: src/prefs_customheader.c:695 src/prefs_display_header.c:327
-#: src/prefs_filtering.c:1689 src/prefs_template.c:1104 src/summaryview.c:4561
+#: src/prefs_filtering.c:1689 src/prefs_template.c:1104 src/summaryview.c:4567
 msgid "_Delete"
 msgstr "刪除"
 
@@ -489,10 +489,10 @@ msgstr "確認要以預設值覆蓋所有的屬性名稱嗎？"
 #: src/plugins/pgpcore/sgpgme.c:1084 src/plugins/pgpcore/sgpgme.c:1207
 #: src/plugins/vcalendar/vcalendar.c:966 src/prefs_migration.c:62
 #: src/prefs_themes.c:508 src/prefs_themes.c:564 src/summary_search.c:797
-#: src/summaryview.c:1334 src/summaryview.c:1943 src/summaryview.c:1991
-#: src/summaryview.c:2028 src/summaryview.c:2076 src/summaryview.c:2110
-#: src/summaryview.c:2144 src/summaryview.c:2178 src/summaryview.c:2208
-#: src/summaryview.c:4275 src/summaryview.c:4321 src/summaryview.c:6092
+#: src/summaryview.c:1335 src/summaryview.c:1944 src/summaryview.c:1992
+#: src/summaryview.c:2029 src/summaryview.c:2077 src/summaryview.c:2111
+#: src/summaryview.c:2145 src/summaryview.c:2179 src/summaryview.c:2209
+#: src/summaryview.c:4281 src/summaryview.c:4327 src/summaryview.c:6098
 #: src/toolbar.c:3087
 msgid "_No"
 msgstr "_N否"
@@ -508,11 +508,11 @@ msgstr "_N否"
 #: src/plugins/pgpcore/sgpgme.c:1207 src/plugins/vcalendar/vcalendar.c:123
 #: src/plugins/vcalendar/vcalendar.c:966 src/prefs_migration.c:62
 #: src/prefs_themes.c:508 src/prefs_themes.c:564 src/summary_search.c:797
-#: src/summaryview.c:1334 src/summaryview.c:1943 src/summaryview.c:1991
-#: src/summaryview.c:2028 src/summaryview.c:2076 src/summaryview.c:2110
-#: src/summaryview.c:2144 src/summaryview.c:2178 src/summaryview.c:2208
-#: src/summaryview.c:4275 src/summaryview.c:4321 src/summaryview.c:5086
-#: src/summaryview.c:6092 src/toolbar.c:3087
+#: src/summaryview.c:1335 src/summaryview.c:1944 src/summaryview.c:1992
+#: src/summaryview.c:2029 src/summaryview.c:2077 src/summaryview.c:2111
+#: src/summaryview.c:2145 src/summaryview.c:2179 src/summaryview.c:2209
+#: src/summaryview.c:4281 src/summaryview.c:4327 src/summaryview.c:5092
+#: src/summaryview.c:6098 src/toolbar.c:3087
 msgid "_Yes"
 msgstr "是(_Y)"
 
@@ -550,27 +550,27 @@ msgid "_Add"
 msgstr "新增(_A)"
 
 #: src/addrcustomattr.c:497 src/addressadd.c:300
-#: src/addressbook_foldersel.c:211 src/addrgather.c:555 src/alertpanel.c:385
+#: src/addressbook_foldersel.c:211 src/addrgather.c:556 src/alertpanel.c:385
 #: src/compose.c:9564 src/editaddress.c:172 src/editaddress.c:816
 #: src/editbook.c:197 src/editgroup.c:406 src/editjpilot.c:306
 #: src/editldap_basedn.c:239 src/editldap.c:363 src/editvcard.c:204
 #: src/export.c:175 src/foldersel.c:350 src/grouplistdialog.c:243
-#: src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1506 src/gtk/inputdialog.c:378
+#: src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1504 src/gtk/inputdialog.c:378
 #: src/gtk/prefswindow.c:508 src/import.c:178 src/importmutt.c:251
 #: src/importpine.c:250 src/main.c:2197 src/password_gtk.c:217
-#: src/plugins/archive/archiver_gtk.c:575
-#: src/plugins/archive/archiver_gtk.c:622
-#: src/plugins/archive/archiver_gtk.c:749
-#: src/plugins/archive/archiver_gtk.c:1044
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:760
+#: src/plugins/archive/archiver_gtk.c:1058
 #: src/plugins/att_remover/att_remover.c:384
 #: src/plugins/managesieve/sieve_editor.c:633
-#: src/plugins/notification/notification_foldercheck.c:586
+#: src/plugins/notification/notification_foldercheck.c:585
 #: src/plugins/notification/notification_trayicon.c:550
 #: src/plugins/pgpcore/passphrase.c:123
-#: src/plugins/rssyl/rssyl_feed_props.c:483
+#: src/plugins/rssyl/rssyl_feed_props.c:536
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1804
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1928 src/prefs_actions.c:220
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1805
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1929 src/prefs_actions.c:220
 #: src/prefs_customheader.c:177 src/prefs_display_header.c:246
 #: src/prefs_filtering_action.c:393 src/prefs_filtering.c:352
 #: src/prefs_folder_column.c:342 src/prefs_matcher.c:573
@@ -921,7 +921,7 @@ msgid "Do you want to delete the query results and addresses in '%s'?"
 msgstr "確認要刪除%s內所有搜尋的結果和地址嗎？"
 
 #: src/addressbook.c:2961 src/addressbook.c:2989 src/addressbook.c:2996
-#: src/plugins/archive/archiver_prefs.c:430 src/prefs_filtering_action.c:171
+#: src/plugins/archive/archiver_prefs.c:449 src/prefs_filtering_action.c:171
 #: src/toolbar.c:506
 msgid "Delete"
 msgstr "刪除"
@@ -1129,20 +1129,20 @@ msgstr "標頭名稱"
 msgid "Address Count"
 msgstr "地址數量"
 
-#: src/addrgather.c:584
+#: src/addrgather.c:585
 msgid "Header Fields"
 msgstr "標頭區"
 
-#: src/addrgather.c:585 src/exphtmldlg.c:640 src/expldifdlg.c:705
+#: src/addrgather.c:586 src/exphtmldlg.c:640 src/expldifdlg.c:705
 #: src/importldif.c:967
 msgid "Finish"
 msgstr "完成"
 
-#: src/addrgather.c:643
+#: src/addrgather.c:644
 msgid "Collect email addresses from selected messages"
 msgstr "從選擇的郵件內收集郵件地址"
 
-#: src/addrgather.c:647
+#: src/addrgather.c:648
 msgid "Collect email addresses from folder"
 msgstr "從資料夾內收集郵件地址"
 
@@ -1178,7 +1178,7 @@ msgstr "注意"
 #: src/alertpanel.c:167 src/compose.c:5865 src/compose.c:6443
 #: src/compose.c:12401 src/file_checker.c:83 src/file_checker.c:107
 #: src/messageview.c:861 src/mimeview.c:1890 src/plugins/pgpcore/sgpgme.c:996
-#: src/plugins/vcalendar/vcalendar.c:122 src/summaryview.c:5086
+#: src/plugins/vcalendar/vcalendar.c:122 src/summaryview.c:5092
 msgid "Warning"
 msgstr "警告"
 
@@ -1195,23 +1195,23 @@ msgstr "顯示日誌(_V)"
 msgid "Show this message next time"
 msgstr "下一次顯示這個訊息"
 
-#: src/browseldap.c:221
+#: src/browseldap.c:220
 msgid "Browse Directory Entry"
 msgstr "瀏覽目錄"
 
-#: src/browseldap.c:240
+#: src/browseldap.c:239
 msgid "Server Name:"
 msgstr "伺服器名稱："
 
-#: src/browseldap.c:251
+#: src/browseldap.c:250
 msgid "Distinguished Name (dn):"
 msgstr "識別名稱 (dn)"
 
-#: src/browseldap.c:283
+#: src/browseldap.c:282
 msgid "LDAP Name"
 msgstr "LDAP名稱"
 
-#: src/browseldap.c:289
+#: src/browseldap.c:288
 msgid "Attribute Value"
 msgstr "屬性值"
 
@@ -1965,12 +1965,12 @@ msgid "_Normal"
 msgstr "一般"
 
 #: src/compose.c:739 src/mainwindow.c:668 src/messageview.c:306
-#: src/summaryview.c:429
+#: src/summaryview.c:430
 msgid "_All"
 msgstr "所有"
 
 #: src/compose.c:740 src/mainwindow.c:669 src/messageview.c:307
-#: src/summaryview.c:430
+#: src/summaryview.c:431
 msgid "_Sender"
 msgstr "傳送者"
 
@@ -2354,7 +2354,8 @@ msgid "No account for sending mails available!"
 msgstr "傳送郵件時找不到有效的帳號"
 
 #: src/compose.c:6188
-msgid "Selected account isn't NNTP: Posting is impossible."
+#, fuzzy
+msgid "Selected account isn't NNTP: posting is impossible."
 msgstr "選擇的帳號並非NNTP：無法傳輸"
 
 #: src/compose.c:6442
@@ -2399,7 +2400,7 @@ msgstr "Mime格式"
 #: src/plugins/att_remover/att_remover.c:302
 #: src/plugins/pgpcore/select-keys.c:454 src/prefs_matcher.c:640
 #: src/prefs_summaries.c:700 src/prefs_summary_column.c:84
-#: src/summaryview.c:468
+#: src/summaryview.c:469
 msgid "Size"
 msgstr "大小"
 
@@ -2409,7 +2410,7 @@ msgstr "儲存訊息到"
 
 #: src/compose.c:7598 src/editjpilot.c:277 src/editldap.c:514
 #: src/editvcard.c:193 src/export.c:161 src/import.c:164 src/importmutt.c:240
-#: src/importpine.c:239 src/plugins/archive/archiver_gtk.c:1077
+#: src/importpine.c:239 src/plugins/archive/archiver_gtk.c:1085
 #: src/plugins/bogofilter/bogofilter_gtk.c:213
 #: src/plugins/bogofilter/bogofilter_gtk.c:236
 #: src/plugins/bsfilter/bsfilter_gtk.c:180
@@ -2466,7 +2467,7 @@ msgid ""
 "encrypt this message."
 msgstr "無法載入隱私系統'%s'，此訊息將無法被簽證或加密"
 
-#: src/compose.c:8780 src/plugins/archive/archiver_gtk.c:1176
+#: src/compose.c:8780 src/plugins/archive/archiver_gtk.c:1192
 msgid "_None"
 msgstr "空白(_N)"
 
@@ -3149,11 +3150,11 @@ msgstr "姓名符合'包含'搜尋項目"
 
 #: src/editldap.c:636
 msgid ""
-"Searches for names and addresses can be performed either using \"begins-"
-"with\" or \"contains\" search term. Check this option to perform a "
-"\"contains\" search; this type of search usually takes longer to complete. "
-"Note that for performance reasons, address completion uses \"begins-with\" "
-"for all searches against other address interfaces."
+"Searches for names and addresses can be performed either using \"begins-with"
+"\" or \"contains\" search term. Check this option to perform a \"contains\" "
+"search; this type of search usually takes longer to complete. Note that for "
+"performance reasons, address completion uses \"begins-with\" for all "
+"searches against other address interfaces."
 msgstr ""
 "可以使用\"以...開始\"或\"包含\"的搜尋條件來進行姓名和地址的搜尋。勾選此選項進"
 "行\"包含\"的搜尋，此法通常會花費較長的時間。特別注意，為了提昇效能，地址自動"
@@ -3356,10 +3357,11 @@ msgid "Stylesheet"
 msgstr "樣式"
 
 #: src/exphtmldlg.c:448 src/gtk/colorlabel.c:369 src/gtk/colorlabel.c:495
-#: src/gtk/gtkaspell.c:1560 src/gtk/gtkaspell.c:2195 src/gtk/menu.c:126
-#: src/mainwindow.c:1176 src/plugins/archive/archiver_prefs.c:312
+#: src/gtk/gtkaspell.c:1558 src/gtk/gtkaspell.c:2193 src/gtk/menu.c:126
+#: src/mainwindow.c:1176 src/plugins/archive/archiver_prefs.c:326
 #: src/plugins/libravatar/libravatar_prefs.c:319 src/prefs_account.c:1143
-#: src/prefs_toolbar.c:770 src/prefs_toolbar.c:1420 src/summaryview.c:6268
+#: src/prefs_spelling.c:329 src/prefs_toolbar.c:770 src/prefs_toolbar.c:1420
+#: src/summaryview.c:6274
 msgid "None"
 msgstr "無"
 
@@ -3598,7 +3600,7 @@ msgstr "匯出通訊錄至 LDIF 檔"
 msgid "Distinguished Name"
 msgstr "Distinguished Name"
 
-#: src/export.c:112 src/summaryview.c:8490
+#: src/export.c:112 src/summaryview.c:8496
 msgid "Export to mbox file"
 msgstr "匯出至 mbox 檔案"
 
@@ -3639,7 +3641,7 @@ msgid "Full Name"
 msgstr "全名"
 
 #: src/exporthtml.c:761 src/importldif.c:966
-#: src/plugins/archive/archiver_gtk.c:772
+#: src/plugins/archive/archiver_gtk.c:783
 msgid "Attributes"
 msgstr "屬性"
 
@@ -3758,8 +3760,8 @@ msgid ""
 "rule is account-based [id=%d, name='%s'], matching current account [id=%d, "
 "name='%s']\n"
 msgstr ""
-"這是一個以帳號為基準的規則 [id=%d, name='%s']，但是不符合目前郵件帳號 "
-"[id=%d, name='%s']\n"
+"這是一個以帳號為基準的規則 [id=%d, name='%s']，但是不符合目前郵件帳號 [id="
+"%d, name='%s']\n"
 
 #: src/filtering.c:747
 msgid "rule is account-based, not matching current account\n"
@@ -3768,11 +3770,11 @@ msgstr "這是一個以帳號為基準的規則，但是不符合目前帳號\n"
 #: src/filtering.c:755
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], not matching current account "
-"[id=%d, name='%s']\n"
+"rule is account-based [id=%d, name='%s'], not matching current account [id="
+"%d, name='%s']\n"
 msgstr ""
-"這是一個以帳號為基準的規則 [id=%d, name='%s']，但是不符合目前郵件帳號 "
-"[id=%d, name='%s']\n"
+"這是一個以帳號為基準的規則 [id=%d, name='%s']，但是不符合目前郵件帳號 [id="
+"%d, name='%s']\n"
 
 #: src/filtering.c:795
 #, c-format
@@ -4007,13 +4009,13 @@ msgstr "設定已顯示行數"
 
 #: src/folderview.c:407 src/folderview.c:454
 #: src/plugins/notification/notification_lcdproc.c:141
-#: src/prefs_folder_column.c:78 src/prefs_matcher.c:401 src/summaryview.c:6536
+#: src/prefs_folder_column.c:78 src/prefs_matcher.c:401 src/summaryview.c:6542
 msgid "New"
 msgstr "新郵件"
 
 #: src/folderview.c:408 src/folderview.c:455
 #: src/plugins/notification/notification_lcdproc.c:145
-#: src/prefs_folder_column.c:79 src/prefs_matcher.c:400 src/summaryview.c:6538
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:400 src/summaryview.c:6544
 #: src/toolbar.c:521
 msgid "Unread"
 msgstr "未讀郵件"
@@ -4024,7 +4026,7 @@ msgid "Total"
 msgstr "全部郵件"
 
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:457 src/summaryview.c:469
+#: src/folderview.c:457 src/summaryview.c:470
 msgid "#"
 msgstr "#"
 
@@ -4032,7 +4034,7 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "設定資料夾訊息..."
 
-#: src/folderview.c:873 src/summaryview.c:4273
+#: src/folderview.c:873 src/summaryview.c:4279
 msgid "Mark all as read"
 msgstr "將所有的郵件標示為已讀"
 
@@ -4042,11 +4044,11 @@ msgid ""
 "read?"
 msgstr "確定要將此資料夾及其下的子目錄內所有的郵件標示為已讀嗎？"
 
-#: src/folderview.c:876 src/summaryview.c:4274
+#: src/folderview.c:876 src/summaryview.c:4280
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "確定要將此資料內所有的郵件標示為已讀嗎？"
 
-#: src/folderview.c:879 src/summaryview.c:4319
+#: src/folderview.c:879 src/summaryview.c:4325
 msgid "Mark all as unread"
 msgstr "將所有的郵件標示為未讀"
 
@@ -4056,7 +4058,7 @@ msgid ""
 "unread?"
 msgstr "確定要將此資料夾及其下的子目錄內所有的郵件標示為未讀嗎？"
 
-#: src/folderview.c:882 src/summaryview.c:4320
+#: src/folderview.c:882 src/summaryview.c:4326
 msgid "Do you really want to mark all mails in this folder as unread?"
 msgstr "確定要將此資料內所有的郵件標示為未讀嗎？"
 
@@ -4208,7 +4210,7 @@ msgstr "移動失敗"
 msgid "Processing configuration for folder %s"
 msgstr "進行資料夾 %s 配置"
 
-#: src/folderview.c:3202 src/summaryview.c:4728 src/summaryview.c:4834
+#: src/folderview.c:3202 src/summaryview.c:4734 src/summaryview.c:4840
 msgid "The destination folder can only be used to store subfolders."
 msgstr "目的資料夾只能被用來儲存子資料夾"
 
@@ -4262,7 +4264,7 @@ msgstr "未知的"
 msgid "Can't retrieve newsgroup list."
 msgstr "無法取得新聞群組清單"
 
-#: src/grouplistdialog.c:476 src/gtk/gtkutils.c:1738 src/summaryview.c:1670
+#: src/grouplistdialog.c:476 src/gtk/gtkutils.c:1738 src/summaryview.c:1671
 msgid "Done."
 msgstr "完成"
 
@@ -4625,74 +4627,74 @@ msgstr "無法初始化魔法經紀人(Enchant broker)"
 msgid "Couldn't initialize %s dictionary:"
 msgstr "無法初始化 %s 字典："
 
-#: src/gtk/gtkaspell.c:1060
+#: src/gtk/gtkaspell.c:1058
 msgid "No misspelled word found."
 msgstr "沒有拼錯的字"
 
-#: src/gtk/gtkaspell.c:1436
+#: src/gtk/gtkaspell.c:1434
 msgid "Replace unknown word"
 msgstr "取代未知的單字"
 
-#: src/gtk/gtkaspell.c:1452
+#: src/gtk/gtkaspell.c:1450
 #, c-format
 msgid "Replace \"%s\" with: "
 msgstr "以...取代\"%s\""
 
-#: src/gtk/gtkaspell.c:1497
+#: src/gtk/gtkaspell.c:1495
 msgid ""
 "Holding down Control key while pressing Enter\n"
 "will learn from mistake.\n"
 msgstr "按下 Enter 鍵時保持控制鍵將會從錯誤的地方進行學習\n"
 
-#: src/gtk/gtkaspell.c:1794 src/gtk/gtkaspell.c:1931
+#: src/gtk/gtkaspell.c:1792 src/gtk/gtkaspell.c:1929
 msgid "More..."
 msgstr "更多..."
 
-#: src/gtk/gtkaspell.c:1850
+#: src/gtk/gtkaspell.c:1848
 #, c-format
 msgid "\"%s\" unknown in dictionary '%s'"
 msgstr "\"%s\" 在字典中找不到 '%s'"
 
-#: src/gtk/gtkaspell.c:1865
+#: src/gtk/gtkaspell.c:1863
 msgid "Accept in this session"
 msgstr "此次接受"
 
-#: src/gtk/gtkaspell.c:1875
+#: src/gtk/gtkaspell.c:1873
 msgid "Add to personal dictionary"
 msgstr "新增至個人字典"
 
-#: src/gtk/gtkaspell.c:1885
+#: src/gtk/gtkaspell.c:1883
 msgid "Replace with..."
 msgstr "以...取代"
 
-#: src/gtk/gtkaspell.c:1898
+#: src/gtk/gtkaspell.c:1896
 #, c-format
 msgid "Check with %s"
 msgstr "用 %s 檢查"
 
-#: src/gtk/gtkaspell.c:1920
+#: src/gtk/gtkaspell.c:1918
 msgid "(no suggestions)"
 msgstr "(沒有建議)"
 
-#: src/gtk/gtkaspell.c:1994
+#: src/gtk/gtkaspell.c:1992
 #, c-format
 msgid "Dictionary: %s"
 msgstr "字典： %s"
 
-#: src/gtk/gtkaspell.c:2008
+#: src/gtk/gtkaspell.c:2006
 #, c-format
 msgid "Use alternate (%s)"
 msgstr "使用替換 (%s)"
 
-#: src/gtk/gtkaspell.c:2019
+#: src/gtk/gtkaspell.c:2017
 msgid "Use both dictionaries"
 msgstr "使用兩個字典"
 
-#: src/gtk/gtkaspell.c:2035 src/prefs_spelling.c:130
+#: src/gtk/gtkaspell.c:2033 src/prefs_spelling.c:130
 msgid "Check while typing"
 msgstr "輸⼊時檢查"
 
-#: src/gtk/gtkaspell.c:2117
+#: src/gtk/gtkaspell.c:2115
 #, c-format
 msgid ""
 "The spell checker could not change dictionary.\n"
@@ -4701,7 +4703,7 @@ msgstr ""
 "這個拼字檢查器無法改變字典\n"
 "%s"
 
-#: src/gtk/gtkaspell.c:2173
+#: src/gtk/gtkaspell.c:2171
 #, c-format
 msgid ""
 "The spell checker could not change the alternate dictionary.\n"
@@ -4729,7 +4731,7 @@ msgstr "配置..."
 
 #: src/gtk/headers.h:9 src/prefs_filtering_action.c:1225
 #: src/prefs_matcher.c:645 src/prefs_matcher.c:2218 src/prefs_summaries.c:701
-#: src/prefs_summary_column.c:83 src/quote_fmt.c:48 src/summaryview.c:467
+#: src/prefs_summary_column.c:83 src/quote_fmt.c:48 src/summaryview.c:468
 msgid "Date"
 msgstr "日期"
 
@@ -4740,7 +4742,7 @@ msgstr "日期："
 #: src/gtk/headers.h:10 src/gtk/quicksearch.c:857
 #: src/prefs_filtering_action.c:1222 src/prefs_matcher.c:2215
 #: src/prefs_summaries.c:703 src/prefs_summary_column.c:81 src/quote_fmt.c:49
-#: src/summaryview.c:465
+#: src/summaryview.c:466
 msgid "From"
 msgstr "寄件者"
 
@@ -4763,7 +4765,7 @@ msgstr "回覆給"
 #: src/gtk/headers.h:13 src/gtk/quicksearch.c:863
 #: src/prefs_filtering_action.c:1223 src/prefs_matcher.c:2216
 #: src/prefs_summaries.c:704 src/prefs_summary_column.c:82 src/quote_fmt.c:56
-#: src/summaryview.c:466
+#: src/summaryview.c:467
 msgid "To"
 msgstr "收件者"
 
@@ -4801,7 +4803,7 @@ msgstr "索引："
 #: src/gtk/headers.h:19 src/gtk/quicksearch.c:851
 #: src/prefs_filtering_action.c:1221 src/prefs_matcher.c:2214
 #: src/prefs_summaries.c:705 src/prefs_summary_column.c:80 src/quote_fmt.c:55
-#: src/summaryview.c:464
+#: src/summaryview.c:465
 msgid "Subject"
 msgstr "主旨"
 
@@ -4810,7 +4812,7 @@ msgstr "主旨"
 msgid "Subject:"
 msgstr "主旨："
 
-#: src/gtk/headers.h:20 src/plugins/rssyl/rssyl_feed_props.c:416
+#: src/gtk/headers.h:20 src/plugins/rssyl/rssyl_feed_props.c:445
 msgid "Comments"
 msgstr "註解"
 
@@ -4926,7 +4928,7 @@ msgstr "已見："
 #: src/gtk/headers.h:37 src/gtk/progressdialog.c:143
 #: src/gtk/sslcertwindow.c:188 src/prefs_summaries.c:709
 #: src/prefs_summary_column.c:78 src/prefs_themes.c:1109 src/ssl_manager.c:124
-#: src/summaryview.c:2894
+#: src/summaryview.c:2895
 msgid "Status"
 msgstr "狀態"
 
@@ -5309,7 +5311,7 @@ msgstr ""
 
 #: src/gtk/pluginwindow.c:303 src/plugins/acpi_notifier/acpi_notifier.c:775
 #: src/plugins/address_keeper/address_keeper_prefs.c:280
-#: src/plugins/archive/archiver_prefs.c:105
+#: src/plugins/archive/archiver_prefs.c:108
 #: src/plugins/attachwarner/attachwarner_prefs.c:234
 #: src/plugins/bogofilter/bogofilter_gtk.c:482
 #: src/plugins/bsfilter/bsfilter_gtk.c:399
@@ -5330,7 +5332,7 @@ msgstr ""
 #: src/plugins/notification/notification_prefs.c:545
 #: src/plugins/notification/notification_prefs.c:563
 #: src/plugins/pgpcore/prefs_gpg.c:687 src/plugins/pgpcore/prefs_gpg.c:707
-#: src/plugins/rssyl/rssyl_prefs.c:66
+#: src/plugins/rssyl/rssyl_prefs.c:87
 #: src/plugins/spam_report/spam_report_prefs.c:82
 #: src/plugins/spamassassin/spamassassin_gtk.c:665
 #: src/plugins/vcalendar/vcal_prefs.c:775 src/prefs_toolbar.c:924
@@ -5367,7 +5369,7 @@ msgid "Loaded plugins"
 msgstr "已載入的外掛程式"
 
 #: src/gtk/prefswindow.c:506 src/gtk/prefswindow.c:511
-#: src/plugins/archive/archiver_gtk.c:944
+#: src/plugins/archive/archiver_gtk.c:955
 #: src/plugins/clamd/clamav_plugin_gtk.c:91
 msgid "_Apply"
 msgstr "指定"
@@ -5613,7 +5615,7 @@ msgstr "搜尋過程出現一些錯誤，請檢視你的歷程"
 msgid "From/To/Cc/Subject/Tag"
 msgstr "寄件者/收件者/密件/主旨/標籤"
 
-#: src/gtk/quicksearch.c:893 src/plugins/archive/archiver_prefs.c:415
+#: src/gtk/quicksearch.c:893 src/plugins/archive/archiver_prefs.c:434
 msgid "Recursive"
 msgstr "循環"
 
@@ -5820,15 +5822,15 @@ msgstr "標簽："
 
 #: src/headerview.c:193 src/plugins/notification/notification_popup.c:313
 #: src/plugins/notification/notification_popup.c:620
-#: src/plugins/notification/notification_trayicon.c:885 src/summaryview.c:3494
-#: src/summaryview.c:3512 src/summaryview.c:3551
+#: src/plugins/notification/notification_trayicon.c:885 src/summaryview.c:3495
+#: src/summaryview.c:3513 src/summaryview.c:3552
 msgid "(No From)"
 msgstr "(無寄件者)"
 
 #: src/headerview.c:208 src/plugins/notification/notification_popup.c:315
 #: src/plugins/notification/notification_popup.c:624
-#: src/plugins/notification/notification_trayicon.c:888 src/summaryview.c:3563
-#: src/summaryview.c:3566
+#: src/plugins/notification/notification_trayicon.c:888 src/summaryview.c:3564
+#: src/summaryview.c:3567
 msgid "(No Subject)"
 msgstr "(無主旨)"
 
@@ -6200,8 +6202,8 @@ msgid "Con_tinue connecting"
 msgstr "繼續保持連線"
 
 #: src/imap.c:1253
-#, c-format
-msgid "Account '%s': Connecting to IMAP server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to IMAP server: %s:%d..."
 msgstr "帳號　'%s'：連線到　IMAP4 伺服器：  %s:%d..."
 
 #: src/imap.c:1318
@@ -6606,7 +6608,7 @@ msgstr "選擇要匯入的 LDIF 檔案"
 msgid "R"
 msgstr "R"
 
-#: src/importldif.c:707 src/summaryview.c:462
+#: src/importldif.c:707 src/summaryview.c:463
 msgid "S"
 msgstr "S"
 
@@ -6636,10 +6638,10 @@ msgid ""
 "below the list. A double click anywhere in the row will also select the "
 "field for import."
 msgstr ""
-"選擇清單上方的想要修改名稱或選擇匯入的 LDIF 欄位。所有保留的欄位(每一個以"
-"\"R\"標示的行)，會自動的地被匯入並且無法修改名稱。在選擇的(\"S\")行處點選，將"
-"會選擇想要匯入的欄位。而點選其它列的任何地方將可以在下方的清單輸入區域選擇想"
-"要修改名稱的欄位。若在其它列的任何地方雙擊，也可以選擇要匯入的欄位"
+"選擇清單上方的想要修改名稱或選擇匯入的 LDIF 欄位。所有保留的欄位(每一個以\"R"
+"\"標示的行)，會自動的地被匯入並且無法修改名稱。在選擇的(\"S\")行處點選，將會"
+"選擇想要匯入的欄位。而點選其它列的任何地方將可以在下方的清單輸入區域選擇想要"
+"修改名稱的欄位。若在其它列的任何地方雙擊，也可以選擇要匯入的欄位"
 
 #: src/importldif.c:774
 msgid "The LDIF field can be renamed to the User Attribute name."
@@ -6746,7 +6748,7 @@ msgid "Auth failed"
 msgstr "認證失敗"
 
 #: src/inc.c:727 src/prefs_matcher.c:406 src/prefs_summaries.c:712
-#: src/prefs_summary_column.c:87 src/summaryview.c:2890 src/summaryview.c:6562
+#: src/prefs_summary_column.c:87 src/summaryview.c:2891 src/summaryview.c:6568
 msgid "Locked"
 msgstr "已鎖定"
 
@@ -6766,13 +6768,13 @@ msgid "Finished (no new messages)"
 msgstr "已完成 (沒有新郵件)"
 
 #: src/inc.c:870
-#, c-format
-msgid "%s: Retrieving new messages"
+#, fuzzy, c-format
+msgid "%s: retrieving new messages"
 msgstr "%s： 正在取回新郵件"
 
 #: src/inc.c:899
-#, c-format
-msgid "Account '%s': Connecting to POP3 server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to POP3 server: %s:%d..."
 msgstr "帳號 '%s'： POP3 伺服器連線中： %s:%d..."
 
 #: src/inc.c:933
@@ -7362,7 +7364,7 @@ msgstr "NetworkManager(網路管理員)：網路是離線的\n"
 msgid "_File"
 msgstr "檔案(_F)"
 
-#: src/mainwindow.c:518 src/messageview.c:214 src/summaryview.c:443
+#: src/mainwindow.c:518 src/messageview.c:214 src/summaryview.c:444
 msgid "_View"
 msgstr "檢視(_V)"
 
@@ -7631,15 +7633,15 @@ msgid "Compose a news message"
 msgstr "新增郵件"
 
 #: src/mainwindow.c:666 src/messageview.c:304
-#: src/plugins/notification/notification_banner.c:96 src/summaryview.c:427
+#: src/plugins/notification/notification_banner.c:96 src/summaryview.c:428
 msgid "_Reply"
 msgstr "回覆(_R)"
 
-#: src/mainwindow.c:667 src/messageview.c:305 src/summaryview.c:428
+#: src/mainwindow.c:667 src/messageview.c:305 src/summaryview.c:429
 msgid "Repl_y to"
 msgstr "回覆給(_y)"
 
-#: src/mainwindow.c:670 src/messageview.c:308 src/summaryview.c:431
+#: src/mainwindow.c:670 src/messageview.c:308 src/summaryview.c:432
 msgid "Mailing _list"
 msgstr "郵件清單(_l)"
 
@@ -7647,17 +7649,17 @@ msgstr "郵件清單(_l)"
 msgid "Follow-up and reply to"
 msgstr "轉送及回覆"
 
-#: src/mainwindow.c:674 src/messageview.c:311 src/summaryview.c:433
+#: src/mainwindow.c:674 src/messageview.c:311 src/summaryview.c:434
 #: src/toolbar.c:2490
 msgid "_Forward"
 msgstr "轉送(_F)"
 
-#: src/mainwindow.c:675 src/messageview.c:312 src/summaryview.c:434
+#: src/mainwindow.c:675 src/messageview.c:312 src/summaryview.c:435
 #: src/toolbar.c:2491
 msgid "For_ward as attachment"
 msgstr "以夾檔方式轉送(_w)"
 
-#: src/mainwindow.c:676 src/messageview.c:313 src/summaryview.c:435
+#: src/mainwindow.c:676 src/messageview.c:313 src/summaryview.c:436
 #: src/toolbar.c:2492
 msgid "Redirec_t"
 msgstr "重新導向(_t)"
@@ -7714,7 +7716,7 @@ msgstr "刪除串列(_h)"
 msgid "Cancel a news message"
 msgstr "取消新郵件"
 
-#: src/mainwindow.c:701 src/summaryview.c:436
+#: src/mainwindow.c:701 src/summaryview.c:437
 msgid "_Marks"
 msgstr "標記(_M)"
 
@@ -7776,11 +7778,11 @@ msgstr "上鎖"
 msgid "Unlock"
 msgstr "解鎖"
 
-#: src/mainwindow.c:725 src/summaryview.c:437
+#: src/mainwindow.c:725 src/summaryview.c:438
 msgid "Color la_bel"
 msgstr "顏色標記(_b)"
 
-#: src/mainwindow.c:726 src/summaryview.c:438
+#: src/mainwindow.c:726 src/summaryview.c:439
 msgid "Ta_gs"
 msgstr "標籤(_g)"
 
@@ -7849,7 +7851,7 @@ msgstr "根據主旨(_S)"
 msgid "By S_ender"
 msgstr "寄件者"
 
-#: src/mainwindow.c:755 src/messageview.c:328 src/summaryview.c:441
+#: src/mainwindow.c:755 src/messageview.c:328 src/summaryview.c:442
 msgid "Create processing rule"
 msgstr "建立執行規則"
 
@@ -8125,7 +8127,7 @@ msgstr "降冪"
 msgid "_Auto detect"
 msgstr "自動偵測(_A)"
 
-#: src/mainwindow.c:1297 src/summaryview.c:6490
+#: src/mainwindow.c:1297 src/summaryview.c:6496
 msgid "Modify tags..."
 msgstr "指定標籤"
 
@@ -8290,11 +8292,11 @@ msgstr[1] "已刪除 %d 重複郵件於 %d 資料夾內\n"
 msgid "No duplicate message found in %d folders.\n"
 msgstr "資料夾 %d 內沒有重複的郵件\n"
 
-#: src/mainwindow.c:4915 src/messageview.c:2647
+#: src/mainwindow.c:4915 src/messageview.c:2649
 msgid "Select folder to go to"
 msgstr "選擇要前往的資料夾"
 
-#: src/mainwindow.c:5018 src/summaryview.c:5933
+#: src/mainwindow.c:5018 src/summaryview.c:5939
 msgid "Processing rules to apply before folder rules"
 msgstr "在資料夾的規則進行前套用"
 
@@ -8302,7 +8304,7 @@ msgstr "在資料夾的規則進行前套用"
 msgid "Processing rules to apply after folder rules"
 msgstr "在資料夾的規則進行後套用"
 
-#: src/mainwindow.c:5034 src/summaryview.c:5944
+#: src/mainwindow.c:5034 src/summaryview.c:5950
 msgid "Filtering configuration"
 msgstr "過濾配置"
 
@@ -8462,7 +8464,7 @@ msgstr "搜尋完畢"
 msgid "Compose _new message"
 msgstr "寫新郵件(_n)"
 
-#: src/messageview.c:717 src/messageview.c:1442 src/messageview.c:1593
+#: src/messageview.c:717 src/messageview.c:1442 src/messageview.c:1595
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - 郵件視窗"
 
@@ -8494,43 +8496,43 @@ msgstr "不傳送(_D)"
 msgid "Fetching message (%s)..."
 msgstr "取得郵件 (%s)..."
 
-#: src/messageview.c:1408 src/procmime.c:984
+#: src/messageview.c:1408 src/procmime.c:985
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "無法解碼： %s"
 
-#: src/messageview.c:1489 src/messageview.c:1497
+#: src/messageview.c:1491 src/messageview.c:1499
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr "郵件不符合 MIME 標準，可能解讀錯誤"
 
-#: src/messageview.c:1881
+#: src/messageview.c:1883
 #, c-format
 msgid "Show all %s."
 msgstr "顯示全部 %s"
 
-#: src/messageview.c:1883
+#: src/messageview.c:1885
 msgid "Only the first megabyte of text is shown."
 msgstr "只有文字中第一個 megabyte 會顯示"
 
-#: src/messageview.c:1914
+#: src/messageview.c:1916
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr "你已收到此郵件的回條：接收者將會看到"
 
-#: src/messageview.c:1917
+#: src/messageview.c:1919
 msgid "You asked for a return receipt in this message."
 msgstr "你在此郵件中要求回覆回條"
 
-#: src/messageview.c:1923
+#: src/messageview.c:1925
 msgid "This message asks for a return receipt."
 msgstr "此郵件要求回覆回條"
 
-#: src/messageview.c:1924
+#: src/messageview.c:1926
 msgid "Send receipt"
 msgstr "傳送回條"
 
-#: src/messageview.c:1967
+#: src/messageview.c:1969
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8538,7 +8540,7 @@ msgstr ""
 "此郵件的多個部份均已接收完成\n"
 "而且已經待伺服器被刪除"
 
-#: src/messageview.c:1973
+#: src/messageview.c:1975
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8547,15 +8549,15 @@ msgstr ""
 "此郵件的多個部份均已接收完成\n"
 "%s"
 
-#: src/messageview.c:1977 src/messageview.c:1999
+#: src/messageview.c:1979 src/messageview.c:2001
 msgid "Mark for download"
 msgstr "標示欲下載項目"
 
-#: src/messageview.c:1978 src/messageview.c:1990
+#: src/messageview.c:1980 src/messageview.c:1992
 msgid "Mark for deletion"
 msgstr "標示欲刪除項目"
 
-#: src/messageview.c:1983
+#: src/messageview.c:1985
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8564,12 +8566,12 @@ msgstr ""
 "此郵件的多個部份均已接收完成\n"
 "%s 將被下載"
 
-#: src/messageview.c:1988 src/messageview.c:2001
+#: src/messageview.c:1990 src/messageview.c:2003
 #: src/prefs_filtering_action.c:174 src/toolbar.c:515
 msgid "Unmark"
 msgstr "未標示"
 
-#: src/messageview.c:1994
+#: src/messageview.c:1996
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8578,7 +8580,7 @@ msgstr ""
 "此郵件的多個部份均已接收完成\n"
 "%s 將被刪除"
 
-#: src/messageview.c:2071
+#: src/messageview.c:2073
 #, c-format
 msgctxt "'%s' stands for 'To' then 'Cc'"
 msgid ""
@@ -8592,15 +8594,15 @@ msgstr ""
 "並沒有給你官方郵件地址\n"
 "建議你不要傳送回條"
 
-#: src/messageview.c:2079 src/messageview.c:2086
+#: src/messageview.c:2081 src/messageview.c:2088
 msgid "Return Receipt Notification"
 msgstr "回覆回條通知"
 
-#: src/messageview.c:2080 src/messageview.c:2091
+#: src/messageview.c:2082 src/messageview.c:2093
 msgid "_Send Notification"
 msgstr "傳送通知(_S)"
 
-#: src/messageview.c:2087
+#: src/messageview.c:2089
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8610,11 +8612,11 @@ msgstr ""
 "超過一個帳號使用了此郵件的收件者地址\n"
 "請選擇一個帳號用來傳送回條通知"
 
-#: src/messageview.c:2183 src/messageview.c:2202
+#: src/messageview.c:2185 src/messageview.c:2204
 msgid "Cannot print: the message doesn't contain text."
 msgstr "無法列印：此郵件不包含文字"
 
-#: src/messageview.c:2958
+#: src/messageview.c:2960
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8622,7 +8624,7 @@ msgstr ""
 "\n"
 "  此資料夾內沒有郵件"
 
-#: src/messageview.c:2966
+#: src/messageview.c:2968
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8630,7 +8632,7 @@ msgstr ""
 "\n"
 "  郵件已被刪除"
 
-#: src/messageview.c:2967
+#: src/messageview.c:2969
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8638,8 +8640,8 @@ msgstr ""
 "\n"
 "  郵件已被刪除或移至其它資料夾"
 
-#: src/messageview.c:2999 src/messageview.c:3005 src/summaryview.c:4405
-#: src/summaryview.c:7295
+#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4411
+#: src/summaryview.c:7301
 msgid "An error happened while learning.\n"
 msgstr "學習過程中發生錯誤\n"
 
@@ -8813,18 +8815,18 @@ msgid_plural "%s, %d files failed."
 msgstr[0] "%s，%d 檔案失敗"
 msgstr[1] "%s，%d 檔案失敗"
 
-#: src/mimeview.c:1923 src/plugins/archive/archiver_prefs.c:141
+#: src/mimeview.c:1923 src/plugins/archive/archiver_prefs.c:144
 #: src/prefs_filtering_action.c:1263
 msgid "Select destination folder"
 msgstr "選擇目的資料夾"
 
-#: src/mimeview.c:1930 src/plugins/archive/archiver_prefs.c:147
+#: src/mimeview.c:1930 src/plugins/archive/archiver_prefs.c:150
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "'%s'並不是一個路徑"
 
 #: src/mimeview.c:2052 src/plugins/fancy/fancy_viewer.c:815
-#: src/summaryview.c:5018
+#: src/summaryview.c:5024
 msgid "Save as"
 msgstr "另存新檔"
 
@@ -8877,13 +8879,13 @@ msgid "Type:"
 msgstr "型式："
 
 #: src/mimeview.c:2602 src/plugins/pdf_viewer/poppler_viewer.c:706
-#: src/summaryview.c:2784
+#: src/summaryview.c:2785
 msgid "Size:"
 msgstr "大小："
 
 #: src/mimeview.c:2616 src/plugins/vcalendar/vcalendar.c:1248
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1623
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1633
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1634
 msgid "Description:"
 msgstr "描述："
 
@@ -8893,8 +8895,8 @@ msgid "NNTP connection to %s:%d has been disconnected.\n"
 msgstr "連線至 %s：%d 的 NNTP 已經斷線\n"
 
 #: src/news.c:333
-#, c-format
-msgid "Account '%s': Connecting to NNTP server: %s:%d...\n"
+#, fuzzy, c-format
+msgid "Account '%s': connecting to NNTP server: %s:%d...\n"
 msgstr "帳號 '%s'： 連線至 NNTP 伺服器：%s:%d...\n"
 
 #: src/news.c:370
@@ -9050,17 +9052,17 @@ msgstr "OAuth2 正以認證碼嘗試更新存取token\n"
 msgid "OAuth2 access and refresh token updated\n"
 msgstr "OAuth2 存取token已更新\n"
 
-#: src/oauth2.c:720
+#: src/oauth2.c:723
 #, c-format
 msgid "OAuth2 original: %s\n"
 msgstr "OAuth2 原始的：%s\n"
 
-#: src/oauth2.c:721
+#: src/oauth2.c:724
 #, c-format
 msgid "OAuth2 encoded: %s\n"
 msgstr "OAuth2 已加密: %s\n"
 
-#: src/oauth2.c:722
+#: src/oauth2.c:725
 #, c-format
 msgid ""
 "OAuth2 decoded: %s\n"
@@ -9273,7 +9275,7 @@ msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr "不包含符合下列正規表達式(1行1個)的地址"
 
-#: src/plugins/archive/archiver.c:45 src/plugins/archive/archiver_prefs.c:106
+#: src/plugins/archive/archiver.c:45 src/plugins/archive/archiver_prefs.c:109
 msgid "Mail Archiver"
 msgstr "郵件封存器"
 
@@ -9282,7 +9284,7 @@ msgid "Create Archive..."
 msgstr "建立封存..."
 
 #: src/plugins/archive/archiver.c:123
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin adds archiving features to Claws Mail.\n"
 "\n"
@@ -9300,10 +9302,10 @@ msgid ""
 "\n"
 "The supported folder types are MH, IMAP, RSSyl and vCalendar.\n"
 "\n"
-"To activate the archiving feature go to /Tools/Create Archive\n"
+"To activate the archiving feature go to '/Tools/Create Archive'.\n"
 "\n"
-"Default options can be set in /Configuration/Preferences/Plugins/Mail "
-"Archiver"
+"Default options can be set in '/Configuration/Preferences/Plugins/Mail "
+"Archiver'."
 msgstr ""
 "這個外掛程式為 Claws Mail 加入了封存功能\n"
 "\n"
@@ -9322,7 +9324,7 @@ msgstr ""
 "\n"
 "預設選項可以設定在 /配置/選項/外掛程式/郵件 封存器"
 
-#: src/plugins/archive/archiver.c:170
+#: src/plugins/archive/archiver.c:173
 msgid "Archiver"
 msgstr "封存器"
 
@@ -9338,7 +9340,7 @@ msgstr "按下取消鍵以停止封存"
 msgid "Archiving:"
 msgstr "封存："
 
-#: src/plugins/archive/archiver_gtk.c:527
+#: src/plugins/archive/archiver_gtk.c:533
 #, c-format
 msgid ""
 "Some uninitialized data prevents from starting\n"
@@ -9349,7 +9351,7 @@ msgstr ""
 "部份未初始化的資料：\n"
 "%s%s"
 
-#: src/plugins/archive/archiver_gtk.c:530
+#: src/plugins/archive/archiver_gtk.c:536
 msgid ""
 "\n"
 "- the folder to archive is not set"
@@ -9357,7 +9359,7 @@ msgstr ""
 "\n"
 "尚未設定封存路徑"
 
-#: src/plugins/archive/archiver_gtk.c:531
+#: src/plugins/archive/archiver_gtk.c:537
 msgid ""
 "\n"
 "- the name for archive is not set"
@@ -9365,37 +9367,37 @@ msgstr ""
 "\n"
 "尚未設定封存名稱"
 
-#: src/plugins/archive/archiver_gtk.c:554
-#, c-format
-msgid "%s: Exists. Continue anyway?"
+#: src/plugins/archive/archiver_gtk.c:560
+#, fuzzy, c-format
+msgid "%s: exists. Continue anyway?"
 msgstr "%s： 已存在！繼續嗎？"
 
-#: src/plugins/archive/archiver_gtk.c:557
-#, c-format
-msgid "%s: Is a link. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:563
+#, fuzzy, c-format
+msgid "%s: is a link. Cannot continue"
 msgstr "%s： 是一個超連結！無法繼續"
 
-#: src/plugins/archive/archiver_gtk.c:560
-#, c-format
-msgid "%s: Is a directory. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:566
+#, fuzzy, c-format
+msgid "%s: is a directory. Cannot continue"
 msgstr "%s： 是一個路徑！無法繼續"
 
-#: src/plugins/archive/archiver_gtk.c:563
-#, c-format
-msgid "%s: Missing permissions. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:569
+#, fuzzy, c-format
+msgid "%s: missing permissions. Cannot continue"
 msgstr "%s： 沒有權限！無法繼續"
 
-#: src/plugins/archive/archiver_gtk.c:566
-#, c-format
-msgid "%s: Unknown error. Cannot continue"
+#: src/plugins/archive/archiver_gtk.c:572
+#, fuzzy, c-format
+msgid "%s: unknown error. Cannot continue"
 msgstr "%s： 未知的錯誤！無法繼續"
 
-#: src/plugins/archive/archiver_gtk.c:574
-#: src/plugins/archive/archiver_gtk.c:621
+#: src/plugins/archive/archiver_gtk.c:580
+#: src/plugins/archive/archiver_gtk.c:627
 msgid "Creating archive"
 msgstr "建立新的封存"
 
-#: src/plugins/archive/archiver_gtk.c:587
+#: src/plugins/archive/archiver_gtk.c:593
 #, c-format
 msgid ""
 "Not a valid file name:\n"
@@ -9404,7 +9406,7 @@ msgstr ""
 "不是一個有效的 Claws Mail 檔案名稱：\n"
 "%s."
 
-#: src/plugins/archive/archiver_gtk.c:592
+#: src/plugins/archive/archiver_gtk.c:598
 #, c-format
 msgid ""
 "Not a valid Claws Mail folder:\n"
@@ -9413,7 +9415,7 @@ msgstr ""
 "不是一個有效的 Claws Mail 資料夾：\n"
 "%s."
 
-#: src/plugins/archive/archiver_gtk.c:616
+#: src/plugins/archive/archiver_gtk.c:622
 #, c-format
 msgid ""
 "Adding files in folder failed\n"
@@ -9428,7 +9430,7 @@ msgstr ""
 "\n"
 "繼續嗎？"
 
-#: src/plugins/archive/archiver_gtk.c:633
+#: src/plugins/archive/archiver_gtk.c:639
 #, c-format
 msgid ""
 "Archive creation error:\n"
@@ -9437,175 +9439,172 @@ msgstr ""
 "建立封存發生錯誤：\n"
 "%s"
 
-#: src/plugins/archive/archiver_gtk.c:746
+#: src/plugins/archive/archiver_gtk.c:757
 msgid "Archive result"
 msgstr "封存結果"
 
-#: src/plugins/archive/archiver_gtk.c:776
+#: src/plugins/archive/archiver_gtk.c:787
 msgid "Values"
 msgstr "數值"
 
-#: src/plugins/archive/archiver_gtk.c:786
+#: src/plugins/archive/archiver_gtk.c:797
 msgid "Archive"
 msgstr "封存"
 
-#: src/plugins/archive/archiver_gtk.c:792
+#: src/plugins/archive/archiver_gtk.c:803
 msgid "Archive format"
 msgstr "封存格式"
 
-#: src/plugins/archive/archiver_gtk.c:799
+#: src/plugins/archive/archiver_gtk.c:810
 msgid "Compression method"
 msgstr "壓縮演算法"
 
-#: src/plugins/archive/archiver_gtk.c:807
+#: src/plugins/archive/archiver_gtk.c:818
 msgid "Number of files"
 msgstr "檔案數量"
 
-#: src/plugins/archive/archiver_gtk.c:815
+#: src/plugins/archive/archiver_gtk.c:826
 msgid "Archive Size"
 msgstr "封存大小"
 
-#: src/plugins/archive/archiver_gtk.c:823
+#: src/plugins/archive/archiver_gtk.c:834
 msgid "Folder Size"
 msgstr "資料夾大小"
 
-#: src/plugins/archive/archiver_gtk.c:832
+#: src/plugins/archive/archiver_gtk.c:843
 msgid "Compression level"
 msgstr "壓縮等級"
 
-#: src/plugins/archive/archiver_gtk.c:837
-#: src/plugins/archive/archiver_gtk.c:845
-#: src/plugins/archive/archiver_gtk.c:853
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:725 src/prefs_folder_item.c:533
 #: src/prefs_folder_item.c:1241 src/prefs_folder_item.c:1272
 msgid "Yes"
 msgstr "是"
 
-#: src/plugins/archive/archiver_gtk.c:837
-#: src/plugins/archive/archiver_gtk.c:845
-#: src/plugins/archive/archiver_gtk.c:853
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:728 src/prefs_folder_item.c:532
 #: src/prefs_folder_item.c:1240 src/prefs_folder_item.c:1271
 #: src/prefs_summaries.c:447
 msgid "No"
 msgstr "否"
 
-#: src/plugins/archive/archiver_gtk.c:840
+#: src/plugins/archive/archiver_gtk.c:851
 msgid "MD5 checksum"
 msgstr "MD5 檢查碼"
 
-#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:859
 msgid "Descriptive names"
 msgstr "描述名稱"
 
-#: src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:867
 msgid "Delete selected files"
 msgstr "刪除選擇的檔案"
 
-#: src/plugins/archive/archiver_gtk.c:865
-#: src/plugins/archive/archiver_gtk.c:1326
+#: src/plugins/archive/archiver_gtk.c:876
+#: src/plugins/archive/archiver_gtk.c:1347
 msgid "Select mails before"
 msgstr "先選擇郵件"
 
-#: src/plugins/archive/archiver_gtk.c:921
+#: src/plugins/archive/archiver_gtk.c:932
 msgid "Select folder to archive"
 msgstr "選擇封存資料夾"
 
-#: src/plugins/archive/archiver_gtk.c:941
+#: src/plugins/archive/archiver_gtk.c:952
 msgid "Select file name for archive [suffix should reflect archive like .tgz]"
 msgstr "選擇封存檔案名稱 [後綴將類似 .tgz]"
 
-#: src/plugins/archive/archiver_gtk.c:986
+#: src/plugins/archive/archiver_gtk.c:997
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld of %ld"
 
-#: src/plugins/archive/archiver_gtk.c:1039
+#: src/plugins/archive/archiver_gtk.c:1053
 msgid "Create Archive"
 msgstr "建立新的封存"
 
-#: src/plugins/archive/archiver_gtk.c:1054
-msgid "Enter Archiver arguments"
-msgstr "輸入封存命令"
-
-#: src/plugins/archive/archiver_gtk.c:1068
+#: src/plugins/archive/archiver_gtk.c:1076
 msgid "Folder to archive"
 msgstr "封存資料夾"
 
-#: src/plugins/archive/archiver_gtk.c:1075
+#: src/plugins/archive/archiver_gtk.c:1083
 msgid "Folder which is the root of the archive"
 msgstr "封存資料夾的根目錄"
 
-#: src/plugins/archive/archiver_gtk.c:1080
+#: src/plugins/archive/archiver_gtk.c:1088
 msgid "Click this button to select a folder which is to be root of the archive"
 msgstr "按下此鍵為封存資料夾選擇根目錄"
 
-#: src/plugins/archive/archiver_gtk.c:1086
+#: src/plugins/archive/archiver_gtk.c:1094
 msgid "Name for archive"
 msgstr "封存名稱"
 
-#: src/plugins/archive/archiver_gtk.c:1092
+#: src/plugins/archive/archiver_gtk.c:1100
 msgid "Archive location and name"
 msgstr "封存路徑和名稱"
 
-#: src/plugins/archive/archiver_gtk.c:1094
-#: src/plugins/archive/archiver_prefs.c:224
+#: src/plugins/archive/archiver_gtk.c:1102
+#: src/plugins/archive/archiver_prefs.c:230
 #: src/plugins/pgpcore/select-keys.c:496
 msgid "_Select"
 msgstr "選擇(_S)"
 
-#: src/plugins/archive/archiver_gtk.c:1097
+#: src/plugins/archive/archiver_gtk.c:1105
 msgid "Click this button to select a name and location for the archive"
 msgstr "按下此鍵為封存選擇名稱和路徑"
 
-#: src/plugins/archive/archiver_gtk.c:1099
+#: src/plugins/archive/archiver_gtk.c:1107
 msgid "Choose compression"
 msgstr "選擇壓縮方式"
 
-#: src/plugins/archive/archiver_gtk.c:1111
-#: src/plugins/archive/archiver_gtk.c:1117
-#: src/plugins/archive/archiver_gtk.c:1123
-#: src/plugins/archive/archiver_gtk.c:1130
-#: src/plugins/archive/archiver_gtk.c:1136
+#: src/plugins/archive/archiver_gtk.c:1119
+#: src/plugins/archive/archiver_gtk.c:1125
+#: src/plugins/archive/archiver_gtk.c:1131
+#: src/plugins/archive/archiver_gtk.c:1138
 #: src/plugins/archive/archiver_gtk.c:1144
 #: src/plugins/archive/archiver_gtk.c:1152
-#: src/plugins/archive/archiver_gtk.c:1158
-#: src/plugins/archive/archiver_gtk.c:1164
+#: src/plugins/archive/archiver_gtk.c:1160
+#: src/plugins/archive/archiver_gtk.c:1166
 #: src/plugins/archive/archiver_gtk.c:1172
-#: src/plugins/archive/archiver_gtk.c:1179
+#: src/plugins/archive/archiver_gtk.c:1180
+#: src/plugins/archive/archiver_gtk.c:1188
+#: src/plugins/archive/archiver_gtk.c:1195
 #, c-format
 msgid "Choose this option to use %s compression for the archive"
 msgstr "選擇這個選項，將可在封存時使用 %s 壓縮功能"
 
-#: src/plugins/archive/archiver_gtk.c:1228
+#: src/plugins/archive/archiver_gtk.c:1249
 msgid "Choose format"
 msgstr "選擇格式"
 
-#: src/plugins/archive/archiver_gtk.c:1240
-#: src/plugins/archive/archiver_gtk.c:1246
-#: src/plugins/archive/archiver_gtk.c:1252
-#: src/plugins/archive/archiver_gtk.c:1258
+#: src/plugins/archive/archiver_gtk.c:1261
+#: src/plugins/archive/archiver_gtk.c:1267
+#: src/plugins/archive/archiver_gtk.c:1273
+#: src/plugins/archive/archiver_gtk.c:1279
 #, c-format
 msgid "Choose this to use %s as format for the archive"
 msgstr "選擇這個選項，將可在封存時使用 %s 格式"
 
-#: src/plugins/archive/archiver_gtk.c:1278
+#: src/plugins/archive/archiver_gtk.c:1299
 msgid "Miscellaneous options"
 msgstr "雜項選項"
 
-#: src/plugins/archive/archiver_gtk.c:1287
+#: src/plugins/archive/archiver_gtk.c:1308
 msgid "_Recursive"
 msgstr "遞迴(_R)"
 
-#: src/plugins/archive/archiver_gtk.c:1291
+#: src/plugins/archive/archiver_gtk.c:1312
 msgid "Choose this option to include subfolders in the archive"
 msgstr "選擇這個選項，將在封存中包含子資料夾"
 
-#: src/plugins/archive/archiver_gtk.c:1293
+#: src/plugins/archive/archiver_gtk.c:1314
 msgid "_MD5sum"
 msgstr "MD5檢查碼(_M)"
 
-#: src/plugins/archive/archiver_gtk.c:1297
+#: src/plugins/archive/archiver_gtk.c:1318
 msgid ""
 "Choose this option to add MD5 checksums for each file in the archive.\n"
 "Be aware though, that this dramatically increases the time it\n"
@@ -9615,12 +9614,12 @@ msgstr ""
 "必需要了解的是，這個功能將會在新建封存時，增加不少的時間\n"
 " "
 
-#: src/plugins/archive/archiver_gtk.c:1301
+#: src/plugins/archive/archiver_gtk.c:1322
 msgid "R_ename"
 msgstr "修改名稱(_e)"
 
-#: src/plugins/archive/archiver_gtk.c:1305
-#: src/plugins/archive/archiver_prefs.c:426
+#: src/plugins/archive/archiver_gtk.c:1326
+#: src/plugins/archive/archiver_prefs.c:445
 msgid ""
 "Choose this option to use descriptive names for each file in the archive.\n"
 "The naming scheme: date_from@to@subject.\n"
@@ -9630,7 +9629,7 @@ msgstr ""
 "名稱的設計為： 日期起源@至@主旨\n"
 "名稱長度將被限制為最長96個字元"
 
-#: src/plugins/archive/archiver_gtk.c:1313
+#: src/plugins/archive/archiver_gtk.c:1334
 msgid ""
 "Choose this option to delete mails after archiving\n"
 "At this point only handles IMAP4, Local mbox and POP3"
@@ -9638,11 +9637,11 @@ msgstr ""
 "選擇這個選項，將在封存後刪除郵件\n"
 "此功能只能套用在 IMAP4，本地郵件箱和 POP3"
 
-#: src/plugins/archive/archiver_gtk.c:1317
+#: src/plugins/archive/archiver_gtk.c:1338
 msgid "Selection options"
 msgstr "選擇選項"
 
-#: src/plugins/archive/archiver_gtk.c:1333
+#: src/plugins/archive/archiver_gtk.c:1354
 msgid ""
 "Select emails before a certain date\n"
 "Date must comply to ISO-8601 [YYYY-MM-DD]"
@@ -9650,58 +9649,59 @@ msgstr ""
 "在確認日期前選擇郵件\n"
 "日期必需遵守 ISO-8601 [YYYY-MM-DD]的規定"
 
-#: src/plugins/archive/archiver_prefs.c:216
+#: src/plugins/archive/archiver_prefs.c:222
 msgid "Default save folder"
 msgstr "預設儲存資料夾"
 
-#: src/plugins/archive/archiver_prefs.c:228
+#: src/plugins/archive/archiver_prefs.c:234
 msgid "Click this button to select the default location for saving archives"
 msgstr "按下此鍵選擇儲存封存檔案的預設路徑"
 
-#: src/plugins/archive/archiver_prefs.c:237
+#: src/plugins/archive/archiver_prefs.c:243
 msgid "Default compression"
 msgstr "預設的壓縮"
 
-#: src/plugins/archive/archiver_prefs.c:248
 #: src/plugins/archive/archiver_prefs.c:254
 #: src/plugins/archive/archiver_prefs.c:260
-#: src/plugins/archive/archiver_prefs.c:267
+#: src/plugins/archive/archiver_prefs.c:266
 #: src/plugins/archive/archiver_prefs.c:273
-#: src/plugins/archive/archiver_prefs.c:281
-#: src/plugins/archive/archiver_prefs.c:289
+#: src/plugins/archive/archiver_prefs.c:279
+#: src/plugins/archive/archiver_prefs.c:287
 #: src/plugins/archive/archiver_prefs.c:295
 #: src/plugins/archive/archiver_prefs.c:301
-#: src/plugins/archive/archiver_prefs.c:309
-#: src/plugins/archive/archiver_prefs.c:316
+#: src/plugins/archive/archiver_prefs.c:307
+#: src/plugins/archive/archiver_prefs.c:315
+#: src/plugins/archive/archiver_prefs.c:323
+#: src/plugins/archive/archiver_prefs.c:330
 #, c-format
 msgid "Choose this option to use %s compression by default"
 msgstr "預設將選擇這個選項以使用 %s 進行壓縮"
 
-#: src/plugins/archive/archiver_prefs.c:362
+#: src/plugins/archive/archiver_prefs.c:381
 msgid "Default format"
 msgstr "預設格式"
 
-#: src/plugins/archive/archiver_prefs.c:373
-#: src/plugins/archive/archiver_prefs.c:379
-#: src/plugins/archive/archiver_prefs.c:385
-#: src/plugins/archive/archiver_prefs.c:391
+#: src/plugins/archive/archiver_prefs.c:392
+#: src/plugins/archive/archiver_prefs.c:398
+#: src/plugins/archive/archiver_prefs.c:404
+#: src/plugins/archive/archiver_prefs.c:410
 #, c-format
 msgid "Choose this option to use the %s as format by default"
 msgstr "預設將選擇這個選項以使用 %s 格式"
 
-#: src/plugins/archive/archiver_prefs.c:408
+#: src/plugins/archive/archiver_prefs.c:427
 msgid "Default miscellaneous options"
 msgstr "預設的雜項選擇"
 
-#: src/plugins/archive/archiver_prefs.c:417
+#: src/plugins/archive/archiver_prefs.c:436
 msgid "Choose this option to include subfolders in the archives by default"
 msgstr "預設將選擇這個選項以包含封存的子資料夾"
 
-#: src/plugins/archive/archiver_prefs.c:418
+#: src/plugins/archive/archiver_prefs.c:437
 msgid "MD5sum"
 msgstr "MD5和"
 
-#: src/plugins/archive/archiver_prefs.c:420
+#: src/plugins/archive/archiver_prefs.c:439
 msgid ""
 "Choose this option to add MD5 checksums for each file in the archives by "
 "default.\n"
@@ -9712,11 +9712,11 @@ msgstr ""
 "必需了解的是，建立封存將增加(讀取的)時間\n"
 " "
 
-#: src/plugins/archive/archiver_prefs.c:424
+#: src/plugins/archive/archiver_prefs.c:443
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/plugins/archive/archiver_prefs.c:432
+#: src/plugins/archive/archiver_prefs.c:451
 msgid "Choose this option to delete mails after archiving"
 msgstr "選擇這個選項，在封存後刪除郵件"
 
@@ -9734,7 +9734,7 @@ msgid "Remove"
 msgstr "移除"
 
 #: src/plugins/att_remover/att_remover.c:367 src/prefs_summaries.c:710
-#: src/prefs_summary_column.c:79 src/summaryview.c:2878
+#: src/prefs_summary_column.c:79 src/summaryview.c:2879
 msgid "Attachment"
 msgstr "附加檔"
 
@@ -9921,11 +9921,12 @@ msgid "Bogofilter: filtering messages..."
 msgstr "Bogofilter: 正在取得郵件..."
 
 #: src/plugins/bogofilter/bogofilter.c:588
+#, fuzzy
 msgid ""
 "The Bogofilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
-"Use \"/Marks/Mark as spam\" and \"/Marks/Mark as ham\" to train Bogofilter "
-"with a few hundred spam and ham messages."
+"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bogofilter with "
+"a few hundred spam and ham messages."
 msgstr ""
 "此Bogofilter外掛程式無法過濾一個郵件，這可能是因為出現了一個無法從任何的郵件"
 "中進行學習的錯誤\n"
@@ -9963,19 +9964,20 @@ msgstr ""
 "%s"
 
 #: src/plugins/bogofilter/bogofilter.c:987
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bogofilter. You will need Bogofilter installed "
 "locally.\n"
 "\n"
 "Before Bogofilter can recognize spam messages, you have to train it by "
-"marking a few hundred spam and ham messages with the use of \"/Marks/Mark as "
-"spam\" and \"/Marks/Mark as ham\".\n"
+"marking a few hundred spam and ham messages with the use of '/Marks/Mark as "
+"spam' and '/Marks/Mark as ham'.\n"
 "\n"
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Bogofilter"
+"Options can be found in '/Configuration/Preferences/Plugins/Bogofilter'."
 msgstr ""
 "這個外掛程式可以使用Bogofilter檢查所有來自己IMAP、本地或POP帳號的郵件是否為垃"
 "圾郵件。你必需在本地端安裝Bogofilter\n"
@@ -9987,12 +9989,12 @@ msgstr ""
 "\n"
 "可以在/Configuration/Preferences/Plugins/Bogofilter中找到所有的選項"
 
-#: src/plugins/bogofilter/bogofilter.c:1020 src/plugins/bsfilter/bsfilter.c:651
+#: src/plugins/bogofilter/bogofilter.c:1019 src/plugins/bsfilter/bsfilter.c:651
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "垃圾郵件偵測"
 
-#: src/plugins/bogofilter/bogofilter.c:1021 src/plugins/bsfilter/bsfilter.c:652
+#: src/plugins/bogofilter/bogofilter.c:1020 src/plugins/bsfilter/bsfilter.c:652
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "垃圾郵件學習中"
@@ -10131,11 +10133,12 @@ msgid "Bsfilter: filtering message..."
 msgstr "Bsfilter: 過濾郵件"
 
 #: src/plugins/bsfilter/bsfilter.c:368
+#, fuzzy
 msgid ""
 "The Bsfilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
-"Use \"/Marks/Mark as spam\" and \"/Marks/Mark as ham\" to train Bsfilter "
-"with a few hundred spam and ham messages."
+"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bsfilter with a "
+"few hundred spam and ham messages."
 msgstr ""
 "此Bsfilter外掛程式無法過濾一封郵件。這個錯誤可能是因為它無法從任何的郵件中進"
 "行學習\n"
@@ -10154,19 +10157,20 @@ msgid "Bsfilter: learning from message..."
 msgstr "Bsfilter： 從郵件進進行學習..."
 
 #: src/plugins/bsfilter/bsfilter.c:618
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using Bsfilter. You will need Bsfilter installed "
 "locally.\n"
 "\n"
 "Before Bsfilter can recognize spam messages, you have to train it by marking "
-"a few hundred spam and ham messages with the use of \"/Marks/Mark as spam\" "
-"and \"/Marks/Mark as ham\".\n"
+"a few hundred spam and ham messages with the use of '/Marks/Mark as spam' "
+"and '/Marks/Mark as ham'.\n"
 "\n"
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Bsfilter"
+"Options can be found in '/Configuration/Preferences/Plugins/Bsfilter'."
 msgstr ""
 "這個外掛程式可以使用Bsfilter檢查所有來自己IMAP、本地或POP帳號的郵件，並判斷是"
 "否為垃圾郵件。你將必需安裝Bsfilter在本地端\n"
@@ -10272,6 +10276,7 @@ msgstr ""
 "clamd 仍在執行嗎？"
 
 #: src/plugins/clamd/clamav_plugin.c:336
+#, fuzzy
 msgid ""
 "This plugin uses Clam AntiVirus to scan all messages that are received from "
 "an IMAP, LOCAL or POP account.\n"
@@ -10279,19 +10284,16 @@ msgid ""
 "When a message attachment is found to contain a virus it can be deleted or "
 "saved in a specially designated folder.\n"
 "\n"
-"Because this plugin communicates with clamd via a\n"
-"socket then there are some minimum requirements to\n"
-"the permissions for your home folder and the\n"
-".claws-mail folder provided the clamav-daemon is\n"
-"configured to communicate via a unix socket. All\n"
-"users at least need to be given execute permissions\n"
-"on these folders.\n"
+"Because this plugin communicates with clamd via a socket then there are some "
+"minimum requirements to the permissions for your home folder and the .claws-"
+"mail folder provided the clamav-daemon is configured to communicate via a "
+"unix socket. All users at least need to be given execute permissions on "
+"these folders.\n"
 "\n"
-"To avoid changing permissions you could configure\n"
-"the clamav-daemon to communicate via a TCP socket\n"
-"and choose manual configuration for clamd.\n"
+"To avoid changing permissions you could configure the clamav-daemon to "
+"communicate via a TCP socket and choose manual configuration for clamd.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Clam AntiVirus"
+"Options can be found in '/Configuration/Preferences/Plugins/Clam AntiVirus'."
 msgstr ""
 "此外掛程式使用 Clam AntiVirus 對所有從 IMAP, LOCAL 或是 POP 帳號接收的郵件進"
 "行掃描\n"
@@ -10422,18 +10424,18 @@ msgstr ""
 "clamd 仍在執行嗎？"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:121
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"%s: Unable to open\n"
+"%s: unable to open\n"
 "clamd will be disabled"
 msgstr ""
 "%s：無法開啟\n"
 "clamd 將被關閉"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:210
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"%s: Not able to find required information\n"
+"%s: not able to find required information\n"
 "clamd will be disabled"
 msgstr ""
 "%s： 找不到需要的資訊\n"
@@ -10444,11 +10446,13 @@ msgid "Could not create socket"
 msgstr "無誤建立socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:435
-msgid ": File does not exist"
+#, fuzzy
+msgid ": file does not exist"
 msgstr "： 檔案不存在"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:448
-msgid ": Unable to open"
+#, fuzzy
+msgid ": unable to open"
 msgstr "： 無法開啟"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:467
@@ -10458,8 +10462,8 @@ msgid "Socket write error"
 msgstr "Socket寫入錯誤"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:479
-#, c-format
-msgid "%s: Error reading"
+#, fuzzy, c-format
+msgid "%s: error reading"
 msgstr "%s： 讀取錯誤"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:493
@@ -10562,7 +10566,7 @@ msgstr "此檔案內的CSS將套用在所有的HTML上"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 #: src/plugins/notification/notification_prefs.c:1374
-#: src/plugins/pgpcore/prefs_gpg.c:208 src/plugins/rssyl/rssyl_prefs.c:182
+#: src/plugins/pgpcore/prefs_gpg.c:208 src/plugins/rssyl/rssyl_prefs.c:222
 #: src/prefs_account.c:1620 src/prefs_account.c:1742 src/prefs_account.c:2540
 #: src/prefs_customheader.c:227
 msgid "Bro_wse"
@@ -10657,11 +10661,13 @@ msgid "Fancy HTML Viewer"
 msgstr "Fancy HTML 檢視器"
 
 #: src/plugins/fancy/fancy_viewer.c:1297
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
-"By default all remote content is blocked. Options can be found in /"
-"Configuration/Preferences/Plugins/Fancy"
+"\n"
+"By default all remote content is blocked.\n"
+"\n"
+"Options can be found in '/Configuration/Preferences/Plugins/Fancy'."
 msgstr ""
 "這個外掛程式使用 WebKit %d.%d.%d 函式庫解析(渲染)HTML郵件\n"
 "所有的遠端內容預設都是禁止的，可以在 /Configuration/Preferences/Plugins/Fancy"
@@ -10683,12 +10689,13 @@ msgstr "註冊郵件的接收Hook失敗"
 #. * the same as translation of "Plugins" string in Claws Mail message
 #. * catalog.
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:202
+#, fuzzy
 msgid ""
 "This plugin modifies the downloaded messages. It inserts headers containing "
 "some download information: UIDL, Claws Mail account name, POP server, user "
 "ID and retrieval time.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/Fetchinfo"
+"Options can be found in '/Configuration/Preferences/Plugins/Fetchinfo'."
 msgstr ""
 "此外掛程式修改了已下載的郵件，它插入了一些下載的資訊到標頭內，包括UIDL，"
 "Claws Mail 帳號名稱，POP伺服器，使用者ID和郵件取回的時間\n"
@@ -10811,19 +10818,21 @@ msgid "Failed to load missing items cache"
 msgstr "載入遺失的項目快取失敗"
 
 #: src/plugins/libravatar/libravatar.c:409
+#, fuzzy
 msgid ""
-"Display libravatar profiles' images for mail messages. More\n"
-"info about libravatar at http://www.libravatar.org/. If you have\n"
-"a gravatar.com profile but not a libravatar one, those will also\n"
-"be retrieved (when redirections are allowed in plugin config).\n"
+"Display libravatar profiles' images for mail messages. More info about "
+"libravatar at http://www.libravatar.org/. If you have a gravatar.com profile "
+"but not a libravatar one, those will also be retrieved (when redirections "
+"are allowed in plugin config).\n"
+"\n"
 "Plugin config page is available from main window at:\n"
-"/Configuration/Preferences/Plugins/Libravatar.\n"
+"'/Configuration/Preferences/Plugins/Libravatar'.\n"
 "\n"
-"This plugin uses libcurl to retrieve images, so if you're behind a\n"
-"proxy please refer to curl(1) manpage for details on 'http_proxy'\n"
-"configuration. More details about this and others on README file.\n"
+"This plugin uses libcurl to retrieve images, so if you're behind a proxy "
+"please refer to curl(1) manpage for details on 'http_proxy' configuration. "
+"More details about this and others on README file.\n"
 "\n"
-"Feedback to <ricardo@mones.org> is welcome.\n"
+"Feedback to <ricardo@mones.org> is welcome."
 msgstr ""
 "顯示郵件的 libravatar 基本資料的圖像。想了解更多的\n"
 "libravatar 資料，請參考 http://www.libravatar.org/. 如果你有\n"
@@ -11073,11 +11082,14 @@ msgid "LiteHTML viewer"
 msgstr "LiteHTML 檢視器"
 
 #: src/plugins/litehtml_viewer/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin renders HTML mail using the litehtml library (http://www."
 "litehtml.com/).\n"
-"By default all remote content is blocked. Options can be found in /"
-"Configuration/Preferences/Plugins/LiteHTML"
+"\n"
+"By default all remote content is blocked.\n"
+"\n"
+"Options can be found in '/Configuration/Preferences/Plugins/LiteHTML'."
 msgstr ""
 "這個外掛程式使用 litehtml 函式庫(http://www.litehtml.com/)解析(渲染)HTML郵"
 "件\n"
@@ -11164,7 +11176,7 @@ msgstr "認證方法無效"
 msgid "sending error on Sieve session: %s\n"
 msgstr "在Sieve程序中發生傳送錯誤： %s\n"
 
-#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5825
+#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5831
 msgid "_Filter"
 msgstr "過濾器(_F)"
 
@@ -11337,7 +11349,7 @@ msgid "Authentication"
 msgstr "認證"
 
 #: src/plugins/managesieve/sieve_prefs.c:202
-#: src/plugins/rssyl/rssyl_feed_props.c:263
+#: src/plugins/rssyl/rssyl_feed_props.c:281
 msgid "No authentication"
 msgstr "沒有認證"
 
@@ -11357,7 +11369,7 @@ msgid "User ID"
 msgstr "使用者名稱"
 
 #: src/plugins/managesieve/sieve_prefs.c:246
-#: src/plugins/rssyl/rssyl_feed_props.c:378
+#: src/plugins/rssyl/rssyl_feed_props.c:407
 #: src/plugins/vcalendar/vcal_prefs.c:400
 #: src/plugins/vcalendar/vcal_prefs.c:519 src/prefs_account.c:1469
 #: src/prefs_account.c:2122 src/prefs_account.c:3063 src/prefs_account.c:3091
@@ -11402,14 +11414,14 @@ msgid "Could not open log file %s: %s\n"
 msgstr "無法開啟日誌檔 %s： %s\n"
 
 #: src/plugins/newmail/newmail.c:142
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin writes a header summary to a log file for each mail received "
 "after sorting.\n"
 "\n"
-"Default is ~/Mail/NewLog\n"
+"Default is '~/Mail/NewLog'.\n"
 "\n"
-"Current log is %s"
+"Current log is '%s'."
 msgstr ""
 "這個外掛程式為每一封已接收的郵件在排序後寫入一個標頭的結果到日誌檔案內 \n"
 "\n"
@@ -11435,11 +11447,11 @@ msgstr "新的： %d， 未讀： %d， 全部： %d"
 msgid "Folder:"
 msgstr "資料夾："
 
-#: src/plugins/notification/notification_foldercheck.c:478
+#: src/plugins/notification/notification_foldercheck.c:477
 msgid "Select folder(s)"
 msgstr "選擇資料夾"
 
-#: src/plugins/notification/notification_foldercheck.c:578
+#: src/plugins/notification/notification_foldercheck.c:577
 msgid "select recursively"
 msgstr "遞迴性的選擇"
 
@@ -11494,9 +11506,11 @@ msgid "Failed to register theme change hook in the Notification plugin"
 msgstr "此通知外掛程式註冊佈景主題改變hook失敗"
 
 #: src/plugins/notification/notification_plugin.c:430
+#, fuzzy
 msgid ""
 "This plugin provides various ways to notify the user of new and unread "
 "email.\n"
+"\n"
 "The plugin is extensively configurable in the plugins section of the "
 "preferences dialog.\n"
 "\n"
@@ -11887,32 +11901,38 @@ msgstr "<alt>N"
 msgid "Toggle minimize"
 msgstr "圖釘最小化"
 
-#: src/plugins/notification/notification_trayicon.c:121
-msgid "_Get Mail"
-msgstr "接收郵件(_G)"
+#: src/plugins/notification/notification_trayicon.c:121 src/toolbar.c:494
+msgid "Get Mail"
+msgstr "收信"
 
 #: src/plugins/notification/notification_trayicon.c:122
-msgid "_Get Mail from account"
+#, fuzzy
+msgid "Get Mail from account"
 msgstr "來自帳號的郵件(_m)"
 
 #: src/plugins/notification/notification_trayicon.c:124
-msgid "_Email"
+#, fuzzy
+msgid "Email"
 msgstr "郵件(_E)"
 
 #: src/plugins/notification/notification_trayicon.c:125
-msgid "E_mail from account"
+#, fuzzy
+msgid "Email from account"
 msgstr "來自帳號的郵件(_m)"
 
 #: src/plugins/notification/notification_trayicon.c:126
-msgid "Open A_ddressbook"
+#, fuzzy
+msgid "Open Addressbook"
 msgstr "開啟通訊錄(_d)"
 
 #: src/plugins/notification/notification_trayicon.c:127
-msgid "E_xit Claws Mail"
-msgstr "離開 Claws Mail(_x)"
+#, fuzzy
+msgid "Exit Claws Mail"
+msgstr "離開 Clasw Mail？"
 
 #: src/plugins/notification/notification_trayicon.c:132
-msgid "_Work Offline"
+#, fuzzy
+msgid "Work Offline"
 msgstr "離線工作(_W)"
 
 #: src/plugins/notification/notification_trayicon.c:134
@@ -12082,12 +12102,12 @@ msgid "Zoom Factor"
 msgstr "縮放倍率因子"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:2128
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This plugin enables the viewing of PDF and PostScript attachments using the "
 "Poppler %s Lib and the gs tool.\n"
 "\n"
-"Any feedback is welcome: iwkse@claws-mail.org"
+"Feedback to <iwkse@claws-mail.org> is welcome."
 msgstr ""
 "這個外掛程式可以用來檢視PDF和PostScript格式的附件 它是採用通行的 %s 函式庫和 "
 "gs 工具達成的\n"
@@ -12117,6 +12137,42 @@ msgstr ""
 #: src/plugins/perl/perl_gtk.c:48
 msgid "Edit perl filter rules (ext)..."
 msgstr "編輯perl過濾器的規則 (ext)..."
+
+#: src/plugins/perl/perl_plugin.c:1745
+#, c-format
+msgid ""
+"Error processing Perl script file: (line numbers may not be valid)\n"
+"%s"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1748
+msgid "Perl Plugin error"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1748
+#, fuzzy
+msgid "Retry"
+msgstr "Retro"
+
+#: src/plugins/perl/perl_plugin.c:1749
+msgid "Abort"
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:1749 src/toolbar.c:536
+msgid "Edit"
+msgstr "編輯"
+
+#: src/plugins/perl/perl_plugin.c:2525
+msgid ""
+"This plugin provides a Perl scripting interface for mail filters.\n"
+"\n"
+"Feedback to <berndth@gmx.de> is welcome."
+msgstr ""
+
+#: src/plugins/perl/perl_plugin.c:2547
+#, fuzzy
+msgid "Perl integration"
+msgstr "Python 整合"
 
 #: src/plugins/pgpcore/autocompletion.c:133
 msgid "Failed to register PGP address autocompletion hook"
@@ -12221,16 +12277,17 @@ msgid "PGP/Core"
 msgstr "PGP/Core"
 
 #: src/plugins/pgpcore/plugin.c:71
+#, fuzzy
 msgid ""
 "This plugin handles PGP core operations and provides address autocompletion "
 "from the GPG keyring. It is used by other plugins, like PGP/Mime.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/GPG and /"
-"Configuration/[Account Preferences]/Plugins/GPG\n"
+"Options can be found in '/Configuration/Preferences/Plugins/GPG' and '/"
+"Configuration/[Account Preferences]/Plugins/GPG'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "這個外掛程式掌控了PGP核心的操作以及提供了來自PGP鑰匙圈自動完成地址的功能 這個"
 "功能被其它的外掛程式所應用，像是PGP/Mime\n"
@@ -12270,8 +12327,8 @@ msgstr "過期了"
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "設定為 '0' 將會為整個程序儲存密碼"
 
-#: src/plugins/pgpcore/prefs_gpg.c:182 src/plugins/rssyl/rssyl_feed_props.c:459
-#: src/plugins/rssyl/rssyl_prefs.c:150 src/prefs_account.c:1883
+#: src/plugins/pgpcore/prefs_gpg.c:182 src/plugins/rssyl/rssyl_feed_props.c:488
+#: src/plugins/rssyl/rssyl_prefs.c:183 src/prefs_account.c:1883
 #: src/prefs_account.c:2188 src/prefs_receive.c:190
 msgid "minutes"
 msgstr "分"
@@ -12425,7 +12482,8 @@ msgid "The signature has not been checked."
 msgstr "這個簽名尚未被檢查"
 
 #: src/plugins/pgpcore/sgpgme.c:438
-msgid "PGP Core: Can't get key - no gpg-agent running."
+#, fuzzy
+msgid "PGP Core: can't get key - no gpg-agent running."
 msgstr "PGP Core: 無法取得金鑰 - 沒有執行gpg-agent"
 
 #: src/plugins/pgpcore/sgpgme.c:456
@@ -12539,8 +12597,8 @@ msgid "Primary key fingerprint:"
 msgstr "主要的金鑰指紋："
 
 #: src/plugins/pgpcore/sgpgme.c:618
-#, c-format
-msgid "WARNING: Signer's address \"%s\" does not match DNS entry\n"
+#, fuzzy, c-format
+msgid "WARNING: signer's address \"%s\" does not match DNS entry\n"
 msgstr "警告：簽名者的地址 \"%s\" 和DNS項目不符合\n"
 
 #: src/plugins/pgpcore/sgpgme.c:624
@@ -12768,18 +12826,19 @@ msgid "PGP/inline"
 msgstr "PGP/inline"
 
 #: src/plugins/pgpinline/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin handles the deprecated Inline method of signing and/or "
 "encrypting mails. You can decrypt mails, verify signatures or sign and "
 "encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "這個外掛程式掌控了簽名或加密郵件的反對Inline方法。你可以解密郵件，驗證簽名或"
 "簽名並加密你自己的郵件。 \n"
@@ -12823,17 +12882,18 @@ msgid "PGP/MIME"
 msgstr "PGP/MIME"
 
 #: src/plugins/pgpmime/plugin.c:60
+#, fuzzy
 msgid ""
 "This plugin handles PGP/MIME signed and/or encrypted mails. You can decrypt "
 "mails, verify signatures or sign and encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "這個外掛程式掌控 PGP/MIME 已簽名和已加密的郵件。你可以解密郵件， 驗證簽章或是"
 "為你自己的郵件進行簽章及加密\n"
@@ -12855,7 +12915,7 @@ msgid "Show Python console..."
 msgstr "顯示 Python 控制台..."
 
 #: src/plugins/python/python_plugin.c:525
-#: src/plugins/rssyl/rssyl_feed_props.c:466
+#: src/plugins/rssyl/rssyl_feed_props.c:495
 msgid "Refresh"
 msgstr "更新"
 
@@ -12875,8 +12935,10 @@ msgid "Failed to register \"compose create hook\" in the Python plugin"
 msgstr "在 Python 外掛程式中註冊 \"建立新郵件 hook\" 失敗"
 
 #: src/plugins/python/python_plugin.c:727
+#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
+"\n"
 "Python code can be entered interactively into an embedded Python console, "
 "under Tools -> Show Python console, or stored in scripts.\n"
 "\n"
@@ -12885,29 +12947,25 @@ msgid ""
 "put buttons for script invocation into the toolbars using Claws Mail's "
 "builtin toolbar editor.\n"
 "\n"
-"You can provide scripts working on the main window by placing files into ~/."
-"claws-mail/python-scripts/main.\n"
+"You can provide scripts working on the main window by placing files into '~/."
+"claws-mail/python-scripts/main'.\n"
 "\n"
 "You can also provide scripts working on an open compose window by placing "
-"files into ~/.claws-mail/python-scripts/compose.\n"
+"files into '~/.claws-mail/python-scripts/compose'.\n"
 "\n"
-"The folder ~/.claws-mail/python-scripts/auto/ may contain some scripts that "
-"are automatically executed when certain events occur. Currently, the "
+"The folder '~/.claws-mail/python-scripts/auto/' may contain some scripts "
+"that are automatically executed when certain events occur. Currently, the "
 "following files in this directory are recognised:\n"
 "\n"
-"compose_any\n"
-"Gets executed whenever a compose window is opened, no matter if that opening "
-"happened as a result of composing a new message, replying or forwarding a "
-"message.\n"
+" 'compose_any' - gets executed whenever a compose window is opened, no "
+"matter if that opening happened as a result of composing a new message, "
+"replying or forwarding a message.\n"
 "\n"
-"startup\n"
-"Executed at plugin load\n"
+" 'startup' - executed at plugin load.\n"
 "\n"
-"shutdown\n"
-"Executed at plugin unload\n"
+" 'shutdown' - executed at plugin unload.\n"
 "\n"
-"\n"
-"For the most up-to-date API documentation, type\n"
+"For the most up-to-date API documentation, type:\n"
 "\n"
 " help(clawsmail)\n"
 "\n"
@@ -12954,7 +13012,7 @@ msgstr ""
 " \n"
 "歡迎回覆至 <berndth@gmx.de> "
 
-#: src/plugins/python/python_plugin.c:778
+#: src/plugins/python/python_plugin.c:775
 msgid "Python integration"
 msgstr "Python 整合"
 
@@ -12968,22 +13026,23 @@ msgstr ""
 "%s"
 
 #: src/plugins/rssyl/opml_export.c:108
-#, c-format
-msgid "RSSyl: Error while writing '%s' to feed export list.\n"
+#, fuzzy, c-format
+msgid "RSSyl: error while writing '%s' to feed export list.\n"
 msgstr "RSSyl：  當寫入'%s'以匯出feed清單時發生錯誤\n"
 
 #: src/plugins/rssyl/opml_export.c:129
-#, c-format
-msgid "RSSyl: Couldn't delete old OPML file '%s': %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: couldn't delete old OPML file '%s': %s\n"
 msgstr "RSSyl： 無法刪除舊版本的 OPML 檔案 '%s': %s\n"
 
 #: src/plugins/rssyl/opml_export.c:139
-#, c-format
-msgid "RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: couldn't open file '%s' for feed list exporting: %s\n"
 msgstr "RSSyl： 無法開啟檔案 '%s' 以匯出feed清單： %s\n"
 
 #: src/plugins/rssyl/opml_export.c:180
-msgid "RSSyl: Error during writing feed export file.\n"
+#, fuzzy
+msgid "RSSyl: error during writing feed export file.\n"
 msgstr "RSSyl： 寫入feed匯出檔案時發生錯誤\n"
 
 #: src/plugins/rssyl/opml_import.c:105
@@ -13022,7 +13081,7 @@ msgctxt "Empty RSS feed title placeholder"
 msgid "(empty)"
 msgstr "(空白)"
 
-#: src/plugins/rssyl/rssyl.c:152 src/plugins/rssyl/rssyl.c:164
+#: src/plugins/rssyl/rssyl.c:154 src/plugins/rssyl/rssyl.c:166
 msgid "Refresh all feeds"
 msgstr "更新所有的feeds"
 
@@ -13040,7 +13099,7 @@ msgid "'%c' can't be used in folder name."
 msgstr "'%c' 不能用於資料夾名稱"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:281 src/plugins/rssyl/rssyl_cb_menu.c:328
-#: src/plugins/rssyl/rssyl_feed_props.c:197
+#: src/plugins/rssyl/rssyl_feed_props.c:215
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "Claws Mail需要網路的存取能力才能進行feed的更新"
@@ -13060,141 +13119,163 @@ msgid "Select an OPML file"
 msgstr "選擇一個 OPML 檔案"
 
 #: src/plugins/rssyl/rssyl_feed.h:28
-#, c-format
-msgid "RSSyl: Subscribing new feed: %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: subscribing new feed: %s\n"
 msgstr "RSSyl： 訂閱新的feed： %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:29
-#, c-format
-msgid "RSSyl: New feed subscribed: '%s' (%s)\n"
+#, fuzzy, c-format
+msgid "RSSyl: new feed subscribed: '%s' (%s)\n"
 msgstr "RSSyl： 已訂閱新的feed： '%s' (%s)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:30
-#, c-format
-msgid "RSSyl: Updating feed: %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: updating feed: %s (User Agent: %s)\n"
 msgstr "RSSyl： 正在更新 feed: %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:31
-#, c-format
-msgid "RSSyl: Feed update finished: %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: feed update finished: %s\n"
 msgstr "RSSyl： 已完成更新 feed: %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:32
-#, c-format
-msgid "RSSyl: Error fetching feed at '%s': %s\n"
+#, fuzzy, c-format
+msgid "RSSyl: error fetching feed at '%s': %s\n"
 msgstr "RSSyl： 在 '%s' 擷取feed時發生錯誤： %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:33
-#, c-format
-msgid "RSSyl: No valid feed found at '%s'\n"
+#, fuzzy, c-format
+msgid "RSSyl: no valid feed found at '%s'\n"
 msgstr "RSSyl： 在 '%s' 沒有合法的 feed\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:34
-#, c-format
-msgid "RSSyl: Couldn't process feed at '%s'\n"
+#, fuzzy, c-format
+msgid "RSSyl: couldn't process feed at '%s'\n"
 msgstr "RSSyl： 無法在 '%s' 進行 feed \n"
 
 #: src/plugins/rssyl/rssyl_feed.h:35
-#, c-format
-msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
+#, fuzzy, c-format
+msgid "RSSyl: application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr "RSSyl： 應用程式已經存在，無法在 '%s' 結束feed的更新動作\n"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:265
+#: src/plugins/rssyl/rssyl_feed_props.c:283
 msgid "HTTP Basic authentication"
 msgstr "HTTP 基礎認證"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:287
+#: src/plugins/rssyl/rssyl_feed_props.c:305
 msgid "Use default refresh interval"
 msgstr "使用預設更新時間"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:299
+#: src/plugins/rssyl/rssyl_feed_props.c:317
 msgid "Keep old items"
 msgstr "保持舊有的項目"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:305
+#: src/plugins/rssyl/rssyl_feed_props.c:323
 msgid "_Trim"
 msgstr "對齊(_T)"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:307
+#: src/plugins/rssyl/rssyl_feed_props.c:325
 msgid "Update feed, deleting items which are no longer in the source feed"
 msgstr "更新 feed，刪除那些已經不在來源feed內的項目"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:310
+#: src/plugins/rssyl/rssyl_feed_props.c:328
 msgid "Fetch comments if possible"
 msgstr "如果可以的話擷取註解"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:330
+#: src/plugins/rssyl/rssyl_feed_props.c:348
 msgid "Always mark it as new"
 msgstr "永遠標示為新feed"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:332
+#: src/plugins/rssyl/rssyl_feed_props.c:350
 msgid "Only mark it as new if its text has changed"
 msgstr "只有當此文件內容異動時，才會把它標示為新文件"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:334
+#: src/plugins/rssyl/rssyl_feed_props.c:352
 msgid "Never mark it as new"
 msgstr "永遠不要標示為新feed"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:339
+#: src/plugins/rssyl/rssyl_feed_props.c:357
 msgid "Add item title to the top of message"
 msgstr "增加項目的標題至郵件的頂端"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:346
+#: src/plugins/rssyl/rssyl_feed_props.c:364
 msgid "Ignore title rename"
 msgstr "忽略標題的變更"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:351
+#: src/plugins/rssyl/rssyl_feed_props.c:369
+#, fuzzy
 msgid ""
 "Enable this to keep current folder name, even if feed author changes title "
-"of the feed."
+"of the feed"
 msgstr ""
 "啟用這個功能可以保持目前的資料夾名稱，甚至當feed作者改變feed的標題時也一樣有"
 "效"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:355
+#: src/plugins/rssyl/rssyl_feed_props.c:373
 #: src/plugins/vcalendar/vcal_prefs.c:594
 msgid "Verify TLS certificate validity"
 msgstr "驗證 SSL/TLS 認證的有效期限"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:375
+#: src/plugins/rssyl/rssyl_feed_props.c:379
+#, fuzzy
+msgid "Use default User Agent"
+msgstr "使用預設值"
+
+#: src/plugins/rssyl/rssyl_feed_props.c:404
 msgid "User name"
 msgstr "使用者名稱"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:388
+#: src/plugins/rssyl/rssyl_feed_props.c:417
 msgid "Source URL"
 msgstr "來源 URL"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:401
+#: src/plugins/rssyl/rssyl_feed_props.c:430
 msgid "Fetch comments on posts aged less than"
 msgstr "如果可以的話擷取註解，貼文出現至今少於"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:409
+#: src/plugins/rssyl/rssyl_feed_props.c:438
 #: src/plugins/vcalendar/day-view.c:620 src/plugins/vcalendar/month-view.c:709
 #: src/prefs_account.c:1689 src/prefs_folder_item.c:589 src/prefs_matcher.c:340
 msgid "days"
 msgstr "天"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:410
+#: src/plugins/rssyl/rssyl_feed_props.c:439
 msgid "Set to -1 to fetch all comments"
 msgstr "設定為 -1 時將會擷取所有的註解"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:434
+#: src/plugins/rssyl/rssyl_feed_props.c:463
 msgid "If an item changes"
 msgstr "如果項目改變了"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:439
+#: src/plugins/rssyl/rssyl_feed_props.c:468
 msgid "Items"
 msgstr "項目"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:452
+#: src/plugins/rssyl/rssyl_feed_props.c:481
 msgid "Refresh interval"
 msgstr "刷新的間隔時間"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:460
+#: src/plugins/rssyl/rssyl_feed_props.c:489
 msgid "Set to 0 to disable automatic refreshing for this feed"
 msgstr "若要關閉此feed的自動更新功能，將它設定為0"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:492
+#: src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/plugins/rssyl/rssyl_feed_props.c:519 src/plugins/rssyl/rssyl_prefs.c:262
+#, fuzzy
+msgid "User Agent"
+msgstr "代理人"
+
+#: src/plugins/rssyl/rssyl_feed_props.c:510
+msgid "Disable this to use a User Agent specific to this feed"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_feed_props.c:512
+msgid ""
+"Specific User Agent to use for this feed. If empty, the User Agent string "
+"set in '/Configuration/Preferences/Plugins/RSSyl' will be used"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_feed_props.c:545
 msgid "Set feed properties"
 msgstr "設定 feed 屬性"
 
@@ -13211,8 +13292,9 @@ msgid "Rena_me..."
 msgstr "修改名稱(_m)"
 
 #: src/plugins/rssyl/rssyl_gtk.c:47
-msgid "R_efresh recursively"
-msgstr "全部更新(_e)"
+#, fuzzy
+msgid "R_efresh all feeds"
+msgstr "更新所有的feeds"
 
 #: src/plugins/rssyl/rssyl_gtk.c:48
 msgid "Subscribe _new feed..."
@@ -13251,35 +13333,56 @@ msgstr ""
 msgid "My Feeds"
 msgstr "我的Feeds"
 
-#: src/plugins/rssyl/rssyl_prefs.c:107
+#: src/plugins/rssyl/rssyl_prefs.c:138
 msgid "Select cookies file"
 msgstr "選擇cookies檔案"
 
-#: src/plugins/rssyl/rssyl_prefs.c:137
+#: src/plugins/rssyl/rssyl_prefs.c:170
 msgid "Default refresh interval"
 msgstr "預設更新時間"
 
-#: src/plugins/rssyl/rssyl_prefs.c:157
+#: src/plugins/rssyl/rssyl_prefs.c:190
 msgid "Refresh all feeds on start-up"
 msgstr "啟動時刷新所有的feeds"
 
-#: src/plugins/rssyl/rssyl_prefs.c:166
+#: src/plugins/rssyl/rssyl_prefs.c:197
+msgid "Refresh all skips feeds programmed to be refreshed manually"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:206
 msgid "Verify TLS certificates validity for new feeds"
 msgstr "對所有新的feeds進行SSL/TLS認證的驗證"
 
-#: src/plugins/rssyl/rssyl_prefs.c:173
+#: src/plugins/rssyl/rssyl_prefs.c:213
 msgid "Path to cookies file"
 msgstr "Cookies檔案路徑"
 
-#: src/plugins/rssyl/rssyl_prefs.c:180
+#: src/plugins/rssyl/rssyl_prefs.c:220
 msgid "Path to Netscape-style cookies.txt file containing your cookies"
 msgstr "在指向 Netscape-style 的 cookies.txt 檔案包含了你的 cookies"
 
-#: src/plugins/rssyl/rssyl_prefs.c:191
+#: src/plugins/rssyl/rssyl_prefs.c:234
+#, fuzzy
+msgid "Use a custom User Agent"
+msgstr "自訂顏色"
+
+#: src/plugins/rssyl/rssyl_prefs.c:236
+msgid ""
+"Instead of using the default User Agent for feed retrieval, you can enter a "
+"custom value"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:245
+msgid ""
+"Custom User Agent to use for feed retrieval. If empty, the default User "
+"Agent string will be used"
+msgstr ""
+
+#: src/plugins/rssyl/rssyl_prefs.c:254
 msgid "Refreshing"
 msgstr "更新"
 
-#: src/plugins/rssyl/rssyl_prefs.c:195
+#: src/plugins/rssyl/rssyl_prefs.c:258
 msgid "Security and privacy"
 msgstr "安全與隱私"
 
@@ -13297,9 +13400,10 @@ msgid "Feed folder:"
 msgstr "Feed 資料夾："
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:70
+#, fuzzy
 msgid ""
 "Instead of using official title, you can enter a different folder name for "
-"the feed."
+"the feed"
 msgstr "你可以為 feed 輸入一個不同的資料夾名稱，以及代官方的預設名稱"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:74
@@ -13311,26 +13415,26 @@ msgstr "加入後編輯 feed 屬性(_E)"
 msgid "Updating comments for '%s'..."
 msgstr "為 '%s' 更新註解..."
 
-#: src/plugins/rssyl/rssyl_update_feed.c:106
+#: src/plugins/rssyl/rssyl_update_feed.c:152
 #: src/plugins/vcalendar/vcal_folder.c:1624
 msgid "401 (Authorisation required)"
 msgstr "401 (要求認證)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:109
+#: src/plugins/rssyl/rssyl_update_feed.c:155
 msgid "403 (Forbidden)"
 msgstr "403 (無法認證)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:112
+#: src/plugins/rssyl/rssyl_update_feed.c:158
 #: src/plugins/vcalendar/vcal_folder.c:1630
 msgid "404 (Not found)"
 msgstr "404 (找不到)"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:115
+#: src/plugins/rssyl/rssyl_update_feed.c:161
 #, c-format
 msgid "Error %d"
 msgstr "錯誤 %d"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:128
+#: src/plugins/rssyl/rssyl_update_feed.c:174
 #, c-format
 msgctxt "First parameter is URL, second is error text"
 msgid ""
@@ -13343,7 +13447,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:141
+#: src/plugins/rssyl/rssyl_update_feed.c:187
 #, c-format
 msgid ""
 "No valid feed found at\n"
@@ -13352,21 +13456,21 @@ msgstr ""
 "在<b>%s</b>\n"
 "沒有有效的 feed"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:153
+#: src/plugins/rssyl/rssyl_update_feed.c:199
 msgid "Untitled feed"
 msgstr "無標題的 Feed"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:155
-#, c-format
-msgid "RSSyl: Possibly invalid feed without title at %s.\n"
+#: src/plugins/rssyl/rssyl_update_feed.c:201
+#, fuzzy, c-format
+msgid "RSSyl: possibly invalid feed without title at %s.\n"
 msgstr "RSSyl： 可能在 '%s' 中存在不合法的 feed 沒有主旨\n"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:232
+#: src/plugins/rssyl/rssyl_update_feed.c:284
 #, c-format
 msgid "Updating feed '%s'..."
 msgstr "正在更新 feed '%s'..."
 
-#: src/plugins/rssyl/rssyl_update_feed.c:269
+#: src/plugins/rssyl/rssyl_update_feed.c:321
 #, c-format
 msgid ""
 "Couldn't process feed at\n"
@@ -13378,7 +13482,7 @@ msgstr ""
 "進行 feed\n"
 "請連絡開發人員，這是不應該發生的。"
 
-#: src/plugins/rssyl/rssyl_update_feed.c:355
+#: src/plugins/rssyl/rssyl_update_feed.c:433
 msgid "Claws Mail needs network access in order to update your feeds."
 msgstr "Claws Mail 需要網路存取，以更新你的 feeds."
 
@@ -13390,13 +13494,14 @@ msgstr ""
 "升級儲存格式時發生內部錯誤，這是不應該發生的。請將除錯輸出夾檔後提報。\n"
 
 #: src/plugins/smime/plugin.c:61
+#, fuzzy
 msgid ""
 "This plugin handles S/MIME signed and/or encrypted mails. You can decrypt "
 "mails, verify signatures or sign and encrypt your own mails.\n"
 "\n"
-"It can be selected as the Default Privacy System in /Configuration/[Account "
-"Preferences]/Privacy and when composing a message from /Options/Privacy "
-"System\n"
+"It can be selected as the Default Privacy System in '/Configuration/[Account "
+"Preferences]/Privacy' and when composing a message from '/Options/Privacy "
+"System'.\n"
 "\n"
 "This plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "This plugin also needs gpgsm, gnupg-agent and dirmngr installed and "
@@ -13406,7 +13511,7 @@ msgid ""
 "found at:\n"
 "http://www.claws-mail.org/faq/index.php/S/MIME_howto\n"
 "\n"
-"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>"
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
 "此外掛程式可以處理包含 S/MIME 簽章及(或)加密的郵件。你可以解密 郵件，核對簽名"
 "或對你的郵件進行簽章及加密的動作\n"
@@ -13461,8 +13566,10 @@ msgid "SpamReport"
 msgstr "垃圾郵件提報"
 
 #: src/plugins/spam_report/spam_report.c:401
+#, fuzzy
 msgid ""
 "This plugin reports spam to various places.\n"
+"\n"
 "Currently the following sites or methods are supported:\n"
 "\n"
 " * spam-signal.fr\n"
@@ -13542,6 +13649,7 @@ msgid "SpamAssassin plugin is loaded but disabled by its preferences.\n"
 msgstr "SpamAssassin外掛程式已載入，但是已在它的選項目被關閉了。\n"
 
 #: src/plugins/spamassassin/spamassassin.c:620
+#, fuzzy
 msgid ""
 "This plugin can check all messages that are received from an IMAP, LOCAL or "
 "POP account for spam using a SpamAssassin server. You will need a "
@@ -13552,7 +13660,7 @@ msgid ""
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/SpamAssassin"
+"Options can be found in '/Configuration/Preferences/Plugins/SpamAssassin'."
 msgstr ""
 "這個外掛程式可以使用SpamAssassin檢查所有來自己IMAP、本地或POP帳號的郵件，並判"
 "斷是否為垃圾郵件。你將需要一個執行中的SpamAssassin伺服器\n"
@@ -13665,11 +13773,12 @@ msgid "TNEF Parser"
 msgstr "TNEF解析器"
 
 #: src/plugins/tnef_parse/tnef_parse.c:447
+#, fuzzy
 msgid ""
 "This Claws Mail plugin allows you to read application/ms-tnef attachments.\n"
 "\n"
 "The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
-"Hand <yerase@yerot.com>"
+"Hand <yerase@yerot.com>."
 msgstr ""
 "此 Claws Mail 外掛程式允許你讀取 pplication/ms-tnef 附件\n"
 "\n"
@@ -13957,25 +14066,25 @@ msgid "You are already busy at this time."
 msgstr "你這個時間是忙碌的"
 
 #: src/plugins/vcalendar/vcalendar.c:1242
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1641
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1642
 msgid "Event:"
 msgstr "事件："
 
 #: src/plugins/vcalendar/vcalendar.c:1243
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1619
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1630
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1631
 msgid "Organizer:"
 msgstr "發起人："
 
 #: src/plugins/vcalendar/vcalendar.c:1244
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1622
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1632
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1633
 msgid "Location:"
 msgstr "地點："
 
 #: src/plugins/vcalendar/vcalendar.c:1245
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1620
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1631
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1632
 msgid "Summary:"
 msgstr "摘要："
 
@@ -13989,7 +14098,7 @@ msgstr "結束："
 
 #: src/plugins/vcalendar/vcalendar.c:1249
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1624
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1634
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1635
 msgid "Attendees:"
 msgstr "出席人員："
 
@@ -14435,30 +14544,30 @@ msgid "%s - Edit meeting"
 msgstr "%s - 編輯會議"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1621
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1645
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1646
 msgid "Time:"
 msgstr "時間："
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1768
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1769
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d 小時"
 msgstr[1] "%d 小時"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1771
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1772
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d 分鐘"
 msgstr[1] "%d 分鐘"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1782
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1783
 #, c-format
 msgid "Upcoming event: %s"
 msgstr "即將到來的事件： %s"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1783
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1784
 #, c-format
 msgid ""
 "You have a meeting or event soon.\n"
@@ -14475,39 +14584,39 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1800
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1801
 #, c-format
 msgid "Remind me in %d minute"
 msgid_plural "Remind me in %d minutes"
 msgstr[0] "在 %d 分鐘後提醒我"
 msgstr[1] "在 %d 分鐘後提醒我"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1926
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1927
 msgid "Empty calendar"
 msgstr "清空行事曆"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1927
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1928
 msgid "There is nothing to export."
 msgstr "沒有什麼可以匯出"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1967
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1970
 msgid "Could not export the calendar."
 msgstr "無法匯出行事曆"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1990
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1993
 msgid "Export calendar to ICS"
 msgstr "把行事曆匯出至 ICS"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2007
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2010
 #, c-format
 msgid "Couldn't export calendar to '%s'\n"
 msgstr "無法匯出行事曆至 '%s'\n"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2123
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2126
 msgid "Could not export the freebusy info."
 msgstr "無法匯出 空閒/忙碌 的資訊"
 
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:2155
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:2158
 #, c-format
 msgid "Couldn't export free/busy to '%s'\n"
 msgstr "無法匯出 空閒/忙碌 至'%s'\n"
@@ -14621,13 +14730,13 @@ msgid "invalid UIDL response: %s\n"
 msgstr "無效的 UIDL 回應： %s\n"
 
 #: src/pop.c:927
-#, c-format
-msgid "POP: Deleting expired message %d [%s]\n"
+#, fuzzy, c-format
+msgid "POP: deleting expired message %d [%s]\n"
 msgstr "POP3： 刪除已過期的郵件 %d [%s]\n"
 
 #: src/pop.c:943
-#, c-format
-msgid "POP: Skipping message %d [%s] (%d bytes)\n"
+#, fuzzy, c-format
+msgid "POP: skipping message %d [%s] (%d bytes)\n"
 msgstr "POP3： 略過郵件 %d [%s] (%d 位元)\n"
 
 #: src/pop.c:976
@@ -15391,7 +15500,7 @@ msgstr "功能項目名稱不能包含冒號 ':'"
 msgid "Menu name is too long."
 msgstr "功能項目名稱太長了"
 
-#: src/prefs_actions.c:653
+#: src/prefs_actions.c:653 src/prefs_filtering_action.c:907
 msgid "Command-line not set."
 msgstr "尚未設定命令列"
 
@@ -15579,11 +15688,11 @@ msgstr "在 %d\\n%f 已寫入：\\n\\n%q\\n%X"
 
 #: src/prefs_common.c:327 src/prefs_quote.c:85
 msgid ""
-"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: "
-"%t\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
+"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
+"\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\n開始轉寄郵件：\\n\\n?d{日期： %d\\n}?f{寄件者： %f\\n}?t{收件者： "
-"%t\\n}?c{副本： %c\\n}?n{新聞群組： %n\\n}?s{主旨： %s\\n}\\n\\n%M"
+"\\n\\n開始轉寄郵件：\\n\\n?d{日期： %d\\n}?f{寄件者： %f\\n}?t{收件者： %t"
+"\\n}?c{副本： %c\\n}?n{新聞群組： %n\\n}?s{主旨： %s\\n}\\n\\n%M"
 
 #: src/prefs_common.c:462
 msgid "%x(%a) %H:%M"
@@ -15879,7 +15988,7 @@ msgstr "改寄"
 #: src/prefs_filtering_action.c:186 src/prefs_filtering_action.c:187
 #: src/prefs_filtering_action.c:1399 src/prefs_matcher.c:639
 #: src/prefs_summaries.c:711 src/prefs_summary_column.c:86
-#: src/summaryview.c:470
+#: src/summaryview.c:471
 msgid "Score"
 msgstr "分數"
 
@@ -15893,7 +16002,7 @@ msgstr "設定分數"
 
 #: src/prefs_filtering_action.c:188 src/prefs_filtering_action.c:189
 #: src/prefs_filtering_action.c:190 src/prefs_matcher.c:643
-#: src/prefs_summary_column.c:88 src/summaryview.c:472
+#: src/prefs_summary_column.c:88 src/summaryview.c:473
 msgid "Tags"
 msgstr "標籤"
 
@@ -15929,10 +16038,6 @@ msgstr "規則"
 #: src/prefs_filtering_action.c:430 src/prefs_filtering.c:423
 msgid "Action"
 msgstr "動作"
-
-#: src/prefs_filtering_action.c:907
-msgid "Command-line not set"
-msgstr "命令列未設定"
 
 #: src/prefs_filtering_action.c:908
 msgid "Destination is not set."
@@ -16231,9 +16336,10 @@ msgid "Select the HTML part of multipart messages"
 msgstr "選擇多重郵件的HTML部份"
 
 #: src/prefs_folder_item.c:538
+#, fuzzy
 msgid ""
-"\"Default\" will follow global preference (found in /Preferences/Message "
-"View/Text Options)"
+"\"Default\" will follow global preference (found in '/Configuration/"
+"Preferences/'Message View/Text Options)"
 msgstr ""
 "\"預設\" 將會套用全域的選項 (選項可以在 /Preferences/Message View/Text 找到)"
 
@@ -16416,11 +16522,12 @@ msgid "Enable logging of filtering/processing rules"
 msgstr "啟用過濾/執行規則進行日誌記錄"
 
 #: src/prefs_logging.c:174
+#, fuzzy
 msgid ""
 "If checked, turns on logging of filtering and processing rules.\n"
 "The log is accessible from 'Tools/Filtering log'.\n"
 "Caution: enabling this option will slow down the filtering/processing, this "
-"might be critical when applying many rules upon thousands of messages."
+"might be critical when applying many rules upon thousands of messages"
 msgstr ""
 "如果已經檢查過了，開啟日誌過濾功能並進行規則過濾\n"
 "來自於 '工具/過濾 日誌'是可以取存取的.\n"
@@ -16468,6 +16575,7 @@ msgid "High"
 msgstr "高"
 
 #: src/prefs_logging.c:233
+#, fuzzy
 msgid ""
 "Select the level of detail of the logging.\n"
 "Choose Low to see when rules are applied, which conditions match or don't "
@@ -16476,7 +16584,7 @@ msgid ""
 "and why rules are skipped.\n"
 "Choose High to explicitly show the reason why all rules are processed or "
 "skipped, and why all conditions are matched or not matched.\n"
-"Caution: the higher the level, the greater the impact on performance."
+"Caution: the higher the level, the greater the impact on performance"
 msgstr ""
 "選擇日誌的詳細等級\n"
 "選擇低等級，可以在套用規則時記錄日誌，包含符合或不符合的條件，以及什麼動作被"
@@ -16594,11 +16702,11 @@ msgstr "內文部份"
 msgid "whole message"
 msgstr "全部郵件"
 
-#: src/prefs_matcher.c:402 src/summaryview.c:6552
+#: src/prefs_matcher.c:402 src/summaryview.c:6558
 msgid "Marked"
 msgstr "已標示"
 
-#: src/prefs_matcher.c:403 src/summaryview.c:6550
+#: src/prefs_matcher.c:403 src/summaryview.c:6556
 msgid "Deleted"
 msgstr "已刪除"
 
@@ -16606,11 +16714,11 @@ msgstr "已刪除"
 msgid "Replied"
 msgstr "已回覆"
 
-#: src/prefs_matcher.c:405 src/summaryview.c:6544
+#: src/prefs_matcher.c:405 src/summaryview.c:6550
 msgid "Forwarded"
 msgstr "已轉寄"
 
-#: src/prefs_matcher.c:407 src/summaryview.c:6534 src/toolbar.c:525
+#: src/prefs_matcher.c:407 src/summaryview.c:6540 src/toolbar.c:525
 #: src/toolbar.c:1004 src/toolbar.c:2383
 msgid "Spam"
 msgstr "垃圾郵件"
@@ -16619,7 +16727,7 @@ msgstr "垃圾郵件"
 msgid "Has attachment"
 msgstr "有附加檔額"
 
-#: src/prefs_matcher.c:409 src/summaryview.c:6570
+#: src/prefs_matcher.c:409 src/summaryview.c:6576
 msgid "Signed"
 msgstr "簽章"
 
@@ -17131,8 +17239,9 @@ msgid "Folder list"
 msgstr "資料夾清單"
 
 #: src/prefs_msg_colors.c:356
+#, fuzzy
 msgctxt "Tooltip and Dialog title"
-msgid "Pick color for Target folder."
+msgid "Pick color for Target folder"
 msgstr "挑選目的資料夾的顏色"
 
 #: src/prefs_msg_colors.c:357
@@ -17223,9 +17332,10 @@ msgid "Metadata handling"
 msgstr "原始數據控制"
 
 #: src/prefs_other.c:445
+#, fuzzy
 msgid ""
 "Safer mode asks the OS to write metadata to disk directly;\n"
-"it avoids data loss after crashes but can take some time."
+"it avoids data loss after crashes but can take some time"
 msgstr ""
 "安全模式會要求系統將原始數據直接寫入磁碟，它將避免在任何的崩潰情況下\n"
 "遺失數據，但是這樣將會花費一些時間。"
@@ -17247,9 +17357,10 @@ msgid "Translate header names"
 msgstr "轉換標頭名稱"
 
 #: src/prefs_other.c:493
+#, fuzzy
 msgid ""
 "The display of standard headers (such as 'From:', 'Subject:') will be "
-"translated into your language."
+"translated into your language"
 msgstr "標準標頭的顯示 (像是 'From:', 'Subject:') 將會 翻譯為你的語言"
 
 #: src/prefs_other.c:496
@@ -17273,9 +17384,10 @@ msgstr ""
 "('shred'程式是無效的)"
 
 #: src/prefs_other.c:512
+#, fuzzy
 msgid ""
 "Use the 'shred' program to overwrite files with random data before deleting "
-"them. This slows down deletion. Be sure to read shred's man page for caveats."
+"them. This slows down deletion. Be sure to read shred's man page for caveats"
 msgstr ""
 "使用'shred'程式，以隨機的方式在檔案刪除前覆寫檔案，這樣將使刪除變慢。請仔細閱"
 "讀'shred'的man page，以取得更詳細的警示說明"
@@ -17289,10 +17401,11 @@ msgid "Save attachments with chmod"
 msgstr "用chmod指令儲存附件"
 
 #: src/prefs_other.c:530
+#, fuzzy
 msgid ""
 "By default attachments are saved with chmod value 600: readable and "
 "writeable by the user only. If this is too restrictive for you, set a chmod "
-"value here, otherwise leave blank to use the default."
+"value here, otherwise leave blank to use the default"
 msgstr ""
 "預設會把附件儲存成chmod 600值：也就是使用者具可讀且可寫的權限。如果這個限制對"
 "你來說太高，使用chomd來設定，否則留下空白以使用預設值"
@@ -17306,9 +17419,10 @@ msgid "Use a primary passphrase"
 msgstr "請輸入密碼："
 
 #: src/prefs_other.c:551
+#, fuzzy
 msgid ""
 "If checked, your saved account passwords will be protected by a primary "
-"passphrase. If no primary passphrase is set, you will be prompted to set one."
+"passphrase. If no primary passphrase is set, you will be prompted to set one"
 msgstr ""
 "如果勾選了此選項，你已儲存的帳密將會受到一個慣用詞的保護，如果沒有指定慣用"
 "詞，你將會被要求設定一個。"
@@ -18349,15 +18463,15 @@ msgstr "第 %d 頁"
 msgid "No information available"
 msgstr "無可用訊息"
 
-#: src/privacy.c:505
+#: src/privacy.c:508
 msgid "No recipient keys defined."
 msgstr "接收的金鑰尚未定義"
 
-#: src/procmime.c:414 src/procmime.c:416 src/procmime.c:417
+#: src/procmime.c:415 src/procmime.c:417 src/procmime.c:418
 msgid "[Error decoding BASE64]\n"
 msgstr "[BASE64編碼錯誤]\n"
 
-#: src/procmime.c:2798
+#: src/procmime.c:2802
 msgid "Could not decode part"
 msgstr "無法解析部份的訊息"
 
@@ -18699,12 +18813,12 @@ msgstr "此 \"回覆\" 樣版的 \"引言標示\" 欄位是無效的"
 msgid "The \"Quotation mark\" field of the \"Forward\" template is invalid."
 msgstr "此 \"轉寄\" 樣版的 \"引言標示\" 欄位是無效的"
 
-#: src/quote_fmt_parse.y:544
+#: src/quote_fmt_parse.y:545
 #, c-format
 msgid "Enter text to replace '%s'"
 msgstr "輸入文字以覆蓋 '%s'"
 
-#: src/quote_fmt_parse.y:545
+#: src/quote_fmt_parse.y:546
 msgid "Enter variable"
 msgstr "輸入變數"
 
@@ -18736,8 +18850,8 @@ msgid "POP before SMTP"
 msgstr "在SMTP之前POP"
 
 #: src/send_message.c:373
-#, c-format
-msgid "Account '%s': Connecting to SMTP server: %s:%d..."
+#, fuzzy, c-format
+msgid "Account '%s': connecting to SMTP server: %s:%d..."
 msgstr "帳號'%s'：連線到SMTP伺服器： %s:%d..."
 
 #: src/send_message.c:446
@@ -18847,7 +18961,7 @@ msgstr "條件："
 msgid "Find _all"
 msgstr "尋找全部(_a)"
 
-#: src/summary_search.c:696 src/summaryview.c:1141 src/summaryview.c:1405
+#: src/summary_search.c:696 src/summaryview.c:1142 src/summaryview.c:1406
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "在%s內搜尋...\n"
@@ -18860,298 +18974,298 @@ msgstr "已到達清單的開頭，從結尾繼續嗎？"
 msgid "End of list reached; continue from beginning?"
 msgstr "已到達清單的結尾，從開頭繼續嗎？"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:427
 msgid "Re-edit"
 msgstr "重新編輯(_e)"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:440
 msgid "Create _filter rule"
 msgstr "建立過濾規則(_f)"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:453
 msgid "_Set displayed columns"
 msgstr "設定顯示行數(_S)"
 
-#: src/summaryview.c:457
+#: src/summaryview.c:458
 msgid "_Lock column headers"
 msgstr "鎖定標頭列(_L)"
 
-#: src/summaryview.c:595
+#: src/summaryview.c:596
 msgid "Toggle quick search bar"
 msgstr "釘住快速搜尋列"
 
-#: src/summaryview.c:632
+#: src/summaryview.c:633
 msgid "Toggle multiple selection"
 msgstr "釘住多重選擇"
 
-#: src/summaryview.c:1332
+#: src/summaryview.c:1333
 msgid "Process mark"
 msgstr "進行標示"
 
-#: src/summaryview.c:1333
+#: src/summaryview.c:1334
 msgid "Some marks are left. Process them?"
 msgstr "有一些標示已留下，要進行嗎？"
 
-#: src/summaryview.c:1384
+#: src/summaryview.c:1385
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "掃描資料夾 (%s)..."
 
-#: src/summaryview.c:1940 src/summaryview.c:1988
+#: src/summaryview.c:1941 src/summaryview.c:1989
 msgid "No more unread messages"
 msgstr "沒有更多的未讀郵件"
 
-#: src/summaryview.c:1941
+#: src/summaryview.c:1942
 msgid "No unread message found. Search from the end?"
 msgstr "找不到未讀郵件，從結尾開始搜尋嗎？"
 
-#: src/summaryview.c:1965
+#: src/summaryview.c:1966
 msgid "No unread messages."
 msgstr "沒有未讀郵件"
 
-#: src/summaryview.c:1989
+#: src/summaryview.c:1990
 msgid "No unread message found. Go to next folder?"
 msgstr "找不到未讀的郵件，到下一個資料夾嗎？"
 
-#: src/summaryview.c:2025 src/summaryview.c:2073
+#: src/summaryview.c:2026 src/summaryview.c:2074
 msgid "No more new messages"
 msgstr "沒有新郵件"
 
-#: src/summaryview.c:2026
+#: src/summaryview.c:2027
 msgid "No new message found. Search from the end?"
 msgstr "找不到新郵件，從結尾開始搜尋嗎？"
 
-#: src/summaryview.c:2050
+#: src/summaryview.c:2051
 msgid "No new messages."
 msgstr "沒有新郵件"
 
-#: src/summaryview.c:2074
+#: src/summaryview.c:2075
 msgid "No new message found. Go to next folder?"
 msgstr "找不到新郵件，到下一個資料夾嗎？"
 
-#: src/summaryview.c:2107 src/summaryview.c:2141
+#: src/summaryview.c:2108 src/summaryview.c:2142
 msgid "No more marked messages"
 msgstr "沒有更多已標示的郵件"
 
-#: src/summaryview.c:2108
+#: src/summaryview.c:2109
 msgid "No marked message found. Search from the end?"
 msgstr "找不到已標示郵件，從結尾再次搜尋？"
 
-#: src/summaryview.c:2118
+#: src/summaryview.c:2119
 msgid "No marked messages."
 msgstr "沒有已標示的郵件"
 
-#: src/summaryview.c:2142
+#: src/summaryview.c:2143
 msgid "No marked message found. Go to next folder?"
 msgstr "找不到已標示的郵件，到下一次資料夾嗎？"
 
-#: src/summaryview.c:2175 src/summaryview.c:2205
+#: src/summaryview.c:2176 src/summaryview.c:2206
 msgid "No more labeled messages"
 msgstr "沒有已貼標籤的郵件"
 
-#: src/summaryview.c:2176
+#: src/summaryview.c:2177
 msgid "No labeled message found. Search from the end?"
 msgstr "找不到已貼標籤的郵件，到下一次資料夾嗎？"
 
-#: src/summaryview.c:2186 src/summaryview.c:2220
+#: src/summaryview.c:2187 src/summaryview.c:2221
 msgid "No labeled messages."
 msgstr "沒有已貼標籤的郵件"
 
-#: src/summaryview.c:2206
+#: src/summaryview.c:2207
 msgid "No labeled message found. Search from the beginning?"
 msgstr "找不到已貼標籤的郵件，從開頭繼重新搜尋嗎？"
 
-#: src/summaryview.c:2530
+#: src/summaryview.c:2531
 msgid "Attracting messages by subject..."
 msgstr "從主旨取出郵件..."
 
-#: src/summaryview.c:2718
+#: src/summaryview.c:2719
 #, c-format
 msgid "%d deleted"
 msgstr "%d 已刪除"
 
-#: src/summaryview.c:2722
+#: src/summaryview.c:2723
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d 已移動"
 
-#: src/summaryview.c:2728
+#: src/summaryview.c:2729
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d 已複製"
 
-#: src/summaryview.c:2742
+#: src/summaryview.c:2743
 msgid " item selected"
 msgid_plural " items selected"
 msgstr[0] "項目已選擇"
 msgstr[1] "項目已選擇"
 
-#: src/summaryview.c:2760 src/summaryview.c:2805
+#: src/summaryview.c:2761 src/summaryview.c:2806
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d 新郵件, %d 未讀, %d 全部 (%s)"
 
-#: src/summaryview.c:2780
+#: src/summaryview.c:2781
 msgid "Message summary"
 msgstr "郵件摘要"
 
-#: src/summaryview.c:2781
+#: src/summaryview.c:2782
 msgid "New:"
 msgstr "新郵件："
 
-#: src/summaryview.c:2782
+#: src/summaryview.c:2783
 msgid "Unread:"
 msgstr "未讀郵件："
 
-#: src/summaryview.c:2783
+#: src/summaryview.c:2784
 msgid "Total:"
 msgstr "全部郵件："
 
-#: src/summaryview.c:2785
+#: src/summaryview.c:2786
 msgid "Marked:"
 msgstr "已標示："
 
-#: src/summaryview.c:2786
+#: src/summaryview.c:2787
 msgid "Replied:"
 msgstr "已回覆："
 
-#: src/summaryview.c:2787
+#: src/summaryview.c:2788
 msgid "Forwarded:"
 msgstr "已轉寄："
 
-#: src/summaryview.c:2788
+#: src/summaryview.c:2789
 msgid "Locked:"
 msgstr "已鎖定："
 
-#: src/summaryview.c:2789
+#: src/summaryview.c:2790
 msgid "Ignored:"
 msgstr "忽略："
 
-#: src/summaryview.c:2790
+#: src/summaryview.c:2791
 msgid "Watched:"
 msgstr "已監看："
 
-#: src/summaryview.c:2800
+#: src/summaryview.c:2801
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d/%d 已選擇 (%s/%s), %d 未讀"
 
-#: src/summaryview.c:2884
+#: src/summaryview.c:2885
 msgctxt "Column Header"
 msgid "_Mark"
 msgstr "標記(_M)"
 
-#: src/summaryview.c:3088
+#: src/summaryview.c:3089
 msgid "Sorting summary..."
 msgstr "摘要排序..."
 
-#: src/summaryview.c:3260
+#: src/summaryview.c:3261
 msgid "Setting summary from message data..."
 msgstr "從郵件資料設定摘要..."
 
-#: src/summaryview.c:3466
+#: src/summaryview.c:3467
 msgid "(No Date)"
 msgstr "(無資料)"
 
-#: src/summaryview.c:3523
+#: src/summaryview.c:3524
 msgid "(No Recipient)"
 msgstr "(無收信者)"
 
-#: src/summaryview.c:3571
+#: src/summaryview.c:3572
 #, c-format
 msgid "From: %s, on %s"
 msgstr "寄件者： %s，  以 %s"
 
-#: src/summaryview.c:3580
+#: src/summaryview.c:3581
 #, c-format
 msgid "To: %s, on %s"
 msgstr "收件者： %s， 以 %s"
 
-#: src/summaryview.c:4466
+#: src/summaryview.c:4472
 msgid "You're not the author of the article."
 msgstr "你不是文章的作者"
 
-#: src/summaryview.c:4556
+#: src/summaryview.c:4562
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
 msgstr[0] "你確定要刪除 %d 封選擇的郵件嗎？"
 msgstr[1] "你確定要刪除 %d 封選擇的郵件嗎？"
 
-#: src/summaryview.c:4559
+#: src/summaryview.c:4565
 msgid "Delete message"
 msgid_plural "Delete messages"
 msgstr[0] "刪除郵件"
 msgstr[1] "刪除郵件"
 
-#: src/summaryview.c:4723
+#: src/summaryview.c:4729
 msgid "Destination is same as current folder."
 msgstr "目的資料夾和目前的相同"
 
-#: src/summaryview.c:4778
+#: src/summaryview.c:4784
 msgid "Select folder to move selected message to"
 msgid_plural "Select folder to move selected messages to"
 msgstr[0] "選擇路徑將選定的郵件移至該位置"
 msgstr[1] "選擇路徑將選定的郵件移至該位置"
 
-#: src/summaryview.c:4829
+#: src/summaryview.c:4835
 msgid "Destination to copy is same as current folder."
 msgstr "要複製的目的資料夾和目前的相同"
 
-#: src/summaryview.c:4863
+#: src/summaryview.c:4869
 msgid "Select folder to copy selected message to"
 msgid_plural "Select folder to copy selected messages to"
 msgstr[0] "選擇路徑，將所有選定複製到該位置"
 msgstr[1] "選擇路徑，將所有選定複製到該位置"
 
-#: src/summaryview.c:5027
+#: src/summaryview.c:5033
 msgid "Append or Overwrite"
 msgstr "擴展或覆寫"
 
-#: src/summaryview.c:5028
+#: src/summaryview.c:5034
 msgid "Append or overwrite existing file?"
 msgstr "擴展或覆寫已存在的檔案？"
 
-#: src/summaryview.c:5029
+#: src/summaryview.c:5035
 msgid "_Append"
 msgstr "擴展(_A)"
 
-#: src/summaryview.c:5029
+#: src/summaryview.c:5035
 msgid "_Overwrite"
 msgstr "覆寫(_O)"
 
-#: src/summaryview.c:5040 src/summaryview.c:5043 src/summaryview.c:5058
+#: src/summaryview.c:5046 src/summaryview.c:5049 src/summaryview.c:5064
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "無法儲存檔案 '%s'"
 
-#: src/summaryview.c:5081
+#: src/summaryview.c:5087
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "你想要列印%d封件，一封一封的印，你確定要繼續嗎？"
 
-#: src/summaryview.c:5539
+#: src/summaryview.c:5545
 msgid "Building threads..."
 msgstr "建立串列..."
 
-#: src/summaryview.c:5787
+#: src/summaryview.c:5793
 msgid "Skip these rules"
 msgstr "略過這些規則"
 
-#: src/summaryview.c:5790
+#: src/summaryview.c:5796
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "不管帳號是屬於誰的，全部套用這些規則"
 
-#: src/summaryview.c:5793
+#: src/summaryview.c:5799
 msgid "Apply these rules if they apply to the current account"
 msgstr "如果這些規則已經套用在目前的帳號，就套用吧！"
 
-#: src/summaryview.c:5822
+#: src/summaryview.c:5828
 msgid "Filtering"
 msgstr "過濾"
 
-#: src/summaryview.c:5823
+#: src/summaryview.c:5829
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -19159,71 +19273,71 @@ msgstr ""
 "有一些過濾規則屬於一個特定帳號\n"
 "請選擇要使用這些規則做什麼："
 
-#: src/summaryview.c:5855
+#: src/summaryview.c:5861
 msgid "Filtering..."
 msgstr "過濾..."
 
-#: src/summaryview.c:5938
+#: src/summaryview.c:5944
 msgid "Processing configuration"
 msgstr "處理配置"
 
-#: src/summaryview.c:6088
+#: src/summaryview.c:6094
 msgid "Do you really want to reset the color label of all selected messages?"
 msgstr "你確定要重置所有已選擇郵件的顏色標籤嗎？"
 
-#: src/summaryview.c:6090
+#: src/summaryview.c:6096
 msgid "Do you really want to apply this color label to all selected messages?"
 msgstr "你確定要將顏色標籤套用到所有已選擇的郵件上嗎？"
 
-#: src/summaryview.c:6091
+#: src/summaryview.c:6097
 msgid "Reset color label"
 msgstr "重置顏色標籤"
 
-#: src/summaryview.c:6091
+#: src/summaryview.c:6097
 msgid "Set color label"
 msgstr "設定顏色標籤"
 
-#: src/summaryview.c:6530
+#: src/summaryview.c:6536
 msgid "Ignored thread"
 msgstr "忽略串列"
 
-#: src/summaryview.c:6532
+#: src/summaryview.c:6538
 msgid "Watched thread"
 msgstr "關注串列"
 
-#: src/summaryview.c:6540
+#: src/summaryview.c:6546
 msgid "Replied but also forwarded - click to see reply"
 msgstr "已回覆但是也轉發了 - 點選以檢視回覆"
 
-#: src/summaryview.c:6542
+#: src/summaryview.c:6548
 msgid "Replied - click to see reply"
 msgstr "已回覆 - 點選以檢視回覆"
 
-#: src/summaryview.c:6554
+#: src/summaryview.c:6560
 msgid "To be moved"
 msgstr "將被移動"
 
-#: src/summaryview.c:6556
+#: src/summaryview.c:6562
 msgid "To be copied"
 msgstr "將被複製"
 
-#: src/summaryview.c:6568
+#: src/summaryview.c:6574
 msgid "Signed, has attachment(s)"
 msgstr "已簽名，有附件"
 
-#: src/summaryview.c:6572
+#: src/summaryview.c:6578
 msgid "Encrypted, has attachment(s)"
 msgstr "已加密，有附件"
 
-#: src/summaryview.c:6574
+#: src/summaryview.c:6580
 msgid "Encrypted"
 msgstr "已加密"
 
-#: src/summaryview.c:6576
+#: src/summaryview.c:6582
 msgid "Has attachment(s)"
 msgstr "有附件"
 
-#: src/summaryview.c:8302
+#: src/summaryview.c:8308
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -19232,11 +19346,11 @@ msgstr ""
 "正規表示式 (regexp) 發生錯誤：\n"
 "%s"
 
-#: src/summaryview.c:8406
+#: src/summaryview.c:8412
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "回到資料夾清單 (你有未讀郵件)"
 
-#: src/summaryview.c:8411
+#: src/summaryview.c:8417
 msgid "Go back to the folder list"
 msgstr "回到資料夾清單"
 
@@ -19261,13 +19375,13 @@ msgid "Copy this add_ress"
 msgstr "複製這個地址(_r)"
 
 #: src/textview.c:708
-#, c-format
-msgid "[%s  %s (%d bytes)]"
+#, fuzzy, c-format
+msgid "[%s  %s (%ld bytes)]"
 msgstr "[%s  %s (%d 位元)]"
 
 #: src/textview.c:711
-#, c-format
-msgid "[%s (%d bytes)]"
+#, fuzzy, c-format
+msgid "[%s (%ld bytes)]"
 msgstr "[%s (%d 位元)]"
 
 #: src/textview.c:882
@@ -19592,10 +19706,6 @@ msgctxt "Toolbar"
 msgid "Trash"
 msgstr "回收桶"
 
-#: src/toolbar.c:494
-msgid "Get Mail"
-msgstr "收信"
-
 #: src/toolbar.c:495
 msgid "Get"
 msgstr "擷取"
@@ -19661,10 +19771,6 @@ msgstr "插入簽名"
 #: src/toolbar.c:535
 msgid "Replace sig."
 msgstr "置換簽名"
-
-#: src/toolbar.c:536
-msgid "Edit"
-msgstr "編輯"
 
 #: src/toolbar.c:537
 msgid "Wrap para."
@@ -20082,3 +20188,18 @@ msgid ""
 msgstr ""
 "Claws Mail 已經準備好了\n"
 "點擊儲存後開始"
+
+#~ msgid "Command-line not set"
+#~ msgstr "命令列未設定"
+
+#~ msgid "Enter Archiver arguments"
+#~ msgstr "輸入封存命令"
+
+#~ msgid "_Get Mail"
+#~ msgstr "接收郵件(_G)"
+
+#~ msgid "E_xit Claws Mail"
+#~ msgstr "離開 Claws Mail(_x)"
+
+#~ msgid "R_efresh recursively"
+#~ msgstr "全部更新(_e)"
