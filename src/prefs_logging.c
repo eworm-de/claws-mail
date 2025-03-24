@@ -175,7 +175,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				"The log is accessible from 'Tools/Filtering log'.\n"
 				"Caution: enabling this option will slow down the filtering/processing, "
 				"this might be critical when applying many rules upon thousands of "
-				"messages."));
+				"messages"));
 
 	vbox2_filtering_log = gtkut_get_options_frame(vbox1_filtering_log, &frame_filtering_log,
 							_("Log filtering/processing when..."));
@@ -240,7 +240,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 				"rules are processed or skipped, and why all conditions "
 				"are matched or not matched.\n"
 				"Caution: the higher the level, the greater the "
-				"impact on performance."));
+				"impact on performance"));
 
 	hbox_clip_filtering_log = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_add (GTK_CONTAINER (vbox1_filtering_log), hbox_clip_filtering_log);

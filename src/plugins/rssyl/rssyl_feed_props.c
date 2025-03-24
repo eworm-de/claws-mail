@@ -366,7 +366,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			GTK_TOGGLE_BUTTON(feedprop->ignore_title_rename),
 			ritem->ignore_title_rename);
 	gtk_widget_set_tooltip_text(feedprop->ignore_title_rename,
-			_("Enable this to keep current folder name, even if feed author changes title of the feed."));
+			_("Enable this to keep current folder name, even if feed author changes title of the feed"));
 
 	/* Verify SSL peer certificate */
 	feedprop->ssl_verify_peer = gtk_check_button_new_with_label(
@@ -509,7 +509,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_widget_set_tooltip_text(feedprop->use_default_user_agent,
 			_("Disable this to use a User Agent specific to this feed"));
 	gtk_widget_set_tooltip_text(feedprop->specific_user_agent,
-			_("Specific User Agent to use for this feed. If empty, the User Agent string set in 'Preferences/Plugins/RSSyl' will be used"));
+			_("Specific User Agent to use for this feed. If empty, the User Agent string set in '/Configuration/Preferences/Plugins/RSSyl' will be used"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->specific_user_agent, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(feedprop->specific_user_agent,

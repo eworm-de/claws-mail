@@ -535,7 +535,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	combobox_select_by_data(GTK_COMBO_BOX(promote_html_part),
 			item->prefs->promote_html_part);
 
-	CLAWS_SET_TIP(hbox, _("\"Default\" will follow global preference (found in /Preferences/"
+	CLAWS_SET_TIP(hbox, _("\"Default\" will follow global preference (found in /Configuration/Preferences/"
 			      "Message View/Text Options)"));
 
 	promote_html_part_rec_checkbtn = gtk_check_button_new();

@@ -443,7 +443,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox_metadata = gtkut_get_options_frame(vbox1, &frame_metadata, _("Metadata handling"));
 	metadata_label = gtk_label_new(_("Safer mode asks the OS to write metadata to disk directly;\n"
-					 "it avoids data loss after crashes but can take some time."));
+					 "it avoids data loss after crashes but can take some time"));
 	gtk_label_set_xalign(GTK_LABEL(metadata_label), 0.0);
 	gtk_label_set_yalign(GTK_LABEL(metadata_label), 0.0);
 	gtk_box_pack_start (GTK_BOX (vbox_metadata), metadata_label, FALSE, FALSE, 0);
@@ -491,7 +491,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Translate header names"));
 	CLAWS_SET_TIP(checkbtn_transhdr,
 			     _("The display of standard headers (such as 'From:', 'Subject:') "
-			     "will be translated into your language."));
+			     "will be translated into your language"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonclean, 
 			   _("Ask before emptying trash"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonfilter,
@@ -511,7 +511,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(checkbtn_use_shred,
 			_("Use the 'shred' program to overwrite files with random data before "
 			  "deleting them. This slows down deletion. Be sure to "
-			  "read shred's man page for caveats."));
+			  "read shred's man page for caveats"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_real_time_sync,
 			   _("Synchronise offline folders as soon as possible"));
 
@@ -530,7 +530,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			_("By default attachments are saved with chmod value 600: "
 			  "readable and writeable by the user only. If this is too "
 			  "restrictive for you, set a chmod value here, otherwise leave "
-			  "blank to use the default."));
+			  "blank to use the default"));
 	gtk_widget_show(entry_attach_save_chmod);
 	gtk_box_pack_start(GTK_BOX(hbox1), entry_attach_save_chmod, FALSE, FALSE, 0);
 	if (prefs_common.attach_save_chmod) {
@@ -550,7 +550,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(checkbtn_use_passphrase,
 			_("If checked, your saved account passwords will be protected "
 				"by a primary passphrase. If no primary passphrase is set, "
-				"you will be prompted to set one."));
+				"you will be prompted to set one"));
 
 	button_change_passphrase = gtk_button_new_with_label(
 			_("Change primary passphrase"));
