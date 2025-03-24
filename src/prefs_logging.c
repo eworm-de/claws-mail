@@ -172,7 +172,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	CLAWS_SET_TIP(checkbtn_filtering_log,
 			     _("If checked, turns on logging of filtering and processing rules.\n"
-				"The log is accessible from 'Tools/Filtering log'.\n"
+				"The log is accessible from '/Tools/Filtering log'.\n"
 				"Caution: enabling this option will slow down the filtering/processing, "
 				"this might be critical when applying many rules upon thousands of "
 				"messages"));

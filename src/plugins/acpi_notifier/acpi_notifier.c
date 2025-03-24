@@ -74,7 +74,7 @@ char *acpi_help[] = {
 	N_("Make sure that the kernel module 'asus_laptop' is loaded."),
 	N_("Make sure that the kernel module 'asus_acpi' is loaded."),
 	N_("Make sure that the kernel module 'ibm_acpi' is loaded."),
-	N_("Make sure that you have apanelc installed.\n"
+	N_("Make sure that you have 'apanelc' installed.\n"
 	    "You can get it from http://apanel.sourceforge.net/"),
 	NULL
 };

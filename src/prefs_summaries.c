@@ -659,7 +659,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		 _("Execute immediately when moving or deleting messages"));
 	CLAWS_SET_TIP(checkbtn_immedexec,
 			     _("When unchecked moving, copying and deleting of messages"
-		   	       " is deferred until you use 'Tools/Execute'"));
+			       " is deferred until you use '/Tools/Execute'"));
 
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_mark_all_read,

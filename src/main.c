@@ -1999,7 +1999,7 @@ static void parse_cmd_opt(int argc, char *argv[])
  			g_print("%s\n", _("  --statistics           show session statistics"));
  			g_print("%s\n", _("  --reset-statistics     reset session statistics"));
 			g_print("%s\n", _("  --select folder[/msg]  jump to the specified folder/message\n" 
-					  "                         folder is a folder id like 'folder/sub_folder', a file:// uri or an absolute path"));
+					  "                         folder is a folder id like 'folder/sub-folder', a file:// uri or an absolute path"));
 			g_print("%s\n", _("  --import-mbox file     import the specified mbox file\n"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));

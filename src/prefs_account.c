@@ -1711,7 +1711,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(size_limit_checkbtn,
 			     _("Messages over this limit will be partially retrieved. "
 		   	       "When selecting them you will be able to download them fully "
-			       "or delete them."));
+			       "or delete them"));
 
 	size_limit_spinbtn = gtk_spin_button_new_with_range(0, 100000, 1);
 	gtk_widget_show (size_limit_spinbtn);
@@ -3305,7 +3305,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON(vbox2, proxy_send_checkbtn,
 			  _("Use proxy server for sending"));
 	CLAWS_SET_TIP(proxy_send_checkbtn,
-			_("If disabled, messages will be sent using direct connection to configured outgoing server, bypassing any configured proxy server."));
+			_("If disabled, messages will be sent using direct connection to configured outgoing server, bypassing any configured proxy server"));
 
 	SET_TOGGLE_SENSITIVITY(proxy_auth_checkbtn, table);
 	SET_TOGGLE_SENSITIVITY(socks5_radiobtn, vbox4);
@@ -3447,7 +3447,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_size_group_add_widget(size_group, checkbtn_domain);	
 
 	tip_domain = _("The domain name will be used in the generated "
-			"Message-ID, and when connecting to SMTP servers.");
+			"Message-ID, and when connecting to SMTP servers");
 
 	CLAWS_SET_TIP(checkbtn_domain, tip_domain);
 

@@ -208,7 +208,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), save_spam_folder_entry, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the trash folder."));
+			_("Folder for storing identified spam. Leave empty to use the trash folder"));
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_spam_folder_select);
@@ -231,13 +231,13 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_unsure_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_entry, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(save_unsure_folder_entry,
-			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the Inbox folder."));
+			_("Folder for storing mail for which spam status is Unsure. Leave empty to use the Inbox folder"));
 
 	save_unsure_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_unsure_folder_select);
 	gtk_box_pack_start (GTK_BOX (hbox_save_unsure), save_unsure_folder_select, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(save_unsure_folder_select,
-			_("Click this button to select a folder for storing Unsure mails."));
+			_("Click this button to select a folder for storing Unsure mails"));
 
 	insert_header_checkbtn = gtk_check_button_new_with_label(_("Insert X-Bogosity header"));
 	gtk_widget_show(insert_header_checkbtn);
@@ -268,7 +268,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	learn_from_whitelist_chkbtn = gtk_check_button_new_with_label(_("Learn whitelisted emails as ham"));
 	CLAWS_SET_TIP(learn_from_whitelist_chkbtn,
 			_("If Bogofilter thought an email was spam or unsure, but it was whitelisted, "
-			  "learn it as ham."));
+			  "learn it as ham"));
 	gtk_widget_show(learn_from_whitelist_chkbtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), learn_from_whitelist_chkbtn, TRUE, TRUE, 0);
 

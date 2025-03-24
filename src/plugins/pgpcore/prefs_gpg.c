@@ -204,7 +204,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gpg_path = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox2), gpg_path, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(gpg_path,
-		      _("If left blank the location of the GnuPG executable will be automatically determined."));
+		      _("If left blank the location of the GnuPG executable will be automatically determined"));
 	gpg_path_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_box_pack_start(GTK_BOX(hbox2), gpg_path_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(gpg_path_btn), "clicked",

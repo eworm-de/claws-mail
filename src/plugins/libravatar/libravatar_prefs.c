@@ -352,7 +352,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 			CLAWS_SET_TIP(entry, _("Enter the URL you want to be "
 				"redirected when no user icon is available. "
 				"Leave an empty URL to use the default "
-				"libravatar orange icon."));
+				"libravatar orange icon"));
 			gtk_entry_set_text(GTK_ENTRY(entry),
 				libravatarprefs.default_mode_url);
 			gtk_entry_set_max_length(GTK_ENTRY(entry), MAX_URL_LENGTH);
@@ -430,7 +430,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 	hbox = labeled_spinner_box(_("Request timeout"), spinner, _("second(s)"),
 		_("Set to 0 to use global socket I/O timeout. "
                   "Maximum value must be also less than global socket "
-                  "I/O timeout."));
+                  "I/O timeout"));
 	page->timeout = spinner;
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 

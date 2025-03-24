@@ -396,7 +396,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_spinbtn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(timeout_spinbtn,
 			_("Maximum time allowed for checking. If the check takes longer "
-				"it will be aborted."));
+				"it will be aborted"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout_spinbtn), TRUE);
 
 	timeout_seconds_label = gtk_label_new(_("seconds"));
@@ -424,7 +424,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (save_spam_folder_entry);
 	gtk_box_pack_start (GTK_BOX (hbox_save_spam), save_spam_folder_entry, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(save_spam_folder_entry,
-			_("Folder for storing identified spam. Leave empty to use the trash folder."));
+			_("Folder for storing identified spam. Leave empty to use the trash folder"));
 
 	save_spam_folder_select = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_widget_show (save_spam_folder_select);

@@ -964,7 +964,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/File/SavePartAs");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
-	TEXTVIEW_INSERT("')");
+	TEXTVIEW_INSERT(_("')"));
 #endif
 	TEXTVIEW_INSERT("\n");
 
@@ -976,7 +976,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/AsText");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
-	TEXTVIEW_INSERT("')");
+	TEXTVIEW_INSERT(_("')"));
 #endif
 	TEXTVIEW_INSERT("\n");
 
@@ -988,7 +988,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/Open");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
-	TEXTVIEW_INSERT("')\n");
+	TEXTVIEW_INSERT(_("')\n"));
 	TEXTVIEW_INSERT(_("       (alternately double-click, or click the middle "));
 	TEXTVIEW_INSERT(_("mouse button)\n"));
 #ifndef G_OS_WIN32
@@ -998,7 +998,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/View/Part/OpenWith");
 	TEXTVIEW_INSERT(shortcut);
 	g_free(shortcut);
-	TEXTVIEW_INSERT("')");
+	TEXTVIEW_INSERT(_("')"));
 #endif
 #endif
 	TEXTVIEW_INSERT("\n");
