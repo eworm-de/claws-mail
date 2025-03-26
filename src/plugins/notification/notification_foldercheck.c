@@ -139,7 +139,8 @@ guint notification_register_folder_specific_list(gchar *node_name)
     hook_folder_update = hooks_register_hook(FOLDER_UPDATE_HOOKLIST,
 					     my_folder_update_hook, NULL);
     if(hook_folder_update == 0) {
-      debug_print("Warning: failed to register hook to folder update hooklist. "
+      debug_print("Warning: Failed to register hook to folder update "
+		  "hooklist. "
 		  "Strange things can occur when deleting folders.\n");
     }
   }
@@ -715,7 +716,7 @@ static void foldercheck_set_tree(SpecificFolderArrayEntry *entry)
     folder = FOLDER(list->data);
 
     if(folder == NULL) {
-      debug_print("Notification plugin::foldercheck_set_tree(): found a NULL folder.\n");
+      debug_print("Notification plugin::foldercheck_set_tree(): Found a NULL folder.\n");
       continue;
     }
 

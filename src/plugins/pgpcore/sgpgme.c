@@ -435,7 +435,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	err = gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (gpg_err_code(err) == GPG_ERR_NO_AGENT) {
 		if (!warned)
-			alertpanel_error(_("PGP Core: can't get key - no gpg-agent running."));
+			alertpanel_error(_("PGP Core: Can't get key - no gpg-agent running."));
 		else
 			g_warning("PGP Core: can't get key - no gpg-agent running");
 		warned = TRUE;
@@ -615,7 +615,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 
 			if (sig->pka_trust == 1 && sig->pka_address) {
 				g_string_append_printf(siginfo,
-					_("WARNING: signer's address \"%s\" "
+					_("WARNING: Signer's address \"%s\" "
 					"does not match DNS entry\n"),
 					sig->pka_address);
 			}

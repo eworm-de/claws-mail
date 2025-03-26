@@ -907,7 +907,7 @@ int message_read(int fd, int flags, struct message *m)
 	return _message_read_bsmtp(fd, m);
 
     default:
-	libspamc_log(flags, LOG_ERR, "message_read: unknown mode %d",
+	libspamc_log(flags, LOG_ERR, "message_read: Unknown mode %d",
 		flags & SPAMC_MODE_MASK);
 	return EX_USAGE;
     }

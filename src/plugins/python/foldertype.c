@@ -259,7 +259,7 @@ static PyMethodDef Folder_methods[] = {
      "get_identifier() - get identifier\n"
      "\n"
      "Get identifier for folder as a string (e.g. #mh/foo/bar).\n\n"
-     "DEPRECATED: use identifier property instead."},
+     "DEPRECATED: Use identifier property instead."},
 
     {"get_messages", (PyCFunction)Folder_get_messages, METH_NOARGS,
      "get_messages() - get a tuple of messages in folder\n"
@@ -284,7 +284,7 @@ static PyGetSetDef Folder_getset[] = {
 
     {"mailbox_name", (getter)get_mailbox_name, (setter)NULL,
      "mailbox_name - name of the corresponding mailbox\n\n"
-     "DEPRECATED: use folder.mailbox.name instead", NULL},
+     "DEPRECATED: Use folder.mailbox.name instead", NULL},
 
     {"properties", (getter)get_properties, (setter)NULL,
      "properties - folder properties object", NULL},

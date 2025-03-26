@@ -208,13 +208,13 @@ void notification_trayicon_msg(MsgInfo *msginfo)
     else if(!strcmp(uistr, "RSSyl"))
       nftype = F_TYPE_RSS;
     else {
-      debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+      debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
       G_UNLOCK(trayicon_popup);
       return;
     }
     break;
   default:
-    debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+    debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
     G_UNLOCK(trayicon_popup);
     return;
   }
@@ -268,7 +268,7 @@ void notification_update_trayicon()
 
     old_icon = notification_trayicon_create();
     if(!trayicon) {
-      debug_print("Notification plugin: could not create trayicon\n");
+      debug_print("Notification plugin: Could not create trayicon\n");
       return;
     }
   }
@@ -606,19 +606,19 @@ static gboolean notification_trayicon_popup_add_msg(MsgInfo *msginfo,
   g_free(summary);
   g_free(utf8_str);
   if(!retval) {
-    debug_print("Notification Plugin: failed to update notification.\n");
+    debug_print("Notification Plugin: Failed to update notification.\n");
     return FALSE;
   }
   /* Show the popup */
   notify_notification_set_hint_string(popup.notification, "desktop-entry", "claws-mail");
   if(!notify_notification_show(popup.notification, &(popup.error))) {
-    debug_print("Notification Plugin: failed to send updated notification: "
+    debug_print("Notification Plugin: Failed to send updated notification: "
 		"%s\n",	popup.error->message);
     g_clear_error(&(popup.error));
     return FALSE;
   }
 
-  debug_print("Notification Plugin: popup successfully modified "
+  debug_print("Notification Plugin: Popup successfully modified "
 	      "with libnotify.\n");
 
   return TRUE;
@@ -636,7 +636,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
   /* init libnotify if necessary */
   if(!notify_is_initted()) {
     if(!notify_init("claws-mail")) {
-      debug_print("Notification Plugin: failed to initialize libnotify. "
+      debug_print("Notification Plugin: Failed to initialize libnotify. "
 		  "No popups will be shown.\n");
       return FALSE;
     }
@@ -682,7 +682,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
 				   notification_trayicon_popup_free_func);
 
   if(popup.notification == NULL) {
-    debug_print("Notification Plugin: failed to create a new notification.\n");
+    debug_print("Notification Plugin: Failed to create a new notification.\n");
     return FALSE;
   }
 
@@ -722,7 +722,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
     g_object_unref(pixbuf);
   }
   else /* This is not fatal */
-    debug_print("Notification plugin: icon could not be loaded.\n");
+    debug_print("Notification plugin: Icon could not be loaded.\n");
 
   /* timeout */
   notify_notification_set_timeout(popup.notification, notify_config.trayicon_popup_timeout);
@@ -736,7 +736,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
   /* Show the popup */
   notify_notification_set_hint_string(popup.notification, "desktop-entry", "claws-mail");
   if(!notify_notification_show(popup.notification, &(popup.error))) {
-    debug_print("Notification Plugin: failed to send notification: %s\n",
+    debug_print("Notification Plugin: Failed to send notification: %s\n",
 		popup.error->message);
     g_clear_error(&(popup.error));
     g_object_unref(G_OBJECT(popup.notification));
@@ -757,7 +757,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
       popup.msg_path = NULL;
   }
 
-  debug_print("Notification Plugin: popup created with libnotify.\n");
+  debug_print("Notification Plugin: Popup created with libnotify.\n");
 
   return TRUE;
 }
@@ -817,7 +817,7 @@ static void notification_trayicon_popup_default_action_cb(NotifyNotification
       G_LOCK(trayicon_popup);
       select_str = g_strdup(popup.msg_path);
       G_UNLOCK(trayicon_popup);
-      debug_print("Notification plugin: select message %s\n", select_str);
+      debug_print("Notification plugin: Select message %s\n", select_str);
       mainwindow_jump_to(select_str, FALSE);
       g_free(select_str);
     }
@@ -840,7 +840,7 @@ static void notification_trayicon_popup_count_msgs(NotificationFolderType nftype
     popup.num_rss++;
     break;
   default:
-    debug_print("Notification plugin: unknown folder type\n");
+    debug_print("Notification plugin: Unknown folder type\n");
     return;
   }
   popup.count++;

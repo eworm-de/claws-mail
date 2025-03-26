@@ -199,7 +199,7 @@ void notification_core_get_msg_count_of_foldername(gchar *foldername, Notificati
     }
   }
   if(!folder) {
-    debug_print("Notification plugin: error: could not find folder %s\n", foldername);
+    debug_print("Notification plugin: Error: Could not find folder %s\n", foldername);
     return;
   }
 
@@ -312,7 +312,7 @@ gboolean notification_notified_hash_msginfo_update(MsgInfoUpdate *msg_update)
     if(msg->msgid)
       msgid = msg->msgid;
     else {
-      debug_print("Notification Plugin: message has no message ID!\n");
+      debug_print("Notification Plugin: Message has no message ID!\n");
       msgid = "";
     }
 
@@ -320,7 +320,7 @@ gboolean notification_notified_hash_msginfo_update(MsgInfoUpdate *msg_update)
 
     if(g_hash_table_lookup(notified_hash, msgid) != NULL) {
 
-      debug_print("Notification Plugin: removing message id %s from hash "
+      debug_print("Notification Plugin: Removing message id %s from hash "
 		  "table\n", msgid);
       g_hash_table_remove(notified_hash, msgid);
     }
@@ -338,7 +338,7 @@ void notification_notified_hash_startup_init(void)
   if(!notified_hash) {
     notified_hash = g_hash_table_new_full(g_str_hash, g_str_equal,
 					  g_free, NULL);
-    debug_print("Notification Plugin: hash table created\n");
+    debug_print("Notification Plugin: Hash table created\n");
   }
 
   folder_list = folder_get_list();
@@ -371,14 +371,14 @@ static gboolean notification_traverse_hash_startup(GNode *node, gpointer data)
       if(msg->msgid)
 	msgid = msg->msgid;
       else {
-	debug_print("Notification Plugin: message has no message ID!\n");
+	debug_print("Notification Plugin: Message has no message ID!\n");
 	msgid = "";
       }
 
       /* If the message id is not yet in the hash, add it */
       g_hash_table_insert(notified_hash, g_strdup(msgid),
 			  GINT_TO_POINTER(1));
-      debug_print("Notification Plugin: init: added msg id %s to the hash\n",
+      debug_print("Notification Plugin: Init: Added msg id %s to the hash\n",
 		  msgid);
       /* Decrement left count and check if we're already done */
       new_msgs_left--;
@@ -400,7 +400,7 @@ void notification_core_free(void)
     g_hash_table_destroy(msg_count_hash);
     msg_count_hash = NULL;
   }
-  debug_print("Notification Plugin: freed internal data\n");
+  debug_print("Notification Plugin: Freed internal data\n");
 }
 
 void notification_new_unnotified_msgs(FolderItemUpdateData *update_data)
@@ -421,11 +421,11 @@ void notification_new_unnotified_msgs(FolderItemUpdateData *update_data)
       if(msg->msgid)
 	msgid = msg->msgid;
       else {
-	debug_print("Notification Plugin: message has not message ID!\n");
+	debug_print("Notification Plugin: Message has not message ID!\n");
 	msgid = "";
       }
 
-      debug_print("Notification Plugin: found msg %s, "
+      debug_print("Notification Plugin: Found msg %s, "
 		  "checking if it is in hash...\n", msgid);
       /* Check if message is in hash table */
       if(g_hash_table_lookup(notified_hash, msgid) != NULL)
@@ -619,10 +619,10 @@ gboolean notify_include_folder_type(FolderType ftype, gchar *uistr)
 	retval = TRUE;
     }
     else
-      debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+      debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
     break;
   default:
-    debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+    debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
   }
 
   return retval;
@@ -690,7 +690,7 @@ gchar* notification_validate_utf8_str(gchar *text)
   gchar *utf8_str = NULL;
 
   if(!g_utf8_validate(text, -1, NULL)) {
-    debug_print("Notification plugin: string is not valid utf8, "
+    debug_print("Notification plugin: String is not valid utf8, "
 		"trying to fix it...\n");
     /* fix it */
     utf8_str = conv_codeset_strdup(text,
@@ -698,14 +698,14 @@ gchar* notification_validate_utf8_str(gchar *text)
 				   CS_INTERNAL);
     /* check if the fix worked */
     if(utf8_str == NULL || !g_utf8_validate(utf8_str, -1, NULL)) {
-      debug_print("Notification plugin: string is still not valid utf8, "
+      debug_print("Notification plugin: String is still not valid utf8, "
 		  "sanitizing...\n");
       utf8_str = g_malloc(strlen(text)*2+1);
       conv_localetodisp(utf8_str, strlen(text)*2+1, text);
     }
   }
   else {
-    debug_print("Notification plugin: string is valid utf8\n");
+    debug_print("Notification plugin: String is valid utf8\n");
     utf8_str = g_strdup(text);
   }
   return utf8_str;

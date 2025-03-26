@@ -88,7 +88,7 @@ void notification_lcdproc_connect(void)
  */
   
   if (len <= 0) {
-    debug_print("Notification plugin: can't communicate with "
+    debug_print("Notification plugin: Can't communicate with "
 		"LCDd server! Are you sure that "
 		"there is a LCDd server running on %s:%d?\n",
 		notify_config.lcdproc_hostname, notify_config.lcdproc_port);

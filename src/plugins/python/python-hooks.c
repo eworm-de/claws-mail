@@ -159,7 +159,7 @@ parasite_python_init(char **error)
     python_dlhandle = dlopen(PYTHON_SHARED_LIB, RTLD_NOW | RTLD_GLOBAL);
     if (python_dlhandle == NULL)
     {
-        *error = g_strdup_printf("Parasite: error on dlopen(): %s\n", dlerror());
+        *error = g_strdup_printf("Parasite: Error on dlopen(): %s\n", dlerror());
         return 0;
     }
 
@@ -208,7 +208,7 @@ parasite_python_init(char **error)
 
     if (pygtk == NULL)
     {
-        *error = g_strdup("Parasite: could not import gi");
+        *error = g_strdup("Parasite: Could not import gi");
         dlclose(python_dlhandle);
         python_dlhandle = NULL;
         return 0;

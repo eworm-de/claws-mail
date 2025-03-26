@@ -1540,7 +1540,7 @@ static XS(XS_ClawsMail_move_to_trash)
   }
   dest_folder = folder_get_default_trash();
   if (!dest_folder) {
-    g_warning("Perl plugin: move_to_trash: trash folder not found");
+    g_warning("Perl plugin: move_to_trash: Trash folder not found");
     XSRETURN_UNDEF;
   }
   if (folder_item_move_msg(dest_folder, msginfo) == -1) {
@@ -1759,7 +1759,7 @@ static int perl_load_file(void)
       }
       else {
   if (prefs_common_get_ext_editor_cmd())
-    g_warning("Perl plugin: external editor command-line is invalid: `%s'",
+    g_warning("Perl plugin: External editor command-line is invalid: `%s'",
         prefs_common_get_ext_editor_cmd());
   g_snprintf(buf, sizeof(buf), "emacs %s", perlfilter);
       }

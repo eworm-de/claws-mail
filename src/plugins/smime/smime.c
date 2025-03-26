@@ -790,7 +790,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 	
 	err = gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH);
 	if (err != GPG_ERR_NO_ERROR) {
-		alertpanel_error("S/MIME : cannot sign, %s (%d)", gpg_strerror(err), gpg_err_code(err));
+		alertpanel_error("S/MIME : Cannot sign, %s (%d)", gpg_strerror(err), gpg_err_code(err));
 		gpgme_data_release(gpgtext);
 		gpgme_release(ctx);
 		return FALSE;

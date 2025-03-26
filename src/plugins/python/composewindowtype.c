@@ -531,7 +531,7 @@ static int set_account(clawsmail_ComposeWindowObject *self, PyObject *value, voi
   }
 
   if(!clawsmail_account_check(value)) {
-    PyErr_SetString(PyExc_TypeError, "ComposeWindow.account: can only assign an account");
+    PyErr_SetString(PyExc_TypeError, "ComposeWindow.account: Can only assign an account");
     return -1;
   }
 
@@ -543,7 +543,7 @@ static int set_account(clawsmail_ComposeWindowObject *self, PyObject *value, voi
   }
 
   if(!self->compose || !self->compose->account_combo) {
-    PyErr_SetString(PyExc_RuntimeError, "ComposeWindow: cannot access account");
+    PyErr_SetString(PyExc_RuntimeError, "ComposeWindow: Cannot access account");
     return -1;
   }
 
@@ -569,7 +569,7 @@ static PyMethodDef ComposeWindow_methods[] = {
      "set_from(text) - set From header entry to text\n"
      "\n"
      "Set the From header entry to text. text must be a string.\n"
-     "Beware: no sanity checking is performed."},
+     "Beware: No sanity checking is performed."},
 
     {"get_from", (PyCFunction)ComposeWindow_get_from, METH_NOARGS,
      "get_from - get From header entry\n"

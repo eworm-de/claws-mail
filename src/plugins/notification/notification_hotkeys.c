@@ -36,7 +36,7 @@ static GtkHotkeyInfo *hotkey_toggle_mainwindow = NULL;
 static void hotkey_toggle_mainwindow_activated(GtkHotkeyInfo *hotkey, guint event_time, gpointer data)
 {
   g_return_if_fail(GTK_HOTKEY_IS_INFO(hotkey));
-  debug_print("Notification plugin: toggled hide/show window due to hotkey %s activation\n", gtk_hotkey_info_get_signature(hotkey));
+  debug_print("Notification plugin: Toggled hide/show window due to hotkey %s activation\n", gtk_hotkey_info_get_signature(hotkey));
   notification_toggle_hide_show_window();
 }
 
@@ -51,7 +51,7 @@ static void unbind_toggle_mainwindow()
       error = NULL;
       gtk_hotkey_info_unbind(hotkey_toggle_mainwindow, &error);
       if(error) {
-        debug_print("Notification plugin: failed to unbind toggle hotkey\n");
+        debug_print("Notification plugin: Failed to unbind toggle hotkey\n");
         g_error_free(error);
         return;
       }
@@ -64,7 +64,7 @@ static void unbind_toggle_mainwindow()
     error = NULL;
     gtk_hotkey_registry_delete_hotkey(registry, HOTKEYS_APP_ID, HOTKEY_KEY_ID_TOGGLED, &error);
     if(error) {
-      debug_print("Notification plugin: failed to unregister toggle hotkey: %s\n", error->message);
+      debug_print("Notification plugin: Failed to unregister toggle hotkey: %s\n", error->message);
       g_error_free(error);
       return;
     }
@@ -84,7 +84,7 @@ static void update_hotkey_binding_toggle_mainwindow()
   /* (re)create hotkey info */
   hotkey_toggle_mainwindow = gtk_hotkey_info_new(HOTKEYS_APP_ID, HOTKEY_KEY_ID_TOGGLED, notify_config.hotkeys_toggle_mainwindow, NULL);
   if(!hotkey_toggle_mainwindow) {
-    debug_print("Notification plugin: failed to create toggle hotkey for '%s'\n", notify_config.hotkeys_toggle_mainwindow);
+    debug_print("Notification plugin: Failed to create toggle hotkey for '%s'\n", notify_config.hotkeys_toggle_mainwindow);
     return;
   }
 
@@ -92,7 +92,7 @@ static void update_hotkey_binding_toggle_mainwindow()
   error = NULL;
   gtk_hotkey_info_bind(hotkey_toggle_mainwindow, &error);
   if(error) {
-    debug_print("Notification plugin: failed to bind toggle hotkey to '%s': %s\n", notify_config.hotkeys_toggle_mainwindow, error->message);
+    debug_print("Notification plugin: Failed to bind toggle hotkey to '%s': %s\n", notify_config.hotkeys_toggle_mainwindow, error->message);
     g_error_free(error);
     return;
   }
@@ -102,7 +102,7 @@ static void update_hotkey_binding_toggle_mainwindow()
 
 void notification_hotkeys_update_bindings()
 {
-  debug_print("Notification plugin: updating keybindings..\n");
+  debug_print("Notification plugin: Updating keybindings..\n");
   if(notify_config.hotkeys_enabled) {
     update_hotkey_binding_toggle_mainwindow();
   }
@@ -112,7 +112,7 @@ void notification_hotkeys_update_bindings()
 
 void notification_hotkeys_unbind_all()
 {
-  debug_print("Notification plugin: unbinding all keybindings..\n");
+  debug_print("Notification plugin: Unbinding all keybindings..\n");
   unbind_toggle_mainwindow();
 }
 

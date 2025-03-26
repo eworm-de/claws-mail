@@ -127,7 +127,7 @@ gchar* ask_user_for_auth_code(const gchar *auth_uri)
       GTK_DIALOG_DESTROY_WITH_PARENT,
       GTK_MESSAGE_INFO,
       GTK_BUTTONS_NONE,
-      "<span weight=\"bold\" size=\"larger\">%s</span>", _("GData plugin: authorization required"));
+      "<span weight=\"bold\" size=\"larger\">%s</span>", _("GData plugin: Authorization required"));
   gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
       _("You need to authorize Claws Mail to access your Google contact list to use the GData plugin."
       "\n\nVisit Google's authorization page by pressing the button below. After you "
@@ -211,7 +211,7 @@ static void write_cache_to_file(void)
   pfile = prefs_write_open(path);
   g_free(path);
   if(pfile == NULL) {
-    debug_print("GData plugin error: cannot open file " GDATA_CONTACTS_FILENAME " for writing\n");
+    debug_print("GData plugin error: Cannot open file " GDATA_CONTACTS_FILENAME " for writing\n");
     return;
   }
 
@@ -249,9 +249,9 @@ static void write_cache_to_file(void)
   /* Actual writing and cleanup */
   xml_write_tree(rootnode, pfile->fp);
   if (prefs_file_close(pfile) < 0)
-    debug_print("GData plugin error: failed to write file " GDATA_CONTACTS_FILENAME "\n");
+    debug_print("GData plugin error: Failed to write file " GDATA_CONTACTS_FILENAME "\n");
   else
-    debug_print("GData plugin: wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
+    debug_print("GData plugin: Wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
 
   /* Free XML tree */
   xml_free_tree(rootnode);
@@ -284,13 +284,13 @@ static int add_gdata_contact_to_cache(GDataContactsContact *contact)
 
       contacts_cache.contacts = g_slist_prepend(contacts_cache.contacts, cached_contact);
 
-      debug_print("GData plugin: added %s <%s>\n", cached_contact->full_name, cached_contact->address);
+      debug_print("GData plugin: Added %s <%s>\n", cached_contact->full_name, cached_contact->address);
       retval = 1;
     }
   }
   if(retval == 0)
   {
-    debug_print("GData plugin: skipped received contact \"%s\" because it doesn't have an email address\n",
+    debug_print("GData plugin: Skipped received contact \"%s\" because it doesn't have an email address\n",
         gdata_gd_name_get_full_name(gdata_contacts_contact_get_name(contact)));
   }
   return retval;
@@ -560,7 +560,7 @@ static void query()
 
   if(cm_gdata_contacts_query_running)
   {
-    debug_print("GData plugin: network query already in progress\n");
+    debug_print("GData plugin: Network query already in progress\n");
     return;
   }
 
@@ -653,11 +653,11 @@ gboolean cm_gdata_update_contacts_cache(void)
 {
   if(prefs_common_get_prefs()->work_offline)
   {
-    debug_print("GData plugin: offline mode\n");
+    debug_print("GData plugin: Offline mode\n");
   }
   else
   {
-    debug_print("GData plugin: querying contacts\n");
+    debug_print("GData plugin: Querying contacts\n");
     query();
   }
   return TRUE;

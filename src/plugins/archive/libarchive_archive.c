@@ -756,7 +756,7 @@ int main(int argc, char** argv) {
 		archive_scan_folder(*argv++);
 		res = archive_create(archive, file_list, GZIP, TAR);
 		if (res != NULL) {
-			fprintf(stderr, "%s: creating archive failed [%s]\n", archive, res);
+			fprintf(stderr, "%s: Creating archive failed [%s]\n", archive, res);
 			return EXIT_FAILURE;
 		}
 	}

@@ -117,8 +117,8 @@ void clamd_create_config_automatic(const gchar* path) {
 	debug_print("Opening %s to parse config file\n", path);
 	conf = claws_fopen(path, "r");
 	if (!conf) {
-		/*g_error("%s: unable to open", path);*/
-		alertpanel_error(_("%s: unable to open\nclamd will be disabled"), path);
+		/*g_error("%s: Unable to open", path);*/
+		alertpanel_error(_("%s: Unable to open\nclamd will be disabled"), path);
 		return;
 	}
 	while (claws_fgets(buf, sizeof(buf), conf)) {
@@ -206,8 +206,8 @@ void clamd_create_config_automatic(const gchar* path) {
 	}
 	claws_fclose(conf);
 	if (! (Socket && (Socket->socket.port || Socket->socket.path))) {
-		/*g_error("%s: not able to find required information", path);*/
-		alertpanel_error(_("%s: not able to find required information\nclamd will be disabled"), path);
+		/*g_error("%s: Not able to find required information", path);*/
+		alertpanel_error(_("%s: Not able to find required information\nclamd will be disabled"), path);
 	}
 	/*debug_set_mode(FALSE);*/
 }
@@ -240,7 +240,7 @@ void clamd_create_config_manual(const gchar* host, int port) {
 		Socket->socket.host = g_strdup(host);
 	}
 	else {
-		/*g_error("%s: not able to find required information", path);*/
+		/*g_error("%s: Not able to find required information", path);*/
 		alertpanel_error(_("Could not create socket"));
 	}
 }
@@ -432,7 +432,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 	memset(*res, '\0', size);
 	
 	if (! g_file_test(path, G_FILE_TEST_EXISTS)) {
-		*res = g_strconcat("ERROR -> ", path, _(": file does not exist"), NULL);
+		*res = g_strconcat("ERROR -> ", path, _(": File does not exist"), NULL);
 		debug_print("res: %s\n", *res);
 		return SCAN_ERROR;
 	}
@@ -444,8 +444,8 @@ static Clamd_Stat clamd_stream_scan(int sock,
 #endif
 
 	if (fd < 0) {
-		/*g_error("%s: unable to open", path);*/
-		*res = g_strconcat("ERROR -> ", path, _(": unable to open"), NULL);
+		/*g_error("%s: Unable to open", path);*/
+		*res = g_strconcat("ERROR -> ", path, _(": Unable to open"), NULL);
 		return SCAN_ERROR;
 	}
 	
@@ -476,7 +476,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 	}
 	if (count == -1) {
 		close(fd);
-		*res = g_strconcat("ERROR -> ", path, _("%s: error reading"), NULL);
+		*res = g_strconcat("ERROR -> ", path, _("%s: Error reading"), NULL);
 		return SCAN_ERROR;
 	}
 	close(fd);

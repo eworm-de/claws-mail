@@ -403,7 +403,7 @@ static gint claws_mailmbox_get_num_list(Folder *folder, FolderItem *item,
 
 	g_return_val_if_fail(item != NULL, -1);
 
-	debug_print("mbox_get_last_num(): scanning %s ...\n", item->path);
+	debug_print("mbox_get_last_num(): Scanning %s ...\n", item->path);
         
 	*old_uids_valid = TRUE;
         

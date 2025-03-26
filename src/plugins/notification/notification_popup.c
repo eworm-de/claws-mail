@@ -161,13 +161,13 @@ void notification_popup_msg(MsgInfo *msginfo)
     else if(!strcmp(uistr, "RSSyl"))
       nftype = F_TYPE_RSS;
     else {
-      debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+      debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
       G_UNLOCK(popup);
       return;
     }
     break;
   default:
-    debug_print("Notification Plugin: unknown folder type %d\n",ftype);
+    debug_print("Notification Plugin: Unknown folder type %d\n",ftype);
     G_UNLOCK(popup);
     return;
   }
@@ -220,7 +220,7 @@ static void popup_timeout_fun(NotifyNotification *nn, gpointer data)
   }
   ppopup->count = 0;
   G_UNLOCK(popup);
-  debug_print("Notification Plugin: popup closed due to timeout.\n");
+  debug_print("Notification Plugin: Popup closed due to timeout.\n");
 }
 
 #else
@@ -243,7 +243,7 @@ static gboolean popup_timeout_fun(gpointer data)
   }
   ppopup->count = 0;
   G_UNLOCK(popup);
-  debug_print("Notification Plugin: popup closed due to timeout.\n");
+  debug_print("Notification Plugin: Popup closed due to timeout.\n");
   return FALSE;
 }
 #endif
@@ -300,7 +300,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
   /* init libnotify if necessary */
   if(!notify_is_initted()) {
     if(!notify_init("claws-mail")) {
-      debug_print("Notification Plugin: failed to initialize libnotify. "
+      debug_print("Notification Plugin: Failed to initialize libnotify. "
 		  "No popup will be shown.\n");
       return FALSE;
     }
@@ -353,7 +353,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
       );
   g_free(utf8_str);
   if(ppopup->notification == NULL) {
-    debug_print("Notification Plugin: failed to create a new "
+    debug_print("Notification Plugin: Failed to create a new "
 		"notification.\n");
     return FALSE;
   }
@@ -416,7 +416,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
     g_object_unref(pixbuf);
   }
   else /* This is not fatal */
-    debug_print("Notification plugin: icon could not be loaded.\n");
+    debug_print("Notification plugin: Icon could not be loaded.\n");
 
   /* timeout */
   notify_notification_set_timeout(ppopup->notification, notify_config.popup_timeout);
@@ -430,7 +430,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
   /* Show the popup */
   notify_notification_set_hint_string(ppopup->notification, "desktop-entry", "claws-mail");
   if(!notify_notification_show(ppopup->notification, &(ppopup->error))) {
-    debug_print("Notification Plugin: failed to send notification: %s\n",
+    debug_print("Notification Plugin: Failed to send notification: %s\n",
 		ppopup->error->message);
     g_clear_error(&(ppopup->error));
     g_object_unref(G_OBJECT(ppopup->notification));
@@ -438,7 +438,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
     return FALSE;
   }
 
-  debug_print("Notification Plugin: popup created with libnotify.\n");
+  debug_print("Notification Plugin: Popup created with libnotify.\n");
   ppopup->count = 1;
 
   /* Store path to message */
@@ -510,7 +510,7 @@ static gboolean notification_libnotify_add_msg(MsgInfo *msginfo,
     break;
   default:
     /* Should not happen */
-    debug_print("Notification Plugin: unknown folder type ignored\n");
+    debug_print("Notification Plugin: Unknown folder type ignored\n");
     return FALSE;
   }
 
@@ -518,20 +518,20 @@ static gboolean notification_libnotify_add_msg(MsgInfo *msginfo,
 				      text, NULL);
   g_free(text);
   if(!retval) {
-    debug_print("Notification Plugin: failed to update notification.\n");
+    debug_print("Notification Plugin: Failed to update notification.\n");
     return FALSE;
   }
 
   /* Show the popup */
   notify_notification_set_hint_string(ppopup->notification, "desktop-entry", "claws-mail");
   if(!notify_notification_show(ppopup->notification, &(ppopup->error))) {
-    debug_print("Notification Plugin: failed to send updated notification: "
+    debug_print("Notification Plugin: Failed to send updated notification: "
 		"%s\n",	ppopup->error->message);
     g_clear_error(&(ppopup->error));
     return FALSE;
   }
 
-  debug_print("Notification Plugin: popup successfully modified "
+  debug_print("Notification Plugin: Popup successfully modified "
 	      "with libnotify.\n");
   return TRUE;
 }

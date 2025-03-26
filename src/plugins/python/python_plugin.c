@@ -170,7 +170,7 @@ static gchar* extract_filename(const gchar *str)
 
   filename = g_strrstr(str, "/");
   if(!filename || *(filename+1) == '\0') {
-    debug_print("Error: could not extract filename from %s\n", str);
+    debug_print("Error: Could not extract filename from %s\n", str);
     return NULL;
   }
   filename++;
@@ -182,7 +182,7 @@ static void run_script_file(const gchar *filename, Compose *compose)
   FILE *fp;
   fp = claws_fopen(filename, "r");
   if(!fp) {
-    debug_print("Error: could not open file '%s'\n", filename);
+    debug_print("Error: Could not open file '%s'\n", filename);
     return;
   }
   put_composewindow_into_module(compose);
@@ -320,9 +320,9 @@ static void migrate_scripts_out_of_base_dir(void)
       gchar *dest_file;
       dest_file = g_strconcat(dest_dir, G_DIR_SEPARATOR_S, filename, NULL);
       if(move_file(filepath, dest_file, FALSE) == 0)
-        debug_print("Python plugin: moved file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
+        debug_print("Python plugin: Moved file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
       else
-        debug_print("Python plugin: warning: could not move file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
+        debug_print("Python plugin: Warning: Could not move file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
       g_free(dest_file);
     }
     g_free(filepath);
@@ -488,7 +488,7 @@ static void browse_python_scripts_dir(GtkAction *action, gpointer data)
 
   mainwin =  mainwindow_get_mainwindow();
   if(!mainwin) {
-      debug_print("Browse Python scripts: problems getting the mainwindow\n");
+      debug_print("Browse Python scripts: Problems getting the mainwindow\n");
       return;
   }
   launch_context = gdk_app_launch_context_new();
@@ -497,7 +497,7 @@ static void browse_python_scripts_dir(GtkAction *action, gpointer data)
   g_app_info_launch_default_for_uri(uri, G_APP_LAUNCH_CONTEXT(launch_context), &error);
 
   if(error) {
-      debug_print("could not open scripts dir browser: '%s'\n", error->message);
+      debug_print("Could not open scripts dir browser: '%s'\n", error->message);
       g_error_free(error);
   }
 
@@ -598,19 +598,19 @@ static PyObject *get_StringIO_instance(void)
 
   module_StringIO = PyImport_ImportModule("io");
   if(!module_StringIO) {
-    debug_print("Error getting traceback: could not import module io\n");
+    debug_print("Error getting traceback: Could not import module io\n");
     goto done;
   }
 
   class_StringIO = PyObject_GetAttrString(module_StringIO, "StringIO");
   if(!class_StringIO) {
-    debug_print("Error getting traceback: could not get StringIO class\n");
+    debug_print("Error getting traceback: Could not get StringIO class\n");
     goto done;
   }
 
   inst_StringIO = PyObject_CallObject(class_StringIO, NULL);
   if(!inst_StringIO) {
-    debug_print("Error getting traceback: could not create an instance of the StringIO class\n");
+    debug_print("Error getting traceback: Could not create an instance of the StringIO class\n");
     goto done;
   }
 

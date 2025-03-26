@@ -110,12 +110,12 @@ static void check_permission(gchar* folder) {
 	if (g_stat(folder, &info) < 0)
 		return;
 	mode_t perm = info.st_mode & ~(S_IFMT);
-	debug_print("%s: old file permission: %05o\n", folder, perm);
+	debug_print("%s: Old file permission: %05o\n", folder, perm);
 	if ((perm & S_IXOTH) != S_IXOTH) {
 		perm = perm | S_IXOTH;
 		g_chmod(folder, perm);
 	}
-	debug_print("%s: new file permission: %05o\n", folder, perm);
+	debug_print("%s: New file permission: %05o\n", folder, perm);
 }
 
 static void folder_permission_cb(GtkWidget *widget, gpointer data) {

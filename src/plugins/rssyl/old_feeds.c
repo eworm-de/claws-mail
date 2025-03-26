@@ -62,7 +62,7 @@ static void _elparse_start_oldrssyl(void *data, const gchar *el,
 		of->silent_update = GETVAL_INT("silent_update");
 		of->ssl_verify_peer = GETVAL_INT("ssl_verify_peer");
 
-		debug_print("RSSyl: old feeds.xml: adding '%s' (%s).\n", of->name,
+		debug_print("RSSyl: old feeds.xml: Adding '%s' (%s).\n", of->name,
 				of->url);
 
 		ctx->oldfeeds = g_slist_prepend(ctx->oldfeeds, of);
