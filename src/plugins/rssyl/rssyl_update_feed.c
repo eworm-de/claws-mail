@@ -312,7 +312,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 
 	rssyl_deleted_update(ritem);
 
-	debug_print("RSSyl: STARTING TO PARSE FEED\n");
+	debug_print("RSSyl: Starting to parse feed\n");
 	if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
 		debug_print("RSSyl: Error processing feed\n");
@@ -328,7 +328,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, ctx->feed->url);
 	}
 	
-	debug_print("RSSyl: FEED PARSED\n");
+	debug_print("RSSyl: Feed parsed\n");
 
 	STATUSBAR_POP(mainwin);
 
