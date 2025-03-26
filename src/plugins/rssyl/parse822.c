@@ -192,7 +192,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 			g_strfreev(line);
 		} else {
 			if( !strcmp(lines[i], RSSYL_TEXT_START) ) {
-				debug_print("RSSyl: leading html tag found at line %d\n", i);
+				debug_print("RSSyl: Leading html tag found at line %d\n", i);
 				past_html_tag = TRUE;
 				if (body)
 				{
@@ -205,7 +205,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 			}
 			while( past_html_tag && !past_endhtml_tag && lines[i] ) {
 				if( !strcmp(lines[i], RSSYL_TEXT_END) ) {
-					debug_print("RSSyl: trailing html tag found at line %d\n", i);
+					debug_print("RSSyl: Trailing html tag found at line %d\n", i);
 					past_endhtml_tag = TRUE;
 					continue;
 				}
@@ -298,7 +298,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 				ctx = (RFeedCtx *)item->data;
 				if( ritem->last_update < ctx->last_seen )
 					ritem->last_update = ctx->last_seen;
-				debug_print("RSSyl: appending '%s'\n", feed_item_get_title(item));
+				debug_print("RSSyl: Appending '%s'\n", feed_item_get_title(item));
 				ritem->items = g_slist_prepend(ritem->items, item);
 			}
 			g_free(fname);

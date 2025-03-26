@@ -328,7 +328,7 @@ static void cm_gdata_query_contacts_ready(GDataContactsService *service, GAsyncR
   if(error)
   {
     g_object_unref(feed);
-    log_error(LOG_PROTOCOL, _("GData plugin: error querying for contacts: %s\n"), error->message);
+    log_error(LOG_PROTOCOL, _("GData plugin: Error querying for contacts: %s\n"), error->message);
     g_error_free(error);
     return;
   }
@@ -356,7 +356,7 @@ static void query_contacts(GDataContactsService *service)
 {
   GDataContactsQuery *query;
 
-  log_message(LOG_PROTOCOL, _("GData plugin: starting async contacts query\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Starting async contacts query\n"));
 
   query = gdata_contacts_query_new(NULL);
   gdata_contacts_query_set_group(query, contacts_group_id);
@@ -377,7 +377,7 @@ static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncRes
   if(error)
   {
     g_object_unref(feed);
-    log_error(LOG_PROTOCOL, _("GData plugin: error querying for groups: %s\n"), error->message);
+    log_error(LOG_PROTOCOL, _("GData plugin: Error querying for groups: %s\n"), error->message);
     g_error_free(error);
     return;
   }
@@ -413,14 +413,14 @@ static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncRes
   }
   g_object_unref(feed);
 
-  log_message(LOG_PROTOCOL, _("GData plugin: groups received\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Groups received\n"));
 
   query_contacts(service);
 }
 
 static void query_for_contacts_group_id(GDataAuthorizer *authorizer)
 {
-  log_message(LOG_PROTOCOL, _("GData plugin: starting async groups query\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Starting async groups query\n"));
 
   gdata_contacts_service_query_groups_async(service, NULL, NULL, NULL, NULL, NULL,
       (GAsyncReadyCallback)cm_gdata_query_groups_ready, NULL);
@@ -445,14 +445,14 @@ static void cm_gdata_auth_ready(GDataOAuth2Authorizer *auth, GAsyncResult *res, 
     /* Notify the user of all errors except cancellation errors */
     if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-      log_error(LOG_PROTOCOL, _("GData plugin: authorization error: %s\n"), error->message);
+      log_error(LOG_PROTOCOL, _("GData plugin: Authorization error: %s\n"), error->message);
     }
     g_error_free(error);
     cm_gdata_contacts_query_running = FALSE;
     return;
   }
 
-  log_message(LOG_PROTOCOL, _("GData plugin: authorization successful\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Authorization successful\n"));
 
   query_after_auth();
 }
@@ -472,27 +472,27 @@ static void cm_gdata_interactive_auth()
 
     interactive_auth_running = TRUE;
 
-    log_message(LOG_PROTOCOL, _("GData plugin: starting interactive authorization\n"));
+    log_message(LOG_PROTOCOL, _("GData plugin: Starting interactive authorization\n"));
 
     auth_code = ask_user_for_auth_code(auth_uri);
 
     if(auth_code)
     {
       cm_gdata_contacts_query_running = TRUE;
-      log_message(LOG_PROTOCOL, _("GData plugin: got authorization code, requesting authorization\n"));
+      log_message(LOG_PROTOCOL, _("GData plugin: Got authorization code, requesting authorization\n"));
       gdata_oauth2_authorizer_request_authorization_async(authorizer, auth_code, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
       memset(auth_code, 0, strlen(auth_code));
       g_free(auth_code);
     }
     else
     {
-      log_warning(LOG_PROTOCOL, _("GData plugin: no authorization code received, authorization request cancelled\n"));
+      log_warning(LOG_PROTOCOL, _("GData plugin: No authorization code received, authorization request cancelled\n"));
     }
     interactive_auth_running = FALSE;
   }
   else
   {
-    log_message(LOG_PROTOCOL, _("GData plugin: interactive authorization still running, no additional session started\n"));
+    log_message(LOG_PROTOCOL, _("GData plugin: Interactive authorization still running, no additional session started\n"));
   }
 
   g_free(auth_uri);
@@ -509,7 +509,7 @@ static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *re
     /* Notify the user of all errors except cancellation errors */
     if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-      log_error(LOG_PROTOCOL, _("GData plugin: authorization refresh error: %s\n"), error->message);
+      log_error(LOG_PROTOCOL, _("GData plugin: Authorization refresh error: %s\n"), error->message);
 
       if(mainwindow_get_mainwindow())
       {
@@ -533,7 +533,7 @@ static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *re
     return;
   }
 
-  log_message(LOG_PROTOCOL, _("GData plugin: authorization refresh successful\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Authorization refresh successful\n"));
 
   g_timer_start(refresh_timer);
 
@@ -593,7 +593,7 @@ static void query()
   elapsed_time_min = (int)((g_timer_elapsed(refresh_timer, NULL)/60.0)+0.5);
   if(elapsed_time_min > REFRESH_TIMEOUT_MINUTES)
   {
-    log_message(LOG_PROTOCOL, _("GData plugin: elapsed time since last refresh: %d minutes, refreshing now\n"), elapsed_time_min);
+    log_message(LOG_PROTOCOL, _("GData plugin: Elapsed time since last refresh: %d minutes, refreshing now\n"), elapsed_time_min);
     gdata_authorizer_refresh_authorization_async(GDATA_AUTHORIZER(authorizer), NULL, (GAsyncReadyCallback)cm_gdata_refresh_ready, NULL);
   }
   else if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
@@ -601,7 +601,7 @@ static void query()
     /* Try to restore from saved refresh token.*/
     if((token = passwd_store_get(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING)) != NULL)
     {
-      log_message(LOG_PROTOCOL, _("GData plugin: trying to refresh authorization\n"));
+      log_message(LOG_PROTOCOL, _("GData plugin: Trying to refresh authorization\n"));
       gdata_oauth2_authorizer_set_refresh_token(authorizer, token);
       memset(token, 0, strlen(token));
       g_free(token);

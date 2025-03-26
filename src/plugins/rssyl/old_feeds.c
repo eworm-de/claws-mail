@@ -85,13 +85,13 @@ GSList *rssyl_old_feed_metadata_parse(gchar *filepath)
 	GError *error = NULL;
 	struct _oldrssyl_ctx *ctx;
 
-	debug_print("RSSyl: starting to parse old feeds.xml\n");
+	debug_print("RSSyl: Starting to parse old feeds.xml\n");
 
 	/* Read contents of the file into memory */
 	if (!g_file_get_contents(filepath, &contents, &length, &error)) {
 		alertpanel_error(_("Couldn't read contents of old feeds.xml file:\n%s"),
 				error->message);
-		debug_print("RSSyl: couldn't read contents of feeds.xml\n");
+		debug_print("RSSyl: Couldn't read contents of feeds.xml\n");
 		g_error_free(error);
 		return NULL;
 	}

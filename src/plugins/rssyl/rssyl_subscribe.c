@@ -95,11 +95,11 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		sctx->feed = ctx->feed;
 		sctx->edit_properties = FALSE;
 
-		debug_print("RSSyl: calling subscribe dialog routine...\n");
+		debug_print("RSSyl: Calling subscribe dialog routine...\n");
 		rssyl_subscribe_dialog(sctx);
 
 		if (sctx->feed == NULL) {
-			debug_print("RSSyl: user cancelled subscribe.\n");
+			debug_print("RSSyl: User cancelled subscribe.\n");
 			g_free(sctx);
 			return NULL;
 		}
@@ -111,9 +111,9 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		}
 
 		if (sctx->edit_properties)
-			debug_print("RSSyl: user wants to edit properties of the new feed.\n");
+			debug_print("RSSyl: User wants to edit properties of the new feed.\n");
 		else
-			debug_print("RSSyl: user does not want to edit properties of the new feed.\n");
+			debug_print("RSSyl: User does not want to edit properties of the new feed.\n");
 		g_free(sctx->official_title);
 		g_free(sctx);
 	}
@@ -136,7 +136,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 #endif
 
 	while (folder_find_child_item_by_name(parent, tmpname2) != 0 && i < 20) {
-		debug_print("RSSyl: folder '%s' already exists, trying another name\n",
+		debug_print("RSSyl: Folder '%s' already exists, trying another name\n",
 				tmpname2);
 		g_free(tmpname2);
 		tmpname2 = g_strdup_printf("%s__%d", tmpname, ++i);
@@ -159,7 +159,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		return NULL;
 	}
 
-	debug_print("RSSyl: adding '%s'\n", ctx->feed->url);
+	debug_print("RSSyl: Adding '%s'\n", ctx->feed->url);
 
 	ritem = (RFolderItem *)new_item;
 	ritem->url = g_strdup(ctx->feed->url);

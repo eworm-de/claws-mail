@@ -165,7 +165,7 @@ static void _store_one_deleted_item(gpointer data, gpointer user_data)
 			ditem->date_published) < 0);
 
 	if (err)
-		debug_print("RSSyl: error during writing deletion file.\n");
+		debug_print("RSSyl: Error during writing deletion file.\n");
 }
 
 static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *deleted_file)
@@ -174,7 +174,7 @@ static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *del
 
 	if (g_file_test(deleted_file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
 		if (g_remove(deleted_file) != 0) {
-			debug_print("RSSyl: oops, couldn't delete '%s', bailing out\n",
+			debug_print("RSSyl: Oops, couldn't delete '%s', bailing out\n",
 					deleted_file);
 			return;
 		}
@@ -184,7 +184,7 @@ static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *del
 		return;
 
 	if ((f = claws_fopen(deleted_file, "w")) == NULL) {
-		debug_print("RSSyl: couldn't open '%s', bailing out.\n", deleted_file);
+		debug_print("RSSyl: Couldn't open '%s', bailing out.\n", deleted_file);
 		return;
 	}
 

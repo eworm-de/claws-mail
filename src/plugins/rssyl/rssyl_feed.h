@@ -25,14 +25,14 @@
 
 #include "rssyl.h"
 
-#define RSSYL_LOG_SUBSCRIBING  _("RSSyl: subscribing new feed: %s\n")
-#define RSSYL_LOG_SUBSCRIBED   _("RSSyl: new feed subscribed: '%s' (%s)\n")
-#define RSSYL_LOG_UPDATING     _("RSSyl: updating feed: %s (User Agent: %s)\n")
-#define RSSYL_LOG_UPDATED      _("RSSyl: feed update finished: %s\n")
-#define RSSYL_LOG_ERROR_FETCH  _("RSSyl: error fetching feed at '%s': %s\n")
-#define RSSYL_LOG_ERROR_NOFEED _("RSSyl: no valid feed found at '%s'\n")
-#define RSSYL_LOG_ERROR_PROC   _("RSSyl: couldn't process feed at '%s'\n")
-#define RSSYL_LOG_ABORTED_EXITING _("RSSyl: application is exiting, couldn't finish updating feed at '%s'\n")
+#define RSSYL_LOG_SUBSCRIBING  _("RSSyl: Subscribing new feed: %s\n")
+#define RSSYL_LOG_SUBSCRIBED   _("RSSyl: New feed subscribed: '%s' (%s)\n")
+#define RSSYL_LOG_UPDATING     _("RSSyl: Updating feed: %s (User Agent: %s)\n")
+#define RSSYL_LOG_UPDATED      _("RSSyl: Feed update finished: %s\n")
+#define RSSYL_LOG_ERROR_FETCH  _("RSSyl: Error fetching feed at '%s': %s\n")
+#define RSSYL_LOG_ERROR_NOFEED _("RSSyl: No valid feed found at '%s'\n")
+#define RSSYL_LOG_ERROR_PROC   _("RSSyl: Couldn't process feed at '%s'\n")
+#define RSSYL_LOG_ABORTED_EXITING _("RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n")
 
 typedef enum
 {

@@ -156,13 +156,13 @@ static void spamreport_http_response_log(gchar *url, long response)
 {
 	switch (response) {
 	case 400: /* Bad Request */
-		log_error(LOG_PROTOCOL, "%s: bad Request\n", url);
+		log_error(LOG_PROTOCOL, "%s: Bad Request\n", url);
 		break;
 	case 401: /* Not Authorized */
-		log_error(LOG_PROTOCOL, "%s: wrong login or password\n", url);
+		log_error(LOG_PROTOCOL, "%s: Wrong login or password\n", url);
 		break;
 	case 404: /* Not Authorized */
-		log_error(LOG_PROTOCOL, "%s: not found\n", url);
+		log_error(LOG_PROTOCOL, "%s: Not found\n", url);
 		break;
 	}
 }

@@ -75,7 +75,7 @@ void rssyl_opml_import_func(gchar *title, gchar *url, gint depth, gpointer data)
 		/* Find an unused name for new folder */
 		tmp = g_strdup(title);
 		while (folder_find_child_item_by_name((FolderItem *)ctx->current->data, tmp)) {
-			debug_print("RSSyl: folder '%s' already exists, trying another name\n",
+			debug_print("RSSyl: Folder '%s' already exists, trying another name\n",
 					title);
 			g_free(tmp);
 			tmp = g_strdup_printf("%s__%d", title, ++i);
