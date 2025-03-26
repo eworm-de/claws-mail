@@ -252,7 +252,7 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 
 	cm_return_if_fail(item != NULL);
 
-	debug_print("mh_get_last_num(): scanning %s ...\n", item->path?item->path:"(null)");
+	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	path = folder_item_get_path(item);
 	cm_return_if_fail(path != NULL);
@@ -295,7 +295,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 
 	cm_return_val_if_fail(item != NULL, -1);
 
-	debug_print("mh_get_num_list(): scanning %s ...\n", item->path?item->path:"(null)");
+	debug_print("mh_get_num_list(): Scanning %s ...\n", item->path?item->path:"(null)");
 
 	*old_uids_valid = TRUE;
 

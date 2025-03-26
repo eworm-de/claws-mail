@@ -356,7 +356,7 @@ void inc_account_list_mail(MainWindow *mainwin, GList *account_list, gboolean au
 		PrefsAccount *account = list->data;
 
 		if (account == NULL) {
-			debug_print("INC: huh? inc_account_list_mail() got a NULL account, this should not happen!\n");
+			debug_print("INC: Huh? inc_account_list_mail() got a NULL account, this should not happen!\n");
 			continue;
 		}
 
@@ -867,7 +867,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		    
 	ac->last_pop_login_time = time(NULL);
 
-	buf = g_strdup_printf(_("%s: retrieving new messages"),
+	buf = g_strdup_printf(_("%s: Retrieving new messages"),
 			      ac->recv_server);
 	gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window), buf);
 	g_free(buf);
@@ -896,7 +896,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	}
 #endif
 
-	buf = g_strdup_printf(_("Account '%s': connecting to POP3 server: %s:%d..."),
+	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s:%d..."),
 				account_name, server, port);
 	statusbar_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);

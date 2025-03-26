@@ -6185,7 +6185,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
                 else {
-			alertpanel_error(_("Selected account isn't NNTP: posting is impossible."));
+			alertpanel_error(_("Selected account isn't NNTP: Posting is impossible."));
 			return COMPOSE_QUEUE_ERROR_NO_MSG;
 		}			
 	}

@@ -457,7 +457,7 @@ void clean_up(LDAP *ld, LdapServer *server, GHashTable *contact) {
 			ItemPerson *res = 
 				addrcache_remove_person(server->addressCache, person);
 			if (!res)
-				g_critical("ldapsvr_update_book: could not clean cache\n");
+				g_critical("ldapsvr_update_book: Could not clean cache\n");
 			else
 				addritem_free_item_person(res);
 		}

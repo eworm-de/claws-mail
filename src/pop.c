@@ -924,7 +924,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    ((ac->msg_leave_time * 24 * 60 * 60) +
 		     (ac->msg_leave_hour * 60 * 60))) {
 			log_message(LOG_PROTOCOL,
-					_("POP: deleting expired message %d [%s]\n"),
+					_("POP: Deleting expired message %d [%s]\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ");
 			session->cur_total_bytes += size;
 			pop3_delete_send(session);
@@ -940,7 +940,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 				break;
 
 			log_message(LOG_PROTOCOL,
-					_("POP: skipping message %d [%s] (%d bytes)\n"),
+					_("POP: Skipping message %d [%s] (%d bytes)\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ", size);
 		}
 
