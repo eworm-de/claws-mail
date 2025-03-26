@@ -557,13 +557,13 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 	if ((perm = file_is_writeable(page)) != A_FILE_OK) {
 		switch (perm) {
 			case A_FILE_EXISTS:
-				msg = g_strdup_printf(_("%s: Exists. Continue anyway?"), page->name);
+				msg = g_strdup_printf(_("%s exists. Continue anyway?"), page->name);
 				break;
 			case A_FILE_IS_LINK:
-				msg = g_strdup_printf(_("%s: Is a link. Cannot continue"), page->name);
+				msg = g_strdup_printf(_("%s is a link. Cannot continue"), page->name);
 				break;
 			 case A_FILE_IS_DIR:
-				 msg = g_strdup_printf(_("%s: Is a directory. Cannot continue"), page->name);
+				 msg = g_strdup_printf(_("%s is a directory. Cannot continue"), page->name);
 				break;
 			case A_FILE_NO_WRITE:
 				 msg = g_strdup_printf(_("%s: Missing permissions. Cannot continue"), page->name);
