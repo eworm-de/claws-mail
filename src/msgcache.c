@@ -1246,7 +1246,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	g_free(new_cache);
 	g_free(new_mark);
 	g_free(new_tags);
-	debug_print("done.\n");
+	debug_print("msgcache_write() done.\n");
 	END_TIMING();
 	return 0;
 }

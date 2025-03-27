@@ -1667,7 +1667,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 	toolbar_main_set_sensitive(summaryview->mainwin);
 	
 	summary_thaw(summaryview);
-	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
