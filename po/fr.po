@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 4.3.1\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2025-03-24 15:51+0100\n"
-"PO-Revision-Date: 2025-03-24 17:05+0100\n"
+"POT-Creation-Date: 2025-03-27 09:52+0100\n"
+"PO-Revision-Date: 2025-03-27 09:58+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -69,7 +69,8 @@ msgstr "Création d'un nouveau compte"
 #: src/addressbook.c:429 src/addressbook.c:454 src/addressbook.c:471
 #: src/addressbook.c:1147 src/compose.c:615 src/gtk/quicksearch.c:941
 #: src/mainwindow.c:517 src/messageview.c:213
-#: src/plugins/fancy/fancy_prefs.c:290 src/plugins/managesieve/sieve_editor.c:82
+#: src/plugins/fancy/fancy_prefs.c:290
+#: src/plugins/managesieve/sieve_editor.c:82
 #: src/plugins/managesieve/sieve_manager.c:760 src/prefs_account.c:2039
 #: src/prefs_account.c:2546 src/prefs_message.c:151 src/prefs_summaries.c:427
 #: src/prefs_summaries.c:521
@@ -146,12 +147,13 @@ msgstr "Définir comme comp_te par défaut"
 #: src/addressbook.c:1430 src/addressbook.c:3265 src/addressbook.c:3317
 #: src/addressbook.c:4186 src/addressbook.c:4191 src/addressbook.c:4307
 #: src/addrindex.c:1837 src/alertpanel.c:139 src/alertpanel.c:203
-#: src/browseldap.c:300 src/compose.c:636 src/compose.c:10989 src/edittags.c:589
-#: src/exphtmldlg.c:193 src/exphtmldlg.c:295 src/expldifdlg.c:323
-#: src/gtk/about.c:931 src/gtk/icon_legend.c:184 src/gtk/pluginwindow.c:391
-#: src/gtk/prefswindow.c:512 src/gtk/sslcertwindow.c:374 src/importldif.c:438
-#: src/inc.c:844 src/message_search.c:238 src/message_search.c:320
-#: src/messageview.c:226 src/mimeview.c:1873 src/mimeview.c:1890
+#: src/browseldap.c:300 src/compose.c:636 src/compose.c:10989
+#: src/edittags.c:589 src/exphtmldlg.c:193 src/exphtmldlg.c:295
+#: src/expldifdlg.c:323 src/gtk/about.c:931 src/gtk/icon_legend.c:184
+#: src/gtk/pluginwindow.c:391 src/gtk/prefswindow.c:512
+#: src/gtk/sslcertwindow.c:374 src/importldif.c:438 src/inc.c:844
+#: src/message_search.c:238 src/message_search.c:320 src/messageview.c:226
+#: src/mimeview.c:1873 src/mimeview.c:1890
 #: src/plugins/managesieve/sieve_editor.c:88
 #: src/plugins/managesieve/sieve_editor.c:632
 #: src/plugins/managesieve/sieve_manager.c:786
@@ -207,11 +209,13 @@ msgstr "Supprimer le compte"
 #: src/imap_gtk.c:369 src/imap_gtk.c:519 src/imap_gtk.c:579 src/import.c:177
 #: src/importldif.c:925 src/importldif.c:991 src/importmutt.c:250
 #: src/importpine.c:249 src/inc.c:893 src/main.c:2197 src/mainwindow.c:3998
-#: src/mbox.c:549 src/messageview.c:2082 src/messageview.c:2093 src/mh_gtk.c:207
-#: src/mh_gtk.c:376 src/mimeview.c:1857 src/mimeview.c:2298 src/news.c:407
-#: src/news_gtk.c:252 src/password_gtk.c:215
-#: src/plugins/archive/archiver_gtk.c:117 src/plugins/archive/archiver_gtk.c:581
-#: src/plugins/archive/archiver_gtk.c:628 src/plugins/archive/archiver_gtk.c:956
+#: src/mbox.c:549 src/messageview.c:2082 src/messageview.c:2093
+#: src/mh_gtk.c:207 src/mh_gtk.c:376 src/mimeview.c:1857 src/mimeview.c:2298
+#: src/news.c:407 src/news_gtk.c:252 src/password_gtk.c:215
+#: src/plugins/archive/archiver_gtk.c:117
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:956
 #: src/plugins/archive/archiver_gtk.c:1056
 #: src/plugins/att_remover/att_remover.c:383
 #: src/plugins/att_remover/att_remover.c:425
@@ -223,7 +227,7 @@ msgstr "Supprimer le compte"
 #: src/plugins/managesieve/sieve_editor.c:435
 #: src/plugins/managesieve/sieve_editor.c:632
 #: src/plugins/managesieve/sieve_manager.c:330
-#: src/plugins/notification/notification_foldercheck.c:584
+#: src/plugins/notification/notification_foldercheck.c:585
 #: src/plugins/notification/notification_trayicon.c:550
 #: src/plugins/pgpcore/passphrase.c:122 src/plugins/pgpcore/select-keys.c:500
 #: src/plugins/rssyl/rssyl_cb_menu.c:189 src/plugins/rssyl/rssyl_cb_menu.c:356
@@ -249,7 +253,8 @@ msgstr "A_nnuler"
 
 #: src/account.c:1141 src/addrcustomattr.c:218 src/addressbook.c:430
 #: src/addressbook.c:455 src/addressbook.c:472 src/addressbook.c:1150
-#: src/edittags.c:297 src/imap_gtk.c:369 src/plugins/archive/archiver_gtk.c:1330
+#: src/edittags.c:297 src/imap_gtk.c:369
+#: src/plugins/archive/archiver_gtk.c:1330
 #: src/plugins/att_remover/att_remover.c:425
 #: src/plugins/mailmbox/plugin_gtk.c:336
 #: src/plugins/managesieve/sieve_manager.c:330
@@ -267,7 +272,8 @@ msgstr "R"
 
 #: src/account.c:1620
 msgid "'Get Mail' retrieves mail from the checked accounts"
-msgstr "La fonctionnalité « Relever » récupèrera le courrier des comptes cochés"
+msgstr ""
+"La fonctionnalité « Relever » récupèrera le courrier des comptes cochés"
 
 #: src/account.c:1627 src/addrduplicates.c:470 src/addressadd.c:220
 #: src/addressbook.c:126 src/compose.c:7511 src/editaddress.c:1478
@@ -341,7 +347,8 @@ msgstr ""
 "%s"
 
 #: src/action.c:1003 src/compose.c:5302 src/compose.c:5307 src/compose.c:9728
-#: src/compose.c:9771 src/ldaputil.c:334 src/plugins/bogofilter/bogofilter.c:861
+#: src/compose.c:9771 src/ldaputil.c:334
+#: src/plugins/bogofilter/bogofilter.c:861
 #: src/plugins/tnef_parse/tnef_parse.c:76
 #: src/plugins/vcalendar/vcal_folder.c:1821
 #: src/plugins/vcalendar/vcal_folder.c:1825
@@ -566,22 +573,25 @@ msgstr "Nouvel attribut :"
 msgid "_Add"
 msgstr "_Ajouter"
 
-#: src/addrcustomattr.c:497 src/addressadd.c:300 src/addressbook_foldersel.c:211
-#: src/addrgather.c:556 src/alertpanel.c:385 src/compose.c:9564
-#: src/editaddress.c:172 src/editaddress.c:816 src/editbook.c:197
-#: src/editgroup.c:406 src/editjpilot.c:306 src/editldap_basedn.c:239
-#: src/editldap.c:363 src/editvcard.c:204 src/export.c:175 src/foldersel.c:350
-#: src/grouplistdialog.c:243 src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1504
-#: src/gtk/inputdialog.c:378 src/gtk/prefswindow.c:508 src/import.c:178
-#: src/importmutt.c:251 src/importpine.c:250 src/main.c:2197
-#: src/password_gtk.c:217 src/plugins/archive/archiver_gtk.c:581
-#: src/plugins/archive/archiver_gtk.c:628 src/plugins/archive/archiver_gtk.c:760
+#: src/addrcustomattr.c:497 src/addressadd.c:300
+#: src/addressbook_foldersel.c:211 src/addrgather.c:556 src/alertpanel.c:385
+#: src/compose.c:9564 src/editaddress.c:172 src/editaddress.c:816
+#: src/editbook.c:197 src/editgroup.c:406 src/editjpilot.c:306
+#: src/editldap_basedn.c:239 src/editldap.c:363 src/editvcard.c:204
+#: src/export.c:175 src/foldersel.c:350 src/grouplistdialog.c:243
+#: src/gtk/foldersort.c:245 src/gtk/gtkaspell.c:1504 src/gtk/inputdialog.c:378
+#: src/gtk/prefswindow.c:508 src/import.c:178 src/importmutt.c:251
+#: src/importpine.c:250 src/main.c:2197 src/password_gtk.c:217
+#: src/plugins/archive/archiver_gtk.c:581
+#: src/plugins/archive/archiver_gtk.c:628
+#: src/plugins/archive/archiver_gtk.c:760
 #: src/plugins/archive/archiver_gtk.c:1058
 #: src/plugins/att_remover/att_remover.c:384
 #: src/plugins/managesieve/sieve_editor.c:633
-#: src/plugins/notification/notification_foldercheck.c:585
+#: src/plugins/notification/notification_foldercheck.c:586
 #: src/plugins/notification/notification_trayicon.c:550
-#: src/plugins/pgpcore/passphrase.c:123 src/plugins/rssyl/rssyl_feed_props.c:536
+#: src/plugins/pgpcore/passphrase.c:123
+#: src/plugins/rssyl/rssyl_feed_props.c:536
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1805
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1929 src/prefs_actions.c:220
@@ -617,8 +627,8 @@ msgstr "Chercher les adresses email en double"
 msgid ""
 "Claws Mail will now search for duplicate email addresses in the address book."
 msgstr ""
-"Claws Mail va maintenant chercher dans le carnet d'adresses les contacts dont "
-"les adresses email sont en double."
+"Claws Mail va maintenant chercher dans le carnet d'adresses les contacts "
+"dont les adresses email sont en double."
 
 #: src/addrduplicates.c:147 src/addressbook.c:1158 src/compose.c:671
 #: src/messageview.c:232 src/plugins/managesieve/sieve_editor.c:102
@@ -1300,8 +1310,8 @@ msgstr "Échec lors de l'allocation de la mémoire pour le module"
 #: src/common/plugin.c:484
 msgid "This module is not licensed under a GPL v3 or later compatible license."
 msgstr ""
-"Ce module n'est pas distribué sous la licence GPL en version 3 ou une licence "
-"ultérieure compatible."
+"Ce module n'est pas distribué sous la licence GPL en version 3 ou une "
+"licence ultérieure compatible."
 
 #: src/common/plugin.c:493
 msgid "This module is for Claws Mail GTK1."
@@ -2123,7 +2133,8 @@ msgstr "Cci:"
 msgid "Reply-To:"
 msgstr "Répondre-à:"
 
-#: src/compose.c:2667 src/compose.c:5051 src/compose.c:5053 src/gtk/headers.h:33
+#: src/compose.c:2667 src/compose.c:5051 src/compose.c:5053
+#: src/gtk/headers.h:33
 msgid "Newsgroups:"
 msgstr "Groupe-de-discussion:"
 
@@ -2135,8 +2146,8 @@ msgstr "Donnant-suite-à:"
 msgid "In-Reply-To:"
 msgstr "En-réponse-à:"
 
-#: src/compose.c:2677 src/compose.c:5048 src/compose.c:5056 src/gtk/headers.h:13
-#: src/summary_search.c:429
+#: src/compose.c:2677 src/compose.c:5048 src/compose.c:5056
+#: src/gtk/headers.h:13 src/summary_search.c:429
 msgid "To:"
 msgstr "À:"
 
@@ -2362,8 +2373,8 @@ msgid ""
 "You can try to \"Send\" again or queue the message with \"Send later\""
 msgstr ""
 "%s\n"
-"Vous pouvez essayer \"Envoyer\" à nouveau ou mettre en file d'attente d'envoi "
-"avec \"Envoyer ultérieurement\""
+"Vous pouvez essayer \"Envoyer\" à nouveau ou mettre en file d'attente "
+"d'envoi avec \"Envoyer ultérieurement\""
 
 #: src/compose.c:5830
 #, c-format
@@ -2407,8 +2418,9 @@ msgid "No account for sending mails available!"
 msgstr "Il n'existe pas de compte pour l'envoi de messages !"
 
 #: src/compose.c:6188
-msgid "Selected account isn't NNTP: posting is impossible."
-msgstr "Le compte sélectionné n'est pas un compte NNTP : poster est impossible."
+msgid "Selected account isn't NNTP: Posting is impossible."
+msgstr ""
+"Le compte sélectionné n'est pas un compte NNTP : poster est impossible."
 
 #: src/compose.c:6442
 #, c-format
@@ -2451,7 +2463,8 @@ msgstr "Type Mime"
 #: src/compose.c:7505 src/mimeview.c:310
 #: src/plugins/att_remover/att_remover.c:302
 #: src/plugins/pgpcore/select-keys.c:454 src/prefs_matcher.c:640
-#: src/prefs_summaries.c:700 src/prefs_summary_column.c:84 src/summaryview.c:469
+#: src/prefs_summaries.c:700 src/prefs_summary_column.c:84
+#: src/summaryview.c:469
 msgid "Size"
 msgstr "Taille"
 
@@ -2765,7 +2778,8 @@ msgid ""
 "Please file a bug report and include the information below."
 msgstr ""
 "%s.\n"
-"Merci de faire un rapport du bogue et d'y inclure les informations ci-dessous."
+"Merci de faire un rapport du bogue et d'y inclure les informations ci-"
+"dessous."
 
 #: src/crash.c:211
 msgid "Debug log"
@@ -3095,9 +3109,9 @@ msgid ""
 "computer as Claws Mail."
 msgstr ""
 "Nom du serveur LDAP. Par exemple, « ldap.exemple.org » peut être approprié "
-"pour l'organisation « exemple.org ». Une adresse IP peut aussi être utilisée. "
-"Si le serveur se trouve sur la même machine exécutant Claws Mail, « localhost "
-"» peut être utilisé."
+"pour l'organisation « exemple.org ». Une adresse IP peut aussi être "
+"utilisée. Si le serveur se trouve sur la même machine exécutant Claws Mail, "
+"« localhost » peut être utilisé."
 
 #: src/editldap.c:467
 msgid "STARTTLS"
@@ -3172,7 +3186,8 @@ msgid ""
 "A list of LDAP attribute names that should be searched when attempting to "
 "find a name or address."
 msgstr ""
-"Une liste d'attributs LDAP à utiliser pour la recherche de noms ou d'adresses."
+"Une liste d'attributs LDAP à utiliser pour la recherche de noms ou "
+"d'adresses."
 
 #: src/editldap.c:585
 msgid " Defaults "
@@ -3193,24 +3208,24 @@ msgstr "Durée de vie d'un résultat (secs)"
 #: src/editldap.c:607
 msgid ""
 "This defines the maximum period of time (in seconds) that an address search "
-"result is valid for address completion purposes. Search results are stored in "
-"a cache until this period of time has passed and then retired. This will "
+"result is valid for address completion purposes. Search results are stored "
+"in a cache until this period of time has passed and then retired. This will "
 "improve the response time when attempting to search for the same name or "
-"address on subsequent address completion requests. The cache will be searched "
-"in preference to performing a new server search request. The default value of "
-"600 seconds (10 minutes), should be sufficient for most servers. A larger "
-"value will reduce the search time for subsequent searches. This is useful for "
-"servers that have slow response times at the expense of more memory to cache "
-"results."
+"address on subsequent address completion requests. The cache will be "
+"searched in preference to performing a new server search request. The "
+"default value of 600 seconds (10 minutes), should be sufficient for most "
+"servers. A larger value will reduce the search time for subsequent searches. "
+"This is useful for servers that have slow response times at the expense of "
+"more memory to cache results."
 msgstr ""
 "Ceci définit la durée maximale en secondes pendant laquelle les résultats de "
-"la complétion d'adresse sont gardés en mémoire. Passé ce délai, les résultats "
-"en sont effacés. Ceci permet d'accélérer les demandes ultérieures pour "
-"effectuer la complétion d'adresse en recherchant d'abord parmi les résultats "
-"déjà en mémoire. La valeur par défaut de 600 secondes (10 minutes) est "
-"suffisante pour la majorité des serveurs. Une valeur plus grande diminuera le "
-"temps des recherches ultérieures. Particulièrement utile pour des serveurs "
-"lents, au détriment d'une utilisation accrue de la mémoire."
+"la complétion d'adresse sont gardés en mémoire. Passé ce délai, les "
+"résultats en sont effacés. Ceci permet d'accélérer les demandes ultérieures "
+"pour effectuer la complétion d'adresse en recherchant d'abord parmi les "
+"résultats déjà en mémoire. La valeur par défaut de 600 secondes (10 minutes) "
+"est suffisante pour la majorité des serveurs. Une valeur plus grande "
+"diminuera le temps des recherches ultérieures. Particulièrement utile pour "
+"des serveurs lents, au détriment d'une utilisation accrue de la mémoire."
 
 #: src/editldap.c:623
 msgid "Include server in dynamic search"
@@ -3233,8 +3248,8 @@ msgid ""
 "Searches for names and addresses can be performed either using \"begins-with"
 "\" or \"contains\" search term. Check this option to perform a \"contains\" "
 "search; this type of search usually takes longer to complete. Note that for "
-"performance reasons, address completion uses \"begins-with\" for all searches "
-"against other address interfaces."
+"performance reasons, address completion uses \"begins-with\" for all "
+"searches against other address interfaces."
 msgstr ""
 "La recherche des noms et adresses utilise les critères « begins-with "
 "» (commençant par) ou « contains » (contenant). Activer cette option pour "
@@ -3249,9 +3264,9 @@ msgstr "DN de connexion"
 #: src/editldap.c:707
 msgid ""
 "The LDAP user account name to be used to connect to the server. This is "
-"usually only used for protected servers. This name is typically formatted as: "
-"\"cn=user,dc=claws-mail,dc=org\". This is usually left empty when performing "
-"a search."
+"usually only used for protected servers. This name is typically formatted "
+"as: \"cn=user,dc=claws-mail,dc=org\". This is usually left empty when "
+"performing a search."
 msgstr ""
 "Le nom d'utilisateur·rice pour se connecter au serveur LDAP. Ce nom est en "
 "général utilisé seulement par des serveurs protégés. Ce nom est typiquement "
@@ -3452,8 +3467,9 @@ msgstr "Feuille de style"
 msgid "None"
 msgstr "Aucun"
 
-#: src/exphtmldlg.c:449 src/prefs_folder_item.c:531 src/prefs_folder_item.c:1239
-#: src/prefs_folder_item.c:1270 src/prefs_other.c:323 src/prefs_other.c:436
+#: src/exphtmldlg.c:449 src/prefs_folder_item.c:531
+#: src/prefs_folder_item.c:1239 src/prefs_folder_item.c:1270
+#: src/prefs_other.c:323 src/prefs_other.c:436
 msgid "Default"
 msgstr "Par défaut"
 
@@ -3575,8 +3591,8 @@ msgid ""
 "A suffix is required if data is to be used for an LDAP server. Are you sure "
 "you wish to proceed without a suffix?"
 msgstr ""
-"Un suffixe est requis si la donnée est destinée à être utilisé par un serveur "
-"LDAP. Êtes-vous sûr·e de vouloir continuer sans suffixe ?"
+"Un suffixe est requis si la donnée est destinée à être utilisé par un "
+"serveur LDAP. Êtes-vous sûr·e de vouloir continuer sans suffixe ?"
 
 #: src/expldifdlg.c:261
 msgid "Error creating LDIF file"
@@ -3656,10 +3672,10 @@ msgid ""
 msgstr ""
 "Le fichier LDIF contient différents enregistrements qui sont habituellement "
 "envoyés vers un serveur LDAP. Chaque enregistrement est identifié de manière "
-"unique par un « nom absolu » (Distinguished Name, DN). Un suffixe est rajouté "
-"au « nom relatif » (Relative Distinguished Name, RDN) pour créer le DN. "
-"Veuillez sélectionner une des options RDN proposées qui sera utilisée pour la "
-"création du DN."
+"unique par un « nom absolu » (Distinguished Name, DN). Un suffixe est "
+"rajouté au « nom relatif » (Relative Distinguished Name, RDN) pour créer le "
+"DN. Veuillez sélectionner une des options RDN proposées qui sera utilisée "
+"pour la création du DN."
 
 #: src/expldifdlg.c:531
 msgid "Use DN attribute if present in data"
@@ -3673,10 +3689,10 @@ msgid ""
 "above will be used if the DN user attribute is not found."
 msgstr ""
 "Le carnet d'adresses peut contenir des entrées qui étaient précédemment "
-"importées d'un fichier LDIF. L'attribut utilisateur·rice « nom absolu » (DN), "
-"si présent dans les données du carnet d'adresses, peut être utilisé dans le "
-"fichier LDIF exporté. S'il n'est pas présent, le RDN (nom relatif) ci-dessus "
-"sera utilisé."
+"importées d'un fichier LDIF. L'attribut utilisateur·rice « nom absolu "
+"» (DN), si présent dans les données du carnet d'adresses, peut être utilisé "
+"dans le fichier LDIF exporté. S'il n'est pas présent, le RDN (nom relatif) "
+"ci-dessus sera utilisé."
 
 #: src/expldifdlg.c:544
 msgid "Exclude record if no Email Address"
@@ -3684,8 +3700,8 @@ msgstr "Exclure les entrées ne contenant pas d'adresse email"
 
 #: src/expldifdlg.c:548
 msgid ""
-"An addressbook may contain entries without Email Addresses. Check this option "
-"to ignore these records."
+"An addressbook may contain entries without Email Addresses. Check this "
+"option to ignore these records."
 msgstr ""
 "Un carnet d'adresses peut contenir des entrées sans adresse email. Vous "
 "pouvez activer cette option pour les ignorer."
@@ -3767,8 +3783,8 @@ msgstr "Non spécifié."
 #, c-format
 msgid "The file %s is missing! Do you want to use the backup file from %s?"
 msgstr ""
-"Le fichier %s est manquant ! Voulez-vous utiliser le fichier de sauvegarde du "
-"%s ?"
+"Le fichier %s est manquant ! Voulez-vous utiliser le fichier de sauvegarde "
+"du %s ?"
 
 #: src/file_checker.c:90 src/file_checker.c:114
 #, c-format
@@ -3778,7 +3794,8 @@ msgstr "Impossible de copier %s vers %s"
 #: src/file_checker.c:105
 #, c-format
 msgid ""
-"The file %s is empty or corrupted! Do you want to use the backup file from %s?"
+"The file %s is empty or corrupted! Do you want to use the backup file from "
+"%s?"
 msgstr ""
 "Le fichier %s est vide ou corrompu ! Voulez-vous utiliser le fichier de "
 "sauvegarde du %s ?"
@@ -3798,8 +3815,8 @@ msgstr ""
 #: src/filtering.c:621
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], matching the account currently used "
-"to retrieve messages\n"
+"rule is account-based [id=%d, name='%s'], matching the account currently "
+"used to retrieve messages\n"
 msgstr ""
 "règle relative à un compte [id=%d, nom='%s'], correspondance faite avec le "
 "compte courant actuel\n"
@@ -3876,7 +3893,8 @@ msgstr ""
 
 #: src/filtering.c:747
 msgid "rule is account-based, not matching current account\n"
-msgstr "règle basée sur un compte, sans correspondance avec le compte courant\n"
+msgstr ""
+"règle basée sur un compte, sans correspondance avec le compte courant\n"
 
 #: src/filtering.c:755
 #, c-format
@@ -4171,8 +4189,8 @@ msgid ""
 "Do you really want to mark all mails in this folder and its subfolders as "
 "unread?"
 msgstr ""
-"Voulez-vous vraiment marquer comme non lus tous les messages de ce dossier et "
-"de ses sous-dossiers ?"
+"Voulez-vous vraiment marquer comme non lus tous les messages de ce dossier "
+"et de ses sous-dossiers ?"
 
 #: src/folderview.c:882 src/summaryview.c:4326
 msgid "Do you really want to mark all mails in this folder as unread?"
@@ -4197,8 +4215,8 @@ msgstr "Reconstruction de l'arborescence"
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
-"La reconstruction de l'arborescence supprimera les caches locaux. Voulez-vous "
-"continuer ?"
+"La reconstruction de l'arborescence supprimera les caches locaux. Voulez-"
+"vous continuer ?"
 
 #: src/folderview.c:1123
 msgid "Rebuilding folder tree..."
@@ -4425,7 +4443,8 @@ msgid ""
 "the Claws Mail project you can do so at:"
 msgstr ""
 "Claws Mail est un logiciel libre distribué sous licence GPL. Si vous voulez "
-"faire un don au projet Claws Mail, vous pouvez le faire à l'adresse suivante :"
+"faire un don au projet Claws Mail, vous pouvez le faire à l'adresse "
+"suivante :"
 
 #: src/gtk/about.c:164 src/gtk/about.c:876
 msgid ""
@@ -4564,9 +4583,9 @@ msgstr "support de l'authentification OAuth2\n"
 # <http://www.gnu.org/licenses/translations.fr.html>
 #: src/gtk/about.c:576
 msgid ""
-"This program is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 3, or (at your option) any later version."
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 3, or (at your option) any later version."
 msgstr ""
 "Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le "
 "modifier au titre des clauses de la Licence Publique Générale GNU, telle que "
@@ -4576,8 +4595,9 @@ msgstr ""
 #: src/gtk/about.c:583
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details."
 msgstr ""
 "Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE "
 "GARANTIE; sans même une garantie implicite de COMMERCIABILITE ou DE "
@@ -4734,8 +4754,8 @@ msgstr "Définir l'ordre de tri des boîtes aux lettres"
 #: src/gtk/foldersort.c:266
 msgid "Move mailboxes up or down to change the sort order in the Folder list."
 msgstr ""
-"Monter ou descendre les boîtes aux lettres dans la liste pour changer l'ordre "
-"de tri dans la liste des dossiers."
+"Monter ou descendre les boîtes aux lettres dans la liste pour changer "
+"l'ordre de tri dans la liste des dossiers."
 
 #: src/gtk/foldersort.c:300
 msgid "Mailboxes"
@@ -4871,8 +4891,8 @@ msgstr "Échec : erreur inconnue (%d)."
 msgid "Configuring..."
 msgstr "Configuration.."
 
-#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1225 src/prefs_matcher.c:645
-#: src/prefs_matcher.c:2218 src/prefs_summaries.c:701
+#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1225
+#: src/prefs_matcher.c:645 src/prefs_matcher.c:2218 src/prefs_summaries.c:701
 #: src/prefs_summary_column.c:83 src/quote_fmt.c:48 src/summaryview.c:468
 msgid "Date"
 msgstr "Date"
@@ -5067,9 +5087,10 @@ msgstr "Consulté"
 msgid "Seen:"
 msgstr "Consulté:"
 
-#: src/gtk/headers.h:37 src/gtk/progressdialog.c:143 src/gtk/sslcertwindow.c:188
-#: src/prefs_summaries.c:709 src/prefs_summary_column.c:78
-#: src/prefs_themes.c:1109 src/ssl_manager.c:124 src/summaryview.c:2895
+#: src/gtk/headers.h:37 src/gtk/progressdialog.c:143
+#: src/gtk/sslcertwindow.c:188 src/prefs_summaries.c:709
+#: src/prefs_summary_column.c:78 src/prefs_themes.c:1109 src/ssl_manager.c:124
+#: src/summaryview.c:2895
 msgid "Status"
 msgstr "État"
 
@@ -5366,22 +5387,24 @@ msgid "Icon Legend"
 msgstr "Légende des icônes"
 
 #: src/gtk/icon_legend.c:145
-msgid "The following icons are used to show the status of messages and folders:"
+msgid ""
+"The following icons are used to show the status of messages and folders:"
 msgstr "Les icônes suivantes décrivent l'état des messages et des dossiers :"
 
 #: src/gtk/inputdialog.c:237 src/gtk/inputdialog.c:259
 #, c-format
 msgid "Input password for %s on %s"
-msgstr "Saisir le mot de passe du compte %s sur le serveur %s"
+msgstr "Saisir le mot de passe du compte « %s » sur le serveur %s"
 
-#: src/gtk/inputdialog.c:240 src/gtk/inputdialog.c:243 src/gtk/inputdialog.c:262
-#: src/gtk/inputdialog.c:265
+#: src/gtk/inputdialog.c:240 src/gtk/inputdialog.c:243
+#: src/gtk/inputdialog.c:262 src/gtk/inputdialog.c:265
 #, c-format
 msgid "Input password for %s"
 msgstr "Saisie du mot de passe pour %s"
 
-#: src/gtk/inputdialog.c:246 src/gtk/inputdialog.c:247 src/gtk/inputdialog.c:268
-#: src/gtk/inputdialog.c:275 src/gtk/inputdialog.c:287
+#: src/gtk/inputdialog.c:246 src/gtk/inputdialog.c:247
+#: src/gtk/inputdialog.c:268 src/gtk/inputdialog.c:275
+#: src/gtk/inputdialog.c:287
 msgid "Input password"
 msgstr "Saisie du mot de passe"
 
@@ -5455,7 +5478,8 @@ msgstr ""
 #: src/plugins/attachwarner/attachwarner_prefs.c:234
 #: src/plugins/bogofilter/bogofilter_gtk.c:482
 #: src/plugins/bsfilter/bsfilter_gtk.c:399
-#: src/plugins/clamd/clamav_plugin_gtk.c:537 src/plugins/fancy/fancy_prefs.c:105
+#: src/plugins/clamd/clamav_plugin_gtk.c:537
+#: src/plugins/fancy/fancy_prefs.c:105
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/keyword_warner/keyword_warner_prefs.c:234
 #: src/plugins/libravatar/libravatar_prefs.c:567
@@ -5751,8 +5775,8 @@ msgstr "Recherche avancée"
 
 #: src/gtk/quicksearch.c:471
 msgid ""
-"Extended Search allows the user to define criteria that messages must have in "
-"order to match and be displayed in the message list.\n"
+"Extended Search allows the user to define criteria that messages must have "
+"in order to match and be displayed in the message list.\n"
 "The following symbols can be used:"
 msgstr ""
 "La recherche avancée permet à l'utilisateur·rice de définir des critères de "
@@ -5821,8 +5845,8 @@ msgstr "É_dition"
 msgid "Correct%s"
 msgstr "Correct%s"
 
-#: src/gtk/sslcertwindow.c:179 src/gtk/sslcertwindow.c:181 src/ssl_manager.c:302
-#: src/ssl_manager.c:306
+#: src/gtk/sslcertwindow.c:179 src/gtk/sslcertwindow.c:181
+#: src/ssl_manager.c:302 src/ssl_manager.c:306
 msgid " (expired)"
 msgstr " (expiré)"
 
@@ -5875,7 +5899,8 @@ msgid ""
 "\n"
 msgstr ""
 "Le certificat est pour %s, mais la connexion est vers %s.\n"
-"Il est possible que vous tentiez de vous connecter à un serveur malveillant.\n"
+"Il est possible que vous tentiez de vous connecter à un serveur "
+"malveillant.\n"
 "\n"
 
 #: src/gtk/sslcertwindow.c:409
@@ -6198,8 +6223,8 @@ msgstr "Erreur inconnue [%d]"
 msgid ""
 "\n"
 "\n"
-"CRAM-MD5 logins only work if libetpan has been compiled with SASL support and "
-"the CRAM-MD5 SASL plugin is installed."
+"CRAM-MD5 logins only work if libetpan has been compiled with SASL support "
+"and the CRAM-MD5 SASL plugin is installed."
 msgstr ""
 "\n"
 "\n"
@@ -6230,8 +6255,8 @@ msgstr ""
 "\n"
 "\n"
 "L'authentification SCRAM-SHA1 fonctionne uniquement si la librairie « "
-"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL est "
-"installé."
+"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL "
+"est installé."
 
 #: src/imap.c:1022
 msgid ""
@@ -6243,8 +6268,8 @@ msgstr ""
 "\n"
 "\n"
 "L'authentification SCRAM-SHA1-224 fonctionne uniquement si la librairie « "
-"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL est "
-"installé."
+"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL "
+"est installé."
 
 #: src/imap.c:1028
 msgid ""
@@ -6256,8 +6281,8 @@ msgstr ""
 "\n"
 "\n"
 "L'authentification SCRAM-SHA1-256 fonctionne uniquement si la librairie « "
-"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL est "
-"installé."
+"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL "
+"est installé."
 
 #: src/imap.c:1034
 msgid ""
@@ -6269,8 +6294,8 @@ msgstr ""
 "\n"
 "\n"
 "L'authentification SCRAM-SHA1-384 fonctionne uniquement si la librairie « "
-"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL est "
-"installé."
+"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL "
+"est installé."
 
 #: src/imap.c:1040
 msgid ""
@@ -6282,8 +6307,8 @@ msgstr ""
 "\n"
 "\n"
 "L'authentification SCRAM-SHA1-512 fonctionne uniquement si la librairie « "
-"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL est "
-"installé."
+"libetpan » a été compilée avec le support SASL et si le module SCRAM SASL "
+"est installé."
 
 #: src/imap.c:1046
 msgid ""
@@ -6294,8 +6319,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"L'authentification PLAIN fonctionne uniquement si la librairie « libetpan » a "
-"été compilée avec le support SASL et si le module PLAIN SASL est installé."
+"L'authentification PLAIN fonctionne uniquement si la librairie « libetpan » "
+"a été compilée avec le support SASL et si le module PLAIN SASL est installé."
 
 #: src/imap.c:1052
 msgid ""
@@ -6306,8 +6331,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"L'authentification LOGIN fonctionne uniquement si la librairie « libetpan » a "
-"été compilée avec le support SASL et si le module LOGIN SASL est installé."
+"L'authentification LOGIN fonctionne uniquement si la librairie « libetpan » "
+"a été compilée avec le support SASL et si le module LOGIN SASL est installé."
 
 #: src/imap.c:1058
 msgid ""
@@ -6357,8 +6382,8 @@ msgid ""
 "Do you want to continue connecting to this server? The communication would "
 "not be secure."
 msgstr ""
-"Cette connexion est configurée pour être sécurisée via le protocole TLS, mais "
-"TLS n'est pas disponible dans cette version de Claws Mail.\n"
+"Cette connexion est configurée pour être sécurisée via le protocole TLS, "
+"mais TLS n'est pas disponible dans cette version de Claws Mail.\n"
 "\n"
 "Voulez-vous quand même poursuivre la connexion à ce serveur même si la "
 "communication ne peut pas être sécurisée ?"
@@ -6369,7 +6394,7 @@ msgstr "_Poursuivre la connexion"
 
 #: src/imap.c:1253
 #, c-format
-msgid "Account '%s': connecting to IMAP server: %s:%d..."
+msgid "Account '%s': Connecting to IMAP server: %s:%d..."
 msgstr "Compte « %s » : connexion au serveur IMAP : %s:%d.."
 
 #: src/imap.c:1318
@@ -6670,8 +6695,8 @@ msgstr ""
 "Vous êtes déjà inscrit à ce dossier et il ne contient aucun sous-dossier "
 "auquel vous n'êtes pas inscrit.S'il y a des nouveaux dossiers, créés et "
 "auxquels vous vous êtes déjà inscrit depuis un autre client, vous pouvez "
-"utiliser «  Examiner pour de nouveaux dossiers » depuis le menu contextuel du "
-"dossier racine de chaque boîte aux lettres."
+"utiliser «  Examiner pour de nouveaux dossiers » depuis le menu contextuel "
+"du dossier racine de chaque boîte aux lettres."
 
 #: src/imap_gtk.c:570
 #, c-format
@@ -6763,8 +6788,8 @@ msgstr "Sélection d'un fichier LDIF"
 
 #: src/importldif.c:551
 msgid ""
-"Specify the name for the address book that will be created from the LDIF file "
-"data."
+"Specify the name for the address book that will be created from the LDIF "
+"file data."
 msgstr ""
 "Spécifier le nom du carnet d'adresses qui sera créé à partir du fichier LDIF."
 
@@ -6806,13 +6831,13 @@ msgstr "Attribut"
 
 #: src/importldif.c:758
 msgid ""
-"Choose the LDIF field that will be renamed or selected for import in the list "
-"above. Reserved fields (marked with a tick in the \"R\" column), are "
+"Choose the LDIF field that will be renamed or selected for import in the "
+"list above. Reserved fields (marked with a tick in the \"R\" column), are "
 "automatically imported and cannot be renamed. A single click in the Select "
 "(\"S\") column will select the field for import with a tick. A single click "
-"anywhere in the row will select that field for rename in the input area below "
-"the list. A double click anywhere in the row will also select the field for "
-"import."
+"anywhere in the row will select that field for rename in the input area "
+"below the list. A double click anywhere in the row will also select the "
+"field for import."
 msgstr ""
 "Choisir, dans la liste ci-dessous, le champ LDIF devant être renommé ou "
 "sélectionné pour l'importation. Les champs réservés (marqués dans la colonne "
@@ -6842,7 +6867,8 @@ msgstr " Modifier "
 #: src/importldif.c:787
 msgid "This button will update the list above with the data supplied."
 msgstr ""
-"Ce bouton permet de mettre à jour la liste ci-dessus avec les données idoines."
+"Ce bouton permet de mettre à jour la liste ci-dessus avec les données "
+"idoines."
 
 #: src/importldif.c:857
 msgid "Records Imported:"
@@ -6950,12 +6976,12 @@ msgstr "Terminé (aucun nouveau message)"
 
 #: src/inc.c:870
 #, c-format
-msgid "%s: retrieving new messages"
+msgid "%s: Retrieving new messages"
 msgstr "%s : récupération des nouveaux messages"
 
 #: src/inc.c:899
 #, c-format
-msgid "Account '%s': connecting to POP3 server: %s:%d..."
+msgid "Account '%s': Connecting to POP3 server: %s:%d..."
 msgstr "Compte « %s » : connexion au serveur POP3 : %s:%d.."
 
 #: src/inc.c:933
@@ -7082,8 +7108,8 @@ msgstr ""
 
 #: src/inc.c:1301 src/send_message.c:718
 msgid ""
-"Session timed out. You may be able to recover by increasing the timeout value "
-"in Preferences/Other/Miscellaneous."
+"Session timed out. You may be able to recover by increasing the timeout "
+"value in Preferences/Other/Miscellaneous."
 msgstr ""
 "La session a expiré. Augmenter la valeur du délai d'attente dans Préférences/"
 "Autres/Divers peut dans certains cas être une solution."
@@ -7120,14 +7146,15 @@ msgstr[1] "hours"
 #: src/inc.c:1664
 #, c-format
 msgid "%s%sYou're working offline. Override for %d %s?"
-msgstr "%s%sLe mode hors-ligne est actif. Voulez-vous passer outre pour %d %s ?"
+msgstr ""
+"%s%sLe mode hors-ligne est actif. Voulez-vous passer outre pour %d %s ?"
 
 #: src/inc.c:1670
 #, c-format
 msgid "%s%sYou're working offline. Override?"
 msgstr ""
-"%s%sAttention, vous êtes en mode hors-ligne. Voulez-vous continuer et ignorer "
-"l'avertissement ?"
+"%s%sAttention, vous êtes en mode hors-ligne. Voulez-vous continuer et "
+"ignorer l'avertissement ?"
 
 #: src/inc.c:1677
 msgid "On_ly once"
@@ -7208,9 +7235,9 @@ msgid ""
 "on your disk."
 msgstr ""
 "Conserver une sauvegarde vous permettra de pouvoir revenir à une version "
-"antérieure, mais peut prendre du temps si vous avez en cache des données IMAP "
-"ou provenant de serveurs de discussions, et occupera un espace supplémentaire "
-"sur votre disque."
+"antérieure, mais peut prendre du temps si vous avez en cache des données "
+"IMAP ou provenant de serveurs de discussions, et occupera un espace "
+"supplémentaire sur votre disque."
 
 #: src/main.c:404
 msgid "Migration of configuration"
@@ -7235,8 +7262,8 @@ msgstr "(ou antérieure)"
 #: src/main.c:1436
 #, c-format
 msgid ""
-"The following plugin failed to load. Check the Plugins configuration for more "
-"information:\n"
+"The following plugin failed to load. Check the Plugins configuration for "
+"more information:\n"
 "%s"
 msgid_plural ""
 "The following plugins failed to load. Check the Plugins configuration for "
@@ -7345,7 +7372,8 @@ msgstr "  --compose [adresse]    ouvrir une fenêtre de composition de message"
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
-"                         use - as file name for reading from standard input;\n"
+"                         use - as file name for reading from standard "
+"input;\n"
 "                         content format: headers first (To: required) until "
 "an\n"
 "                         empty line, then mail body until end of file."
@@ -7411,8 +7439,8 @@ msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
 "                         folder ex.: \"#mh/Mailbox/inbox\" or \"Mail\"\n"
-"                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: "
-"tag\n"
+"                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or "
+"g: tag\n"
 "                         request: search string\n"
 "                         recursive: false if arg. starts with 0, n, N, f or F"
 msgstr ""
@@ -7420,11 +7448,11 @@ msgstr ""
 "                         rechercher des messages\n"
 "                         dossier, par ex. : « #mh/Mailbox/inbox » ou « Mail "
 "»\n"
-"                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] ou g: "
-"tag\n"
+"                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] ou "
+"g: tag\n"
 "                         texte: chaîne de texte à chercher\n"
-"                         récursif: aucune si l'argument commence par 0, n, N, "
-"f ou F"
+"                         récursif: aucune si l'argument commence par 0, n, "
+"N, f ou F"
 
 #: src/main.c:1995
 msgid "  --send                 send all queued messages"
@@ -7507,7 +7535,8 @@ msgstr ""
 
 #: src/main.c:2012
 msgid "  --config-dir           output configuration directory"
-msgstr "  --config-dir           afficher le dossier contenant la configuration"
+msgstr ""
+"  --config-dir           afficher le dossier contenant la configuration"
 
 #: src/main.c:2013
 msgid ""
@@ -8538,7 +8567,8 @@ msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail est maintenant le client par défaut."
 
 #: src/mainwindow.c:5240
-msgid "Can not register as default client: impossible to write to the registry."
+msgid ""
+"Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Impossible d'enregistrer le client par défaut : écriture impossible dans la "
 "base de registre."
@@ -8973,7 +9003,8 @@ msgstr ""
 
 #: src/mimeview.c:1111
 #, c-format
-msgid "Timeout checking the signature. Click the icon or hit '%s' to try again."
+msgid ""
+"Timeout checking the signature. Click the icon or hit '%s' to try again."
 msgstr ""
 "Dépassement de délai d'attente durant la vérification de la signature. "
 "Cliquer sur l'icône ou appuyer sur « %s » pour essayer à nouveau."
@@ -9004,7 +9035,8 @@ msgstr "Revenir à l'email"
 #: src/plugins/fancy/fancy_viewer.c:541
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
-msgstr "Échec lors de l'enregistrement d'une partie d'un message multipart : %s"
+msgstr ""
+"Échec lors de l'enregistrement d'une partie d'un message multipart : %s"
 
 #: src/mimeview.c:1823
 #, c-format
@@ -9103,9 +9135,9 @@ msgid ""
 "\n"
 "Do you want to run this file?"
 msgstr ""
-"Cette pièce jointe est un fichier exécutable. L'exécution de binaires dont la "
-"provenance est inconnueest une opération dangereuse qui pourrait compromettre "
-"la sécurité de votre ordinateur.\n"
+"Cette pièce jointe est un fichier exécutable. L'exécution de binaires dont "
+"la provenance est inconnueest une opération dangereuse qui pourrait "
+"compromettre la sécurité de votre ordinateur.\n"
 "\n"
 "Voulez-vous exécuter ce binaire ?"
 
@@ -9135,7 +9167,7 @@ msgstr "La connexion NNTP vers %s:%d a été coupée.\n"
 
 #: src/news.c:333
 #, c-format
-msgid "Account '%s': connecting to NNTP server: %s:%d...\n"
+msgid "Account '%s': Connecting to NNTP server: %s:%d...\n"
 msgstr "Compte « %s » : connexion au serveur SMTP : %s:%d..\n"
 
 #: src/news.c:370
@@ -9243,7 +9275,8 @@ msgstr "OAuth2 : erreur d'écriture sur la socket\n"
 
 #: src/oauth2.c:276
 msgid "OAuth2 socket timeout error\n"
-msgstr "OAuth2 : dépassement de délai d'attente lors d'entrées/sorties socket\n"
+msgstr ""
+"OAuth2 : dépassement de délai d'attente lors d'entrées/sorties socket\n"
 
 #: src/oauth2.c:307
 msgid "OAuth2 missing authorization code\n"
@@ -9328,7 +9361,8 @@ msgstr "Phrase secrète principale incorrecte."
 
 #: src/password_gtk.c:66
 msgid "New passphrases do not match, try again."
-msgstr "Les nouvelles phrases secrètes ne correspondent pas, essayez à nouveau."
+msgstr ""
+"Les nouvelles phrases secrètes ne correspondent pas, essayez à nouveau."
 
 #: src/password_gtk.c:79
 msgid "Incorrect old primary passphrase entered, try again."
@@ -9461,7 +9495,8 @@ msgstr " - Éteint : "
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:426
 msgid "Blink when user interaction is required"
-msgstr "Faire clignoter lorsque l'interaction de l'utilisateur·rice est requise"
+msgstr ""
+"Faire clignoter lorsque l'interaction de l'utilisateur·rice est requise"
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:852
 msgid "This plugin handles various ACPI mail LEDs."
@@ -9545,10 +9580,10 @@ msgstr "Créer une archive.."
 msgid ""
 "This plugin adds archiving features to Claws Mail.\n"
 "\n"
-"It enables you to select a mail folder that you want to be archived, and then "
-"choose a name, format and location for the archive. Subfolders can be "
-"included and MD5 checksums can be added for each file in the archive. Several "
-"archiving options are also available.\n"
+"It enables you to select a mail folder that you want to be archived, and "
+"then choose a name, format and location for the archive. Subfolders can be "
+"included and MD5 checksums can be added for each file in the archive. "
+"Several archiving options are also available.\n"
 "\n"
 "The archive can be stored as:\n"
 "%s\n"
@@ -9566,10 +9601,10 @@ msgid ""
 msgstr ""
 "Ce module permet l'archivage de dossiers dans Claws Mail.\n"
 "\n"
-"Il permet de sélectionner un dossier à archiver, il faut alors  déterminer le "
-"nom de l'archive, un répertoire de destination et les options d'archivage. Il "
-"est possible d'inclure sous-dossiers et de générer des sommes de contrôles "
-"MD5.\n"
+"Il permet de sélectionner un dossier à archiver, il faut alors  déterminer "
+"le nom de l'archive, un répertoire de destination et les options "
+"d'archivage. Il est possible d'inclure sous-dossiers et de générer des "
+"sommes de contrôles MD5.\n"
 "\n"
 "Les archives peuvent être créés au format :\n"
 "%s\n"
@@ -9630,30 +9665,31 @@ msgstr ""
 
 #: src/plugins/archive/archiver_gtk.c:560
 #, c-format
-msgid "%s: exists. Continue anyway?"
-msgstr "%s : existe déjà. Continuer ?"
+msgid "%s exists. Continue anyway?"
+msgstr "%s existe déjà. Continuer ?"
 
 #: src/plugins/archive/archiver_gtk.c:563
 #, c-format
-msgid "%s: is a link. Cannot continue"
-msgstr "%s : est un lien. Impossible de continuer"
+msgid "%s is a link. Cannot continue"
+msgstr "%s est un lien. Impossible de continuer"
 
 #: src/plugins/archive/archiver_gtk.c:566
 #, c-format
-msgid "%s: is a directory. Cannot continue"
-msgstr "%s : est un répertoire. Impossible de continuer"
+msgid "%s is a directory. Cannot continue"
+msgstr "%s est un répertoire. Impossible de continuer"
 
 #: src/plugins/archive/archiver_gtk.c:569
 #, c-format
-msgid "%s: missing permissions. Cannot continue"
-msgstr "%s : pas de permissions. Impossible de continuer"
+msgid "%s: Missing permissions. Cannot continue"
+msgstr "%s : permissions insuffisantes. Impossible de continuer"
 
 #: src/plugins/archive/archiver_gtk.c:572
 #, c-format
-msgid "%s: unknown error. Cannot continue"
+msgid "%s: Unknown error. Cannot continue"
 msgstr "%s : erreur inconnue. Impossible de continuer"
 
-#: src/plugins/archive/archiver_gtk.c:580 src/plugins/archive/archiver_gtk.c:627
+#: src/plugins/archive/archiver_gtk.c:580
+#: src/plugins/archive/archiver_gtk.c:627
 msgid "Creating archive"
 msgstr "Création de l'archive"
 
@@ -9735,14 +9771,16 @@ msgstr "Taille du dossier"
 msgid "Compression level"
 msgstr "Taux de compression"
 
-#: src/plugins/archive/archiver_gtk.c:848 src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
 #: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:725 src/prefs_folder_item.c:533
 #: src/prefs_folder_item.c:1241 src/prefs_folder_item.c:1272
 msgid "Yes"
 msgstr "Oui"
 
-#: src/plugins/archive/archiver_gtk.c:848 src/plugins/archive/archiver_gtk.c:856
+#: src/plugins/archive/archiver_gtk.c:848
+#: src/plugins/archive/archiver_gtk.c:856
 #: src/plugins/archive/archiver_gtk.c:864
 #: src/plugins/pdf_viewer/poppler_viewer.c:728 src/prefs_folder_item.c:532
 #: src/prefs_folder_item.c:1240 src/prefs_folder_item.c:1271
@@ -9919,8 +9957,8 @@ msgstr "Répertoire de destination par défaut"
 #: src/plugins/archive/archiver_prefs.c:234
 msgid "Click this button to select the default location for saving archives"
 msgstr ""
-"Cliquer ce bouton pour sélectionner un répertoire destination par défaut pour "
-"la création des archives"
+"Cliquer ce bouton pour sélectionner un répertoire destination par défaut "
+"pour la création des archives"
 
 #: src/plugins/archive/archiver_prefs.c:243
 msgid "Default compression"
@@ -10126,7 +10164,8 @@ msgstr "Lignes commençant par les caractères de citation"
 #: src/plugins/keyword_warner/keyword_warner_prefs.c:125
 msgid ""
 "Exclude quoted lines from checking for the regular expressions above. Note "
-"that handmade quotes cannot be distinguished from quotes generated by replying"
+"that handmade quotes cannot be distinguished from quotes generated by "
+"replying"
 msgstr ""
 "Exclure les lignes de citation lors de la vérification. Notez que les "
 "citations faites manuellement ne peuvent pas être distinguées des citations "
@@ -10198,8 +10237,8 @@ msgstr "Bogofilter : filtrage des messages.."
 msgid ""
 "The Bogofilter plugin couldn't filter a message. The probable cause of the "
 "error is that it didn't learn from any mail.\n"
-"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bogofilter with a "
-"few hundred spam and ham messages."
+"Use '/Marks/Mark as spam' and '/Marks/Mark as ham' to train Bogofilter with "
+"a few hundred spam and ham messages."
 msgstr ""
 "Le module Bogofilter ne peut pas filtrer un message. La cause probable de "
 "cette erreur est sans doute qu'il ne dispose pas assez de connaissances sur "
@@ -10267,8 +10306,8 @@ msgstr ""
 "centaines de pourriels et courriers légitimes par l'utilisation de « Marquer/"
 "Marquer comme pourriel » et « Marques/Marquer comme légitime ».\n"
 "\n"
-"Lorsqu'un message est identifié comme pourriel, il peut être soit effacé soit "
-"enregistré dans un dossier spécifique.\n"
+"Lorsqu'un message est identifié comme pourriel, il peut être soit effacé "
+"soit enregistré dans un dossier spécifique.\n"
 "\n"
 "Ce module est paramétrable via les options situées sous « /Configuration/"
 "Préférences/Modules/Bogofilter/ »."
@@ -10349,8 +10388,8 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:240
 msgid "Click this button to select a folder for storing Unsure mails"
 msgstr ""
-"Utiliser ce bouton pour sélectionner un dossier de stockage des messages dont "
-"le statut de pourriel est INCERTAIN."
+"Utiliser ce bouton pour sélectionner un dossier de stockage des messages "
+"dont le statut de pourriel est INCERTAIN."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:242
 msgid "Insert X-Bogosity header"
@@ -10387,7 +10426,8 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:268
 #: src/plugins/bsfilter/bsfilter_gtk.c:206
 msgid "Learn whitelisted emails as ham"
-msgstr "Faire apprendre les messages provenant de liste blanche comme légitimes"
+msgstr ""
+"Faire apprendre les messages provenant de liste blanche comme légitimes"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:270
 msgid ""
@@ -10395,7 +10435,8 @@ msgid ""
 "learn it as ham"
 msgstr ""
 "Si Bogofilter pense qu'un message est un pourriel ou incertain, mais qu'il "
-"fait partie de la liste blanche, le faire apprendre comme un courriel légitime"
+"fait partie de la liste blanche, le faire apprendre comme un courriel "
+"légitime"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:279
 msgid "Bogofilter call"
@@ -10457,8 +10498,8 @@ msgid ""
 "locally.\n"
 "\n"
 "Before Bsfilter can recognize spam messages, you have to train it by marking "
-"a few hundred spam and ham messages with the use of '/Marks/Mark as spam' and "
-"'/Marks/Mark as ham'.\n"
+"a few hundred spam and ham messages with the use of '/Marks/Mark as spam' "
+"and '/Marks/Mark as ham'.\n"
 "\n"
 "When a message is identified as spam it can be deleted or saved in a "
 "specially designated folder.\n"
@@ -10469,10 +10510,10 @@ msgstr ""
 "comptes IMAP, LOCAL et POP sont des pourriels ou du courrier légitime. Une "
 "installation locale et valide de Bsfilter est nécessaire.\n"
 "\n"
-"Afin que Bsfilter puisse distinguer les pourriels des courriers légitimes, il "
-"est nécessaire de lui faire subir un apprentissage en utilisant les commandes "
-"« Marques/Marquer comme pourriel » et « Marques/Marquer comme courrier "
-"légitime » sur quelques centaines de messages.\n"
+"Afin que Bsfilter puisse distinguer les pourriels des courriers légitimes, "
+"il est nécessaire de lui faire subir un apprentissage en utilisant les "
+"commandes « Marques/Marquer comme pourriel » et « Marques/Marquer comme "
+"courrier légitime » sur quelques centaines de messages.\n"
 "\n"
 "Quand un pourriel est identifié, il est possible de l'effacer de façon "
 "permanente ou de le conserver dans un dossier spécifique (par défaut: la "
@@ -10553,7 +10594,8 @@ msgstr "ClamAV : analyse du message.."
 #: src/plugins/clamd/clamav_plugin.c:283
 msgid "Failed to register mail filtering hook"
 msgstr ""
-"Impossible d'enregistrer le connecteur « mail filtering » dans le module Clamd"
+"Impossible d'enregistrer le connecteur « mail filtering » dans le module "
+"Clamd"
 
 #: src/plugins/clamd/clamav_plugin.c:301
 msgid ""
@@ -10586,8 +10628,8 @@ msgid ""
 "Because this plugin communicates with clamd via a socket then there are some "
 "minimum requirements to the permissions for your home folder and the .claws-"
 "mail folder provided the clamav-daemon is configured to communicate via a "
-"unix socket. All users at least need to be given execute permissions on these "
-"folders.\n"
+"unix socket. All users at least need to be given execute permissions on "
+"these folders.\n"
 "\n"
 "To avoid changing permissions you could configure the clamav-daemon to "
 "communicate via a TCP socket and choose manual configuration for clamd.\n"
@@ -10602,8 +10644,8 @@ msgstr ""
 "défaut: la corbeille).\n"
 "\n"
 "Par ce que ce module communique avec clamd via une socket, il y a des "
-"contraintes techniques à l'utilisation de celle-ci. Les permissions sur votre "
-"dossier personnel (HOME) ainsi que sur le dossier .claws-mail doivent "
+"contraintes techniques à l'utilisation de celle-ci. Les permissions sur "
+"votre dossier personnel (HOME) ainsi que sur le dossier .claws-mail doivent "
 "permettre l'exécution à tous au minimum.\n"
 "\n"
 "Si vous ne voulez pas effectuer ces changements de permissions, vous devez "
@@ -10733,7 +10775,7 @@ msgstr ""
 #: src/plugins/clamd/libclamd/clamd-plugin.c:121
 #, c-format
 msgid ""
-"%s: unable to open\n"
+"%s: Unable to open\n"
 "clamd will be disabled"
 msgstr ""
 "%s : ouverture impossible\n"
@@ -10742,7 +10784,7 @@ msgstr ""
 #: src/plugins/clamd/libclamd/clamd-plugin.c:210
 #, c-format
 msgid ""
-"%s: not able to find required information\n"
+"%s: Not able to find required information\n"
 "clamd will be disabled"
 msgstr ""
 "%s : la collecte des informations nécessaires est impossible\n"
@@ -10753,11 +10795,11 @@ msgid "Could not create socket"
 msgstr "Impossible de créer la socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:435
-msgid ": file does not exist"
+msgid ": File does not exist"
 msgstr " : fichier inexistant"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:448
-msgid ": unable to open"
+msgid ": Unable to open"
 msgstr " : impossible d'ouvrir le fichier"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:467
@@ -10768,7 +10810,7 @@ msgstr "Erreur d'écriture sur la socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:479
 #, c-format
-msgid "%s: error reading"
+msgid "%s: Error reading"
 msgstr "%s : erreur de lecture"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:493
@@ -11004,8 +11046,8 @@ msgstr "Impossible d'enregistrer le connecteur « mail receive »"
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:202
 msgid ""
 "This plugin modifies the downloaded messages. It inserts headers containing "
-"some download information: UIDL, Claws Mail account name, POP server, user ID "
-"and retrieval time.\n"
+"some download information: UIDL, Claws Mail account name, POP server, user "
+"ID and retrieval time.\n"
 "\n"
 "Options can be found in '/Configuration/Preferences/Plugins/Fetchinfo'."
 msgstr ""
@@ -11090,8 +11132,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Un mot-clé est présent dans votre message. Le mot-clé apparaît à la ligne %d, "
-"qui commence ainsi : %s\n"
+"Un mot-clé est présent dans votre message. Le mot-clé apparaît à la ligne "
+"%d, qui commence ainsi : %s\n"
 "\n"
 "%s"
 
@@ -11110,9 +11152,9 @@ msgid ""
 "Shows a warning when sending or queueing a message and a reference to one or "
 "more keywords is found in the message text."
 msgstr ""
-"Affiche un avertissement, lors de l'envoi de messages ou de leur mise en file "
-"d'attente pour envoi ultérieur, si une ou plusieurs occurrences des mot-clés "
-"prédéfinis sont trouvées dans le texte du message."
+"Affiche un avertissement, lors de l'envoi de messages ou de leur mise en "
+"file d'attente pour envoi ultérieur, si une ou plusieurs occurrences des mot-"
+"clés prédéfinis sont trouvées dans le texte du message."
 
 #: src/plugins/keyword_warner/keyword_warner_prefs.c:138
 msgid "Don't check for keywords when forwarding or redirecting messages"
@@ -11147,8 +11189,8 @@ msgstr "Chargement à partir du cache des icônes impossible"
 msgid ""
 "Display libravatar profiles' images for mail messages. More info about "
 "libravatar at http://www.libravatar.org/. If you have a gravatar.com profile "
-"but not a libravatar one, those will also be retrieved (when redirections are "
-"allowed in plugin config).\n"
+"but not a libravatar one, those will also be retrieved (when redirections "
+"are allowed in plugin config).\n"
 "\n"
 "Plugin config page is available from main window at:\n"
 "'/Configuration/Preferences/Plugins/Libravatar'.\n"
@@ -11243,10 +11285,11 @@ msgid "_Use cached icons"
 msgstr "_Utiliser un cache pour les icônes"
 
 #: src/plugins/libravatar/libravatar_prefs.c:227
-msgid "Keep icons on disk for reusing instead of making another network request"
+msgid ""
+"Keep icons on disk for reusing instead of making another network request"
 msgstr ""
-"Conserver les icônes sur disque pour une réutilisation ultérieure, au lieu de "
-"les récupérer via le réseau à chaque requête"
+"Conserver les icônes sur disque pour une réutilisation ultérieure, au lieu "
+"de les récupérer via le réseau à chaque requête"
 
 #: src/plugins/libravatar/libravatar_prefs.c:242
 msgid "Cache refresh interval"
@@ -11328,8 +11371,8 @@ msgstr "Utiliser à partir d'une URL fournie par l'utilisateur·rice"
 
 #: src/plugins/libravatar/libravatar_prefs.c:352
 msgid ""
-"Enter the URL you want to be redirected when no user icon is available. Leave "
-"an empty URL to use the default libravatar orange icon"
+"Enter the URL you want to be redirected when no user icon is available. "
+"Leave an empty URL to use the default libravatar orange icon"
 msgstr ""
 "Saisir l'URL que vous voulez utiliser lorsqu'aucune icône utilisateur·rice "
 "n'est disponible. Laisser le champ vide afin d'utiliser l'icône orange par "
@@ -11420,8 +11463,8 @@ msgstr "LiteHTML visualiseur"
 
 #: src/plugins/litehtml_viewer/plugin.c:60
 msgid ""
-"This plugin renders HTML mail using the litehtml library (http://www.litehtml."
-"com/).\n"
+"This plugin renders HTML mail using the litehtml library (http://www."
+"litehtml.com/).\n"
 "\n"
 "By default all remote content is blocked.\n"
 "\n"
@@ -11565,7 +11608,8 @@ msgstr "Vérification de la syntaxe en cours.."
 #: src/plugins/managesieve/sieve_editor.c:434
 msgid "This script has been modified. Save the latest changes?"
 msgstr ""
-"Ce script a été modifié. Voulez-vous enregistrer les dernières modifications ?"
+"Ce script a été modifié. Voulez-vous enregistrer les dernières "
+"modifications ?"
 
 #: src/plugins/managesieve/sieve_editor.c:696
 #, c-format
@@ -11705,16 +11749,18 @@ msgid "Specify authentication"
 msgstr "Utiliser l'authentification"
 
 #: src/plugins/managesieve/sieve_prefs.c:236
-#: src/plugins/vcalendar/vcal_prefs.c:392 src/plugins/vcalendar/vcal_prefs.c:511
-#: src/prefs_account.c:1464 src/prefs_account.c:2099
+#: src/plugins/vcalendar/vcal_prefs.c:392
+#: src/plugins/vcalendar/vcal_prefs.c:511 src/prefs_account.c:1464
+#: src/prefs_account.c:2099
 msgid "User ID"
 msgstr "Nom d'utilisateur·rice"
 
 #: src/plugins/managesieve/sieve_prefs.c:246
 #: src/plugins/rssyl/rssyl_feed_props.c:407
-#: src/plugins/vcalendar/vcal_prefs.c:400 src/plugins/vcalendar/vcal_prefs.c:519
-#: src/prefs_account.c:1469 src/prefs_account.c:2122 src/prefs_account.c:3063
-#: src/prefs_account.c:3091 src/prefs_account.c:3286 src/prefs_proxy.c:134
+#: src/plugins/vcalendar/vcal_prefs.c:400
+#: src/plugins/vcalendar/vcal_prefs.c:519 src/prefs_account.c:1469
+#: src/prefs_account.c:2122 src/prefs_account.c:3063 src/prefs_account.c:3091
+#: src/prefs_account.c:3286 src/prefs_proxy.c:134
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -11790,11 +11836,11 @@ msgstr "Nouveaux : %d, Non lus : %d, Total : %d"
 msgid "Folder:"
 msgstr "Dossier :"
 
-#: src/plugins/notification/notification_foldercheck.c:477
+#: src/plugins/notification/notification_foldercheck.c:478
 msgid "Select folder(s)"
 msgstr "Sélection de dossier(s)"
 
-#: src/plugins/notification/notification_foldercheck.c:577
+#: src/plugins/notification/notification_foldercheck.c:578
 msgid "select recursively"
 msgstr "sélectionner récursivement"
 
@@ -12137,8 +12183,9 @@ msgid "Foreground color"
 msgstr "Couleur de premier plan"
 
 #: src/plugins/notification/notification_prefs.c:967
-#: src/plugins/notification/notification_prefs.c:1180 src/prefs_msg_colors.c:251
-#: src/prefs_msg_colors.c:265 src/prefs_msg_colors.c:279
+#: src/plugins/notification/notification_prefs.c:1180
+#: src/prefs_msg_colors.c:251 src/prefs_msg_colors.c:265
+#: src/prefs_msg_colors.c:279
 msgid "Background"
 msgstr "Fond du texte cité"
 
@@ -12380,7 +12427,8 @@ msgid "Enter password"
 msgstr "Saisie du mot de passe"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1391
-msgid "This document is locked and requires a password before it can be opened."
+msgid ""
+"This document is locked and requires a password before it can be opened."
 msgstr ""
 "Ce document est verrouillé, son ouverture nécessite la saisie d'un mot de "
 "passe."
@@ -12580,8 +12628,8 @@ msgstr "Importation de clés"
 msgid ""
 "This key is not in your keyring. Do you want Claws Mail to try to import it?"
 msgstr ""
-"Cette clé n'est pas dans votre jeu de clés. Voulez-vous que Claws Mail essaie "
-"de l'importer ?"
+"Cette clé n'est pas dans votre jeu de clés. Voulez-vous que Claws Mail "
+"essaie de l'importer ?"
 
 #: src/plugins/pgpcore/pgp_viewer.c:181
 msgid "from keyserver"
@@ -12656,8 +12704,8 @@ msgid ""
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
-"Ce module gère les opérations PGP de base et permet la complétion d'adresse à "
-"partir du jeu de clés GPG. Il est utilisé par d'autres modules comme PGP/"
+"Ce module gère les opérations PGP de base et permet la complétion d'adresse "
+"à partir du jeu de clés GPG. Il est utilisé par d'autres modules comme PGP/"
 "Mime.\n"
 "\n"
 "Ce module est paramétrable via les options situées sous « /Configuration/"
@@ -12765,7 +12813,8 @@ msgstr "S/MIME"
 #: src/plugins/pgpcore/select-keys.c:96
 #, c-format
 msgid "No exact match for '%s'; please select the key."
-msgstr "Pas de correspondance exacte pour « %s »; veuillez sélectionner la clé."
+msgstr ""
+"Pas de correspondance exacte pour « %s »; veuillez sélectionner la clé."
 
 #: src/plugins/pgpcore/select-keys.c:99
 #, c-format
@@ -12852,7 +12901,7 @@ msgid "The signature has not been checked."
 msgstr "La signature n'a pas été vérifiée."
 
 #: src/plugins/pgpcore/sgpgme.c:438
-msgid "PGP Core: can't get key - no gpg-agent running."
+msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr "PGP Core : impossible d'obtenir la clé - aucun gpg-agent disponible."
 
 #: src/plugins/pgpcore/sgpgme.c:456
@@ -12967,7 +13016,7 @@ msgstr "Empreinte de la clé primaire :"
 
 #: src/plugins/pgpcore/sgpgme.c:618
 #, c-format
-msgid "WARNING: signer's address \"%s\" does not match DNS entry\n"
+msgid "WARNING: Signer's address \"%s\" does not match DNS entry\n"
 msgstr ""
 "ATTENTION : l'adresse « %s » du signataire ne correspond pas à l'entrée DNS\n"
 
@@ -13058,11 +13107,11 @@ msgstr "Impossible de générer une nouvelle paire de clés : %s"
 
 #: src/plugins/pgpcore/sgpgme.c:1180
 msgid ""
-"Generating your new key pair... Please move the mouse around to help generate "
-"entropy..."
+"Generating your new key pair... Please move the mouse around to help "
+"generate entropy..."
 msgstr ""
-"Génération de votre nouvelle paire de clés en cours.. Veuillez déplacer votre "
-"souris pour aider à générer de l'entropie.."
+"Génération de votre nouvelle paire de clés en cours.. Veuillez déplacer "
+"votre souris pour aider à générer de l'entropie.."
 
 #: src/plugins/pgpcore/sgpgme.c:1198
 msgid "Couldn't generate a new key pair: unknown error"
@@ -13207,9 +13256,9 @@ msgstr "PGP/inline"
 
 #: src/plugins/pgpinline/plugin.c:60
 msgid ""
-"This plugin handles the deprecated Inline method of signing and/or encrypting "
-"mails. You can decrypt mails, verify signatures or sign and encrypt your own "
-"mails.\n"
+"This plugin handles the deprecated Inline method of signing and/or "
+"encrypting mails. You can decrypt mails, verify signatures or sign and "
+"encrypt your own mails.\n"
 "\n"
 "It can be selected as the Default Privacy System in '/Configuration/[Account "
 "Preferences]/Privacy' and when composing a message from '/Options/Privacy "
@@ -13219,15 +13268,15 @@ msgid ""
 "\n"
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>."
 msgstr ""
-"Ce module gère la signature et/ou le chiffrement des messages avec la méthode "
-"Inline, dépréciée à ce jour. Il permet le déchiffrement des messages, la "
-"vérification des signatures ou la signature et le chiffrement de votre propre "
-"courrier.\n"
+"Ce module gère la signature et/ou le chiffrement des messages avec la "
+"méthode Inline, dépréciée à ce jour. Il permet le déchiffrement des "
+"messages, la vérification des signatures ou la signature et le chiffrement "
+"de votre propre courrier.\n"
 "\n"
 "Il peut être activé comme Système de confidentialité par défaut via le menu /"
-"Configuration/Configuration du compte courant.. dans l'onglet Confidentialité "
-"et par le menu /Options/Système de confidentialité lors d'une composition de "
-"message.\n"
+"Configuration/Configuration du compte courant.. dans l'onglet "
+"Confidentialité et par le menu /Options/Système de confidentialité lors "
+"d'une composition de message.\n"
 "\n"
 "Ce module utilise la librairie GPGME en tant qu'interface à GnuPG.\n"
 "\n"
@@ -13284,15 +13333,16 @@ msgstr ""
 "propres mails.\n"
 "\n"
 "Il peut être activé comme Système de confidentialité par défaut via le menu /"
-"Configuration/Configuration du compte courant.. dans l'onglet Confidentialité "
-"et par le menu /Options/Système de confidentialité lors d'une composition de "
-"message.\n"
+"Configuration/Configuration du compte courant.. dans l'onglet "
+"Confidentialité et par le menu /Options/Système de confidentialité lors "
+"d'une composition de message.\n"
 "\n"
 "Ce module utilise la librairie GPGME en tant qu'interface à GnuPG.\n"
 "\n"
 "GPGME est copyright 2001 par Werner Koch <dd9jn@gnu.org>."
 
-#: src/plugins/python/python_plugin.c:380 src/plugins/python/python_plugin.c:524
+#: src/plugins/python/python_plugin.c:380
+#: src/plugins/python/python_plugin.c:524
 msgid "Python scripts"
 msgstr "Scripts Python"
 
@@ -13311,15 +13361,16 @@ msgstr "Mise à jour"
 msgid "Browse"
 msgstr "Pa_rcourir"
 
-#: src/plugins/python/python_plugin.c:635 src/plugins/python/python_plugin.c:722
+#: src/plugins/python/python_plugin.c:635
+#: src/plugins/python/python_plugin.c:722
 msgid "Python"
 msgstr "Python"
 
 #: src/plugins/python/python_plugin.c:644
 msgid "Failed to register \"compose create hook\" in the Python plugin"
 msgstr ""
-"Impossible d'enregistrer le connecteur « compose create hook » dans le module "
-"Python"
+"Impossible d'enregistrer le connecteur « compose create hook » dans le "
+"module Python"
 
 #: src/plugins/python/python_plugin.c:727
 msgid ""
@@ -13339,13 +13390,13 @@ msgid ""
 "You can also provide scripts working on an open compose window by placing "
 "files into '~/.claws-mail/python-scripts/compose'.\n"
 "\n"
-"The folder '~/.claws-mail/python-scripts/auto/' may contain some scripts that "
-"are automatically executed when certain events occur. Currently, the "
+"The folder '~/.claws-mail/python-scripts/auto/' may contain some scripts "
+"that are automatically executed when certain events occur. Currently, the "
 "following files in this directory are recognised:\n"
 "\n"
-" 'compose_any' - gets executed whenever a compose window is opened, no matter "
-"if that opening happened as a result of composing a new message, replying or "
-"forwarding a message.\n"
+" 'compose_any' - gets executed whenever a compose window is opened, no "
+"matter if that opening happened as a result of composing a new message, "
+"replying or forwarding a message.\n"
 "\n"
 " 'startup' - executed at plugin load.\n"
 "\n"
@@ -13366,9 +13417,9 @@ msgid ""
 msgstr ""
 "Ce module fournit une intégration avec Python.\n"
 "\n"
-"Du code Python peut être saisi de manière interactive dans une console Python "
-"(menu Outils -> Montrer la console Python) ou bien enregistré dans des "
-"scripts.\n"
+"Du code Python peut être saisi de manière interactive dans une console "
+"Python (menu Outils -> Montrer la console Python) ou bien enregistré dans "
+"des scripts.\n"
 "\n"
 "Ces scripts sont ensuite disponibles dans le menu. Vous pouvez leur assigner "
 "des raccourcis claviers comme pour les autres entrées de menu. Vous pouvez "
@@ -13418,25 +13469,25 @@ msgstr ""
 
 #: src/plugins/rssyl/opml_export.c:108
 #, c-format
-msgid "RSSyl: error while writing '%s' to feed export list.\n"
+msgid "RSSyl: Error while writing '%s' to feed export list.\n"
 msgstr ""
 "RSSyl : erreur lors de l'écriture de « %s » lors de l'export de la liste des "
 "flux.\n"
 
 #: src/plugins/rssyl/opml_export.c:129
 #, c-format
-msgid "RSSyl: couldn't delete old OPML file '%s': %s\n"
+msgid "RSSyl: Couldn't delete old OPML file '%s': %s\n"
 msgstr "RSSyl : impossible de supprimer l'ancien fichier OPML « %s » : %s\n"
 
 #: src/plugins/rssyl/opml_export.c:139
 #, c-format
-msgid "RSSyl: couldn't open file '%s' for feed list exporting: %s\n"
+msgid "RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"
 msgstr ""
 "RSSyl : impossible d'ouvrir le fichier « %s » lors de l'export de la liste "
 "des flux : %s\n"
 
 #: src/plugins/rssyl/opml_export.c:180
-msgid "RSSyl: error during writing feed export file.\n"
+msgid "RSSyl: Error during writing feed export file.\n"
 msgstr "RSSyl : erreur d'écriture lors de l'export de la liste des flux.\n"
 
 #: src/plugins/rssyl/opml_import.c:105
@@ -13457,15 +13508,15 @@ msgid ""
 "This plugin allows you to create a mailbox tree where you can add newsfeeds "
 "in RSS 1.0, RSS 2.0 or Atom format.\n"
 "\n"
-"Each newsfeed will create a folder with appropriate entries, fetched from the "
-"web. You can read them, and delete or keep old entries."
+"Each newsfeed will create a folder with appropriate entries, fetched from "
+"the web. You can read them, and delete or keep old entries."
 msgstr ""
 "Ce module vous permet de créer une arborescence dans laquelle vous pourrez "
 "ajouter des flux RSS 1.0, RSS 2.0 ou Atom.\n"
 "\n"
-"Chaque flux sera enregistré dans un dossier contenant ses articles, récupérés "
-"sur Internet. Vous pourrez les lire, puis effacer ou conserver les anciens "
-"articles."
+"Chaque flux sera enregistré dans un dossier contenant ses articles, "
+"récupérés sur Internet. Vous pourrez les lire, puis effacer ou conserver les "
+"anciens articles."
 
 #: src/plugins/rssyl/plugin.c:85
 msgid "RSS feed"
@@ -13515,42 +13566,42 @@ msgstr "Sélection d'un fichier OPML"
 
 #: src/plugins/rssyl/rssyl_feed.h:28
 #, c-format
-msgid "RSSyl: subscribing new feed: %s\n"
-msgstr "RSSyl : souscription au flux :'%s\n"
+msgid "RSSyl: Subscribing new feed: %s\n"
+msgstr "RSSyl : souscription au flux « %s »\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:29
 #, c-format
-msgid "RSSyl: new feed subscribed: '%s' (%s)\n"
+msgid "RSSyl: New feed subscribed: '%s' (%s)\n"
 msgstr "RSSyl : souscription faite au nouveau flux : « %s » (%s)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:30
 #, c-format
-msgid "RSSyl: updating feed: %s (User Agent: %s)\n"
-msgstr "RSSyl : mise à jour du flux : %s (Agent Utilisateur: %s)\n"
+msgid "RSSyl: Updating feed: %s (User Agent: %s)\n"
+msgstr "RSSyl : mise à jour du flux « %s » (Agent Utilisateur: %s)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:31
 #, c-format
-msgid "RSSyl: feed update finished: %s\n"
-msgstr "RSSyl : mise à jour du flux terminée : %s\n"
+msgid "RSSyl: Feed update finished: %s\n"
+msgstr "RSSyl : mise à jour du flux « %s » terminée\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:32
 #, c-format
-msgid "RSSyl: error fetching feed at '%s': %s\n"
+msgid "RSSyl: Error fetching feed at '%s': %s\n"
 msgstr "RSSyl : erreur lors de la récupération du flux « %s » : %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:33
 #, c-format
-msgid "RSSyl: no valid feed found at '%s'\n"
-msgstr "RSSyl : pas de flux valide trouvé « %s »\n"
+msgid "RSSyl: No valid feed found at '%s'\n"
+msgstr "RSSyl : pas de flux valide trouvé (« %s »)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:34
 #, c-format
-msgid "RSSyl: couldn't process feed at '%s'\n"
+msgid "RSSyl: Couldn't process feed at '%s'\n"
 msgstr "RSSyl : impossible de traiter le flux « %s »\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:35
 #, c-format
-msgid "RSSyl: application is exiting, couldn't finish updating feed at '%s'\n"
+msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr ""
 "RSSyl : l'application est en cours de fermeture, impossible de finir la mise "
 "à jour du flux « %s »\n"
@@ -13603,8 +13654,8 @@ msgstr "Ignorer le changement de titre"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:369
 msgid ""
-"Enable this to keep current folder name, even if feed author changes title of "
-"the feed"
+"Enable this to keep current folder name, even if feed author changes title "
+"of the feed"
 msgstr ""
 "Si coché, conserve le nom de dossier actuel, même si le titre du flux change "
 "à l'avenir"
@@ -13630,9 +13681,9 @@ msgstr "URL source"
 msgid "Fetch comments on posts aged less than"
 msgstr "Récupérer les commentaires des articles de moins de"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:438 src/plugins/vcalendar/day-view.c:620
-#: src/plugins/vcalendar/month-view.c:709 src/prefs_account.c:1689
-#: src/prefs_folder_item.c:589 src/prefs_matcher.c:340
+#: src/plugins/rssyl/rssyl_feed_props.c:438
+#: src/plugins/vcalendar/day-view.c:620 src/plugins/vcalendar/month-view.c:709
+#: src/prefs_account.c:1689 src/prefs_folder_item.c:589 src/prefs_matcher.c:340
 msgid "days"
 msgstr "jour(s)"
 
@@ -13667,8 +13718,8 @@ msgstr "Si décoché, utiliser un Agent Utilisateur spécifique à ce flux"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:512
 msgid ""
-"Specific User Agent to use for this feed. If empty, the User Agent string set "
-"in '/Configuration/Preferences/Plugins/RSSyl' will be used"
+"Specific User Agent to use for this feed. If empty, the User Agent string "
+"set in '/Configuration/Preferences/Plugins/RSSyl' will be used"
 msgstr ""
 "Agent Utilisateur à utiliser spécifiquement pour ce flux. Si la valeur est "
 "vide, l'Agent Utilisateur défini dans « /Configuration/Préférences/Modules/"
@@ -13772,12 +13823,13 @@ msgstr "Utiliser un Agent Utilisateur personnalisé"
 msgid ""
 "Instead of using the default User Agent for feed retrieval, you can enter a "
 "custom value"
-msgstr "Agent Utilisateur personnalisé à utiliser pour la récupération des flux"
+msgstr ""
+"Agent Utilisateur personnalisé à utiliser pour la récupération des flux"
 
 #: src/plugins/rssyl/rssyl_prefs.c:245
 msgid ""
-"Custom User Agent to use for feed retrieval. If empty, the default User Agent "
-"string will be used"
+"Custom User Agent to use for feed retrieval. If empty, the default User "
+"Agent string will be used"
 msgstr ""
 "Agent Utilisateur personnalisé à utiliser pour la récupération des flux. Si "
 "la valeur est vide, l'Agent Utilisateur par défaut sera utilisé"
@@ -13868,8 +13920,8 @@ msgstr "Flux sans titre"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:201
 #, c-format
-msgid "RSSyl: possibly invalid feed without title at %s.\n"
-msgstr "RSSyl : flux invalide sans titre %s.\n"
+msgid "RSSyl: Possibly invalid feed without title at %s.\n"
+msgstr "RSSyl : flux invalide sans titre (« %s »)\n"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:284
 #, c-format
@@ -13898,8 +13950,8 @@ msgid ""
 "Internal problem while upgrading storage format. This should not happen. "
 "Please report this, with debug output attached.\n"
 msgstr ""
-"Un problème interne est survenu lors de la mise à jour du format de stockage. "
-"Cela ne devrait pas se produire, merci de reporter le problème aux "
+"Un problème interne est survenu lors de la mise à jour du format de "
+"stockage. Cela ne devrait pas se produire, merci de reporter le problème aux "
 "développeurs.\n"
 
 #: src/plugins/smime/plugin.c:61
@@ -13926,9 +13978,9 @@ msgstr ""
 "ou signer et chiffrer vos propres mails.\n"
 "\n"
 "Il peut être activé comme Système de confidentialité par défaut via le menu /"
-"Configuration/Configuration du compte courant.. dans l'onglet Confidentialité "
-"et par le menu /Options/Système de confidentialité lors d'une composition de "
-"message.\n"
+"Configuration/Configuration du compte courant.. dans l'onglet "
+"Confidentialité et par le menu /Options/Système de confidentialité lors "
+"d'une composition de message.\n"
 "\n"
 "Ce module utilise la librairie GPGME en tant qu'interface à GnuPG.\n"
 "Ce module nécessite que gpgsm, gnupg-agent et dirmngr soient opérationnels.\n"
@@ -13958,8 +14010,8 @@ msgstr "Impossible de fermer un fichier temporaire"
 
 #: src/plugins/smime/smime.c:867
 msgid ""
-"Please note that email headers, like Subject, are not encrypted by the S/MIME "
-"system."
+"Please note that email headers, like Subject, are not encrypted by the S/"
+"MIME system."
 msgstr ""
 "Veuillez prendre en compte que les en-têtes de message, comme par exemple "
 "l'en-tête Sujet, ne sont pas signés par le système S/Mime."
@@ -14086,8 +14138,8 @@ msgstr ""
 "Il peut aussi être utilisé afin de marquer des messages comme pourriels ou "
 "légitimes.\n"
 "\n"
-"Lorsqu'un message est identifié comme pourriel, il peut être soit effacé soit "
-"enregistré dans un dossier spécifique.\n"
+"Lorsqu'un message est identifié comme pourriel, il peut être soit effacé "
+"soit enregistré dans un dossier spécifique.\n"
 "\n"
 "Ce module est paramétrable via les options situées sous « /Configuration/"
 "Préférences/Modules/SpamAssassin »."
@@ -14342,9 +14394,10 @@ msgstr ""
 "Outlook.\n"
 "\n"
 "Une fois chargé, il créera un dossier vCalendar dans la liste de dossiers, "
-"qui sera utilisé pour stocker les rendez-vous que vous avez accepté ou créé.\n"
-"Les demandes de rendez-vous que vous recevrez vous seront présentées sous une "
-"forme plus appropriée et vous serez en mesure de les accepter ou les "
+"qui sera utilisé pour stocker les rendez-vous que vous avez accepté ou "
+"créé.\n"
+"Les demandes de rendez-vous que vous recevrez vous seront présentées sous "
+"une forme plus appropriée et vous serez en mesure de les accepter ou les "
 "refuser.\n"
 "Pour créer un rendez-vous, cliquez avec le bouton droit sur les dossiers "
 "vCalendar ou Meetings et choisissez « Nouveau rendez-vous.. ».\n"
@@ -14654,7 +14707,8 @@ msgstr "Impossible de créer le dossier %s"
 
 #: src/plugins/vcalendar/vcal_folder.c:1914
 msgid "Claws Mail needs network access in order to update the Webcal feed."
-msgstr "Claws Mail nécessite un accès réseau pour accéder au calendrier Webcal."
+msgstr ""
+"Claws Mail nécessite un accès réseau pour accéder au calendrier Webcal."
 
 #: src/plugins/vcalendar/vcal_folder.c:1925
 #, c-format
@@ -15078,7 +15132,8 @@ msgstr "Export de calendrier"
 msgid "Automatically export calendar to"
 msgstr "Exporter le calendrier automatiquement vers"
 
-#: src/plugins/vcalendar/vcal_prefs.c:382 src/plugins/vcalendar/vcal_prefs.c:501
+#: src/plugins/vcalendar/vcal_prefs.c:382
+#: src/plugins/vcalendar/vcal_prefs.c:501
 msgid "You can export to a local file or URL"
 msgstr "Vous pouvez exporter vers un fichier ou un URL"
 
@@ -15110,7 +15165,8 @@ msgid "Export as GNOME shell calendar server"
 msgstr "Exporter en tant que serveur de calendrier de GNOME Shell"
 
 #: src/plugins/vcalendar/vcal_prefs.c:470
-msgid "Register D-Bus calendar server interface to export Claws Mail's calendar"
+msgid ""
+"Register D-Bus calendar server interface to export Claws Mail's calendar"
 msgstr ""
 "Se connecter à l'interface D-BUS du serveur calendrier de GNOME Shell afin "
 "d'exporter le calendrier de Claws Mail"
@@ -15172,12 +15228,12 @@ msgstr "réponse UIDL invalide : %s\n"
 
 #: src/pop.c:927
 #, c-format
-msgid "POP: deleting expired message %d [%s]\n"
+msgid "POP: Deleting expired message %d [%s]\n"
 msgstr "POP : suppression du message expiré %d [%s]\n"
 
 #: src/pop.c:943
 #, c-format
-msgid "POP: skipping message %d [%s] (%d bytes)\n"
+msgid "POP: Skipping message %d [%s] (%d bytes)\n"
 msgstr "POP : message %d ignoré [%s] (%d octets)\n"
 
 #: src/pop.c:976
@@ -15333,13 +15389,13 @@ msgstr "Taille maximale pour la réception"
 
 #: src/prefs_account.c:1712
 msgid ""
-"Messages over this limit will be partially retrieved. When selecting them you "
-"will be able to download them fully or delete them"
+"Messages over this limit will be partially retrieved. When selecting them "
+"you will be able to download them fully or delete them"
 msgstr ""
-"Les messages dépassant cette limite ne seront que partiellement récupérés. Il "
-"est toutefois possible, après leur récupération et en les sélectionnant, de "
-"les marquer pour un téléchargement complet ou une suppression (effectif qu'à "
-"la relève suivante)"
+"Les messages dépassant cette limite ne seront que partiellement récupérés. "
+"Il est toutefois possible, après leur récupération et en les sélectionnant, "
+"de les marquer pour un téléchargement complet ou une suppression (effectif "
+"qu'à la relève suivante)"
 
 #: src/prefs_account.c:1751 src/prefs_account.c:3010
 msgid "NNTP"
@@ -15410,8 +15466,8 @@ msgstr ""
 "Le bouton « Relever » de la barre d'outil principale relève le courrier pour "
 "ce compte"
 
-#: src/prefs_account.c:2020 src/prefs_customheader.c:207 src/prefs_matcher.c:633
-#: src/prefs_matcher.c:2014 src/prefs_matcher.c:2042
+#: src/prefs_account.c:2020 src/prefs_customheader.c:207
+#: src/prefs_matcher.c:633 src/prefs_matcher.c:2014 src/prefs_matcher.c:2042
 msgid "Header"
 msgstr "En-tête"
 
@@ -15440,8 +15496,8 @@ msgid ""
 "If you leave these entries empty, the same user ID and password as receiving "
 "will be used."
 msgstr ""
-"Laisser ces champs vides pour utiliser le nom d'utilisateur·rice et le mot de "
-"passe spécifiés pour la réception."
+"Laisser ces champs vides pour utiliser le nom d'utilisateur·rice et le mot "
+"de passe spécifiés pour la réception."
 
 #: src/prefs_account.c:2165
 msgid "Authenticate with POP before sending"
@@ -15571,8 +15627,8 @@ msgstr "Toujours chiffrer la réponse à un message chiffré"
 #: src/prefs_account.c:2824
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr ""
-"Chiffrer les messages envoyés avec votre propre clé en plus de celle du/de la "
-"destinataire"
+"Chiffrer les messages envoyés avec votre propre clé en plus de celle du/de "
+"la destinataire"
 
 #: src/prefs_account.c:2826
 msgid "Save sent encrypted messages as clear text"
@@ -15685,8 +15741,8 @@ msgstr "Nom de domaine"
 
 #: src/prefs_account.c:3449
 msgid ""
-"The domain name will be used in the generated Message-ID, and when connecting "
-"to SMTP servers"
+"The domain name will be used in the generated Message-ID, and when "
+"connecting to SMTP servers"
 msgstr ""
 "Le nom de domaine sera utilisé dans la partie droite des identifiants de "
 "messages générés (« Message-ID ») et lors de la connexion aux serveurs SMTP"
@@ -15767,7 +15823,8 @@ msgstr ""
 
 #: src/prefs_account.c:3671
 msgid "Password cannot contain a newline character."
-msgstr "Le mot de passe ne doit pas contenir de caractère de retour à la ligne."
+msgstr ""
+"Le mot de passe ne doit pas contenir de caractère de retour à la ligne."
 
 #: src/prefs_account.c:3708
 msgid "SMTP user ID cannot contain a newline character."
@@ -15940,8 +15997,9 @@ msgid "Move the selected action to the bottom"
 msgstr "Déplace l'action sélectionnée tout en bas"
 
 #: src/prefs_actions.c:550 src/prefs_filtering_action.c:678
-#: src/prefs_filtering.c:822 src/prefs_filtering.c:824 src/prefs_filtering.c:825
-#: src/prefs_filtering.c:935 src/prefs_matcher.c:918 src/prefs_template.c:464
+#: src/prefs_filtering.c:822 src/prefs_filtering.c:824
+#: src/prefs_filtering.c:825 src/prefs_filtering.c:935 src/prefs_matcher.c:918
+#: src/prefs_template.c:464
 msgid "(New)"
 msgstr "(Nouveau)"
 
@@ -16050,14 +16108,14 @@ msgstr ""
 #: src/prefs_actions.c:995
 msgid "to send user provided text to command's standard input"
 msgstr ""
-"pour envoyer un texte fourni par l'utilisateur·rice à l'entrée standard de la "
-"commande"
+"pour envoyer un texte fourni par l'utilisateur·rice à l'entrée standard de "
+"la commande"
 
 #: src/prefs_actions.c:996
 msgid "to send user provided hidden text to command's standard input"
 msgstr ""
-"pour envoyer un texte caché fourni par l'utilisateur·rice à l'entrée standard "
-"de la commande"
+"pour envoyer un texte caché fourni par l'utilisateur·rice à l'entrée "
+"standard de la commande"
 
 #: src/prefs_actions.c:997
 msgid "<span weight=\"bold\">End with:</span>"
@@ -16066,8 +16124,8 @@ msgstr "<span weight=\"bold\">Terminer par :</span>"
 #: src/prefs_actions.c:998
 msgid "to replace message body or selection with command's standard output"
 msgstr ""
-"pour remplacer le texte du message ou une sélection par la sortie standard de "
-"la commande"
+"pour remplacer le texte du message ou une sélection par la sortie standard "
+"de la commande"
 
 #: src/prefs_actions.c:999
 msgid "to insert command's standard output without replacing old text"
@@ -16088,7 +16146,8 @@ msgstr ""
 "RFC822/2822 "
 
 #: src/prefs_actions.c:1003
-msgid "for the list of the files of the selected messages in RFC822/2822 format"
+msgid ""
+"for the list of the files of the selected messages in RFC822/2822 format"
 msgstr ""
 "pour la liste des fichiers correspondants aux messages sélectionnés dans le "
 "format RFC822/2822"
@@ -16130,12 +16189,13 @@ msgid ""
 "The Actions feature is a way for the user to launch external commands to "
 "process a complete message file or just one of its parts."
 msgstr ""
-"La fonctionnalité des actions est un moyen pour l'utilisateur·rice d'exécuter "
-"des commandes externes depuis Claws Mail. Il est par exemple possible de "
-"manipuler physiquement ou graphiquement (vue du message, fenêtre de "
-"composition) les messages ou une de leurs parties."
+"La fonctionnalité des actions est un moyen pour l'utilisateur·rice "
+"d'exécuter des commandes externes depuis Claws Mail. Il est par exemple "
+"possible de manipuler physiquement ou graphiquement (vue du message, fenêtre "
+"de composition) les messages ou une de leurs parties."
 
-#: src/prefs_actions.c:1107 src/prefs_filtering.c:1691 src/prefs_template.c:1106
+#: src/prefs_actions.c:1107 src/prefs_filtering.c:1691
+#: src/prefs_template.c:1106
 msgid "D_uplicate"
 msgstr "_Dupliquer"
 
@@ -16173,8 +16233,9 @@ msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\n----- Message Transféré -----\\n\\n?d{Date : %d\\n}?f{De : %f\\n}?t{À : "
-"%t\\n}?c{Cc : %c\\n}?n{Groupe de discussion : %n\\n}?s{Sujet : %s\\n}\\n\\n%M"
+"\\n\\n----- Message Transféré -----\\n\\n?d{Date : %d\\n}?f{De : %f\\n}?"
+"t{À : %t\\n}?c{Cc : %c\\n}?n{Groupe de discussion : %n\\n}?s{Sujet : %s"
+"\\n}\\n\\n%M"
 
 #: src/prefs_common.c:462
 msgid "%x(%a) %H:%M"
@@ -16223,8 +16284,8 @@ msgstr "Nombre maximal d'annulations"
 #: src/prefs_compose_writing.c:196
 msgid "Warn when inserting a file into the message body which is larger than"
 msgstr ""
-"Prévenir lors de l'insertion dans le corps du message d'un fichier plus grand "
-"que"
+"Prévenir lors de l'insertion dans le corps du message d'un fichier plus "
+"grand que"
 
 #: src/prefs_compose_writing.c:213
 msgid "Replying"
@@ -16407,11 +16468,12 @@ msgid ""
 "This option enables MIME parts to be displayed in the message view via a "
 "script when using the 'Display as text' contextual menu item"
 msgstr ""
-"Cette option permet l'affichage texte des parties MIME dans la vue du message "
-"via un script ou une commande de votre choix lorsque l'élément « Afficher "
-"comme du texte » du menu contextuel est choisi"
+"Cette option permet l'affichage texte des parties MIME dans la vue du "
+"message via un script ou une commande de votre choix lorsque l'élément « "
+"Afficher comme du texte » du menu contextuel est choisi"
 
-#: src/prefs_ext_prog.c:273 src/prefs_image_viewer.c:172 src/prefs_message.c:362
+#: src/prefs_ext_prog.c:273 src/prefs_image_viewer.c:172
+#: src/prefs_message.c:362
 msgid "Message View"
 msgstr "Vue du message"
 
@@ -16475,7 +16537,8 @@ msgstr "Rediriger"
 
 #: src/prefs_filtering_action.c:186 src/prefs_filtering_action.c:187
 #: src/prefs_filtering_action.c:1399 src/prefs_matcher.c:639
-#: src/prefs_summaries.c:711 src/prefs_summary_column.c:86 src/summaryview.c:471
+#: src/prefs_summaries.c:711 src/prefs_summary_column.c:86
+#: src/summaryview.c:471
 msgid "Score"
 msgstr "Score"
 
@@ -16554,7 +16617,8 @@ msgstr "Le nom du label n'est pas défini."
 msgid "No action was defined."
 msgstr "Aucune action n'a été spécifiée."
 
-#: src/prefs_filtering_action.c:1220 src/prefs_matcher.c:2213 src/quote_fmt.c:78
+#: src/prefs_filtering_action.c:1220 src/prefs_matcher.c:2213
+#: src/quote_fmt.c:78
 msgid "literal %"
 msgstr "caractère « % »"
 
@@ -16562,7 +16626,8 @@ msgstr "caractère « % »"
 msgid "filename (should not be modified)"
 msgstr "nom de fichier (ne doit pas être modifié)"
 
-#: src/prefs_filtering_action.c:1230 src/prefs_matcher.c:2223 src/quote_fmt.c:86
+#: src/prefs_filtering_action.c:1230 src/prefs_matcher.c:2223
+#: src/quote_fmt.c:86
 msgid "new line"
 msgstr "retour chariot"
 
@@ -16585,7 +16650,8 @@ msgid ""
 "The following symbols can be used:"
 msgstr ""
 "L'action de filtrage « Exécuter » permet à l'utilisateur·rice d'envoyer un "
-"message ou élément d'en-tête de message à un programme ou un script externe.\n"
+"message ou élément d'en-tête de message à un programme ou un script "
+"externe.\n"
 "Il est possible d'utiliser les symboles suivants :"
 
 #: src/prefs_filtering_action.c:1381
@@ -16612,7 +16678,8 @@ msgstr "Actions enregistrées"
 msgid "Filtering/Processing configuration"
 msgstr "Configuration du filtrage/traitement"
 
-#: src/prefs_filtering.c:265 src/prefs_filtering.c:853 src/prefs_filtering.c:969
+#: src/prefs_filtering.c:265 src/prefs_filtering.c:853
+#: src/prefs_filtering.c:969
 msgctxt "Filtering Account Menu"
 msgid "All"
 msgstr "Tous"
@@ -16836,7 +16903,8 @@ msgstr ""
 
 #: src/prefs_folder_item.c:548
 msgid "Skip folder when searching for unread or new messages"
-msgstr "Ignorer ce dossier lors de la recherche de messages non lus ou nouveaux"
+msgstr ""
+"Ignorer ce dossier lors de la recherche de messages non lus ou nouveaux"
 
 #: src/prefs_folder_item.c:550
 msgid ""
@@ -16929,8 +16997,8 @@ msgstr "Message"
 #: src/prefs_fonts.c:119
 msgid "Derive small and bold fonts from Folder and Message Lists font"
 msgstr ""
-"Dériver les polices « petit » et « gras » de la police des listes de dossiers "
-"et de message"
+"Dériver les polices « petit » et « gras » de la police des listes de "
+"dossiers et de message"
 
 #: src/prefs_fonts.c:127
 msgid "Small"
@@ -17034,8 +17102,8 @@ msgstr ""
 "Les traces de déboguage sont disponibles via le menu « Outils/Traces de "
 "filtrage ».\n"
 "Attention : activer cette option va diminuer les performances du filtrage/"
-"traitement. Cela peut être critique lors de l'application de multiples règles "
-"sur un grand nombre de messages"
+"traitement. Cela peut être critique lors de l'application de multiples "
+"règles sur un grand nombre de messages"
 
 #: src/prefs_logging.c:181
 msgid "Log filtering/processing when..."
@@ -17503,9 +17571,9 @@ msgid ""
 "The following symbols can be used:"
 msgstr ""
 "La condition de filtrage « Test » permet à l'utilisateur·rice de faire un "
-"test sur un message ou élément d'en-tête de message en utilisant un programme "
-"ou un script externe. Le programme doit retourner 0 ou 1 (0 étant la valeur "
-"validant la condition de filtrage).\n"
+"test sur un message ou élément d'en-tête de message en utilisant un "
+"programme ou un script externe. Le programme doit retourner 0 ou 1 (0 étant "
+"la valeur validant la condition de filtrage).\n"
 "\n"
 "Il est possible d'utiliser les symboles suivants :"
 
@@ -17918,9 +17986,9 @@ msgstr "Enregistrer toutes les pièces jointes avec chmod"
 
 #: src/prefs_other.c:530
 msgid ""
-"By default attachments are saved with chmod value 600: readable and writeable "
-"by the user only. If this is too restrictive for you, set a chmod value here, "
-"otherwise leave blank to use the default"
+"By default attachments are saved with chmod value 600: readable and "
+"writeable by the user only. If this is too restrictive for you, set a chmod "
+"value here, otherwise leave blank to use the default"
 msgstr ""
 "Par défaut, les pièces jointes sont enregistrées avec un chmod à 600 : en "
 "lecture et écriture pour le propriétaire des fichiers seulement. Si cela ne "
@@ -17941,8 +18009,8 @@ msgid ""
 "passphrase. If no primary passphrase is set, you will be prompted to set one"
 msgstr ""
 "Si activé, vos mots de passe de comptes seront protégés par un mot de passe "
-"principal. Si aucun mot de passe principal n'est défini, il vous sera demandé "
-"de le saisir"
+"principal. Si aucun mot de passe principal n'est défini, il vous sera "
+"demandé de le saisir"
 
 #: src/prefs_other.c:556
 msgid "Change primary passphrase"
@@ -18212,7 +18280,8 @@ msgstr "Utiliser un dictionnaire alternatif"
 #: src/prefs_spelling.c:125
 msgid "Faster switching with last used dictionary"
 msgstr ""
-"Cette option permet d'alterner rapidement avec le dernier dictionnaire utilisé"
+"Cette option permet d'alterner rapidement avec le dernier dictionnaire "
+"utilisé"
 
 #: src/prefs_spelling.c:127
 msgid "Automatic spell checking"
@@ -18328,7 +18397,8 @@ msgstr "l'année"
 msgid "the time zone or name or abbreviation"
 msgstr "le fuseau horaire, son nom ou abréviation"
 
-#: src/prefs_summaries.c:242 src/prefs_summaries.c:289 src/prefs_summaries.c:553
+#: src/prefs_summaries.c:242 src/prefs_summaries.c:289
+#: src/prefs_summaries.c:553
 msgid "Date format"
 msgstr "Format de la date"
 
@@ -18362,7 +18432,8 @@ msgstr "Ouvrir au démarrage le dernier dossier consulté"
 
 #: src/prefs_summaries.c:484
 msgid ""
-"Run processing rules before marking all messages in a folder as read or unread"
+"Run processing rules before marking all messages in a folder as read or "
+"unread"
 msgstr ""
 "Appliquer les règles de traitement des dossiers avant de marquer tous les "
 "messages comme lu ou non lus"
@@ -18463,8 +18534,8 @@ msgstr "Exécuter immédiatement la suppression ou le déplacement de messages"
 
 #: src/prefs_summaries.c:661
 msgid ""
-"When unchecked moving, copying and deleting of messages is deferred until you "
-"use '/Tools/Execute'"
+"When unchecked moving, copying and deleting of messages is deferred until "
+"you use '/Tools/Execute'"
 msgstr ""
 "Permet (si désactivé) de retarder le déplacement, la copie et la suppression "
 "de messages jusqu'à la sélection de « /Outils/Exécuter »"
@@ -18472,7 +18543,8 @@ msgstr ""
 #: src/prefs_summaries.c:666
 msgid "Confirm when marking all messages as read or unread"
 msgstr ""
-"Confirmer avant de marquer tous les messages d'un dossier comme lus ou non lus"
+"Confirmer avant de marquer tous les messages d'un dossier comme lus ou non "
+"lus"
 
 #: src/prefs_summaries.c:669
 msgid "Confirm when changing color labels"
@@ -19037,16 +19109,16 @@ msgstr "Une erreur est survenue durant la session SMTP."
 
 #: src/procmsg.c:1695
 msgid ""
-"No specific account has been found to send, and an error happened during SMTP "
-"session."
+"No specific account has been found to send, and an error happened during "
+"SMTP session."
 msgstr ""
 "Aucun compte précis n'a été trouvé pour l'envoi, et une erreur est survenue "
 "durant la session SMTP."
 
 #: src/procmsg.c:1703
 msgid ""
-"Couldn't determine sending information. Maybe the email hasn't been generated "
-"by Claws Mail."
+"Couldn't determine sending information. Maybe the email hasn't been "
+"generated by Claws Mail."
 msgstr ""
 "Impossible de déterminer les paramètres d'envoi. Le message n'a sans doute "
 "pas été généré par Claws Mail."
@@ -19156,11 +19228,13 @@ msgstr "paramètre de compte : dictionnaire par défaut"
 
 #: src/quote_fmt.c:75
 msgid "address book <span style=\"oblique\">completion</span>: Cc"
-msgstr "<span style=\"oblique\">complétion</span> par le carnet d'adresses : Cc"
+msgstr ""
+"<span style=\"oblique\">complétion</span> par le carnet d'adresses : Cc"
 
 #: src/quote_fmt.c:76
 msgid "address book <span style=\"oblique\">completion</span>: From"
-msgstr "<span style=\"oblique\">complétion</span> par le carnet d'adresses : De"
+msgstr ""
+"<span style=\"oblique\">complétion</span> par le carnet d'adresses : De"
 
 #: src/quote_fmt.c:77
 msgid "address book <span style=\"oblique\">completion</span>: To"
@@ -19324,8 +19398,8 @@ msgstr ""
 
 #: src/quote_fmt.c:196
 msgid ""
-"Override From header. This doesn't change the account used to compose the new "
-"message."
+"Override From header. This doesn't change the account used to compose the "
+"new message."
 msgstr ""
 "Forcer l'en-tête d'expéditeur·rice. Cela ne changera pas le compte utilisé "
 "pour les nouveaux messages."
@@ -19412,7 +19486,7 @@ msgstr "POP avant SMTP"
 
 #: src/send_message.c:373
 #, c-format
-msgid "Account '%s': connecting to SMTP server: %s:%d..."
+msgid "Account '%s': Connecting to SMTP server: %s:%d..."
 msgstr "Compte « %s » : connexion au serveur SMTP : %s:%d.."
 
 #: src/send_message.c:446
@@ -19787,7 +19861,8 @@ msgstr "Ajouter ou écraser"
 
 #: src/summaryview.c:5034
 msgid "Append or overwrite existing file?"
-msgstr "Le fichier existe déjà. Ajouter au fichier existant ou bien l'écraser ?"
+msgstr ""
+"Le fichier existe déjà. Ajouter au fichier existant ou bien l'écraser ?"
 
 #: src/summaryview.c:5035
 msgid "_Append"
@@ -19804,7 +19879,8 @@ msgstr "Impossible d'enregistrer le fichier « %s »."
 
 #: src/summaryview.c:5087
 #, c-format
-msgid "You are about to print %d messages, one by one. Do you want to continue?"
+msgid ""
+"You are about to print %d messages, one by one. Do you want to continue?"
 msgstr ""
 "Vous êtes sur le point d'imprimer %d messages un par un. Voulez-vous "
 "continuer ?"
@@ -20031,7 +20107,8 @@ msgstr "du milieu sont également possibles)\n"
 #: src/textview.c:995
 msgid "     - Or use "
 msgstr ""
-"     - Pour l'ouvrir avec un programme externe de votre choix, sélectionner « "
+"     - Pour l'ouvrir avec un programme externe de votre choix, sélectionner "
+"« "
 
 #: src/textview.c:996
 msgid "'Open with...'"
@@ -20740,8 +20817,8 @@ msgid ""
 "Welcome to the Claws Mail setup wizard.\n"
 "\n"
 "We will begin by defining some basic information about you and your most "
-"common mail options so that you can start to use Claws Mail in less than five "
-"minutes."
+"common mail options so that you can start to use Claws Mail in less than "
+"five minutes."
 msgstr ""
 "Bienvenue dans l'assistant de configuration de Claws Mail.\n"
 "\n"
