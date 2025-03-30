@@ -21,6 +21,8 @@
 
 #include <glib.h>
 
+#include <defs.h>
+#include <common/version.h>
 #include <folder.h>
 #include <passwordstore.h>
 
@@ -30,6 +32,8 @@
 
 /* Name of directory in rcdir where RSSyl will store its data. */
 #define RSSYL_DIR		PLUGIN_NAME
+
+#define RSSYL_DEFAULT_UA	"ClawsMailRSSyl/"VERSION " ("HOMEPAGE_URI")"
 
 /* Folder name for a new feed, before it is parsed for the first time. */
 #define RSSYL_NEW_FOLDER_NAME		"NewFeed"

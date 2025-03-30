@@ -34,7 +34,6 @@
 #include <prefs_common.h>
 #include <inc.h>
 #include <main.h>
-#include <defs.h>
 
 /* Local includes */
 #include "libfeed/feed.h"
@@ -83,7 +82,7 @@ gchar *rssyl_get_user_agent(RFolderItem *ritem)
 
 	/* fallback to default User-Agent */
 	if (user_agent == NULL)
-		user_agent = g_strdup_printf("ClawsMailRSSyl/%s (%s)", (gchar *)plugin_version(), HOMEPAGE_URI);
+		user_agent = g_strdup_printf(RSSYL_DEFAULT_UA);
 
 	debug_print("RSSyl: User-Agent is %s\n", user_agent);
 	return user_agent;
