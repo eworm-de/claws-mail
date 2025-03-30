@@ -514,7 +514,6 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->specific_user_agent, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(feedprop->specific_user_agent,
 			!ritem->use_default_user_agent);
-	gtk_box_pack_start(GTK_BOX(hbox), feedprop->use_default_user_agent, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 	PACK_FRAME (vbox, frame, _("User Agent"));
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
