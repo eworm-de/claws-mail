@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2023 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2025 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1040,7 +1040,6 @@ void archiver_gtk_show(void) {
 	GtkWidget* pax_radio_btn;
 	GtkWidget* cpio_radio_btn;
 	GtkWidget* tar_radio_btn;
-	GtkWidget* content_area;
 	struct ArchivePage* page;
 	MainWindow* mainwin = mainwindow_get_mainwindow();
 
