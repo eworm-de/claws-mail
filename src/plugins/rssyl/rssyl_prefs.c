@@ -242,7 +242,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_entry_set_text(GTK_ENTRY(custom_user_agent), rssyl_prefs.custom_user_agent);
 	gtk_box_pack_start(GTK_BOX(user_agent_hbox), custom_user_agent, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(custom_user_agent,
-			_("Custom User-Agent to use for feed retrieval. If empty, the default User-Agent string will be used"));
+			_("Custom User-Agent to use for feed retrieval. If empty, the default User-Agent will be used"));
 
 	g_signal_connect(G_OBJECT(use_custom_user_agent), "toggled",
 			G_CALLBACK(rssyl_use_custom_user_agent_toggled_cb), custom_user_agent);
