@@ -376,7 +376,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* User-Agent */
 	feedprop->use_default_user_agent = gtk_check_button_new_with_mnemonic(
-			_("Use default User-Agent"));
+			_("Use default User-Agent header"));
 	gtk_toggle_button_set_active(
 			GTK_TOGGLE_BUTTON(feedprop->use_default_user_agent),
 			ritem->use_default_user_agent);
@@ -505,11 +505,11 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* User-Agent - label */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
-	label = gtk_label_new(_("User-Agent"));
+	label = gtk_label_new(_("User-Agent header"));
 	gtk_widget_set_tooltip_text(feedprop->use_default_user_agent,
-			_("Disable this to use a User-Agent specific to this feed"));
+			_("Disable this to use a User-Agent header specific to this feed"));
 	gtk_widget_set_tooltip_text(feedprop->specific_user_agent,
-			_("Specific User-Agent to use for this feed. If empty, the User-Agent set in '/Configuration/Preferences/Plugins/RSSyl' will be used"));
+			_("Specific User-Agent header to use for this feed. If empty, the User-Agent header set in '/Configuration/Preferences/Plugins/RSSyl' will be used"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->specific_user_agent, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(feedprop->specific_user_agent,
