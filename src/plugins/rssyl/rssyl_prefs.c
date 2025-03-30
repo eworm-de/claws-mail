@@ -228,7 +228,6 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	user_agent_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	gtk_box_pack_start(GTK_BOX(user_agent_hbox), label, FALSE, FALSE, 0);
 
 	use_custom_user_agent = gtk_check_button_new_with_label(
 			_("Use a custom User-Agent header"));
