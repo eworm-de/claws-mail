@@ -326,7 +326,7 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		/* (bool) Verify SSL peer  */
 		if( !strcmp(attr->name, "ssl_verify_peer"))
 			ritem->ssl_verify_peer = (atoi(attr->value) == 0 ? FALSE : TRUE );
-		/* User Agent */
+		/* User-Agent */
 		if( !strcmp(attr->name, "use_default_user_agent"))
 			ritem->use_default_user_agent = (atoi(attr->value) == 0 ? FALSE : TRUE );
 		if( !strcmp(attr->name, "specific_user_agent")) {
@@ -387,7 +387,7 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 	/* (bool) Verify SSL peer */
 	xml_tag_add_attr(tag, xml_attr_new("ssl_verify_peer",
 				(ri->ssl_verify_peer ? "1" : "0")) );
-	/* User Agent */
+	/* User-Agent */
 	xml_tag_add_attr(tag, xml_attr_new("use_default_user_agent",
 				(ri->use_default_user_agent ? "1" : "0")) );
 	if( ri->specific_user_agent != NULL )
@@ -997,7 +997,7 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 	newitem->fetching_comments = olditem->fetching_comments;
 	newitem->last_update = olditem->last_update;
 
-	/* User Agent */
+	/* User-Agent */
 	newitem->use_default_user_agent = olditem->use_default_user_agent;
 	if (olditem->specific_user_agent != NULL) {
 		g_free(newitem->specific_user_agent);

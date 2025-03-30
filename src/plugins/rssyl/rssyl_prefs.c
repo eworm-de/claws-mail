@@ -231,9 +231,9 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_box_pack_start(GTK_BOX(user_agent_hbox), label, FALSE, FALSE, 0);
 
 	use_custom_user_agent = gtk_check_button_new_with_label(
-			_("Use a custom User Agent"));
+			_("Use a custom User-Agent"));
 	gtk_widget_set_tooltip_text(use_custom_user_agent,
-			_("Instead of using the default User Agent for feed retrieval, you can enter a custom value"));
+			_("Instead of using the default User-Agent for feed retrieval, you can enter a custom value"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_custom_user_agent),
 			rssyl_prefs.use_custom_user_agent);
 	gtk_box_pack_start(GTK_BOX(user_agent_hbox), use_custom_user_agent, FALSE, FALSE, 0);
@@ -242,7 +242,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_entry_set_text(GTK_ENTRY(custom_user_agent), rssyl_prefs.custom_user_agent);
 	gtk_box_pack_start(GTK_BOX(user_agent_hbox), custom_user_agent, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(custom_user_agent,
-			_("Custom User Agent to use for feed retrieval. If empty, the default User Agent string will be used"));
+			_("Custom User-Agent to use for feed retrieval. If empty, the default User-Agent string will be used"));
 
 	g_signal_connect(G_OBJECT(use_custom_user_agent), "toggled",
 			G_CALLBACK(rssyl_use_custom_user_agent_toggled_cb), custom_user_agent);
@@ -259,7 +259,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
 	gtk_container_add(GTK_CONTAINER(frame), vbox2);
 
-	PACK_FRAME (vbox, frame, _("User Agent"));
+	PACK_FRAME (vbox, frame, _("User-Agent"));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox3), 6);
 	gtk_container_add(GTK_CONTAINER(frame), vbox3);
 

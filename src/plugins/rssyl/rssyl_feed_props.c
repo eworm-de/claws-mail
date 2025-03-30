@@ -125,7 +125,7 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 	ritem->ssl_verify_peer = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->ssl_verify_peer));
 
-	/* User Agent */
+	/* User-Agent */
 	use_default_user_agent = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->use_default_user_agent));
 	ritem->use_default_user_agent = use_default_user_agent;
@@ -374,9 +374,9 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(feedprop->ssl_verify_peer),
 			ritem->ssl_verify_peer);
 
-	/* User Agent */
+	/* User-Agent */
 	feedprop->use_default_user_agent = gtk_check_button_new_with_mnemonic(
-			_("Use default User Agent"));
+			_("Use default User-Agent"));
 	gtk_toggle_button_set_active(
 			GTK_TOGGLE_BUTTON(feedprop->use_default_user_agent),
 			ritem->use_default_user_agent);
@@ -497,25 +497,25 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
 	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
-	/* Use default User Agent - checkbutton */
+	/* Use default User-Agent - checkbutton */
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->use_default_user_agent, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(feedprop->use_default_user_agent), "toggled",
 			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
 			(gpointer)feedprop);
 
-	/* User Agent - label */
+	/* User-Agent - label */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 7);
-	label = gtk_label_new(_("User Agent"));
+	label = gtk_label_new(_("User-Agent"));
 	gtk_widget_set_tooltip_text(feedprop->use_default_user_agent,
-			_("Disable this to use a User Agent specific to this feed"));
+			_("Disable this to use a User-Agent specific to this feed"));
 	gtk_widget_set_tooltip_text(feedprop->specific_user_agent,
-			_("Specific User Agent to use for this feed. If empty, the User Agent string set in '/Configuration/Preferences/Plugins/RSSyl' will be used"));
+			_("Specific User-Agent to use for this feed. If empty, the User-Agent string set in '/Configuration/Preferences/Plugins/RSSyl' will be used"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->specific_user_agent, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(feedprop->specific_user_agent,
 			!ritem->use_default_user_agent);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
-	PACK_FRAME (vbox, frame, _("User Agent"));
+	PACK_FRAME (vbox, frame, _("User-Agent"));
 	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 

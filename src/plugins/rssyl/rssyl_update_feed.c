@@ -66,7 +66,7 @@ gchar *rssyl_get_user_agent(RFolderItem *ritem)
 		if (strlen(specific) > 0)
 			user_agent = specific;
 		else
-			debug_print("RSSyl: feed-specific User Agent is empty, trying custom value from global prefs\n");
+			debug_print("RSSyl: feed-specific User-Agent is empty, trying custom value from global prefs\n");
 	}
 
 	/* fallback to user agent value from preferences (if enabled and set) */
@@ -77,15 +77,15 @@ gchar *rssyl_get_user_agent(RFolderItem *ritem)
 			if (strlen(custom) > 0)
 				user_agent = custom;
 			else
-				debug_print("RSSyl: custom User Agent is empty, assuming default value\n");
+				debug_print("RSSyl: custom User-Agent is empty, assuming default value\n");
 		}
 	}
 
-	/* fallback to default User Agent */
+	/* fallback to default User-Agent */
 	if (user_agent == NULL)
 		user_agent = g_strdup_printf("ClawsMailRSSyl/%s (%s)", (gchar *)plugin_version(), HOMEPAGE_URI);
 
-	debug_print("RSSyl: User Agent is %s\n", user_agent);
+	debug_print("RSSyl: User-Agent is %s\n", user_agent);
 	return user_agent;
 }
 
