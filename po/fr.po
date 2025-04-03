@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 4.3.1\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2025-03-31 10:21+0200\n"
-"PO-Revision-Date: 2025-04-04 00:29+0200\n"
+"PO-Revision-Date: 2025-04-04 00:36+0200\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -1911,7 +1911,7 @@ msgstr "Surligner tous les mots incorrects"
 
 #: src/compose.c:682
 msgid "Check _backwards misspelled word"
-msgstr "Vérifier les mots_précédents"
+msgstr "Vérifier les mots _précédents"
 
 #: src/compose.c:683
 msgid "_Forward to next misspelled word"
@@ -17792,7 +17792,7 @@ msgstr "Sélection de la couleur des signatures"
 #. versions of the same text file
 #: src/prefs_msg_colors.c:311
 msgid "Patch messages and attachments"
-msgstr "Message et pièces jointes de type patch"
+msgstr "Messages et pièces jointes de type « patch »"
 
 #: src/prefs_msg_colors.c:320
 msgctxt "Tooltip and Dialog title"
@@ -17949,8 +17949,8 @@ msgid ""
 "The display of standard headers (such as 'From:', 'Subject:') will be "
 "translated into your language"
 msgstr ""
-"L'affichage des en-têtes courants (comme « From: », « Subject: ») sera "
-"traduit dans le language présentement utilisé"
+"L'affichage des en-têtes courants (comme « From: »,   sera traduit dans le "
+"language présentement utilisé"
 
 #: src/prefs_other.c:496
 msgid "Ask before emptying trash"
