@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 4.3.1\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2025-03-31 10:21+0200\n"
-"PO-Revision-Date: 2025-04-01 01:14+0200\n"
+"PO-Revision-Date: 2025-04-04 00:29+0200\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -1907,15 +1907,15 @@ msgstr "_Vérifier la sélection ou tout le texte"
 
 #: src/compose.c:681
 msgid "_Highlight all misspelled words"
-msgstr "Montrer les mots _inconnus"
+msgstr "Surligner tous les mots incorrects"
 
 #: src/compose.c:682
 msgid "Check _backwards misspelled word"
-msgstr "Vérifier les mots _précédents"
+msgstr "Vérifier les mots_précédents"
 
 #: src/compose.c:683
 msgid "_Forward to next misspelled word"
-msgstr "Vérifier les mots _suivants et avancer"
+msgstr "Vérifier les mots _suivants"
 
 #: src/compose.c:690
 msgid "Reply _mode"
@@ -7297,7 +7297,7 @@ msgid ""
 "plugin and try again."
 msgstr ""
 "Claws Mail a tenté de charger une boîte aux lettres existante en vain. Cela "
-"est probablement dû à la caducité d'un module externe. Veuillez ré-installer "
+"est probablement dû à la caducité d'un module externe. Veuillez réinstaller "
 "le module et essayer à nouveau."
 
 #: src/main.c:1731
@@ -10130,7 +10130,7 @@ msgid ""
 "Warns user if some reference to attachments is found in the message text and "
 "no file is attached."
 msgstr ""
-"Vérifie la présence de fichiers joints lorsqu'ils sont mentionnés dans le "
+"Vérifie la présence de pièces jointes lorsqu'elles sont mentionnées dans le "
 "texte."
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:52
@@ -10181,8 +10181,8 @@ msgstr "Messages transférés ou redirigés"
 msgid ""
 "Don't check for missing attachments when forwarding or redirecting messages"
 msgstr ""
-"Les expressions régulières ci-dessus ne seront pas vérifiées dans les "
-"messages transférés ainsi que dans les redirections"
+"Ne pas vérifier la présence de pièces jointes dans les messages transférés "
+"ou redirigés"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:141
 #: src/plugins/keyword_warner/keyword_warner_prefs.c:141
@@ -12520,8 +12520,8 @@ msgid ""
 "\n"
 "Feedback to <iwkse@claws-mail.org> is welcome."
 msgstr ""
-"Ce module permet de lire des fichiers joints PDF et PostScript, avec la "
-"bibliothèque Poppler %s et l'outil gs.\n"
+"Ce module permet de lire des pièces jointes de type PDF et PostScript, avec "
+"la bibliothèque Poppler %s et l'outil gs.\n"
 "\n"
 "Vos commentaires et retours sont les bienvenus auprès de <iwkse@claws-mail."
 "org>."
@@ -12542,9 +12542,9 @@ msgid ""
 "%s"
 msgstr ""
 "Attention: impossible de trouver le binaire de GhostScript (gs), nécessaire "
-"au module %s pour traiter les pièces jointes de type PostScript, seuls les "
-"attachements PDF seront affichés. Pour activer le support de PostScript, "
-"veuillez installer le programme gs.\n"
+"au module %s pour traiter les pièces jointes de type PostScript, seules les "
+"pièces jointes de type PDF seront affichées. Pour activer le support de "
+"PostScript, veuillez installer le programme gs.\n"
 "\n"
 "%s"
 
@@ -17792,7 +17792,7 @@ msgstr "Sélection de la couleur des signatures"
 #. versions of the same text file
 #: src/prefs_msg_colors.c:311
 msgid "Patch messages and attachments"
-msgstr "Message de patch et pièces jointes"
+msgstr "Message et pièces jointes de type patch"
 
 #: src/prefs_msg_colors.c:320
 msgctxt "Tooltip and Dialog title"
