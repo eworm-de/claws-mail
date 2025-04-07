@@ -333,6 +333,16 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			g_free(ritem->specific_user_agent);
 			ritem->specific_user_agent = g_strdup(attr->value);
 		}
+		/* (str) Last-Modified header */
+		if( !strcmp(attr->name, "last_modified")) {
+			g_free(ritem->last_modified);
+			ritem->last_modified = g_strdup(attr->value);
+		}
+		/* (str) ETag header */
+		if( !strcmp(attr->name, "etag")) {
+			g_free(ritem->etag);
+			ritem->etag = g_strdup(attr->value);
+		}
 	}
 }
 
@@ -392,6 +402,12 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 				(ri->use_default_user_agent ? "1" : "0")) );
 	if( ri->specific_user_agent != NULL )
 		xml_tag_add_attr(tag, xml_attr_new("specific_user_agent", ri->specific_user_agent));
+	/* (str) Last-Modified header */
+	if( ri->last_modified != NULL )
+		xml_tag_add_attr(tag, xml_attr_new("last_modified", ri->last_modified));
+	/* (str) ETag header */
+	if( ri->etag != NULL )
+		xml_tag_add_attr(tag, xml_attr_new("etag", ri->etag));
 
 	return tag;
 }
@@ -460,6 +476,8 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->refresh_id = 0;
 	ritem->use_default_user_agent = 1;
 	ritem->specific_user_agent = NULL;
+	ritem->last_modified = NULL;
+	ritem->etag = NULL;
 
 	return (FolderItem *)ritem;
 }
@@ -483,6 +501,9 @@ static void rssyl_item_destroy(Folder *folder, FolderItem *item)
 	/* Remove a scheduled refresh, if any */
 	if( ritem->refresh_id != 0)
 		g_source_remove(ritem->refresh_id);
+
+	g_free(ritem->last_modified);
+	g_free(ritem->etag);
 
 	g_free(ritem);
 }
@@ -1002,6 +1023,16 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 	if (olditem->specific_user_agent != NULL) {
 		g_free(newitem->specific_user_agent);
 		newitem->specific_user_agent = g_strdup(olditem->specific_user_agent);
+	}
+
+	/* ETag, Last-Modified */
+	if (olditem->etag != NULL) {
+		g_free(newitem->etag);
+		newitem->etag = g_strdup(olditem->etag);
+	}
+	if (olditem->last_modified != NULL) {
+		g_free(newitem->last_modified);
+		newitem->last_modified = g_strdup(olditem->last_modified);
 	}
 
 	pathold = rssyl_item_get_path(oldi->folder, oldi);

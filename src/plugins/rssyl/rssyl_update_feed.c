@@ -179,7 +179,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_FETCH, ctx->feed->url, ctx->error);
 
 		ctx->success = FALSE;
-	} else {
+	} else if (ctx->response_code != 304) {
 		if( ctx->feed == NULL || ctx->response_code == FEED_ERR_NOFEED) {
 			if( verbose & RSSYL_SHOW_ERRORS) {
 				gchar *msg = g_markup_printf_escaped(
@@ -229,6 +229,8 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 		debug_print("RSSyl: using cert file '%s'\n", feed_get_cacert_file(ctx->feed));
 	}
 #endif
+	feed_set_etag(ctx->feed, ritem->etag);
+	feed_set_last_modified(ctx->feed, ritem->last_modified);
 
 	return ctx;
 }
@@ -309,6 +311,20 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 		return FALSE;
 	}
 
+	g_free(ritem->etag);
+	gchar *etag = feed_get_etag(ctx->feed);
+	ritem->etag = etag ? g_strdup(etag) : NULL;
+	g_free(ritem->last_modified);
+	gchar *last_modified = feed_get_last_modified(ctx->feed);
+	ritem->last_modified = last_modified ? g_strdup(last_modified) : NULL;
+
+	/* Not modified, no content, nothing to parse */
+	if (ctx->response_code == 304) {
+		STATUSBAR_POP(mainwin);
+		log_print(LOG_PROTOCOL, RSSYL_LOG_NOT_MODIFIED, ritem->url);
+		goto cleanup;
+	}
+
 	rssyl_deleted_update(ritem);
 
 	debug_print("RSSyl: Starting to parse feed\n");
@@ -347,6 +363,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	rssyl_deleted_store(ritem);
 	rssyl_deleted_free(ritem);
 
+cleanup:
 	/* Clean up. */
 	success = ctx->success;
 	feed_free(ctx->feed);

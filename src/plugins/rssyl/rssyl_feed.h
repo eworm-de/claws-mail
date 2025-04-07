@@ -28,6 +28,7 @@
 #define RSSYL_LOG_SUBSCRIBING  _("RSSyl: Subscribing new feed: %s\n")
 #define RSSYL_LOG_SUBSCRIBED   _("RSSyl: New feed subscribed: '%s' (%s)\n")
 #define RSSYL_LOG_UPDATING     _("RSSyl: Updating feed: %s (User-Agent: %s)\n")
+#define RSSYL_LOG_NOT_MODIFIED _("RSSyl: Feed not modified: %s\n")
 #define RSSYL_LOG_UPDATED      _("RSSyl: Feed update finished: %s\n")
 #define RSSYL_LOG_ERROR_FETCH  _("RSSyl: Error fetching feed at '%s': %s\n")
 #define RSSYL_LOG_ERROR_NOFEED _("RSSyl: No valid feed found at '%s'\n")
