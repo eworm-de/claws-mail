@@ -112,10 +112,10 @@ void feed_free(Feed *feed)
 
 void feed_free_items(Feed *feed)
 {
-	if( feed == NULL )
+	if (feed == NULL)
 		return;
 
-	if( feed->items != NULL ) {
+	if (feed->items != NULL) {
 		g_slist_foreach(feed->items, _free_items, NULL);
 		g_slist_free(feed->items);
 		feed->items = NULL;
@@ -141,7 +141,7 @@ void feed_set_url(Feed *feed, gchar *url)
 	g_return_if_fail(feed != NULL);
 	g_return_if_fail(url != NULL);
 
-	if( feed->url != NULL ) {
+	if (feed->url != NULL) {
 		g_free(feed->url);
 		feed->url = NULL;
 	}
@@ -234,7 +234,7 @@ gint feed_n_items(Feed *feed)
 {
 	g_return_val_if_fail(feed != NULL, -1);
 
-	if( feed->items == NULL )	/* No items here. */
+	if (feed->items == NULL)	/* No items here. */
 		return 0;
 
 	return g_slist_length(feed->items);
@@ -322,9 +322,8 @@ guint feed_update(Feed *feed, const gchar *user_agent)
 		/* Avoid a leak by overwriting a non-NULL pointer with a NULL */
 		if (headers_) headers = headers_;
 	}
-	if (headers) {
+	if (headers)
 		curl_easy_setopt(eh, CURLOPT_HTTPHEADER, headers);
-	}
 
 #if LIBCURL_VERSION_NUM >= 0x070a00
 	if (feed->ssl_verify_peer == FALSE) {
@@ -336,7 +335,7 @@ guint feed_update(Feed *feed, const gchar *user_agent)
 	if (feed->cacert_file != NULL)
 		curl_easy_setopt(eh, CURLOPT_CAINFO, feed->cacert_file);
 
-	if(feed->cookies_path != NULL)
+	if (feed->cookies_path != NULL)
 		curl_easy_setopt(eh, CURLOPT_COOKIEFILE, feed->cookies_path);
 
 	if (feed->auth != NULL) {
@@ -359,7 +358,7 @@ guint feed_update(Feed *feed, const gchar *user_agent)
 	res = curl_easy_perform(eh);
 	XML_Parse(feed_ctx->parser, "", 0, TRUE);
 
-	if( res != CURLE_OK ) {
+	if (res != CURLE_OK) {
 		feed->fetcherr = g_strdup(curl_easy_strerror(res));
 		response_code = FEED_ERR_FETCH;
 	} else {
@@ -458,7 +457,7 @@ void feed_set_cookies_path(Feed *feed, gchar *path)
 {
 	g_return_if_fail(feed != NULL);
 
-	if( feed->cookies_path != NULL ) {
+	if (feed->cookies_path != NULL) {
 		g_free(feed->cookies_path);
 		feed->cookies_path = NULL;
 	}
@@ -476,7 +475,7 @@ void feed_set_last_modified(Feed *feed, gchar *value)
 {
 	g_return_if_fail(feed != NULL);
 
-	if( feed->last_modified != NULL ) {
+	if (feed->last_modified != NULL) {
 		g_free(feed->last_modified);
 		feed->last_modified = NULL;
 	}
@@ -494,7 +493,7 @@ void feed_set_etag(Feed *feed, gchar *value)
 {
 	g_return_if_fail(feed != NULL);
 
-	if( feed->etag != NULL ) {
+	if (feed->etag != NULL) {
 		g_free(feed->etag);
 		feed->etag = NULL;
 	}
@@ -524,7 +523,7 @@ void feed_set_cacert_file(Feed *feed, const gchar *path)
 {
 	g_return_if_fail(feed != NULL);
 
-	if( feed->cacert_file != NULL ) {
+	if (feed->cacert_file != NULL) {
 		g_free(feed->cacert_file);
 		feed->cacert_file = NULL;
 	}

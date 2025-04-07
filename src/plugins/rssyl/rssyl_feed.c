@@ -62,16 +62,16 @@ gboolean rssyl_refresh_timeout_cb(gpointer data)
 
 	g_return_val_if_fail(ctx != NULL, FALSE);
 
-	if( prefs_common_get_prefs()->work_offline)
+	if (prefs_common_get_prefs()->work_offline)
 		return TRUE;
 
-	if( ctx->ritem == NULL || ctx->ritem->url == NULL ) {
+	if (ctx->ritem == NULL || ctx->ritem->url == NULL) {
 		debug_print("RSSyl: refresh_timeout_cb - ritem or url NULL\n");
 		g_free(ctx);
 		return FALSE;
 	}
 
-	if( ctx->id != ctx->ritem->refresh_id ) {
+	if (ctx->id != ctx->ritem->refresh_id) {
 		tmpdate = createRFC822Date(&tt);
 		debug_print("RSSyl: %s: timeout id changed, stopping: %d != %d\n",
 				tmpdate, ctx->id, ctx->ritem->refresh_id);
@@ -109,9 +109,9 @@ void rssyl_feed_start_refresh_timeout(RFolderItem *ritem)
 
 	g_return_if_fail(ritem != NULL);
 
-	if( ritem->default_refresh_interval ) {
+	if (ritem->default_refresh_interval) {
 		rsprefs = rssyl_prefs_get();
-		if( !rsprefs->refresh_enabled )
+		if (!rsprefs->refresh_enabled)
 			return;
 		ritem->refresh_interval = rsprefs->refresh;
 	}
