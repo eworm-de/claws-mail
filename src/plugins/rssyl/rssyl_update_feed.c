@@ -95,7 +95,7 @@ static void *rssyl_fetch_feed_thr(void *arg)
 	gchar *user_agent = rssyl_get_user_agent(ctx->ritem);
 
 	/* Fetch and parse the feed. */
-	ctx->response_code = feed_update(ctx->feed, -1, user_agent);
+	ctx->response_code = feed_update(ctx->feed, user_agent);
 	g_free(user_agent);
 
 	/* Signal main thread that we're done here. */
