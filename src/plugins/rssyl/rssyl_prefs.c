@@ -63,7 +63,7 @@ static PrefParam param[] = {
 	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 
-static struct _RPrefsPage {
+struct _RPrefsPage {
 	PrefsPage page;
 	GtkWidget *refresh_enabled;
 	GtkWidget *refresh;
