@@ -61,6 +61,7 @@ struct _Feed {
 	gchar *cacert_file;
 	gchar *last_modified;
 	gchar *etag;
+	time_t retry_after;
 
 	GSList *items;
 };

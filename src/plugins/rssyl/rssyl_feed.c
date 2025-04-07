@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2006-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,11 @@ gboolean rssyl_refresh_timeout_cb(gpointer data)
 	if (prefs_common_get_prefs()->work_offline) {
 		debug_print("RSSyl: %s: skipping update of %s (%d), we are offline\n",
 				tmpdate, ctx->ritem->url, ctx->ritem->refresh_id);
+	} else if (ctx->ritem->retry_after > tt) {
+		gchar *whenretry = createRFC822Date(&ctx->ritem->retry_after);
+		debug_print("RSSyl: %s: skipping update of %s (%d): Retry-After = %s\n",
+				tmpdate, ctx->ritem->url, ctx->ritem->refresh_id, whenretry);
+		g_free(whenretry);
 	} else {
 		debug_print("RSSyl: %s: updating %s (%d)\n",
 				tmpdate, ctx->ritem->url, ctx->ritem->refresh_id);

@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <curl/curl.h>
 #include <expat.h>
+#include <procheader.h>
 
 #include "feed.h"
 #include "../rssyl_prefs.h"
@@ -53,6 +54,7 @@ Feed *feed_new(gchar *url)
 	feed->cookies_path = NULL;
 	feed->last_modified = NULL;
 	feed->etag = NULL;
+	feed->retry_after = 0;
 
 	feed->ssl_verify_peer = TRUE;
 	feed->cacert_file = NULL;
@@ -374,6 +376,21 @@ guint feed_update(Feed *feed, const gchar *user_agent)
 		feed_set_last_modified(feed,
 				       ret == CURLHE_OK ? header->value
 							: NULL);
+		ret = curl_easy_header(eh, "Retry-After", 0,
+				       CURLH_HEADER, -1,
+				       &header);
+		if (ret == CURLHE_OK && *header->value) {
+			/* Retry-After: either delay >= 0 seconds or HTTP Date */
+			char * end = NULL;
+			unsigned long long seconds = strtoull(header->value, &end, 10);
+			if (!*end && seconds > 0) { /* parse successful */
+				feed->retry_after = time(NULL) + seconds;
+			} else { /* will set to 0 if fails to parse */
+				feed->retry_after = procheader_date_parse(NULL,
+									  header->value,
+									  0);
+			}
+		}
 	}
 
 cleanup:

@@ -36,9 +36,11 @@
 #include <prefs_toolbar.h>
 #include <utils.h>
 #include <file-utils.h>
+#include <procheader.h>
 
 /* Local includes */
 #include "libfeed/feeditem.h"
+#include "libfeed/date.h"
 #include "rssyl.h"
 #include "rssyl_deleted.h"
 #include "rssyl_gtk.h"
@@ -343,6 +345,10 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			g_free(ritem->etag);
 			ritem->etag = g_strdup(attr->value);
 		}
+		/* (time_t) Retry-After header */
+		if( !strcmp(attr->name, "retry_after")) {
+			ritem->retry_after = procheader_date_parse(NULL, attr->value, 0);
+		}
 	}
 }
 
@@ -408,6 +414,13 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 	/* (str) ETag header */
 	if( ri->etag != NULL )
 		xml_tag_add_attr(tag, xml_attr_new("etag", ri->etag));
+	/* (time_t) Retry-After */
+	time_t now = time(NULL);
+	if (ri->retry_after > now) {
+		tmp = createRFC822Date(&now);
+		xml_tag_add_attr(tag, xml_attr_new("retry_after", tmp));
+		g_free(tmp);
+	}
 
 	return tag;
 }
@@ -478,6 +491,7 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->specific_user_agent = NULL;
 	ritem->last_modified = NULL;
 	ritem->etag = NULL;
+	ritem->retry_after = 0;
 
 	return (FolderItem *)ritem;
 }
@@ -1024,6 +1038,7 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 		g_free(newitem->specific_user_agent);
 		newitem->specific_user_agent = g_strdup(olditem->specific_user_agent);
 	}
+	newitem->retry_after = olditem->retry_after;
 
 	/* ETag, Last-Modified */
 	if (olditem->etag != NULL) {

@@ -37,6 +37,7 @@
 
 /* Local includes */
 #include "libfeed/feed.h"
+#include "libfeed/date.h"
 #include "rssyl.h"
 #include "rssyl_deleted.h"
 #include "rssyl_feed.h"
@@ -145,7 +146,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 	} else if( ctx->response_code == FEED_ERR_UNAUTH ) {
 		debug_print("RSSyl: URL authorization type is unknown\n");
 		ctx->error = g_strdup("Unknown value for URL authorization type");
-	} else if( ctx->response_code >= 400 && ctx->response_code < 500 ) {
+	} else if( ctx->response_code >= 400 && ctx->response_code <= 599 ) {
 		switch( ctx->response_code ) {
 			case 401:
 				ctx->error = g_strdup(_("401 (Authorisation required)"));
@@ -304,12 +305,20 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 			ctx->success ? "TRUE" : "FALSE");
 
 	if (!ctx->success) {
+		ritem->retry_after = ctx->feed->retry_after;
+		if (ritem->retry_after) {
+			gchar *tmp = createRFC822Date(&ritem->retry_after);
+			log_print(LOG_PROTOCOL, RSSYL_LOG_RETRY_AFTER, ritem->url, tmp);
+			g_free(tmp);
+		}
 		feed_free(ctx->feed);
 		g_free(ctx->error);
 		g_free(ctx);
 		STATUSBAR_POP(mainwin);
 		return FALSE;
 	}
+	/* Successful reply means we don't have to throttle auto-updates */
+	ritem->retry_after = 0;
 
 	g_free(ritem->etag);
 	gchar *etag = feed_get_etag(ctx->feed);
