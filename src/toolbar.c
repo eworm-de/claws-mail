@@ -2861,8 +2861,11 @@ do { \
 
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
-		
-		SET_WIDGET_COND(act->widget, M_UNLOCKED);
+
+		if (prefs_common.mainwin_toolbar_always_enable_actions)
+			SET_WIDGET_COND(act->widget, M_UNLOCKED);
+		else
+			SET_WIDGET_COND(act->widget, M_TARGET_EXIST, M_UNLOCKED);
 	}
 
 	state = main_window_get_current_state(mainwin);
