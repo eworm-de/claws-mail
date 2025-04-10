@@ -416,16 +416,14 @@ static void prefs_filtering_action_create(void)
 	frame = gtk_frame_new(_("Rule"));
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox1), frame, FALSE, FALSE, 0);	
-	gtk_widget_set_size_request(frame, -1, 110);
 	
 	table = gtk_grid_new();
-	gtk_container_set_border_width(GTK_CONTAINER(table), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(table), VSPACING_NARROW);
 	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
 	gtk_grid_set_column_spacing(GTK_GRID(table), VSPACING_NARROW);
-
-        gtk_container_add(GTK_CONTAINER(frame), table);
+	gtk_container_add(GTK_CONTAINER(frame), table);
         
-        /* first row labels */
+	/* first row labels */
 
 	label1 = gtk_label_new (_("Action"));
 	gtk_widget_set_size_request(label1, LABELS_WIDTH, -1);

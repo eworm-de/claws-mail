@@ -597,8 +597,10 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 	
 	table = gtk_grid_new();
+	gtk_container_set_border_width(GTK_CONTAINER(table), VSPACING_NARROW);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), VSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER(frame), table);
-// 	gtk_widget_set_size_request(frame, -1, -1);
 	
 	upper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
