@@ -1616,7 +1616,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	reply_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
 	gtk_box_pack_end (GTK_BOX(hbox), reply_format_rec_checkbtn, FALSE, FALSE, 0);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Reply")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(C_("Templates", "Reply")));
 
 	/* forward format */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -1644,7 +1644,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	forward_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
 	gtk_box_pack_end (GTK_BOX(hbox), forward_format_rec_checkbtn, FALSE, FALSE, 0);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Forward")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(C_("Templates", "Forward")));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->checkbtn_compose_with_format),
 			item->prefs->compose_with_format);

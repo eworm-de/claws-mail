@@ -2720,7 +2720,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				&page->reply_quotemark,
 				&page->reply_body_format,
 				TRUE, NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "Reply")));
 
 	/* forward format */	
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -2735,7 +2735,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				&page->forward_quotemark,
 				&page->forward_body_format,
 				TRUE, NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "Forward")));
 
 	tmp_ac_prefs = *ac_prefs;
 

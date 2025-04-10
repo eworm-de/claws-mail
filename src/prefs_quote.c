@@ -131,7 +131,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				&prefs_quote->entry_quotemark,
 				&prefs_quote->text_quotefmt,
 				TRUE, prefs_quote_set_default_reply_fmt);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "Reply")));
 
 	/* forward */
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -146,7 +146,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				&prefs_quote->entry_fw_quotemark,
 				&prefs_quote->text_fw_quotefmt,
 				TRUE, prefs_quote_set_default_forward_fmt);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Forward")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "Forward")));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_quote->checkbtn_compose_with_format),
 			prefs_common.compose_with_format);
