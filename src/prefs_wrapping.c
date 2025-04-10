@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 2004-2025 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ void prefs_wrapping_init(void)
 	WrappingPage *page;
 	static gchar *path[3];
 
-	path[0] = _("Compose");
+	path[0] = _("Write");
 	path[1] = _("Wrapping");
 	path[2] = NULL;
 

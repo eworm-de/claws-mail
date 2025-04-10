@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -605,7 +605,7 @@ static void compose_actions_execute(Compose *compose, guint action_nb, GtkWidget
 	action_type = action_get_type(action);
 	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE)) {
 		alertpanel_warning
-			(_("The selected action cannot be used in the compose window\n"
+			(_("The selected action cannot be used in the write window\n"
 			   "because it contains %%f, %%F, %%as or %%p."));
 		return;
 	}

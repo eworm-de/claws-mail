@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2001-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,8 +226,8 @@ struct {
 	{ "A_RECEIVE_ALL",   	N_("Receive Mail from all Accounts")       },
 	{ "A_RECEIVE_CUR",   	N_("Receive Mail from current Account")    },
 	{ "A_SEND_QUEUED",   	N_("Send Queued Messages")                 },
-	{ "A_COMPOSE_EMAIL", 	N_("Compose Email")                        },
-	{ "A_COMPOSE_NEWS",  	N_("Compose News")                         },
+	{ "A_COMPOSE_EMAIL", 	N_("Write Email")                          },
+	{ "A_COMPOSE_NEWS",  	N_("Write News")                           },
 	{ "A_REPLY_MESSAGE", 	N_("Reply to Message")                     },
 	{ "A_REPLY_SENDER",  	N_("Reply to Sender")                      },
 	{ "A_REPLY_ALL",     	N_("Reply to All")                         },
@@ -494,8 +494,8 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_RECEIVE_ALL: 	return _("Get Mail");
 	case A_RECEIVE_CUR: 	return _("Get");
 	case A_SEND_QUEUED: 	return _("Send");
-	case A_COMPOSE_EMAIL: 	return C_("Toolbar", "Compose");
-	case A_COMPOSE_NEWS: 	return C_("Toolbar", "Compose");
+	case A_COMPOSE_EMAIL: 	return C_("Toolbar", "Write");
+	case A_COMPOSE_NEWS: 	return C_("Toolbar", "Write");
 	case A_REPLY_MESSAGE: 	return _("Reply");
 	case A_REPLY_SENDER: 	return C_("Toolbar", "Sender");
 	case A_REPLY_ALL: 		return _("All");
@@ -964,7 +964,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_news_icon);
 #ifndef GENERIC_UMPC
-		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Compose News message"));
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Write News message"));
 #endif	
 		gtk_widget_show(toolbar->compose_news_icon);
 	} else {
@@ -972,7 +972,7 @@ static void activate_compose_button (Toolbar           *toolbar,
 			GTK_TOOL_BUTTON(toolbar->compose_mail_btn),
 			toolbar->compose_mail_icon);
 #ifndef GENERIC_UMPC
-		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Compose Email"));
+		CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(toolbar->compose_mail_btn), _("Write Email"));
 #endif	
 		gtk_widget_show(toolbar->compose_mail_icon);
 	}
@@ -2359,8 +2359,8 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		case A_COMPOSE_EMAIL:
 #ifndef GENERIC_UMPC
 			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
-				_("Compose Email"),
-				_("Compose with selected Account"));
+				_("Write Email"),
+				_("Write with selected Account"));
 			toolbar_data->compose_mail_btn = item; 
 			toolbar_data->compose_mail_icon = icon_wid; 
 			g_object_ref_sink(toolbar_data->compose_mail_icon);
@@ -2370,7 +2370,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			g_object_ref_sink(toolbar_data->compose_news_icon);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
-				_("Compose Email"));
+				_("Write Email"));
 			toolbar_data->compose_mail_btn = item; 
 			toolbar_data->compose_mail_icon = icon_wid; 
 

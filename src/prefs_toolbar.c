@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2024 the Claws Mail team
+ * Copyright (C) 2002-2025 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1242,7 +1242,7 @@ void prefs_toolbar_init(void)
 	prefs_toolbar_messageview = page;
 
 	composepath[0] = _("Toolbars");
-	composepath[1] = _("Compose Window");
+	composepath[1] = _("Write Window");
 	composepath[2] = NULL;
 
 	page = g_new0(ToolbarPage, 1);

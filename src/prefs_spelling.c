@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,7 +305,7 @@ void prefs_spelling_init(void)
 	static gchar *path[3];
 	const gchar* language = NULL;
 	
-	path[0] = _("Compose");
+	path[0] = _("Write");
 	path[1] = _("Spell Checking");
 	path[2] = NULL;
 

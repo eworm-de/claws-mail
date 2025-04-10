@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -398,8 +398,8 @@ void account_edit_open(gpointer a, gpointer b)
 	account_list_dirty = FALSE;
 
 	if (compose_get_compose_list()) {
-		alertpanel_error(_("Some composing windows are open.\n"
-				   "Please close all the composing "
+		alertpanel_error(_("Some writing windows are open.\n"
+				   "Please close all the writing "
 				   "windows before editing accounts."));
 		inc_unlock();
 		return;
@@ -465,8 +465,8 @@ void account_open(PrefsAccount *ac_prefs, gboolean called_from_acc_list)
 	cm_return_if_fail(ac_prefs != NULL);
 
 	if (compose_get_compose_list()) {
-		alertpanel_error(_("Some composing windows are open.\n"
-				   "Please close all the composing "
+		alertpanel_error(_("Some writing windows are open.\n"
+				   "Please close all the writing "
 				   "windows before editing accounts."));
 		return;
 	}

@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2024 The Claws Mail team
+ * Copyright (C) 2001-2025 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ static struct
 	{N_("Name"),	&templates.entry_name,		FALSE,
 		N_("This name is used as the Menu item")},
 	{"From",	&templates.entry_from,		TRUE,
-		N_("Override composing account's From header. This doesn't change the composing account.")},
+		N_("Override writing account's From header. This doesn't change the writing account.")},
 	{"To",		&templates.entry_to,		TRUE, 	NULL},
 	{"Cc",		&templates.entry_cc,		TRUE, 	NULL},
 	{"Bcc",		&templates.entry_bcc,		TRUE, 	NULL},

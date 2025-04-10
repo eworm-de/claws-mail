@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Copyright (C) 2005-2025 The Claws Mail Team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
 				TRUE, prefs_quote_set_default_new_msg_fmt);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("New")));
 
 	/* reply */
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -234,7 +234,7 @@ void prefs_quote_init(void)
 	QuotePage *page;
 	static gchar *path[3];
 
-	path[0] = _("Compose");
+	path[0] = _("Write");
 	path[1] = _("Templates");
 	path[2] = NULL;
 

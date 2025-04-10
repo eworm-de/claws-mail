@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2024 the Claws Mail Team and Colin Leroy <colin@colino.net>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,7 +229,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	g_free(text);
 
 	/* dnd insert or attach */
-	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));
+	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Write window"));
 	gtk_label_set_xalign(GTK_LABEL(label_dnd_insert_or_attach), 0.0);
 	gtk_widget_show (label_dnd_insert_or_attach);
 
@@ -371,7 +371,7 @@ void prefs_compose_writing_init(void)
 	WritingPage *page;
 	static gchar *path[3];
 
-	path[0] = _("Compose");
+	path[0] = _("Write");
 	path[1] = _("Writing");
 	path[2] = NULL;
 

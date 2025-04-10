@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1588,7 +1588,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
 	gtk_box_pack_end (GTK_BOX(hbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Compose")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("New")));
 
 	/* reply format */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -1938,7 +1938,7 @@ static void register_compose_page(void)
 	static gchar *pfi_compose_path[2];
 	static FolderItemComposePage folder_item_compose_page;
 
-	pfi_compose_path[0] = _("Compose");
+	pfi_compose_path[0] = _("Write");
 	pfi_compose_path[1] = NULL;
 
         folder_item_compose_page.page.path = pfi_compose_path;

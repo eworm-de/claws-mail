@@ -2705,7 +2705,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				TRUE, NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("New")));
 
 	/* reply format */	
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
@@ -4202,7 +4202,7 @@ static void register_compose_page(void)
 	static gchar *path[3];
 
 	path[0] = _("Account");
-	path[1] = _("Compose");
+	path[1] = _("Write");
 	path[2] = NULL;
         
 	compose_page.page.path = path;
