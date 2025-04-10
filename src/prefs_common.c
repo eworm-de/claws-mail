@@ -1329,6 +1329,9 @@ static PrefParam param[] = {
 
 	{"mh_compat_mode", "FALSE", &prefs_common.mh_compat_mode, P_BOOL, NULL, NULL, NULL},
 
+	{"mainwin_toolbar_always_enable_actions", "FALSE", &prefs_common.mainwin_toolbar_always_enable_actions, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

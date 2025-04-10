@@ -773,6 +773,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>mainwin_toolbar_always_enable_actions</literal></term>
+	<listitem>
+	  <para>
+	'0' or '1'. Activate toolbar items bound to user actions in the main window,
+    whether some messages are selected or not.
+	Default is '0': such main window's toolbar items bound to user actions are activated only
+	if one or more messages are selected.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>

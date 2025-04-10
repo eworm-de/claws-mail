@@ -2862,7 +2862,7 @@ do { \
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 		
-		SET_WIDGET_COND(act->widget, M_TARGET_EXIST, M_UNLOCKED);
+		SET_WIDGET_COND(act->widget, M_UNLOCKED);
 	}
 
 	state = main_window_get_current_state(mainwin);
