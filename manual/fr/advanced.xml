@@ -844,6 +844,19 @@
 	    </listitem>
       </varlistentry>
       <varlistentry>
+	    <term>
+          <literal>mainwin_toolbar_always_enable_actions</literal>
+        </term>
+	    <listitem>
+	      <para>
+            '0' ou '1'. Active les éléments de barre d'outil (dans la fenêtre principale) qui déclenchent des actions définies par l'utilisateur,
+            qu'un message soit sélectionné ou non.
+            La valeur par défaut est '0', option désactivée: de tels éléments de la barre d'outils de la fenêtre principale ne sont alors activés
+            que si au moins un message est sélectionné.
+	      </para>
+	    </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>
           <literal>msgview_date_format</literal>
         </term>
