@@ -598,11 +598,11 @@ static void from_name_activate_cb(GtkWidget *widget, gpointer data);
 
 static GtkActionEntry compose_popup_entries[] =
 {
-	{"Write",            NULL, "Write", NULL, NULL, NULL },
-	{"Write/Add",        NULL, N_("_Add..."), NULL, NULL, G_CALLBACK(compose_attach_cb) },
-	{"Write/Remove",     NULL, N_("_Remove"), NULL, NULL, G_CALLBACK(compose_attach_remove_selected) },
-	{"Write/---",        NULL, "---", NULL, NULL, NULL },
-	{"Write/Properties", NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
+	{"Compose",            NULL, "Write", NULL, NULL, NULL },
+	{"Compose/Add",        NULL, N_("_Add..."), NULL, NULL, G_CALLBACK(compose_attach_cb) },
+	{"Compose/Remove",     NULL, N_("_Remove"), NULL, NULL, G_CALLBACK(compose_attach_remove_selected) },
+	{"Compose/---",        NULL, "---", NULL, NULL, NULL },
+	{"Compose/Properties", NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
 };
 
 /* make sure to keep the key bindings in the tables below in sync with the default_menurc[] in prefs_other.c
@@ -2588,9 +2588,9 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 
 	compose_colorize_signature(compose);
 
-	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Write/Add", FALSE);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Write/Remove", FALSE);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Write/Properties", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Add", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", FALSE);
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/SendLater", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/Save", FALSE);
@@ -8214,13 +8214,13 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_action_group_add_actions(action_group, compose_popup_entries,
 			G_N_ELEMENTS(compose_popup_entries), (gpointer)compose);
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Popup", NULL, GTK_UI_MANAGER_MENUBAR)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup", "Write", "Write", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Write", "Add", "Write/Add", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Write", "Remove", "Write/Remove", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Write", "Separator1", "Write/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Write", "Properties", "Write/Properties", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup", "Compose", "Write", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Add", "Write/Add", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Remove", "Write/Remove", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Separator1", "Write/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Properties", "Write/Properties", GTK_UI_MANAGER_MENUITEM)
 	
-	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(gtk_ui_manager_get_widget(compose->ui_manager, "/Popup/Write")));
+	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(gtk_ui_manager_get_widget(compose->ui_manager, "/Popup/Compose")));
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", FALSE);
@@ -10204,10 +10204,10 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			}
 		}
 
-		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Write/Remove", (attach_nr_selected > 0));
+		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", (attach_nr_selected > 0));
 		/* Properties menu item makes no sense with more than one row
 		 * selected, the properties dialog can only edit one attachment. */
-		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Write/Properties", (attach_nr_selected == 1));
+		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", (attach_nr_selected == 1));
 			
 		gtk_menu_popup_at_pointer(GTK_MENU(compose->popupmenu), NULL);
 

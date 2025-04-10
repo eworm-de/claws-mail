@@ -298,7 +298,7 @@ static GtkActionEntry msgview_entries[] =
 	{"View/Quotes",                              NULL, N_("Quotes"), NULL, NULL, NULL }, 
 
 /* Message menu */
-	{"Message/Write",                            NULL, N_("Write _new message"), "<control>M", NULL, G_CALLBACK(compose_cb) },
+	{"Message/Compose",                          NULL, N_("Write _new message"), "<control>M", NULL, G_CALLBACK(compose_cb) },
 	{"Message/---",                              NULL, "---", NULL, NULL, NULL },
 
 	{"Message/Reply",                            NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY */
@@ -627,7 +627,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #endif
 
 /* Message menu */
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Write", "Message/Write", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Compose", "Message/Compose", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "Reply", "Message/Reply", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu/Message", "ReplyTo", "Message/ReplyTo", GTK_UI_MANAGER_MENU)
