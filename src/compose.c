@@ -8100,7 +8100,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_widget_show(subject);
 
 	label = gtk_label_new_with_mnemonic(_("S_ubject:"));
-	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, HSPACING_NARROW);
 	gtk_widget_show(label);
 
 #ifdef USE_ENCHANT
@@ -8108,7 +8108,7 @@ static Compose *compose_create(PrefsAccount *account,
 #else
 	subject_entry = gtk_entry_new();
 #endif
-	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, HSPACING_NARROW);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label), subject_entry);
@@ -8418,7 +8418,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	from_name = gtk_entry_new();
 	
 	g_signal_connect_after(G_OBJECT(from_name), "grab_focus",
