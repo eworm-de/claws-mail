@@ -116,7 +116,7 @@ static void prefs_quote_create_widget(PrefsPage *_page, GtkWindow *window,
 				&prefs_quote->entry_subject,
 				&prefs_quote->text_format,
 				TRUE, prefs_quote_set_default_new_msg_fmt);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("New")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "New")));
 
 	/* reply */
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);

@@ -1588,7 +1588,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	new_msg_format_rec_checkbtn = gtk_check_button_new_with_label(
 			_("Apply to subfolders"));
 	gtk_box_pack_end (GTK_BOX(hbox), new_msg_format_rec_checkbtn, FALSE, FALSE, 0);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("New")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(C_("Templates", "New")));
 
 	/* reply format */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);

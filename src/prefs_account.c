@@ -2705,7 +2705,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 				&page->compose_subject_format,
 				&page->compose_body_format,
 				TRUE, NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("New")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(C_("Templates", "New")));
 
 	/* reply format */	
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
