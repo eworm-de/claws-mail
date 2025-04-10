@@ -7627,15 +7627,11 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, gboolean w
 static gboolean text_clicked(GtkWidget *text, GdkEventButton *event,
                                        Compose *compose)
 {
-	debug_print("text_clicked() '%s'\n",text);
 	gint prev_autowrap;
-	GtkTextBuffer *buffer;
-	
-	if (text != NULL)
-		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+
 #if USE_ENCHANT
 	if (event->button == 3) {
-debug_print("if (event->button == 3) {\n");
 		GtkTextIter iter;
 		GtkTextIter sel_start, sel_end;
 		gboolean stuff_selected;
@@ -7671,7 +7667,6 @@ debug_print("if (event->button == 3) {\n");
 		GtkTextIter iter;
 		gint x, y;
 		BLOCK_WRAP();
-debug_print("if (event->button == 2) {\n");		
 		/* get the middle-click position to paste at the correct place */
 		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text),
 			GTK_TEXT_WINDOW_TEXT, event->x, event->y,
@@ -8214,11 +8209,11 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_action_group_add_actions(action_group, compose_popup_entries,
 			G_N_ELEMENTS(compose_popup_entries), (gpointer)compose);
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Popup", NULL, GTK_UI_MANAGER_MENUBAR)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup", "Compose", "Write", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Add", "Write/Add", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Remove", "Write/Remove", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Separator1", "Write/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Properties", "Write/Properties", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup", "Compose", "Compose", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Add", "Compose/Add", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Remove", "Compose/Remove", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Separator1", "Compose/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Popup/Compose", "Properties", "Compose/Properties", GTK_UI_MANAGER_MENUITEM)
 	
 	popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(gtk_ui_manager_get_widget(compose->ui_manager, "/Popup/Compose")));
 
@@ -10922,24 +10917,21 @@ static void paste_text(Compose *compose, GtkWidget *entry,
 
 	if (contents == NULL)
 		return;
-debug_print("paste_text() start\n");
+
 	/* we shouldn't delete the selection when middle-click-pasting, or we
 	 * can't mid-click-paste our own selection */
 	if (clip != GDK_SELECTION_PRIMARY) {
-debug_print("if (clip != GDK_SELECTION_PRIMARY) {\n");
 		undo_paste_clipboard(GTK_TEXT_VIEW(compose->text), compose->undostruct);
 		gtk_text_buffer_delete_selection(buffer, FALSE, TRUE);
 	}
 
 	if (insert_place == NULL) {
-debug_print("used for Ctrl-V pasting\n");
 		/* if insert_place isn't specified, insert at the cursor.
 		 * used for Ctrl-V pasting */
 		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
 		start = gtk_text_iter_get_offset(&start_iter);
 		gtk_text_buffer_insert(buffer, &start_iter, contents, strlen(contents));
 	} else {
-debug_print("used for mid-click-pasting\n");
 		/* if insert_place is specified, paste here.
 		 * used for mid-click-pasting */
 		start = gtk_text_iter_get_offset(insert_place);
@@ -10949,14 +10941,12 @@ debug_print("used for mid-click-pasting\n");
 	}
 
 	if (!wrap) {
-debug_print("if (!wrap) {\n");
 		/* paste unwrapped: mark the paste so it's not wrapped later */
 		end = start + strlen(contents);
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
 		gtk_text_buffer_apply_tag_by_name(buffer, "no_wrap", &start_iter, &end_iter);
 	} else if (wrap && clip == GDK_SELECTION_PRIMARY) {
-debug_print("} else if (wrap && clip == GDK_SELECTION_PRIMARY) {\n");
 		/* rewrap paragraph now (after a mid-click-paste) */
 		mark_start = gtk_text_buffer_get_insert(buffer);
 		gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark_start);
@@ -10964,7 +10954,6 @@ debug_print("} else if (wrap && clip == GDK_SELECTION_PRIMARY) {\n");
 		compose_beautify_paragraph(compose, &start_iter, TRUE);
 	}
 	compose->modified = TRUE;
-debug_print("paste_text() end\n");
 }
 
 static void attach_uri_list(Compose *compose, GtkSelectionData *data)
