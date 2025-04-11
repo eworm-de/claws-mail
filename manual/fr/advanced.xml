@@ -832,6 +832,19 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>
+          <literal>passphrase_dialog_msg_title_switch</literal>
+        </term>
+        <listitem>
+          <para>
+            '0' or '1'. Active l'inversion de placement du message et du titre dans le dialogue
+            de saisie de phrase secrète. Cela peut être utile lors d'intéractions
+            avec des programmes tiers tels que KeePassXC.
+            La valeur par défaut est '0', option désactivée.
+	      </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
 	    <term>
           <literal>mh_compat_mode</literal>
         </term>
