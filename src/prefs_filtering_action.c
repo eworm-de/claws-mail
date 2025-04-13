@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2024 the Claws Mail team
+ * Copyright (C) 2003-2025 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -420,7 +420,7 @@ static void prefs_filtering_action_create(void)
 	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), VSPACING_NARROW);
 	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
-	gtk_grid_set_column_spacing(GTK_GRID(table), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table), HSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER(frame), table);
         
 	/* first row labels */
