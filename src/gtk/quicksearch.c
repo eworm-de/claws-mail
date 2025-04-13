@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #  include "config.h"
 #include "claws-features.h"
 #endif
+
+#include <defs.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -820,31 +822,31 @@ QuickSearch *quicksearch_new()
 	/* quick search */
 	hbox_search = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
-  menu = gtk_list_store_new(4,
-      G_TYPE_STRING,
-      G_TYPE_BOOLEAN,
-			G_TYPE_BOOLEAN,
-      G_TYPE_INT);
+	menu = gtk_list_store_new(4,
+		    G_TYPE_STRING,
+		    G_TYPE_BOOLEAN,
+		    G_TYPE_BOOLEAN,
+		    G_TYPE_INT);
 
-  search_type_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
+	search_type_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
 	gtk_widget_set_focus_on_click(GTK_WIDGET(search_type_combo), FALSE);
 	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(search_type_combo),
 			(GtkTreeViewRowSeparatorFunc)search_type_combo_separator_func,
 			NULL, NULL);
 
-  renderer = gtk_cell_renderer_toggle_new();
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
+	renderer = gtk_cell_renderer_toggle_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(search_type_combo),
 			renderer,
 			"visible", SEARCH_TYPE_COL_CHECKBOX,
 			"active", SEARCH_TYPE_COL_CHECKBOX_ACTIVE,
 			NULL);
-  renderer = gtk_cell_renderer_text_new();
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(search_type_combo),
 			renderer, "text", SEARCH_TYPE_COL_TEXT, NULL);
 
-	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_combo, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_combo, FALSE, FALSE, HSPACING_NARROW_2);
 
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
@@ -923,12 +925,12 @@ QuickSearch *quicksearch_new()
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), search_string_entry, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_search), vbox, TRUE, TRUE, 4);
+	gtk_box_pack_start(GTK_BOX(hbox_search), vbox, TRUE, TRUE, HSPACING_NARROW);
 
 	gtk_widget_show(vbox);
 	gtk_widget_show(search_string_entry);
 
-	search_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	search_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW+1);
 	clear_search = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);
@@ -957,7 +959,7 @@ QuickSearch *quicksearch_new()
 			     _("Information about extended symbols"));
 	gtk_widget_show(search_description);
 
-	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbox, FALSE, FALSE, HSPACING_NARROW_2);
 	gtk_widget_show(search_hbox);
 
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((search_string_entry)))),
@@ -1210,4 +1212,3 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 
 	quicksearch_set_popdown_strings(quicksearch);
 }
-

@@ -595,7 +595,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 
 	CLAWS_SET_TIP(toggle_search, _("Toggle quick search bar"));
 	
-	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
+	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, HSPACING_NARROW_2);	
 
 	gtk_box_pack_start(GTK_BOX(hbox), stat_vbox, TRUE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(stat_vbox), stat_box, TRUE, TRUE, 0);	
@@ -607,7 +607,7 @@ SummaryView *summary_create(MainWindow *mainwin)
  
 	statlabel_folder = gtk_label_new("");
 	gtk_widget_show(statlabel_folder);
-	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_folder, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_folder, FALSE, FALSE, HSPACING_NARROW_2);
 	statlabel_select = gtk_label_new("");
 	gtk_widget_show(statlabel_select);
 	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_select, FALSE, FALSE, 12);
@@ -616,7 +616,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	toggle_eventbox = gtk_event_box_new();
 	gtk_widget_show(toggle_eventbox);
 	
-	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, HSPACING_NARROW);
 
 	toggle_arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(toggle_arrow);
@@ -628,7 +628,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 #ifdef GENERIC_UMPC
 	multiple_sel_togbtn = gtk_toggle_button_new();
 	gtk_widget_show(multiple_sel_togbtn);
-	gtk_box_pack_end(GTK_BOX(hbox), multiple_sel_togbtn, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(hbox), multiple_sel_togbtn, FALSE, FALSE, HSPACING_NARROW);
 	CLAWS_SET_TIP(multiple_sel_togbtn,
 			     _("Toggle multiple selection"));
 	g_signal_connect(G_OBJECT(multiple_sel_togbtn), "toggled",
@@ -638,7 +638,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	
 	statlabel_msgs = gtk_label_new("");
 	gtk_widget_show(statlabel_msgs);
-	gtk_box_pack_end(GTK_BOX(stat_box), statlabel_msgs, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(stat_box), statlabel_msgs, FALSE, FALSE, HSPACING_NARROW);
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox_spc);
@@ -875,8 +875,10 @@ void summary_relayout(SummaryView *summaryview)
 	case NORMAL_LAYOUT:
 	case WIDE_LAYOUT:
 	case WIDE_MSGLIST_LAYOUT:
-		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
-		gtk_box_pack_end(GTK_BOX(summaryview->stat_box), summaryview->statlabel_msgs, FALSE, FALSE, 4);
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box),
+				summaryview->hbox_l, TRUE, TRUE, 0);
+		gtk_box_pack_end(GTK_BOX(summaryview->stat_box),
+				summaryview->statlabel_msgs, FALSE, FALSE, HSPACING_NARROW);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
 		if (prefs_common.layout_mode == WIDE_MSGLIST_LAYOUT ||
@@ -887,8 +889,10 @@ void summary_relayout(SummaryView *summaryview)
 		break;
 	case VERTICAL_LAYOUT:
 	case SMALL_LAYOUT:
-		gtk_box_pack_start(GTK_BOX(summaryview->stat_box), summaryview->hbox_l, TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2), summaryview->statlabel_msgs, FALSE, FALSE, 4);
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box),
+				summaryview->hbox_l, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(summaryview->stat_box2),
+				summaryview->statlabel_msgs, FALSE, FALSE, HSPACING_NARROW);
 		gtk_widget_show_all(summaryview->stat_box);
 		gtk_widget_show_all(summaryview->stat_box2);
 		if (prefs_common.layout_mode == SMALL_LAYOUT) {
