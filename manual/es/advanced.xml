@@ -1015,6 +1015,20 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>passphrase_dialog_msg_title_switch</literal></term>
+	<listitem>
+	  <para>
+
+	'0' o '1'. Habilitar en el di&aacute;logo de contrase&ntilde;a el
+	intercambio de la ubicaci&oacute;n entre el t&iacute;tulo del
+	di&aacute;logo y el mensaje del mismo. Puede ser &uacute;til cuando
+	se interact&uacute;a con otros programas como KeePassXC. El valor
+	predeterminado es '0', desactivado.
+
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>mh_compat_mode</literal></term>
 	<listitem>
 	  <para>
