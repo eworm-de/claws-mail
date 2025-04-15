@@ -1018,6 +1018,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	GSList *cur;
 	gboolean continue_write = TRUE;
 	glong wrote = 0, i = 0;
+	FolderItem *folder_item = NULL;
 
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
@@ -1050,8 +1051,13 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 	account_sigsep_matchlist_create();
 
+	if (textview->messageview->msginfo && textview->messageview->msginfo->folder)
+		folder_item = textview->messageview->msginfo->folder;
+
 	if (!g_ascii_strcasecmp(mimeinfo->subtype, "html") &&
-	    prefs_common.render_html) {
+	    ((folder_item && folder_item->prefs && folder_item->prefs->render_html == HTML_RENDER_ALWAYS)
+		|| ((folder_item && folder_item->prefs && folder_item->prefs->render_html == HTML_RENDER_DEFAULT)
+			&& prefs_common.render_html))) {
 		gchar *filename;
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);

@@ -27,6 +27,16 @@ typedef struct _FolderItemPrefs FolderItemPrefs;
 
 #include "folder.h"
 typedef enum {
+	HTML_RENDER_DEFAULT=0,
+	HTML_RENDER_NEVER,
+	HTML_RENDER_ALWAYS
+} HTMLRenderType;
+typedef enum {
+	INVOKE_PLUGIN_ON_HTML_DEFAULT=0,
+	INVOKE_PLUGIN_ON_HTML_NEVER,
+	INVOKE_PLUGIN_ON_HTML_ALWAYS
+} InvokePluginOnHTMLType;
+typedef enum {
 	HTML_PROMOTE_DEFAULT=0,
 	HTML_PROMOTE_NEVER,
 	HTML_PROMOTE_ALWAYS
@@ -50,6 +60,8 @@ struct _FolderItemPrefs {
 	int offlinesync;
 	int offlinesync_days;
 	int remove_old_bodies;
+	HTMLRenderType render_html;
+	InvokePluginOnHTMLType invoke_plugin_on_html;
 	HTMLPromoteType promote_html_part;
 	gboolean skip_on_goto_unread_or_new;
 

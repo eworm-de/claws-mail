@@ -1540,7 +1540,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			if (!mimeview_show_part(messageview->mimeview, mimeinfo))
 				mimeview_select_mimepart_icon(messageview->mimeview, root);
 			goto done;
-		} else if (prefs_common.invoke_plugin_on_html) {
+		} else if ((msginfo->folder->prefs->invoke_plugin_on_html == INVOKE_PLUGIN_ON_HTML_ALWAYS ||
+			     (msginfo->folder->prefs->invoke_plugin_on_html == INVOKE_PLUGIN_ON_HTML_DEFAULT &&
+			      prefs_common.invoke_plugin_on_html))) {
 			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 			goto done;
 		}
