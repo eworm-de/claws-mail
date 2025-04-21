@@ -43,6 +43,9 @@
 #include "procmsg.h"
 #include "codeconv.h"
 #include "timing.h"
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 #include "tags.h"
 #include "prefs_common.h"
 #include "file-utils.h"

@@ -53,6 +53,9 @@
 #include "gtk/gtkvscrollbutton.h"
 #include "gtk/logwindow.h"
 #include "timing.h"
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 #include "manage_window.h"
 #include "privacy.h"
 #include "file-utils.h"

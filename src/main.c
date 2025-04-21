@@ -150,6 +150,9 @@
 #include "crash.h"
 
 #include "timing.h"
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 /* Went offline due to NetworkManager */
