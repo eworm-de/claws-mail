@@ -515,7 +515,7 @@ XMLAttr *xml_attr_new_time_t(const gchar *name, const time_t value)
 	XMLAttr *new_attr;
 	gchar *valuestr;
 
-	valuestr = g_strdup_printf("%ld", value);
+	valuestr = g_strdup_printf("%"CM_TIME_FORMAT, value);
 
 	new_attr = g_new(XMLAttr, 1);
 	new_attr->name = XML_STRING_ADD(name);
