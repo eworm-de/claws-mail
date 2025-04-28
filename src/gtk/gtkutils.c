@@ -101,7 +101,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	cm_return_if_fail(bbox != NULL);
 
-	*help_btn = gtkut_stock_button("help-browser-symbolic", "Help");
+	*help_btn = gtkut_stock_button("help-browser", "Help");
 
 	gtk_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
@@ -925,10 +925,14 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 GtkWidget *gtkut_stock_button(const gchar *stock_image, const gchar *label)
 {
 	GtkWidget *button;
-	
+	gchar *img_sym = NULL;
+
 	cm_return_val_if_fail(stock_image != NULL, NULL);
 
-	button = gtk_button_new_from_icon_name(stock_image, GTK_ICON_SIZE_BUTTON);
+	img_sym = g_strconcat(stock_image, "-symbolic", NULL);
+	button = gtk_button_new_from_icon_name(img_sym, GTK_ICON_SIZE_BUTTON);
+	g_free(img_sym);
+
 	if (label != NULL)
 		gtk_button_set_label(GTK_BUTTON(button), _(label));
 	gtk_button_set_use_underline(GTK_BUTTON(button), TRUE);
