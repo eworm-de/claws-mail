@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,7 +217,7 @@ void ssl_manager_create(void)
 
 	close_btn = gtk_button_new_with_mnemonic(_("_Close"));
 	gtk_button_set_image(GTK_BUTTON(close_btn),
-			gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("window-close-symbolic", GTK_ICON_SIZE_BUTTON));
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(ssl_manager_close_cb), NULL);
 

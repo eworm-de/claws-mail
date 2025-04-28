@@ -1340,7 +1340,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 #endif
 
 	no_imap_warn_icon = gtk_image_new_from_icon_name
-                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
+                        ("dialog-warning-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	buf = g_strconcat("<span weight=\"bold\">",
 			_("Warning: this version of Claws Mail\n"
 			  "has been built without IMAP and News support."), "</span>", NULL);

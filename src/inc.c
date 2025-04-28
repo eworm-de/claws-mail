@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -843,7 +843,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		gtk_button_set_label(GTK_BUTTON(inc_dialog->dialog->cancel_btn),
 				     _("_Close"));
 		gtk_button_set_image(GTK_BUTTON(inc_dialog->dialog->cancel_btn),
-			gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("window-close-symbolic", GTK_ICON_SIZE_BUTTON));
 	}
 
 	g_free(fin_msg);

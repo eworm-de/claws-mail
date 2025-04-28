@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -518,7 +518,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page u_p"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
-			gtk_image_new_from_icon_name("go-up",GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-up-symbolic",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
@@ -546,7 +546,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page dow_n"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
-			gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-down-symbolic",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",

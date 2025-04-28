@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2016-2021 the Claws Mail team and Andrej Kacian
+ * Copyright (C) 2016-2025 the Claws Mail team and Andrej Kacian
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ void primary_passphrase_change_dialog()
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	icon = gtk_image_new_from_icon_name("dialog-password",
+	icon = gtk_image_new_from_icon_name("dialog-password-symbolic",
 			GTK_ICON_SIZE_DIALOG);
 	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon, GTK_ALIGN_START);

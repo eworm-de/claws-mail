@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,20 +300,20 @@ static void alertpanel_create(const gchar *title,
 	switch (alert_type) {
 	case ALERT_QUESTION:
 		image = gtk_image_new_from_icon_name
-			("dialog-question", GTK_ICON_SIZE_DIALOG);
+			("dialog-question-symbolic", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_WARNING:
 		image = gtk_image_new_from_icon_name
-			("dialog-warning", GTK_ICON_SIZE_DIALOG);
+			("dialog-warning-symbolic", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_ERROR:
 		image = gtk_image_new_from_icon_name
-			("dialog-error", GTK_ICON_SIZE_DIALOG);
+			("dialog-error-symbolic", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_NOTICE:
 	default:
 		image = gtk_image_new_from_icon_name
-			("dialog-information", GTK_ICON_SIZE_DIALOG);
+			("dialog-information-symbolic", GTK_ICON_SIZE_DIALOG);
 		break;
 	}
 	gtk_widget_set_halign(image, GTK_ALIGN_CENTER);

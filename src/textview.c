@@ -2049,11 +2049,14 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	gint x, wx, wy;
+	gchar *img_sym = NULL;
 	
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = gtk_image_new_from_icon_name(stock_id, GTK_ICON_SIZE_DIALOG);
+	img_sym = g_strconcat(stock_id, "-symbolic", NULL);
+	textview->image = gtk_image_new_from_icon_name(img_sym, GTK_ICON_SIZE_DIALOG);
+	g_free(img_sym);
 	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_set_name(GTK_WIDGET(textview->image), "textview_icon");

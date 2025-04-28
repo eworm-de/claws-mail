@@ -540,7 +540,7 @@ void quotefmt_add_defaults_button(GtkWindow *parent_window,
 
 	btn_formatdesc = gtk_button_new_with_mnemonic (_("Defaults"));
 	gtk_button_set_image (GTK_BUTTON(btn_formatdesc),
-		gtk_image_new_from_icon_name("edit-undo", GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("edit-undo-symbolic", GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (btn_formatdesc);
 	gtk_box_pack_end (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
