@@ -101,7 +101,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	cm_return_if_fail(bbox != NULL);
 
-	*help_btn = gtkut_stock_button("help-browser", "Help");
+	*help_btn = gtkut_stock_button("help-browser-symbolic", "Help");
 
 	gtk_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
@@ -892,7 +892,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder-symbolic", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
@@ -906,7 +906,7 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder-symbolic", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
@@ -917,7 +917,7 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_icon_name("view-refresh", GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("view-refresh-symbolic", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }

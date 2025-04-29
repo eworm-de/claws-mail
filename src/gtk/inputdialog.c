@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,12 +319,12 @@ static void input_dialog_create(gboolean is_password)
 			    FALSE, FALSE, 0);
 
 	/* for title label */
-	icon_q = gtk_image_new_from_icon_name("dialog-question",
+	icon_q = gtk_image_new_from_icon_name("dialog-question-symbolic",
         			GTK_ICON_SIZE_DIALOG); 
 	gtk_widget_set_halign(icon_q, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon_q, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_q, FALSE, FALSE, 0);
-	icon_p = gtk_image_new_from_icon_name("dialog-password",
+	icon_p = gtk_image_new_from_icon_name("dialog-password-symbolic",
         			GTK_ICON_SIZE_DIALOG); 
 	gtk_widget_set_halign(icon_p, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon_p, GTK_ALIGN_START);

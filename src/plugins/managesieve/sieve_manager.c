@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2024 the Claws Mail team
+ * Copyright (C) 2004-2025 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -327,7 +327,7 @@ static void filter_delete(GtkWidget *widget, SieveManagerPage *page)
 	g_snprintf(buf, sizeof(buf),
 		   _("Do you really want to delete the filter '%s'?"), filter_name);
 	if (alertpanel_full(_("Delete filter"), buf,
-				NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
+				NULL, _("_Cancel"), "edit-delete-symbolic", _("_Delete"), NULL, NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 

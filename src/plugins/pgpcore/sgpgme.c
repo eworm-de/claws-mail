@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team
+ * Copyright (C) 1999-2025 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -997,7 +997,7 @@ void sgpgme_init()
 				 _("GnuPG is not installed properly, or needs "
 				 "to be upgraded.\n"
 				 "OpenPGP support disabled."),
-				 "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				 "window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 				 ALERTFOCUS_FIRST, TRUE, NULL, ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
 				prefs_gpg_get_config()->gpg_warning = FALSE;

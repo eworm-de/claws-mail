@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -366,7 +366,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-		 		 NULL, _("_Cancel"), "edit-delete", _("_Delete"),
+		 		 NULL, _("_Cancel"), "edit-delete-symbolic", _("_Delete"),
 				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
@@ -516,7 +516,7 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 				G_CALLBACK(chk_update_val), &recurse);
 
 		avalue = alertpanel_full(_("Subscriptions"), message,
-		 			 NULL, _("_Cancel"), "edit-find", _("_Search"),
+		 			 NULL, _("_Cancel"), "edit-find-symbolic", _("_Search"),
 					 NULL, NULL, ALERTFOCUS_SECOND,
 					 FALSE, rec_chk, ALERT_QUESTION);
 		g_free(message);

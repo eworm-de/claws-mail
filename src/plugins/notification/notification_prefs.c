@@ -1,7 +1,7 @@
 /*
  * Notification plugin for Claws-Mail
  * Claws Mail -- A GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2021 the Claws Mail team and Holger Berndt
+ * Copyright (C) 2005-2025 the Claws Mail team and Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -843,7 +843,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 
 	button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_icon_name("list-remove", GTK_ICON_SIZE_MENU));
+		gtk_image_new_from_icon_name("list-remove-symbolic", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			  G_CALLBACK(notify_banner_slider_remove_cb), slider);
@@ -854,7 +854,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 
 	button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_icon_name("list-add", GTK_ICON_SIZE_MENU));
+		gtk_image_new_from_icon_name("list-add-symbolic", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked",
 			  G_CALLBACK(notify_banner_slider_add_cb), slider);

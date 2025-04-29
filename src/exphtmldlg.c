@@ -190,7 +190,7 @@ static gboolean exp_html_move_file( void ) {
 			"Could not create output directory for HTML file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       "window-close", _("_Close"), NULL, NULL,
+				       "window-close-symbolic", _("_Close"), NULL, NULL,
 				       NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				       NULL, ALERT_ERROR);
 		g_free( msg );

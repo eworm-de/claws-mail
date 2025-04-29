@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 Colin Leroy <colin@colino.net> and
+ * Copyright (C) 1999-2025 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -294,8 +294,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	attendee->address	= gtk_entry_new();
 	attendee->cutype	= gtk_combo_box_text_new();
 	attendee->avail_evtbox  = gtk_event_box_new();
-	attendee->avail_img	= gtk_image_new_from_icon_name
-                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	attendee->avail_img	= gtk_image_new_from_icon_name("dialog-warning-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
 
 	gtk_widget_show(attendee->address);
 	gtk_widget_show(attendee->cutype);
@@ -1364,8 +1363,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->end_c		= gtk_calendar_new();
 
 	meet->avail_evtbox  = gtk_event_box_new();
-	meet->avail_img	= gtk_image_new_from_icon_name
-                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	meet->avail_img	= gtk_image_new_from_icon_name("dialog-warning-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
 
 	meet->start_time = gtkut_time_select_combo_new();
 	
@@ -1405,8 +1403,8 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->avail_btn		= gtk_button_new_with_label(_("Check availability"));
 
 	meet->total_avail_evtbox  = gtk_event_box_new();
-	meet->total_avail_img	= gtk_image_new_from_icon_name
-                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	meet->total_avail_img	= gtk_image_new_from_icon_name("dialog-warning-symbolic",
+							       GTK_ICON_SIZE_SMALL_TOOLBAR);
 	meet->total_avail_msg = gtk_label_new("");
 	
 	gtk_widget_set_size_request(meet->total_avail_evtbox, 18, 16);

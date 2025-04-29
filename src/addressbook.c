@@ -4183,12 +4183,12 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 	if (errFlag) {
 		debug_print( "Error\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				"window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
 	} else if (msg) {
 		debug_print( "Warning\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				"window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	}
 
@@ -4304,7 +4304,7 @@ void addressbook_read_file( void ) {
 		addrindex_print_index( addrIndex, stdout );
 		alertpanel_full(_("Addressbook Error"),
 				_("Could not read address index"),
-				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				"window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
 	}
 	debug_print( "done.\n" );

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2023 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
+ * Copyright (C) 2005-2025 the Claws Mail Team and Andrej Kacian <andrej@kacian.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ void rssyl_remove_folder_cb(GtkAction *action,
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 NULL, _("_Cancel"),  "edit-delete", _("_Delete"),
+				 NULL, _("_Cancel"),  "edit-delete-symbolic", _("_Delete"),
 				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
@@ -353,7 +353,7 @@ void rssyl_remove_mailbox_cb(GtkAction *action, gpointer data)
 	n = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really remove the feed tree `%s' ?\n"), n);
 	avalue = alertpanel_full(_("Remove feed tree"), message,
-				 NULL, _("_Cancel"), "list-remove", _("_Remove"),
+				 NULL, _("_Cancel"), "list-remove-symbolic", _("_Remove"),
 				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);

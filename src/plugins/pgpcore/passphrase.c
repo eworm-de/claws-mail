@@ -1,5 +1,5 @@
 /* passphrase.c - GTK based passphrase callback
- * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2025 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     if (uid_hint || pass_hint) {
         GtkWidget *label, *icon;
         label = create_description (uid_hint, prev_bad, new_key);
-	icon = gtk_image_new_from_icon_name("dialog-password",
+	icon = gtk_image_new_from_icon_name("dialog-password-symbolic",
         			GTK_ICON_SIZE_DIALOG); 
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);

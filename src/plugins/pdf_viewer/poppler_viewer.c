@@ -1231,8 +1231,8 @@ static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer)
 
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer)
 {
-	alertpanel_full(_("PDF properties"), NULL, "window-close", _("_Close"), NULL, NULL,
-			NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+	alertpanel_full(_("PDF properties"), NULL, "window-close-symbolic", _("_Close"),
+			NULL, NULL, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 			GTK_WIDGET(pdf_viewer_fill_info_table(viewer)), 
 			ALERT_NOTICE);
 }

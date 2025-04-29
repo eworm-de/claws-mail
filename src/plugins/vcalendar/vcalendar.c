@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1199,7 +1199,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->uribtn = gtk_button_new_with_label(_("Launch website"));
 	vcalviewer->unavail_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	warning_img = gtk_image_new_from_icon_name
-                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
+                        ("dialog-warning-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	warning_label = gtk_label_new(_("You are already busy at this time."));
 
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_img, FALSE, FALSE, 0);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,7 +317,7 @@ static void message_search_execute(gboolean backward)
 		if (all_searched) {
 			alertpanel_full(_("Search failed"),
 					_("Search string not found."),
-				        "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				        "window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 				        FALSE, ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
 			break;
 		}

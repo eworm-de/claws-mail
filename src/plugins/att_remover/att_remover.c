@@ -1,9 +1,9 @@
 /*
  * att_remover -- for Claws Mail
- * Copyright (C) 2005-2024 the Claws Mail Team and Colin Leroy
+ * Copyright (C) 2005-2025 the Claws Mail Team and Colin Leroy
  *
  * Claws Mail is a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2024 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2025 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -422,7 +422,7 @@ static void remove_attachments(GSList *msglist)
                   _("Do you really want to remove all attachments from "
                   "the selected messages?\n\n"
 		  "The deleted data will be unrecoverable."), 
-		  NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
+		  NULL, _("_Cancel"), "edit-delete-symbolic", _("_Delete"), NULL, NULL,
 		  ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION) != G_ALERTALTERNATE)
 		return;
 

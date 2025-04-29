@@ -994,9 +994,10 @@ QuickSearch *quicksearch_new()
 	quicksearch->normal_search_strings = NULL;
 	quicksearch->extended_search_strings = NULL;
 
-	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", _("_Information"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information-symbolic",
+			       _("_Information"));
 	quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
-	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", _("C_lear"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear-symbolic", _("C_lear"));
 	
 	update_extended_buttons(quicksearch);
 
@@ -1023,15 +1024,16 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 	case NORMAL_LAYOUT:
 	case WIDE_LAYOUT:
 	case WIDE_MSGLIST_LAYOUT:
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", _("_Information"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description),
+				       "dialog-information-symbolic", _("_Information"));
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
-		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", _("C_lear"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear-symbolic", _("C_lear"));
 		break;
 	case SMALL_LAYOUT:
 	case VERTICAL_LAYOUT:
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information-symbolic", "");
 		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
-		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear-symbolic", "");
 		break;
 	}
 }

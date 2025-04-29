@@ -371,7 +371,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	gchar *buf;
 	
 	buf = g_strdup_printf(_("TLS certificate for %s"), cert->host);
-	alertpanel_full(buf, NULL, "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+	alertpanel_full(buf, NULL, "window-close-symbolic", _("_Close"), NULL, NULL, NULL, NULL,
 	 		ALERTFOCUS_FIRST, FALSE, cert_widget, ALERT_NOTICE);
 	g_free(buf);
 }

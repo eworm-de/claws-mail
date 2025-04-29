@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2024 Holger Berndt <hb@claws-mail.org>
+ * Copyright (C) 2007-2025 Holger Berndt <hb@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -144,7 +144,7 @@ static gboolean create_dialog()
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
-	                      NULL, _("_Cancel"), "edit-find", _("_Find"), NULL, NULL,
+	                      NULL, _("_Cancel"), "edit-find-symbolic", _("_Find"), NULL, NULL,
 			     ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
