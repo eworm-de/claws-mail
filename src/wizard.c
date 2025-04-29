@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2025 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ static PrefParam template_params[] = {
 	 &tmpl.organization, P_STRING, NULL, NULL, NULL},
 	{"smtpserver", "smtp.$DOMAIN",
 	 &tmpl.smtpserver, P_STRING, NULL, NULL, NULL},
-	{"smtpauth", "FALSE",
+	{"smtpauth", "TRUE",
 	 &tmpl.smtpauth, P_BOOL, NULL, NULL, NULL},
 	{"smtpuser", "",
 	 &tmpl.smtpuser, P_STRING, NULL, NULL, NULL},
@@ -183,9 +183,9 @@ static PrefParam template_params[] = {
 	 &tmpl.mboxfile, P_STRING, NULL, NULL, NULL},
 	{"mailbox", "Mail",
 	 &tmpl.mailbox, P_STRING, NULL, NULL, NULL},
-	{"smtpssl", "0",
+	{"smtpssl", "1",
 	 &tmpl.smtpssl, P_INT, NULL, NULL, NULL},
-	{"recvssl", "0",
+	{"recvssl", "1",
 	 &tmpl.recvssl, P_INT, NULL, NULL, NULL},
 	{"smtpssl_cert", "",
 	 &tmpl.smtpssl_cert, P_STRING, NULL, NULL, NULL},
