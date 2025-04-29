@@ -1414,6 +1414,7 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 	prefs_toolbar->item_icon_file = icon_file;
 	gtk_button_set_image(GTK_BUTTON(prefs_toolbar->icon_button),
 			     gtk_image_new_from_pixbuf(pix));
+	gtk_button_set_always_show_image(GTK_BUTTON(prefs_toolbar->icon_button), TRUE);
 
 	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SEPARATOR), descr) == 0) {
 		gtk_button_set_label(GTK_BUTTON(prefs_toolbar->icon_button),
