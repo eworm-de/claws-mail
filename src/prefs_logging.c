@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Tristan Chabredier <wwp@claws-mail.org> and 
+ * Copyright (C) 1999-2025 Tristan Chabredier <wwp@claws-mail.org> and 
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -182,7 +182,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox_checkbtn = prefs_logging_create_check_buttons(
 						&checkbtn_filtering_log_inc,
-						_("filtering at incorporation"),
+						_("filtering on receiving"),
 						&checkbtn_filtering_log_pre_proc,
 						_("pre-processing folders"));
 	gtk_box_pack_start(GTK_BOX(vbox2_filtering_log), hbox_checkbtn, FALSE, FALSE, 0);
