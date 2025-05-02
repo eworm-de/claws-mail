@@ -890,7 +890,7 @@ static MsgInfo *news_parse_xover(struct newsnntp_xover_resp_item *item)
 	msginfo->from = conv_unmime_header(item->ovr_author, NULL, TRUE);
 	msginfo->fromname = procheader_get_fromname(msginfo->from);
 
-	msginfo->subject = conv_unmime_header(item->ovr_subject, NULL, TRUE);
+	msginfo->subject = conv_unmime_header(item->ovr_subject, NULL, FALSE);
 
 	remove_return(msginfo->from);
 	remove_return(msginfo->fromname);
