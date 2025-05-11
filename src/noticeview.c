@@ -1,6 +1,6 @@
 /* 
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 2002-2025 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(widget), "clicked", 
 			 G_CALLBACK(noticeview_button_pressed),
 			 (gpointer) noticeview);
-	g_object_set(widget, "margin", 4, NULL);
+	g_object_set(widget, "margin-right", 4, NULL);
 	gtk_container_add(GTK_CONTAINER(hgrid), widget);
 	
 	widget2 = gtk_button_new_with_label("");
