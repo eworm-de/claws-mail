@@ -1407,7 +1407,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
 	gtk_widget_set_size_request (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_grid_attach(GTK_GRID(serv_table), uid_entry, 1, 7, 1, 1);
+	gtk_grid_attach(GTK_GRID(serv_table), uid_entry, 1, 7, 2, 1);
 	gtk_widget_set_hexpand(uid_entry, TRUE);
 	gtk_widget_set_halign(uid_entry, GTK_ALIGN_FILL);
 	g_signal_connect(G_OBJECT(uid_entry), "changed",
@@ -1417,7 +1417,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
 	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_grid_attach(GTK_GRID(serv_table), pass_entry, 1, 8, 1, 1);
+	gtk_grid_attach(GTK_GRID(serv_table), pass_entry, 1, 8, 2, 1);
 	gtk_widget_set_hexpand(pass_entry, TRUE);
 	gtk_widget_set_halign(pass_entry, GTK_ALIGN_FILL);
 	gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
