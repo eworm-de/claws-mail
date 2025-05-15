@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
+ * Copyright (C) 2001-2025 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -655,13 +655,27 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	ldapedit.check_matchoption = check_matchoption;
 }
 
-static void showpwd_checkbtn_toggled(GtkToggleButton *button,
-		gpointer user_data)
+static void showpwd_toggled(GtkEntry *entry, gpointer user_data)
 {
-	gboolean active = gtk_toggle_button_get_active(button);
-	GtkWidget *entry = GTK_WIDGET(user_data);
+	gboolean visible = gtk_entry_get_visibility(GTK_ENTRY(entry));
 
-	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
+	if (visible) {
+		gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry),
+						  GTK_ENTRY_ICON_SECONDARY,
+						  "view-reveal-symbolic");
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry),
+						GTK_ENTRY_ICON_SECONDARY,
+						_("Show password"));
+	} else {
+		gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry),
+						  GTK_ENTRY_ICON_SECONDARY,
+						  "view-conceal-symbolic");
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry),
+						GTK_ENTRY_ICON_SECONDARY,
+						_("Hide password"));
+	}
 }
 
 static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) {
@@ -670,7 +684,6 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *label;
 	GtkWidget *entry_bindDN;
 	GtkWidget *entry_bindPW;
-	GtkWidget *showpwd_checkbtn;
 	GtkWidget *hbox_spin;
 	GtkAdjustment *spinbtn_timeout_adj;
 	GtkWidget *spinbtn_timeout;
@@ -716,6 +729,16 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 
 	entry_bindPW = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_bindPW), FALSE);
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry_bindPW),
+					  GTK_ENTRY_ICON_SECONDARY, 
+					  "view-reveal-symbolic");
+	gtk_entry_set_icon_activatable(GTK_ENTRY(entry_bindPW),
+				       GTK_ENTRY_ICON_SECONDARY, TRUE);
+	gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry_bindPW),
+					GTK_ENTRY_ICON_SECONDARY, _("Show password"));
+	g_signal_connect(entry_bindPW, "icon-press",
+			 G_CALLBACK(showpwd_toggled), NULL);
+
 	gtk_grid_attach(GTK_GRID(table), entry_bindPW, 1, 1, 1, 1);
 	gtk_widget_set_hexpand(entry_bindPW, TRUE);
 	gtk_widget_set_halign(entry_bindPW, GTK_ALIGN_FILL);
@@ -723,12 +746,6 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	CLAWS_SET_TIP(entry_bindPW, _( 
 		"The password to be used when connecting as the \"Bind DN\" " \
 		"user." ));
-
-	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
-	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
-			G_CALLBACK(showpwd_checkbtn_toggled), entry_bindPW);
-	gtk_grid_attach(GTK_GRID(table), showpwd_checkbtn, 2, 1, 1, 1);
 
 	/* Next row */
 	label = gtk_label_new(_("Timeout (secs)"));

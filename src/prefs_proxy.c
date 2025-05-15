@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK based, lightweight, and fast e-mail client
- * Copyright (C) 2018-2019 the Claws Mail team
+ * Copyright (C) 2018-2025 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,7 @@ typedef struct _ProxyPage
 	GtkWidget *proxy_pass_entry;
 } ProxyPage;
 
-static void showpwd_checkbtn_toggled(GtkToggleButton *button,
-		gpointer user_data);
+static void showpwd_toggled(GtkEntry *entry, gpointer user_data);
 
 static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 		gpointer data)
@@ -137,15 +136,19 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 	proxy_pass_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_entry_set_visibility(GTK_ENTRY(proxy_pass_entry), FALSE);
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(proxy_pass_entry),
+					  GTK_ENTRY_ICON_SECONDARY, 
+					  "view-reveal-symbolic");
+	gtk_entry_set_icon_activatable(GTK_ENTRY(proxy_pass_entry),
+				       GTK_ENTRY_ICON_SECONDARY, TRUE);
+	gtk_entry_set_icon_tooltip_text(GTK_ENTRY(proxy_pass_entry),
+					GTK_ENTRY_ICON_SECONDARY, _("Show password"));
+	g_signal_connect(proxy_pass_entry, "icon-press",
+			 G_CALLBACK(showpwd_toggled), NULL);
+	
 	gtk_grid_attach(GTK_GRID(table), proxy_pass_entry, 3, 0, 1, 1);
 	gtk_widget_set_hexpand(proxy_pass_entry, TRUE);
 	gtk_widget_set_halign(proxy_pass_entry, GTK_ALIGN_FILL);
-
-	button = gtk_check_button_new_with_label(_("Show password"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
-	gtk_grid_attach(GTK_GRID(table), button, 3, 1, 1, 1);
-	g_signal_connect(G_OBJECT(button), "toggled",
-			G_CALLBACK(showpwd_checkbtn_toggled), proxy_pass_entry);
 
 	gtk_widget_show_all(vbox0);
 
@@ -254,11 +257,25 @@ void prefs_proxy_done(void)
 	g_free(prefs_proxy);
 }
 
-static void showpwd_checkbtn_toggled(GtkToggleButton *button,
-    gpointer user_data)
+static void showpwd_toggled(GtkEntry *entry, gpointer user_data)
 {
-	gboolean active = gtk_toggle_button_get_active(button);
-	GtkWidget *entry = GTK_WIDGET(user_data);
+	gboolean visible = gtk_entry_get_visibility(GTK_ENTRY(entry));
 
-	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
+	if (visible) {
+		gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry),
+						  GTK_ENTRY_ICON_SECONDARY,
+						  "view-reveal-symbolic");
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry),
+						GTK_ENTRY_ICON_SECONDARY,
+						_("Show password"));
+	} else {
+		gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry),
+						  GTK_ENTRY_ICON_SECONDARY,
+						  "view-conceal-symbolic");
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry),
+						GTK_ENTRY_ICON_SECONDARY,
+						_("Hide password"));
+	}
 }
