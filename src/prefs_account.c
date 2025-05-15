@@ -1476,9 +1476,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
-#ifdef GENERIC_UMPC
 	gtk_label_set_xalign(GTK_LABEL (pass_label), 1.0);
-#endif
 	gtk_grid_attach(GTK_GRID(serv_table), pass_label, 0, 8, 1, 1);
 
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_label);
